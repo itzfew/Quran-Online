@@ -9,6 +9,9 @@ body {
     max-width: 800px;
     margin: auto;
     padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 h1, h2 {
@@ -18,7 +21,24 @@ h1, h2 {
 .surah-list {
     float: left;
     width: 30%;
-    padding-right: 10px;
+    padding-right: 20px;
+}
+
+.surah-list ul {
+    padding: 0;
+}
+
+.surah-list li {
+    cursor: pointer;
+    padding: 12px;
+    background-color: #eee;
+    margin: 5px 0;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.surah-list li:hover {
+    background-color: #ddd;
 }
 
 .surah-content {
@@ -26,23 +46,21 @@ h1, h2 {
     width: 65%;
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-li {
-    cursor: pointer;
+#surahText {
+    font-family: 'Noto Naskh Arabic', serif; /* Add your chosen font */
+    line-height: 1.6;
+    color: #555;
     padding: 10px;
-    background-color: #ddd;
-    margin: 5px 0;
+    background-color: #fafafa;
     border-radius: 5px;
-}
-
-li:hover {
-    background-color: #bbb;
+    overflow-y: auto;
+    max-height: 600px; /* Add scroll if content is too long */
 }
 
 #surahText p {
     margin: 0 0 10px 0;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
