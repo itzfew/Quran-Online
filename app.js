@@ -3,8 +3,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const surahTitleElement = document.getElementById('surahTitle');
     const surahTextElement = document.getElementById('surahText');
 
-    // Fetch surahs list from the Quran API
-    fetch('https://api.quran.com/v4/surahs')
+    // Fetch the list of surahs from the API
+    fetch('http://api.alquran.cloud/v1/surah')
         .then(response => response.json())
         .then(data => {
             if (data && data.data) {
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error('Error fetching surahs:', error));
 
     function loadSurah(surahNumber) {
-        fetch(`https://api.quran.com/v4/surahs/${surahNumber}`)
+        fetch(`http://api.alquran.cloud/v1/surah/${surahNumber}`)
             .then(response => response.json())
             .then(data => {
                 if (data && data.data) {
