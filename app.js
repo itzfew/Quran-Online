@@ -4,28 +4,36 @@ document.addEventListener('DOMContentLoaded', function() {
     const surahTextElement = document.getElementById('surahText');
 
     // Fetch surahs list from the Quran API
-    fetch('https://api.quran.com/v4/surah')
+    fetch('https://api.quran.com/v4/surahs')
         .then(response => response.json())
         .then(data => {
-            const surahs = data.data;
+            if (data && data.data) {
+                const surahs = data.data;
 
-            surahs.forEach(surah => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `${surah.number}. ${surah.name}`;
-                listItem.dataset.surahNumber = surah.number;
-                listItem.addEventListener('click', () => loadSurah(surah.number));
-                surahListElement.appendChild(listItem);
-            });
+                surahs.forEach(surah => {
+                    const listItem = document.createElement('li');
+                    listItem.textContent = `${surah.number}. ${surah.name}`;
+                    listItem.dataset.surahNumber = surah.number;
+                    listItem.addEventListener('click', () => loadSurah(surah.number));
+                    surahListElement.appendChild(listItem);
+                });
+            } else {
+                console.error('No data found or data format is incorrect');
+            }
         })
         .catch(error => console.error('Error fetching surahs:', error));
 
     function loadSurah(surahNumber) {
-        fetch(`https://api.quran.com/v4/surah/${surahNumber}`)
+        fetch(`https://api.quran.com/v4/surahs/${surahNumber}`)
             .then(response => response.json())
             .then(data => {
-                const surah = data.data;
-                surahTitleElement.textContent = surah.name;
-                surahTextElement.innerHTML = surah.ayahs.map(ayah => `<p>${ayah.text}</p>`).join('');
+                if (data && data.data) {
+                    const surah = data.data;
+                    surahTitleElement.textContent = surah.name;
+                    surahTextElement.innerHTML = surah.ayahs.map(ayah => `<p>${ayah.text}</p>`).join('');
+                } else {
+                    console.error('No data found or data format is incorrect');
+                }
             })
             .catch(error => console.error('Error fetching surah:', error));
     }
