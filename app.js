@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+ document.addEventListener('DOMContentLoaded', function() {
     const surahListElement = document.getElementById('surahList');
     const surahTitleElement = document.getElementById('surahTitle');
     const surahTextElement = document.getElementById('surahText');
