@@ -1,0 +1,48 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+.surah-list {
+    float: left;
+    width: 30%;
+    padding-right: 10px;
+}
+
+.surah-content {
+    float: right;
+    width: 65%;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    cursor: pointer;
+    padding: 10px;
+    background-color: #ddd;
+    margin: 5px 0;
+    border-radius: 5px;
+}
+
+li:hover {
+    background-color: #bbb;
+}
+
+#surahText p {
+    margin: 0 0 10px 0;
+}
