@@ -66,6 +66,9 @@
             border: 1px solid #ddd;
             transition: font-size 0.3s;
         }
+        .verse.highlighted {
+            background-color: #ffeb3b; /* Yellow highlight color */
+        }
         .verse:first-of-type {
             font-size: 28px;
             margin-bottom: 40px;
@@ -90,7 +93,7 @@
         .settings-button {
             position: fixed;
             top: 10px;
-            left: 10px;
+            right: 10px;
             background-color: #00796b;
             color: white;
             border: none;
@@ -103,7 +106,7 @@
         .settings-menu {
             position: fixed;
             top: 10px;
-            left: 10px;
+            right: 10px;
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -134,13 +137,16 @@
             display: block;
             margin-bottom: 10px;
         }
-        .settings-menu select {
+        .settings-menu select, .settings-menu input[type="range"] {
             width: 100%;
             margin-top: 5px;
         }
+        .settings-menu input[type="checkbox"] {
+            margin-right: 10px;
+        }
         .nav-buttons {
             position: absolute;
-            top: 20px;
+            bottom: 20px;
             left: 20px;
             right: 20px;
             display: flex;
@@ -167,9 +173,28 @@
         .nav-buttons i {
             margin-right: 8px;
         }
+        .back-to-index {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+        .back-to-index:hover {
+            background-color: #004d40;
+        }
     </style>
 </head>
 <body>
+    <button class="back-to-index" onclick="window.location.href='index.html'">Back to Index</button>
     <button class="settings-button" onclick="toggleSettingsMenu()">⚙️ Settings</button>
     <div class="settings-menu" id="settings-menu">
         <button class="close-button" onclick="toggleSettingsMenu()">✖️</button>
@@ -189,10 +214,13 @@
             <input type="range" id="font-size-slider" min="16" max="36" step="2" value="24">
             <span id="font-size-value">24px</span>
         </label>
+        <label>
+            <input type="checkbox" id="highlight-toggle">
+            Enable Text Highlighting
+        </label>
     </div>
     <div class="container">
         <div class="nav-buttons">
-            <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Index</a>
             <a id="prev-surah"><i class="fas fa-chevron-left"></i> Previous</a>
             <a id="next-surah">Next <i class="fas fa-chevron-right"></i></a>
         </div>
@@ -218,50 +246,62 @@
         function loadSettings() {
             const fontSize = localStorage.getItem('font-size') || '24';
             const fontFamily = localStorage.getItem('font-family') || 'Noto Sans Arabic-400';
-
-            document.querySelectorAll('.verse').forEach(verse => {
-                const [fontFamilyName, fontWeight] = fontFamily.split('-');
-                const isAmiriQuran = fontFamilyName === 'Amiri Quran';
-                verse.style.fontSize = fontSize + 'px';
-                verse.style.fontFamily = isAmiriQuran ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
-                verse.style.fontWeight = isAmiriQuran ? '400' : fontWeight || '400';
-            });
-
-            document.querySelector('.details').style.fontSize = fontSize + 'px';
-            document.querySelector('.details').style.fontFamily = fontFamily.split('-')[0] === 'Amiri Quran' ? '"Amiri Quran", serif' : '"Noto Sans Arabic", sans-serif';
-            document.querySelector('.container').style.fontFamily = fontFamily.split('-')[0] === 'Amiri Quran' ? '"Amiri Quran", serif' : '"Noto Sans Arabic", sans-serif';
+            const highlight = localStorage.getItem('highlight') === 'true';
 
             document.getElementById('font-size-slider').value = fontSize;
             document.getElementById('font-size-value').textContent = fontSize + 'px';
             document.getElementById('font-family').value = fontFamily;
+            document.getElementById('highlight-toggle').checked = highlight;
+
+            applySettings();
+        }
+
+        // Apply settings to the page
+        function applySettings() {
+            const fontSize = document.getElementById('font-size-slider').value;
+            const fontFamily = document.getElementById('font-family').value;
+            const highlight = document.getElementById('highlight-toggle').checked;
+
+            const [fontFamilyName, fontWeight] = fontFamily.split('-');
+            document.querySelector('.verse').style.fontSize = fontSize + 'px';
+            document.querySelector('.verse').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
+            document.querySelector('.verse').style.fontWeight = fontWeight || '400';
+            
+            document.querySelector('.details').style.fontSize = fontSize + 'px';
+            document.querySelector('.details').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
+            document.querySelector('.container').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
+
+            if (highlight) {
+                document.querySelectorAll('.verse').forEach(verse => {
+                    verse.classList.add('highlighted');
+                });
+            } else {
+                document.querySelectorAll('.verse').forEach(verse => {
+                    verse.classList.remove('highlighted');
+                });
+            }
         }
 
         // Save settings to local storage
         function saveSettings() {
             const fontSize = document.getElementById('font-size-slider').value;
             const fontFamily = document.getElementById('font-family').value;
+            const highlight = document.getElementById('highlight-toggle').checked;
 
             localStorage.setItem('font-size', fontSize);
             localStorage.setItem('font-family', fontFamily);
+            localStorage.setItem('highlight', highlight);
 
-            document.querySelectorAll('.verse').forEach(verse => {
-                const [fontFamilyName, fontWeight] = fontFamily.split('-');
-                const isAmiriQuran = fontFamilyName === 'Amiri Quran';
-                verse.style.fontSize = fontSize + 'px';
-                verse.style.fontFamily = isAmiriQuran ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
-                verse.style.fontWeight = isAmiriQuran ? '400' : fontWeight || '400';
-            });
-
-            document.querySelector('.details').style.fontSize = fontSize + 'px';
-            document.querySelector('.details').style.fontFamily = fontFamily.split('-')[0] === 'Amiri Quran' ? '"Amiri Quran", serif' : '"Noto Sans Arabic", sans-serif';
-            document.querySelector('.container').style.fontFamily = fontFamily.split('-')[0] === 'Amiri Quran' ? '"Amiri Quran", serif' : '"Noto Sans Arabic", sans-serif';
+            applySettings();
         }
 
+        // Event listeners for settings
         document.getElementById('font-size-slider').addEventListener('input', function() {
             document.getElementById('font-size-value').textContent = this.value + 'px';
             saveSettings();
         });
         document.getElementById('font-family').addEventListener('change', saveSettings);
+        document.getElementById('highlight-toggle').addEventListener('change', saveSettings);
 
         async function fetchSurahDetails() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -285,7 +325,7 @@
                 const surahContent = document.getElementById('surah-content');
 
                 surahName.textContent = surah.name;
-                surahArabicName.textContent = surah.arabicName; // Adjust this if needed
+                surahArabicName.textContent = surah.arabicName;
                 surahCount.textContent = surah.count;
                 surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
 
