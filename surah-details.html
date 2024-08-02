@@ -20,25 +20,23 @@
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s, color 0.3s;
         }
         h1 {
             font-size: 36px;
             color: #333;
             margin: 20px 0;
-            font-weight: bold;
         }
         .details {
             font-size: 20px;
             margin-bottom: 30px;
             text-align: left;
-            padding: 15px;
+            padding: 10px;
             background-color: #eaf0f1;
             border: 1px solid #d1dbe0;
-            border-radius: 10px;
+            border-radius: 5px;
             line-height: 1.6;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
         }
         .details p {
             margin: 10px 0;
@@ -50,10 +48,10 @@
             direction: rtl;
             font-weight: bold;
             background-color: #F5F5DC; /* Beige background color */
-            padding: 15px;
-            border-radius: 10px;
+            padding: 10px;
+            border-radius: 5px;
             border: 1px solid #ddd;
-            transition: font-size 0.3s, background-color 0.3s;
+            transition: font-size 0.3s;
         }
         .verse:first-of-type {
             font-size: 28px;
@@ -85,15 +83,10 @@
             color: white;
             border: none;
             border-radius: 5px;
-            padding: 12px 20px;
+            padding: 10px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
             z-index: 1000;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s;
-        }
-        .settings-button:hover {
-            background-color: #004d40;
         }
         /* Settings Menu */
         .settings-menu {
@@ -103,33 +96,20 @@
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 5px;
-            padding: 20px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             display: none;
             z-index: 1000;
-            width: 220px;
+            width: 200px;
             text-align: left;
-            transition: transform 0.3s;
-        }
-        .settings-menu.show {
-            display: block;
-            transform: translateY(0);
-        }
-        .settings-menu.hide {
-            transform: translateY(-10px);
-            opacity: 0;
         }
         .settings-menu h2 {
-            font-size: 20px;
-            margin: 0 0 15px 0;
-            color: #00796b;
-            border-bottom: 2px solid #00796b;
-            padding-bottom: 10px;
+            font-size: 18px;
+            margin: 0 0 10px 0;
         }
         .settings-menu label {
             display: block;
-            margin-bottom: 15px;
-            font-size: 16px;
+            margin-bottom: 10px;
         }
         .settings-menu input[type="range"] {
             width: 100%;
@@ -145,7 +125,6 @@
         body.dark-mode .container {
             background-color: #444;
             color: #fff;
-            border-color: #666;
         }
         body.dark-mode .verse {
             background-color: #555;
@@ -188,8 +167,7 @@
         // Toggle settings menu visibility
         function toggleSettingsMenu() {
             const menu = document.getElementById('settings-menu');
-            menu.classList.toggle('show');
-            menu.classList.toggle('hide');
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
         }
 
         // Load settings from local storage
@@ -260,15 +238,13 @@
                 // Update Surah details
                 surahName.textContent = surah.name;
                 surahCount.textContent = surah.count;
-                surahJuz.textContent = surah.juz.map(j => `Juz ${j.index}: verse ${j.verse.start.replace('verse_', '')} to verse ${j.verse.end.replace('verse_', '')}`).join(', ');
+                surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
 
-                // Update Surah content
+                // Update Surah verses
                 surahContent.innerHTML = `
-                    <div class="verse">
-                        <span class="circle">0</span>
-                        ${surah.verse.verse_0}
-                    </div>
+                    <div class="verse">${surah.verse.verse_0}</div>
                     ${Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => {
+                        // Get verse number from key
                         const verseNumber = key.replace('verse_', '');
                         return `
                             <div class="verse">
