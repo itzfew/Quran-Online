@@ -65,6 +65,7 @@
             border-radius: 5px;
             border: 1px solid #ddd;
             transition: font-size 0.3s;
+            position: relative;
         }
         .verse.highlighted {
             background-color: #ffeb3b; /* Yellow highlight color */
@@ -75,6 +76,23 @@
             color: #000;
             text-decoration: underline;
             color: #00796b;
+        }
+        .verse .bookmark-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #00796b;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+        .verse .bookmark-button:hover {
+            background-color: #004d40;
         }
         .circle {
             display: inline-block;
@@ -196,6 +214,17 @@
         .back-to-index:hover {
             background-color: #004d40;
         }
+        .jump-to-verse {
+            margin-top: 10px;
+            font-size: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .jump-to-verse select {
+            padding: 5px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -211,7 +240,6 @@
                 <option value="Noto Sans Arabic-100">Noto Sans Arabic (Light)</option>
                 <option value="Noto Sans Arabic-400">Noto Sans Arabic (Regular)</option>
                 <option value="Noto Sans Arabic-700">Noto Sans Arabic (Bold)</option>
-                <option value="Noto Sans Arabic-900">Noto Sans Arabic (Extra Bold)</option>
             </select>
         </label>
         <label>
@@ -221,22 +249,29 @@
         </label>
         <label>
             <input type="checkbox" id="highlight-toggle">
-            Enable Text Highlighting
+            Text Highlighting
         </label>
     </div>
+
     <div class="container">
-        <div class="nav-buttons">
-            <a id="prev-surah"><i class="fas fa-chevron-left"></i> Previous</a>
-            <a id="next-surah">Next <i class="fas fa-chevron-right"></i></a>
-        </div>
         <h1 id="surah-name"></h1>
         <h2 id="surah-arabic-name"></h2>
         <div class="details">
-            <p><strong>Total Verses:</strong> <span id="surah-count"></span></p>
-            <p><strong>Juz:</strong> <span id="surah-juz"></span></p>
+            <p><strong>Surah Count:</strong> <span id="surah-count"></span></p>
+            <p><strong>Juz:</strong><br><span id="surah-juz"></span></p>
+        </div>
+        <div class="jump-to-verse">
+            <label for="verse-select">Jump to Verse:</label>
+            <select id="verse-select">
+                <!-- Options will be added dynamically -->
+            </select>
         </div>
         <div id="surah-content">
             <!-- Verses will be inserted here -->
+        </div>
+        <div class="nav-buttons">
+            <a id="prev-surah" href="#" class="prev-button"><i class="fas fa-chevron-left"></i> Previous</a>
+            <a id="next-surah" href="#" class="next-button">Next <i class="fas fa-chevron-right"></i></a>
         </div>
     </div>
 
@@ -326,24 +361,34 @@
                 const surahCount = document.getElementById('surah-count');
                 const surahJuz = document.getElementById('surah-juz');
                 const surahContent = document.getElementById('surah-content');
+                const verseSelect = document.getElementById('verse-select');
 
                 surahName.textContent = surah.name;
                 surahArabicName.textContent = surah.arabicName;
                 surahCount.textContent = surah.count;
                 surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
 
-                surahContent.innerHTML = `
-                    <div class="verse">${surah.verse.verse_0}</div>
-                    ${Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => {
-                        const verseNumber = key.replace('verse_', '');
-                        return `
-                            <div class="verse">
-                                <span class="circle">${verseNumber}</span>
-                                ${surah.verse[key]}
-                            </div>
-                        `;
-                    }).join('')}
-                `;
+                let verseOptions = '<option value="">Select a verse</option>';
+                for (let i = 1; i <= surah.count; i++) {
+                    verseOptions += `<option value="${i}">Verse ${i}</option>`;
+                }
+                verseSelect.innerHTML = verseOptions;
+
+                let verseHtml = '';
+                let lastReadVerse = localStorage.getItem('last-read-verse') || null;
+                let bookmarkedVerses = JSON.parse(localStorage.getItem('bookmarked-verses')) || [];
+
+                Object.keys(surah.verse).forEach(key => {
+                    const verseNumber = key.replace('verse_', '');
+                    let verseContent = `<div class="verse" id="verse-${verseNumber}">
+                        <button class="bookmark-button" onclick="bookmarkVerse(${verseNumber})">📑</button>
+                        <span class="circle">${verseNumber}</span>
+                        ${surah.verse[key]}
+                    </div>`;
+                    verseHtml += verseContent;
+                });
+
+                surahContent.innerHTML = verseHtml;
 
                 loadSettings();
 
@@ -357,13 +402,67 @@
                     document.getElementById('next-surah').style.display = 'none';
                 }
 
+                // Restore the last read verse
+                if (lastReadVerse) {
+                    const lastVerseElement = document.getElementById(`verse-${lastReadVerse}`);
+                    if (lastVerseElement) {
+                        lastVerseElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+
+                // Restore bookmarks
+                bookmarkedVerses.forEach(verseNumber => {
+                    const verseElement = document.getElementById(`verse-${verseNumber}`);
+                    if (verseElement) {
+                        verseElement.classList.add('highlighted');
+                    }
+                });
+
+                // Handle verse selection change
+                verseSelect.addEventListener('change', function() {
+                    const selectedVerse = this.value;
+                    if (selectedVerse) {
+                        const verseElement = document.getElementById(`verse-${selectedVerse}`);
+                        if (verseElement) {
+                            verseElement.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }
+                });
+
+                // Save the current reading position on scroll
+                window.addEventListener('scroll', function() {
+                    const visibleVerses = document.querySelectorAll('.verse').filter(verse => {
+                        const rect = verse.getBoundingClientRect();
+                        return rect.top >= 0 && rect.bottom <= window.innerHeight;
+                    });
+                    if (visibleVerses.length > 0) {
+                        const currentVerse = visibleVerses[0].id.replace('verse-', '');
+                        localStorage.setItem('last-read-verse', currentVerse);
+                    }
+                });
+
             } catch (error) {
                 console.error('Error fetching surah details:', error);
                 document.body.innerHTML = '<p>Error loading Surah details.</p>';
             }
         }
 
-        fetchSurahDetails();
+        function bookmarkVerse(verseNumber) {
+            let bookmarkedVerses = JSON.parse(localStorage.getItem('bookmarked-verses')) || [];
+            if (bookmarkedVerses.includes(verseNumber)) {
+                bookmarkedVerses = bookmarkedVerses.filter(v => v !== verseNumber);
+            } else {
+                bookmarkedVerses.push(verseNumber);
+            }
+            localStorage.setItem('bookmarked-verses', JSON.stringify(bookmarkedVerses));
+
+            const verseElement = document.getElementById(`verse-${verseNumber}`);
+            if (verseElement) {
+                verseElement.classList.toggle('highlighted');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchSurahDetails);
     </script>
 </body>
 </html>
