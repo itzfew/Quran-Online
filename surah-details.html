@@ -93,7 +93,7 @@
         .settings-button {
             position: fixed;
             top: 10px;
-            right: 10px;
+            left: 10px;
             background-color: #00796b;
             color: white;
             border: none;
@@ -102,11 +102,16 @@
             cursor: pointer;
             font-size: 16px;
             z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+        .settings-button:hover {
+            background-color: #004d40;
         }
         .settings-menu {
             position: fixed;
             top: 10px;
-            right: 10px;
+            left: 10px;
             background-color: #fff;
             border: 1px solid #ddd;
             border-radius: 5px;
@@ -263,23 +268,20 @@
             const highlight = document.getElementById('highlight-toggle').checked;
 
             const [fontFamilyName, fontWeight] = fontFamily.split('-');
-            document.querySelector('.verse').style.fontSize = fontSize + 'px';
-            document.querySelector('.verse').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
-            document.querySelector('.verse').style.fontWeight = fontWeight || '400';
-            
+            document.querySelectorAll('.verse').forEach(verse => {
+                verse.style.fontSize = fontSize + 'px';
+                verse.style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
+                verse.style.fontWeight = fontWeight || '400';
+                if (highlight) {
+                    verse.classList.add('highlighted');
+                } else {
+                    verse.classList.remove('highlighted');
+                }
+            });
+
             document.querySelector('.details').style.fontSize = fontSize + 'px';
             document.querySelector('.details').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
             document.querySelector('.container').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
-
-            if (highlight) {
-                document.querySelectorAll('.verse').forEach(verse => {
-                    verse.classList.add('highlighted');
-                });
-            } else {
-                document.querySelectorAll('.verse').forEach(verse => {
-                    verse.classList.remove('highlighted');
-                });
-            }
         }
 
         // Save settings to local storage
@@ -303,6 +305,7 @@
         document.getElementById('font-family').addEventListener('change', saveSettings);
         document.getElementById('highlight-toggle').addEventListener('change', saveSettings);
 
+        // Fetch Surah details and apply settings
         async function fetchSurahDetails() {
             const urlParams = new URLSearchParams(window.location.search);
             const surahIndex = parseInt(urlParams.get('index'), 10);
