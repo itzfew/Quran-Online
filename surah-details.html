@@ -31,6 +31,13 @@
             color: #333;
             margin: 20px 0;
         }
+        h2 {
+            font-size: 28px;
+            color: #555;
+            margin: 10px 0;
+            font-weight: normal;
+            direction: rtl; /* For proper Arabic text alignment */
+        }
         .details {
             font-size: 20px;
             margin-bottom: 30px;
@@ -188,6 +195,7 @@
             <a id="next-surah">Next <i class="fas fa-chevron-right"></i></a>
         </div>
         <h1 id="surah-name"></h1>
+        <h2 id="surah-arabic-name"></h2>
         <div class="details">
             <p><strong>Total Verses:</strong> <span id="surah-count"></span></p>
             <p><strong>Juz:</strong> <span id="surah-juz"></span></p>
@@ -259,11 +267,13 @@
                 const surah = await response.json();
 
                 const surahName = document.getElementById('surah-name');
+                const surahArabicName = document.getElementById('surah-arabic-name');
                 const surahCount = document.getElementById('surah-count');
                 const surahJuz = document.getElementById('surah-juz');
                 const surahContent = document.getElementById('surah-content');
 
                 surahName.textContent = surah.name;
+                surahArabicName.textContent = surah.arabicName; // Assuming 'arabicName' is the correct field
                 surahCount.textContent = surah.count;
                 surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
 
@@ -282,7 +292,6 @@
 
                 loadSettings();
 
-                // Handle navigation buttons
                 document.getElementById('prev-surah').href = surahIndex > 1 ? `surah-details.html?index=${surahIndex - 1}` : '#';
                 document.getElementById('next-surah').href = surahIndex < 114 ? `surah-details.html?index=${surahIndex + 1}` : '#';
 
