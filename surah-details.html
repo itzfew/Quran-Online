@@ -6,29 +6,69 @@
     <title>Surah Details</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f9f9f9;
+            font-family: 'Traditional Arabic', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: auto;
             padding: 20px;
             background-color: #fff;
             border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         h1 {
-            margin-top: 0;
+            font-size: 36px;
+            color: #333;
+            margin: 20px 0;
+        }
+        .details {
+            font-size: 20px;
+            margin-bottom: 30px;
+            text-align: left;
         }
         .verse {
-            margin-bottom: 10px;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: right;
+            direction: rtl;
+            font-weight: bold;
+        }
+        .verse:first-of-type {
+            font-size: 28px;
+            margin-bottom: 40px;
+            color: #000;
+        }
+        .circle {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 40px;
+            text-align: center;
+            margin: 0 5px;
+            font-size: 18px;
+            border: 1px solid #ddd;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1 id="surah-name"></h1>
-        <div id="surah-content"></div>
+        <div class="details">
+            <p><strong>Total Verses:</strong> <span id="surah-count"></span></p>
+            <p><strong>Juz:</strong> <span id="surah-juz"></span></p>
+        </div>
+        <div id="surah-content">
+            <!-- Verses will be inserted here -->
+        </div>
     </div>
 
     <script>
@@ -42,7 +82,6 @@
                 return;
             }
 
-            // Construct the URL for the surah details page (no leading zeros)
             const surahUrl = `https://raw.githubusercontent.com/semarketir/quranjson/master/source/surah/surah_${surahIndex}.json`;
 
             try {
@@ -50,14 +89,29 @@
                 const surah = await response.json();
 
                 const surahName = document.getElementById('surah-name');
+                const surahCount = document.getElementById('surah-count');
+                const surahJuz = document.getElementById('surah-juz');
                 const surahContent = document.getElementById('surah-content');
 
+                // Update Surah details
                 surahName.textContent = surah.name;
+                surahCount.textContent = surah.count;
+                surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
 
-                // Display verses in a readable format
-                surahContent.innerHTML = Object.keys(surah.verse).map(key => {
-                    return `<div class="verse"><strong>Verse ${key.replace('verse_', '')}:</strong> ${surah.verse[key]}</div>`;
-                }).join('');
+                // Update Surah verses
+                surahContent.innerHTML = `
+                    <div class="verse">${surah.verse.verse_1}</div>
+                    ${Object.keys(surah.verse).filter(key => key !== 'verse_1').map(key => {
+                        // Get verse number from key
+                        const verseNumber = key.replace('verse_', '');
+                        return `
+                            <div class="verse">
+                                <span class="circle">${verseNumber}</span>
+                                ${surah.verse[key]}
+                            </div>
+                        `;
+                    }).join('')}
+                `;
             } catch (error) {
                 console.error('Error fetching surah details:', error);
                 document.body.innerHTML = '<p>Error loading Surah details.</p>';
