@@ -30,6 +30,14 @@
             font-size: 20px;
             margin-bottom: 30px;
             text-align: left;
+            padding: 10px;
+            background-color: #eaf0f1;
+            border: 1px solid #d1dbe0;
+            border-radius: 5px;
+            line-height: 1.6;
+        }
+        .details p {
+            margin: 10px 0;
         }
         .verse {
             font-size: 24px;
@@ -42,6 +50,8 @@
             font-size: 28px;
             margin-bottom: 40px;
             color: #000;
+            text-decoration: underline;
+            color: #00796b;
         }
         .circle {
             display: inline-block;
@@ -100,8 +110,8 @@
 
                 // Update Surah verses
                 surahContent.innerHTML = `
-                    <div class="verse">${surah.verse.verse_1}</div>
-                    ${Object.keys(surah.verse).filter(key => key !== 'verse_1').map(key => {
+                    <div class="verse">${surah.verse.verse_0}</div>
+                    ${Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => {
                         // Get verse number from key
                         const verseNumber = key.replace('verse_', '');
                         return `
