@@ -16,7 +16,7 @@
             padding: 0;
             background-color: #f4f4f4;
             text-align: center;
-            transition: color 0.3s;
+            transition: color 0.3s, background-color 0.3s;
         }
         .container {
             max-width: 900px;
@@ -67,7 +67,7 @@
             transition: font-size 0.3s;
         }
         .verse.highlighted {
-            background-color: #ffeb3b; /* Yellow highlight color */
+            background-color: var(--highlight-color, #ffeb3b); /* Default yellow highlight color */
         }
         .verse:first-of-type {
             font-size: 28px;
@@ -90,10 +90,9 @@
             border: 1px solid #ddd;
             font-weight: bold;
         }
-        .settings-button {
+        .settings-button, .back-to-index {
             position: fixed;
             top: 10px;
-            left: 10px;
             background-color: #00796b;
             color: white;
             border: none;
@@ -101,11 +100,17 @@
             padding: 10px;
             cursor: pointer;
             font-size: 16px;
-            z-index: 1000;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s;
+            z-index: 1000;
         }
-        .settings-button:hover {
+        .settings-button {
+            left: 10px;
+        }
+        .back-to-index {
+            right: 10px;
+        }
+        .settings-button:hover, .back-to-index:hover {
             background-color: #004d40;
         }
         .settings-menu {
@@ -142,7 +147,7 @@
             display: block;
             margin-bottom: 10px;
         }
-        .settings-menu select, .settings-menu input[type="range"] {
+        .settings-menu select, .settings-menu input[type="range"], .settings-menu input[type="color"] {
             width: 100%;
             margin-top: 5px;
         }
@@ -178,12 +183,12 @@
         .nav-buttons i {
             margin-right: 8px;
         }
-        .back-to-index {
+        .dark-mode-toggle {
             position: fixed;
-            top: 10px;
-            right: 10px;
-            background-color: #00796b;
-            color: white;
+            bottom: 10px;
+            left: 10px;
+            background-color: #333;
+            color: #fff;
             border: none;
             border-radius: 5px;
             padding: 10px;
@@ -193,14 +198,15 @@
             transition: background-color 0.3s;
             z-index: 1000;
         }
-        .back-to-index:hover {
-            background-color: #004d40;
+        .dark-mode-toggle:hover {
+            background-color: #111;
         }
     </style>
 </head>
 <body>
     <button class="back-to-index" onclick="window.location.href='index.html'">Back to Index</button>
     <button class="settings-button" onclick="toggleSettingsMenu()">⚙️ Settings</button>
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
     <div class="settings-menu" id="settings-menu">
         <button class="close-button" onclick="toggleSettingsMenu()">✖️</button>
         <h2>Settings</h2>
@@ -220,8 +226,16 @@
             <span id="font-size-value">24px</span>
         </label>
         <label>
+            Highlight Color
+            <input type="color" id="highlight-color" value="#ffeb3b">
+        </label>
+        <label>
             <input type="checkbox" id="highlight-toggle">
             Enable Text Highlighting
+        </label>
+        <label>
+            <input type="checkbox" id="bookmark-toggle">
+            Enable Bookmarking
         </label>
     </div>
     <div class="container">
@@ -247,16 +261,44 @@
             menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
         }
 
+        // Toggle dark mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const darkMode = document.body.classList.contains('dark-mode');
+            localStorage.setItem('dark-mode', darkMode);
+            if (darkMode) {
+                document.body.style.backgroundColor = '#333';
+                document.querySelector('.container').style.backgroundColor = '#444';
+                document.querySelector('.container').style.color = '#fff';
+                document.querySelectorAll('.verse').forEach(verse => verse.style.backgroundColor = '#555');
+            } else {
+                document.body.style.backgroundColor = '#f4f4f4';
+                document.querySelector('.container').style.backgroundColor = '#fff';
+                document.querySelector('.container').style.color = '#000';
+                document.querySelectorAll('.verse').forEach(verse => verse.style.backgroundColor = '#F5F5DC');
+            }
+        }
+
         // Load settings from local storage
         function loadSettings() {
             const fontSize = localStorage.getItem('font-size') || '24';
             const fontFamily = localStorage.getItem('font-family') || 'Noto Sans Arabic-400';
             const highlight = localStorage.getItem('highlight') === 'true';
+            const highlightColor = localStorage.getItem('highlight-color') || '#ffeb3b';
+            const darkMode = localStorage.getItem('dark-mode') === 'true';
 
             document.getElementById('font-size-slider').value = fontSize;
             document.getElementById('font-size-value').textContent = fontSize + 'px';
             document.getElementById('font-family').value = fontFamily;
             document.getElementById('highlight-toggle').checked = highlight;
+            document.getElementById('highlight-color').value = highlightColor;
+
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+                document.querySelector('.container').style.backgroundColor = '#444';
+                document.querySelector('.container').style.color = '#fff';
+                document.querySelectorAll('.verse').forEach(verse => verse.style.backgroundColor = '#555');
+            }
 
             applySettings();
         }
@@ -266,6 +308,7 @@
             const fontSize = document.getElementById('font-size-slider').value;
             const fontFamily = document.getElementById('font-family').value;
             const highlight = document.getElementById('highlight-toggle').checked;
+            const highlightColor = document.getElementById('highlight-color').value;
 
             const [fontFamilyName, fontWeight] = fontFamily.split('-');
             document.querySelectorAll('.verse').forEach(verse => {
@@ -274,6 +317,7 @@
                 verse.style.fontWeight = fontWeight || '400';
                 if (highlight) {
                     verse.classList.add('highlighted');
+                    verse.style.setProperty('--highlight-color', highlightColor);
                 } else {
                     verse.classList.remove('highlighted');
                 }
@@ -289,10 +333,14 @@
             const fontSize = document.getElementById('font-size-slider').value;
             const fontFamily = document.getElementById('font-family').value;
             const highlight = document.getElementById('highlight-toggle').checked;
+            const highlightColor = document.getElementById('highlight-color').value;
+            const darkMode = document.body.classList.contains('dark-mode');
 
             localStorage.setItem('font-size', fontSize);
             localStorage.setItem('font-family', fontFamily);
             localStorage.setItem('highlight', highlight);
+            localStorage.setItem('highlight-color', highlightColor);
+            localStorage.setItem('dark-mode', darkMode);
 
             applySettings();
         }
@@ -304,6 +352,7 @@
         });
         document.getElementById('font-family').addEventListener('change', saveSettings);
         document.getElementById('highlight-toggle').addEventListener('change', saveSettings);
+        document.getElementById('highlight-color').addEventListener('input', saveSettings);
 
         // Fetch Surah details and apply settings
         async function fetchSurahDetails() {
