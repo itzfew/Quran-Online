@@ -80,7 +80,7 @@
             border: 1px solid #ddd;
             font-weight: bold;
         }
-        .settings-button, .back-to-index {
+        .settings-button, .back-to-index, .dark-mode-toggle {
             position: fixed;
             top: 10px;
             background-color: #00796b;
@@ -100,7 +100,11 @@
         .back-to-index {
             right: 10px;
         }
-        .settings-button:hover, .back-to-index:hover {
+        .dark-mode-toggle {
+            bottom: 50px;
+            left: 10px;
+        }
+        .settings-button:hover, .back-to-index:hover, .dark-mode-toggle:hover {
             background-color: #004d40;
         }
         .settings-menu {
@@ -171,22 +175,9 @@
             margin-right: 8px;
         }
         .dark-mode-toggle {
-            position: fixed;
             bottom: 10px;
             left: 10px;
             background-color: #333;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            padding: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s;
-            z-index: 1000;
-        }
-        .dark-mode-toggle:hover {
-            background-color: #111;
         }
         .dark-mode {
             background-color: #333;
@@ -199,50 +190,125 @@
         .dark-mode .verse {
             background-color: #555;
         }
+        .bookmark-button {
+            background-color: #fbc02d;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+        .bookmark-button:hover {
+            background-color: #f9a825;
+        }
+        .search-bar {
+            margin: 20px 0;
+            text-align: left;
+        }
+        .search-bar input {
+            width: calc(100% - 40px);
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .search-bar button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #00796b;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .search-bar button:hover {
+            background-color: #004d40;
+        }
+        .audio-player {
+            margin: 20px 0;
+        }
+        .translation-toggle {
+            margin: 10px 0;
+        }
+        .translation-toggle input {
+            margin-right: 10px;
+        }
+        .translation {
+            font-size: 18px;
+            color: #555;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <button class="back-to-index" onclick="window.location.href='index.html'">Back to Index</button>
     <button class="settings-button" onclick="toggleSettingsMenu()">⚙️ Settings</button>
+    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
     <div class="settings-menu" id="settings-menu">
         <button class="close-button" onclick="toggleSettingsMenu()">✖️</button>
         <h2>Settings</h2>
         <label>
             Font Family
             <select id="font-family">
-                <option value="Amiri Quran">Amiri Quran</option>
-                <option value="Noto Sans Arabic-100">Noto Sans Arabic (Light)</option>
-                <option value="Noto Sans Arabic-400">Noto Sans Arabic (Regular)</option>
-                <option value="Noto Sans Arabic-700">Noto Sans Arabic (Bold)</option>
-                <option value="Noto Sans Arabic-900">Noto Sans Arabic (Extra Bold)</option>
+                <option value="Noto Sans Arabic-400">Noto Sans Arabic</option>
+                <option value="Amiri Quran-400">Amiri Quran</option>
             </select>
         </label>
         <label>
             Font Size
-            <input type="range" id="font-size-slider" min="16" max="36" step="2" value="24">
+            <input type="range" id="font-size-slider" min="16" max="48" step="1" value="24">
             <span id="font-size-value">24px</span>
         </label>
         <label>
-            <input type="checkbox" id="dark-mode-toggle">
-            Dark Mode
+            Theme Color
+            <input type="color" id="theme-color" value="#00796b">
+        </label>
+        <label class="translation-toggle">
+            <input type="checkbox" id="translation-toggle"> Show Translations
         </label>
     </div>
+    <div class="search-bar">
+        <input type="text" id="search-term" placeholder="Search Surahs or Ayahs...">
+        <button onclick="searchAyah()">Search</button>
+    </div>
     <div class="container">
-        <div class="nav-buttons">
-            <a id="prev-surah"><i class="fas fa-chevron-left"></i> Previous</a>
-            <a id="next-surah">Next <i class="fas fa-chevron-right"></i></a>
-        </div>
         <h1 id="surah-name"></h1>
         <h2 id="surah-arabic-name"></h2>
-        <div class="details">
-            <p><strong>Total Verses:</strong> <span id="surah-count"></span></p>
-            <p><strong>Juz:</strong> <span id="surah-juz"></span></p>
+        <p class="details">
+            Count: <span id="surah-count"></span><br>
+            Juz: <span id="surah-juz"></span>
+        </p>
+        <div id="surah-content"></div>
+        <button class="bookmark-button" onclick="bookmarkAyah()">Bookmark Ayah</button>
+        <div class="audio-player">
+            <audio id="ayah-audio" controls>
+                <source id="audio-source" src="" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
         </div>
-        <div id="surah-content">
-            <!-- Verses will be inserted here -->
+        <div class="nav-buttons">
+            <a id="prev-surah" href="#"><i class="fas fa-chevron-left"></i> Previous</a>
+            <a id="next-surah" href="#">Next <i class="fas fa-chevron-right"></i></a>
         </div>
     </div>
     <script>
+        // Toggle settings menu visibility
+        function toggleSettingsMenu() {
+            const menu = document.getElementById('settings-menu');
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+
+        // Toggle dark mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const darkMode = document.body.classList.contains('dark-mode');
+            localStorage.setItem('dark-mode', darkMode);
+            applyDarkMode();
+        }
 
         // Apply dark mode settings
         function applyDarkMode() {
@@ -260,30 +326,75 @@
             }
         }
 
-        // Load settings from local storage
-        function loadSettings() {
-            const fontSize = localStorage.getItem('font-size') || '24';
-            const fontFamily = localStorage.getItem('font-family') || 'Noto Sans Arabic-400';
-            const darkMode = localStorage.getItem('dark-mode') === 'true';
+        // Apply theme color
+        function applyThemeColor() {
+            const themeColor = document.getElementById('theme-color').value;
+            document.querySelector('.settings-button').style.backgroundColor = themeColor;
+            document.querySelector('.back-to-index').style.backgroundColor = themeColor;
+            document.querySelector('.dark-mode-toggle').style.backgroundColor = themeColor;
+        }
 
-            document.getElementById('font-size-slider').value = fontSize;
-            document.getElementById('font-size-value').textContent = fontSize + 'px';
-            document.getElementById('font-family').value = fontFamily;
-            document.getElementById('dark-mode-toggle').checked = darkMode;
+        // Toggle translation visibility
+        function toggleTranslation() {
+            const showTranslation = document.getElementById('translation-toggle').checked;
+            document.querySelectorAll('.translation').forEach(translation => {
+                translation.style.display = showTranslation ? 'block' : 'none';
+            });
+        }
 
-            if (darkMode) {
-                document.body.classList.add('dark-mode');
+        // Bookmark Ayah
+        function bookmarkAyah() {
+            const surahIndex = new URLSearchParams(window.location.search).get('index');
+            const bookmarkedAyahs = JSON.parse(localStorage.getItem('bookmarked-ayahs')) || [];
+            const currentAyah = document.querySelector('.verse.active').dataset.ayah;
+            if (currentAyah) {
+                if (!bookmarkedAyahs.includes(currentAyah)) {
+                    bookmarkedAyahs.push(currentAyah);
+                    localStorage.setItem('bookmarked-ayahs', JSON.stringify(bookmarkedAyahs));
+                    alert('Ayah bookmarked!');
+                } else {
+                    alert('Ayah already bookmarked.');
+                }
+            } else {
+                alert('No Ayah selected.');
             }
-            applyDarkMode();
+        }
+
+        // Search Ayah
+        function searchAyah() {
+            const searchTerm = document.getElementById('search-term').value.toLowerCase();
+            document.querySelectorAll('.verse').forEach(verse => {
+                const verseText = verse.textContent.toLowerCase();
+                if (verseText.includes(searchTerm)) {
+                    verse.style.backgroundColor = '#ffeb3b';
+                } else {
+                    verse.style.backgroundColor = '#F5F5DC';
+                }
+            });
+        }
+
+        // Save settings to local storage
+        function saveSettings() {
+            const fontSize = document.getElementById('font-size-slider').value;
+            const fontFamily = document.getElementById('font-family').value;
+            const darkMode = document.body.classList.contains('dark-mode');
+            const themeColor = document.getElementById('theme-color').value;
+
+            localStorage.setItem('font-size', fontSize);
+            localStorage.setItem('font-family', fontFamily);
+            localStorage.setItem('dark-mode', darkMode);
+            localStorage.setItem('theme-color', themeColor);
+
             applySettings();
+            applyThemeColor();
         }
 
         // Apply settings to the page
         function applySettings() {
             const fontSize = document.getElementById('font-size-slider').value;
             const fontFamily = document.getElementById('font-family').value;
-
             const [fontFamilyName, fontWeight] = fontFamily.split('-');
+
             document.querySelectorAll('.verse').forEach(verse => {
                 verse.style.fontSize = fontSize + 'px';
                 verse.style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
@@ -295,29 +406,26 @@
             document.querySelector('.container').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
         }
 
-        // Save settings to local storage
-        function saveSettings() {
-            const fontSize = document.getElementById('font-size-slider').value;
-            const fontFamily = document.getElementById('font-family').value;
-            const darkMode = document.body.classList.contains('dark-mode');
+        // Load settings from local storage
+        function loadSettings() {
+            const fontSize = localStorage.getItem('font-size') || '24';
+            const fontFamily = localStorage.getItem('font-family') || 'Noto Sans Arabic-400';
+            const darkMode = localStorage.getItem('dark-mode') === 'true';
+            const themeColor = localStorage.getItem('theme-color') || '#00796b';
 
-            localStorage.setItem('font-size', fontSize);
-            localStorage.setItem('font-family', fontFamily);
-            localStorage.setItem('dark-mode', darkMode);
+            document.getElementById('font-size-slider').value = fontSize;
+            document.getElementById('font-size-value').textContent = fontSize + 'px';
+            document.getElementById('font-family').value = fontFamily;
+            document.getElementById('dark-mode-toggle').checked = darkMode;
+            document.getElementById('theme-color').value = themeColor;
 
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+            applyDarkMode();
             applySettings();
+            applyThemeColor();
         }
-
-        // Event listeners for settings
-        document.getElementById('font-size-slider').addEventListener('input', function() {
-            document.getElementById('font-size-value').textContent = this.value + 'px';
-            saveSettings();
-        });
-        document.getElementById('font-family').addEventListener('change', saveSettings);
-        document.getElementById('dark-mode-toggle').addEventListener('change', function() {
-            toggleDarkMode();
-            saveSettings();
-        });
 
         // Fetch Surah details and apply settings
         async function fetchSurahDetails() {
@@ -331,6 +439,7 @@
 
             const surahUrl = `https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah/surah_${surahIndex}.json`;
             const translationUrl = `https://raw.githubusercontent.com/itzfew/Quranv2/main/source/translation/en/en_translation_${surahIndex}.json`;
+            const audioUrl = `https://raw.githubusercontent.com/itzfew/Quranv2/main/source/audio/ayah_${surahIndex}.mp3`; // Assuming an audio file for each Surah
 
             try {
                 const [surahResponse, translationResponse] = await Promise.all([
@@ -345,45 +454,50 @@
                 const surahCount = document.getElementById('surah-count');
                 const surahJuz = document.getElementById('surah-juz');
                 const surahContent = document.getElementById('surah-content');
+                const audioSource = document.getElementById('audio-source');
 
                 surahName.textContent = surah.name;
                 surahArabicName.textContent = surah.arabicName;
-                surahCount.textContent = surah.count;
-                surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
+                surahCount.textContent = `Number of Ayahs: ${surah.count}`;
+                surahJuz.textContent = `Juz: ${surah.juz}`;
 
-                surahContent.innerHTML = `
-                    <div class="verse">${surah.verse.verse_0}</div>
-                    ${Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => {
-                        const verseNumber = key.replace('verse_', '');
-                        return `
-                            <div class="verse">
-                                <span class="circle">${verseNumber}</span>
-                                ${surah.verse[key]}
-                                <div class="translation">${translation.verse[key]}</div>
-                            </div>
-                        `;
-                    }).join('')}
-                `;
+                surahContent.innerHTML = '';
+                surah.ayahs.forEach(ayah => {
+                    const verse = document.createElement('div');
+                    verse.classList.add('verse');
+                    verse.setAttribute('data-ayah', ayah.ayahNumber);
+                    verse.innerHTML = `${ayah.text} <span class="translation" style="display: none;">${translation[ayah.ayahNumber]}</span>`;
+                    surahContent.appendChild(verse);
+                });
 
-                loadSettings();
+                audioSource.src = audioUrl;
 
-                document.getElementById('prev-surah').href = surahIndex > 1 ? `surah-details.html?index=${surahIndex - 1}` : '#';
-                document.getElementById('next-surah').href = surahIndex < 114 ? `surah-details.html?index=${surahIndex + 1}` : '#';
-
-                if (surahIndex <= 1) {
-                    document.getElementById('prev-surah').style.display = 'none';
-                }
-                if (surahIndex >= 114) {
-                    document.getElementById('next-surah').style.display = 'none';
-                }
-
+                // Setup navigation buttons
+                document.getElementById('prev-surah').href = `surah.html?index=${surahIndex - 1}`;
+                document.getElementById('next-surah').href = `surah.html?index=${surahIndex + 1}`;
+                
             } catch (error) {
-                console.error('Error fetching surah details:', error);
+                console.error('Error fetching Surah details:', error);
                 document.body.innerHTML = '<p>Error loading Surah details.</p>';
             }
         }
 
-        fetchSurahDetails();
+        // Initialize settings and fetch Surah details on page load
+        window.onload = function() {
+            loadSettings();
+            fetchSurahDetails();
+        };
+
+        // Update font size value display
+        document.getElementById('font-size-slider').addEventListener('input', function() {
+            document.getElementById('font-size-value').textContent = this.value + 'px';
+        });
+
+        // Apply theme color on change
+        document.getElementById('theme-color').addEventListener('input', applyThemeColor);
+
+        // Toggle translations on change
+        document.getElementById('translation-toggle').addEventListener('change', toggleTranslation);
     </script>
 </body>
 </html>
