@@ -16,7 +16,7 @@
             padding: 0;
             background-color: #f4f4f4;
             text-align: center;
-            transition: color 0.3s, background-color 0.3s;
+            transition: color 0.3s;
         }
         .container {
             max-width: 900px;
@@ -64,17 +64,29 @@
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #ddd;
+            position: relative;
             transition: font-size 0.3s;
         }
-        .verse.highlighted {
-            background-color: var(--highlight-color, #ffeb3b); /* Default yellow highlight color */
+        .verse.bookmarked {
+            border-color: #00796b;
+            background-color: #e0f2f1;
         }
-        .verse:first-of-type {
-            font-size: 28px;
-            margin-bottom: 40px;
-            color: #000;
-            text-decoration: underline;
-            color: #00796b;
+        .verse .bookmark-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #00796b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+        .verse .bookmark-button.bookmarked {
+            background-color: #004d40;
         }
         .circle {
             display: inline-block;
@@ -90,9 +102,10 @@
             border: 1px solid #ddd;
             font-weight: bold;
         }
-        .settings-button, .back-to-index {
+        .settings-button {
             position: fixed;
             top: 10px;
+            left: 10px;
             background-color: #00796b;
             color: white;
             border: none;
@@ -100,17 +113,11 @@
             padding: 10px;
             cursor: pointer;
             font-size: 16px;
+            z-index: 1000;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             transition: background-color 0.3s;
-            z-index: 1000;
         }
-        .settings-button {
-            left: 10px;
-        }
-        .back-to-index {
-            right: 10px;
-        }
-        .settings-button:hover, .back-to-index:hover {
+        .settings-button:hover {
             background-color: #004d40;
         }
         .settings-menu {
@@ -183,12 +190,12 @@
         .nav-buttons i {
             margin-right: 8px;
         }
-        .dark-mode-toggle {
+        .back-to-index {
             position: fixed;
-            bottom: 10px;
-            left: 10px;
-            background-color: #333;
-            color: #fff;
+            top: 10px;
+            right: 10px;
+            background-color: #00796b;
+            color: white;
             border: none;
             border-radius: 5px;
             padding: 10px;
@@ -198,15 +205,14 @@
             transition: background-color 0.3s;
             z-index: 1000;
         }
-        .dark-mode-toggle:hover {
-            background-color: #111;
+        .back-to-index:hover {
+            background-color: #004d40;
         }
     </style>
 </head>
 <body>
     <button class="back-to-index" onclick="window.location.href='index.html'">Back to Index</button>
     <button class="settings-button" onclick="toggleSettingsMenu()">⚙️ Settings</button>
-    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
     <div class="settings-menu" id="settings-menu">
         <button class="close-button" onclick="toggleSettingsMenu()">✖️</button>
         <h2>Settings</h2>
@@ -228,10 +234,6 @@
         <label>
             Highlight Color
             <input type="color" id="highlight-color" value="#ffeb3b">
-        </label>
-        <label>
-            <input type="checkbox" id="highlight-toggle">
-            Enable Text Highlighting
         </label>
         <label>
             <input type="checkbox" id="bookmark-toggle">
@@ -261,44 +263,18 @@
             menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
         }
 
-        // Toggle dark mode
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            const darkMode = document.body.classList.contains('dark-mode');
-            localStorage.setItem('dark-mode', darkMode);
-            if (darkMode) {
-                document.body.style.backgroundColor = '#333';
-                document.querySelector('.container').style.backgroundColor = '#444';
-                document.querySelector('.container').style.color = '#fff';
-                document.querySelectorAll('.verse').forEach(verse => verse.style.backgroundColor = '#555');
-            } else {
-                document.body.style.backgroundColor = '#f4f4f4';
-                document.querySelector('.container').style.backgroundColor = '#fff';
-                document.querySelector('.container').style.color = '#000';
-                document.querySelectorAll('.verse').forEach(verse => verse.style.backgroundColor = '#F5F5DC');
-            }
-        }
-
         // Load settings from local storage
         function loadSettings() {
             const fontSize = localStorage.getItem('font-size') || '24';
             const fontFamily = localStorage.getItem('font-family') || 'Noto Sans Arabic-400';
-            const highlight = localStorage.getItem('highlight') === 'true';
             const highlightColor = localStorage.getItem('highlight-color') || '#ffeb3b';
-            const darkMode = localStorage.getItem('dark-mode') === 'true';
+            const bookmarkEnabled = localStorage.getItem('bookmark-enabled') === 'true';
 
             document.getElementById('font-size-slider').value = fontSize;
             document.getElementById('font-size-value').textContent = fontSize + 'px';
             document.getElementById('font-family').value = fontFamily;
-            document.getElementById('highlight-toggle').checked = highlight;
             document.getElementById('highlight-color').value = highlightColor;
-
-            if (darkMode) {
-                document.body.classList.add('dark-mode');
-                document.querySelector('.container').style.backgroundColor = '#444';
-                document.querySelector('.container').style.color = '#fff';
-                document.querySelectorAll('.verse').forEach(verse => verse.style.backgroundColor = '#555');
-            }
+            document.getElementById('bookmark-toggle').checked = bookmarkEnabled;
 
             applySettings();
         }
@@ -307,19 +283,23 @@
         function applySettings() {
             const fontSize = document.getElementById('font-size-slider').value;
             const fontFamily = document.getElementById('font-family').value;
-            const highlight = document.getElementById('highlight-toggle').checked;
             const highlightColor = document.getElementById('highlight-color').value;
+            const bookmarkEnabled = document.getElementById('bookmark-toggle').checked;
 
             const [fontFamilyName, fontWeight] = fontFamily.split('-');
             document.querySelectorAll('.verse').forEach(verse => {
                 verse.style.fontSize = fontSize + 'px';
                 verse.style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
                 verse.style.fontWeight = fontWeight || '400';
-                if (highlight) {
-                    verse.classList.add('highlighted');
-                    verse.style.setProperty('--highlight-color', highlightColor);
-                } else {
-                    verse.classList.remove('highlighted');
+                if (bookmarkEnabled) {
+                    const verseNumber = verse.querySelector('.circle').textContent;
+                    if (localStorage.getItem('bookmarked-' + verseNumber)) {
+                        verse.classList.add('bookmarked');
+                        verse.querySelector('.bookmark-button').classList.add('bookmarked');
+                    } else {
+                        verse.classList.remove('bookmarked');
+                        verse.querySelector('.bookmark-button').classList.remove('bookmarked');
+                    }
                 }
             });
 
@@ -332,15 +312,13 @@
         function saveSettings() {
             const fontSize = document.getElementById('font-size-slider').value;
             const fontFamily = document.getElementById('font-family').value;
-            const highlight = document.getElementById('highlight-toggle').checked;
             const highlightColor = document.getElementById('highlight-color').value;
-            const darkMode = document.body.classList.contains('dark-mode');
+            const bookmarkEnabled = document.getElementById('bookmark-toggle').checked;
 
             localStorage.setItem('font-size', fontSize);
             localStorage.setItem('font-family', fontFamily);
-            localStorage.setItem('highlight', highlight);
             localStorage.setItem('highlight-color', highlightColor);
-            localStorage.setItem('dark-mode', darkMode);
+            localStorage.setItem('bookmark-enabled', bookmarkEnabled);
 
             applySettings();
         }
@@ -351,8 +329,16 @@
             saveSettings();
         });
         document.getElementById('font-family').addEventListener('change', saveSettings);
-        document.getElementById('highlight-toggle').addEventListener('change', saveSettings);
         document.getElementById('highlight-color').addEventListener('input', saveSettings);
+        document.getElementById('bookmark-toggle').addEventListener('change', saveSettings);
+
+        // Toggle bookmark for a verse
+        function toggleBookmark(verseNumber) {
+            const key = 'bookmarked-' + verseNumber;
+            const isBookmarked = localStorage.getItem(key) === 'true';
+            localStorage.setItem(key, !isBookmarked);
+            applySettings(); // Update the UI
+        }
 
         // Fetch Surah details and apply settings
         async function fetchSurahDetails() {
@@ -385,10 +371,14 @@
                     <div class="verse">${surah.verse.verse_0}</div>
                     ${Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => {
                         const verseNumber = key.replace('verse_', '');
+                        const isBookmarked = localStorage.getItem('bookmarked-' + verseNumber) === 'true';
                         return `
-                            <div class="verse">
+                            <div class="verse ${isBookmarked ? 'bookmarked' : ''}">
                                 <span class="circle">${verseNumber}</span>
                                 ${surah.verse[key]}
+                                <button class="bookmark-button ${isBookmarked ? 'bookmarked' : ''}" onclick="toggleBookmark('${verseNumber}')">
+                                    ${isBookmarked ? '★' : '☆'}
+                                </button>
                             </div>
                         `;
                     }).join('')}
