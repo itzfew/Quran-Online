@@ -14,7 +14,7 @@
             font-family: 'Noto Sans Arabic', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #e0f2f1; /* Light teal background */
+            background-color: #f4f4f4;
             text-align: center;
             transition: color 0.3s, background-color 0.3s;
         }
@@ -22,72 +22,72 @@
             max-width: 900px;
             margin: auto;
             padding: 20px;
-            background-color: #ffffff;
-            border: 1px solid #b2dfdb; /* Light teal border */
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s, color 0.3s;
             position: relative;
         }
         h1 {
             font-size: 36px;
-            color: #00796b; /* Teal color */
+            color: #333;
             margin: 20px 0;
         }
         h2 {
             font-size: 28px;
-            color: #004d40; /* Darker teal */
+            color: #555;
             margin: 10px 0;
             font-weight: normal;
             direction: rtl;
         }
         .details {
-            font-size: 18px;
+            font-size: 20px;
             margin-bottom: 30px;
             text-align: left;
-            padding: 15px;
-            background-color: #b2dfdb; /* Light teal background */
-            border: 1px solid #80cbc4; /* Slightly darker teal */
-            border-radius: 8px;
+            padding: 10px;
+            background-color: #eaf0f1;
+            border: 1px solid #d1dbe0;
+            border-radius: 5px;
             line-height: 1.6;
         }
         .details p {
             margin: 10px 0;
         }
         .verse {
-            font-size: 22px;
+            font-size: 24px;
             margin-bottom: 20px;
             text-align: right;
             direction: rtl;
             font-weight: bold;
-            background-color: #b2dfdb; /* Light teal */
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #80cbc4; /* Slightly darker teal */
+            background-color: #F5F5DC;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
             transition: font-size 0.3s;
         }
         .circle {
             display: inline-block;
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background-color: #004d40; /* Dark teal */
-            color: #ffffff;
-            line-height: 45px;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 40px;
             text-align: center;
             margin: 0 5px;
-            font-size: 20px;
-            border: 1px solid #003d34; /* Even darker teal */
+            font-size: 18px;
+            border: 1px solid #ddd;
             font-weight: bold;
         }
-        .settings-button, .back-to-index, .dark-mode-toggle {
+        .settings-button, .back-to-index {
             position: fixed;
             top: 10px;
-            background-color: #004d40; /* Dark teal */
-            color: #ffffff;
+            background-color: #00796b;
+            color: white;
             border: none;
-            border-radius: 8px;
-            padding: 12px;
+            border-radius: 5px;
+            padding: 10px;
             cursor: pointer;
             font-size: 16px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -100,22 +100,18 @@
         .back-to-index {
             right: 10px;
         }
-        .dark-mode-toggle {
-            bottom: 10px;
-            left: 10px;
-        }
-        .settings-button:hover, .back-to-index:hover, .dark-mode-toggle:hover {
-            background-color: #003d34; /* Even darker teal */
+        .settings-button:hover, .back-to-index:hover {
+            background-color: #004d40;
         }
         .settings-menu {
             position: fixed;
             top: 10px;
             left: 10px;
-            background-color: #ffffff;
-            border: 1px solid #b2dfdb; /* Light teal border */
-            border-radius: 8px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             padding: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             display: none;
             z-index: 1000;
             width: 300px;
@@ -134,13 +130,12 @@
             background: none;
             border: none;
             font-size: 18px;
-            color: #00796b; /* Teal color */
+            color: #333;
             cursor: pointer;
         }
         .settings-menu label {
             display: block;
             margin-bottom: 10px;
-            color: #00796b; /* Teal color */
         }
         .settings-menu select, .settings-menu input[type="range"], .settings-menu input[type="color"] {
             width: 100%;
@@ -156,11 +151,11 @@
         }
         .nav-buttons a {
             text-decoration: none;
-            color: #ffffff;
-            background-color: #004d40; /* Dark teal */
+            color: #fff;
+            background-color: #00796b;
             border: none;
-            border-radius: 8px;
-            padding: 12px 24px;
+            border-radius: 5px;
+            padding: 10px 20px;
             font-size: 16px;
             font-weight: bold;
             display: flex;
@@ -170,21 +165,39 @@
             transition: background-color 0.3s;
         }
         .nav-buttons a:hover {
-            background-color: #003d34; /* Even darker teal */
+            background-color: #004d40;
         }
         .nav-buttons i {
             margin-right: 8px;
         }
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+        .dark-mode-toggle:hover {
+            background-color: #111;
+        }
         .dark-mode {
-            background-color: #424242; /* Dark grey background */
-            color: #e0e0e0; /* Light grey text */
+            background-color: #333;
+            color: #fff;
         }
         .dark-mode .container {
-            background-color: #616161; /* Medium dark grey */
-            color: #e0e0e0; /* Light grey text */
+            background-color: #444;
+            color: #fff;
         }
         .dark-mode .verse {
-            background-color: #757575; /* Slightly lighter grey */
+            background-color: #555;
         }
     </style>
 </head>
@@ -249,15 +262,15 @@
         function applyDarkMode() {
             const darkMode = document.body.classList.contains('dark-mode');
             if (darkMode) {
-                document.body.style.backgroundColor = '#424242'; /* Dark grey */
-                document.querySelector('.container').style.backgroundColor = '#616161'; /* Medium dark grey */
-                document.querySelector('.container').style.color = '#e0e0e0'; /* Light grey */
-                document.querySelectorAll('.verse').forEach(verse => verse.style.backgroundColor = '#757575'); /* Slightly lighter grey */
+                document.body.style.backgroundColor = '#333';
+                document.querySelector('.container').style.backgroundColor = '#444';
+                document.querySelector('.container').style.color = '#fff';
+                document.querySelectorAll('.verse').forEach(verse => verse.style.backgroundColor = '#555');
             } else {
-                document.body.style.backgroundColor = '#e0f2f1'; /* Light teal */
-                document.querySelector('.container').style.backgroundColor = '#ffffff'; /* White */
-                document.querySelector('.container').style.color = '#000000'; /* Black */
-                document.querySelectorAll('.verse').forEach(verse => verse.style.backgroundColor = '#b2dfdb'); /* Light teal */
+                document.body.style.backgroundColor = '#f4f4f4';
+                document.querySelector('.container').style.backgroundColor = '#fff';
+                document.querySelector('.container').style.color = '#000';
+                document.querySelectorAll('.verse').forEach(verse => verse.style.backgroundColor = '#F5F5DC');
             }
         }
 
