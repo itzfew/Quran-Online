@@ -66,16 +66,6 @@
             border: 1px solid #ddd;
             transition: font-size 0.3s;
         }
-        .verse.highlighted {
-            background-color: var(--highlight-color, #ffeb3b); /* Default yellow highlight color */
-        }
-        .verse:first-of-type {
-            font-size: 28px;
-            margin-bottom: 40px;
-            color: #000;
-            text-decoration: underline;
-            color: #00796b;
-        }
         .circle {
             display: inline-block;
             width: 40px;
@@ -151,9 +141,6 @@
             width: 100%;
             margin-top: 5px;
         }
-        .settings-menu input[type="checkbox"] {
-            margin-right: 10px;
-        }
         .nav-buttons {
             position: absolute;
             bottom: 20px;
@@ -226,16 +213,8 @@
             <span id="font-size-value">24px</span>
         </label>
         <label>
-            Highlight Color
-            <input type="color" id="highlight-color" value="#ffeb3b">
-        </label>
-        <label>
-            <input type="checkbox" id="highlight-toggle">
-            Enable Text Highlighting
-        </label>
-        <label>
-            <input type="checkbox" id="bookmark-toggle">
-            Enable Bookmarking
+            <input type="checkbox" id="dark-mode-toggle">
+            Dark Mode
         </label>
     </div>
     <div class="container">
@@ -283,15 +262,11 @@
         function loadSettings() {
             const fontSize = localStorage.getItem('font-size') || '24';
             const fontFamily = localStorage.getItem('font-family') || 'Noto Sans Arabic-400';
-            const highlight = localStorage.getItem('highlight') === 'true';
-            const highlightColor = localStorage.getItem('highlight-color') || '#ffeb3b';
             const darkMode = localStorage.getItem('dark-mode') === 'true';
 
             document.getElementById('font-size-slider').value = fontSize;
             document.getElementById('font-size-value').textContent = fontSize + 'px';
             document.getElementById('font-family').value = fontFamily;
-            document.getElementById('highlight-toggle').checked = highlight;
-            document.getElementById('highlight-color').value = highlightColor;
 
             if (darkMode) {
                 document.body.classList.add('dark-mode');
@@ -307,20 +282,12 @@
         function applySettings() {
             const fontSize = document.getElementById('font-size-slider').value;
             const fontFamily = document.getElementById('font-family').value;
-            const highlight = document.getElementById('highlight-toggle').checked;
-            const highlightColor = document.getElementById('highlight-color').value;
 
             const [fontFamilyName, fontWeight] = fontFamily.split('-');
             document.querySelectorAll('.verse').forEach(verse => {
                 verse.style.fontSize = fontSize + 'px';
                 verse.style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
                 verse.style.fontWeight = fontWeight || '400';
-                if (highlight) {
-                    verse.classList.add('highlighted');
-                    verse.style.setProperty('--highlight-color', highlightColor);
-                } else {
-                    verse.classList.remove('highlighted');
-                }
             });
 
             document.querySelector('.details').style.fontSize = fontSize + 'px';
@@ -332,14 +299,10 @@
         function saveSettings() {
             const fontSize = document.getElementById('font-size-slider').value;
             const fontFamily = document.getElementById('font-family').value;
-            const highlight = document.getElementById('highlight-toggle').checked;
-            const highlightColor = document.getElementById('highlight-color').value;
             const darkMode = document.body.classList.contains('dark-mode');
 
             localStorage.setItem('font-size', fontSize);
             localStorage.setItem('font-family', fontFamily);
-            localStorage.setItem('highlight', highlight);
-            localStorage.setItem('highlight-color', highlightColor);
             localStorage.setItem('dark-mode', darkMode);
 
             applySettings();
@@ -351,8 +314,7 @@
             saveSettings();
         });
         document.getElementById('font-family').addEventListener('change', saveSettings);
-        document.getElementById('highlight-toggle').addEventListener('change', saveSettings);
-        document.getElementById('highlight-color').addEventListener('input', saveSettings);
+        document.getElementById('dark-mode-toggle').addEventListener('change', saveSettings);
 
         // Fetch Surah details and apply settings
         async function fetchSurahDetails() {
@@ -365,10 +327,15 @@
             }
 
             const surahUrl = `https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah/surah_${surahIndex}.json`;
+            const translationUrl = `https://raw.githubusercontent.com/itzfew/Quranv2/main/source/translation/en/en_translation_${surahIndex}.json`;
 
             try {
-                const response = await fetch(surahUrl);
-                const surah = await response.json();
+                const [surahResponse, translationResponse] = await Promise.all([
+                    fetch(surahUrl),
+                    fetch(translationUrl)
+                ]);
+                const surah = await surahResponse.json();
+                const translation = await translationResponse.json();
 
                 const surahName = document.getElementById('surah-name');
                 const surahArabicName = document.getElementById('surah-arabic-name');
@@ -389,6 +356,7 @@
                             <div class="verse">
                                 <span class="circle">${verseNumber}</span>
                                 ${surah.verse[key]}
+                                <div class="translation">${translation.verse[key]}</div>
                             </div>
                         `;
                     }).join('')}
