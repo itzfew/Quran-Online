@@ -1,27 +1,94 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quran Reader</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Surah List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f9f9f9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        a {
+            text-decoration: none;
+            color: #1a0dab;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Quran Reader</h1>
-        <div class="surah-list">
-            <h2>Surahs</h2>
-            <ul id="surahList">
-                <!-- Surahs will be populated here -->
-            </ul>
-        </div>
-        <div class="surah-content">
-            <h2 id="surahTitle">Select a Surah</h2>
-            <div id="surahText">
-                <!-- Surah text will be displayed here -->
-            </div>
-        </div>
-    </div>
-    <script src="app.js"></script>
+    <h1>Surah List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Index</th>
+                <th>Title (English)</th>
+                <th>Title (Arabic)</th>
+                <th>Place</th>
+                <th>Type</th>
+                <th>Number of Verses</th>
+                <th>Pages</th>
+                <th>Juz</th>
+            </tr>
+        </thead>
+        <tbody id="surah-list">
+            <!-- Surah data will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        async function fetchSurahs() {
+            try {
+                const response = await fetch('https://raw.githubusercontent.com/semarketir/quranjson/master/source/surah.json');
+                const surahs = await response.json();
+                const tableBody = document.getElementById('surah-list');
+
+                surahs.forEach(surah => {
+                    const row = document.createElement('tr');
+
+                    // Convert index to a number to remove leading zeros
+                    const surahIndex = parseInt(surah.index, 10);
+
+                    // Construct the URL for the surah details page
+                    const surahDetailsUrl = `surah-details.html?index=${surah.index}`;
+
+                    row.innerHTML = `
+                        <td>${surahIndex}</td>
+                        <td><a href="${surahDetailsUrl}">${surah.title}</a></td>
+                        <td>${surah.titleAr}</td>
+                        <td>${surah.place}</td>
+                        <td>${surah.type}</td>
+                        <td>${surah.count}</td>
+                        <td>${surah.pages}</td>
+                        <td>
+                            ${surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>')}
+                        </td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching surah data:', error);
+            }
+        }
+
+        fetchSurahs();
+    </script>
 </body>
 </html>
