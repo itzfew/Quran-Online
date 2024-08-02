@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surah Details</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Traditional+Arabic&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Traditional+Arabic&family=Roboto:wght@400;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Existing styles */
         body {
-            font-family: 'Traditional Arabic', Arial, sans-serif;
+            font-family: 'Roboto', 'Traditional Arabic', Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f4f4f4;
@@ -111,10 +111,22 @@
             z-index: 1000;
             width: 300px;
             text-align: left;
+            transition: opacity 0.3s;
         }
         .settings-menu h2 {
             font-size: 18px;
             margin: 0 0 10px 0;
+            position: relative;
+        }
+        .settings-menu .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #333;
+            cursor: pointer;
         }
         .settings-menu label {
             display: block;
@@ -186,6 +198,7 @@
 <body>
     <button class="settings-button" onclick="toggleSettingsMenu()">⚙️ Settings</button>
     <div class="settings-menu" id="settings-menu">
+        <button class="close-button" onclick="toggleSettingsMenu()">✖️</button>
         <h2>Settings</h2>
         <label>
             <input type="checkbox" id="dark-mode-toggle">
@@ -197,12 +210,26 @@
             <span id="font-size-value">24px</span>
         </label>
         <label>
+            Font Family
+            <select id="font-family">
+                <option value="Traditional Arabic">Traditional Arabic</option>
+                <option value="Roboto">Roboto</option>
+                <option value="Arial">Arial</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Georgia">Georgia</option>
+            </select>
+        </label>
+        <label>
             Text Color
             <input type="color" id="text-color-picker" class="color-picker" value="#333333">
         </label>
         <label>
             Background Color
             <input type="color" id="bg-color-picker" class="color-picker" value="#ffffff">
+        </label>
+        <label>
+            Text Highlight Color
+            <input type="color" id="highlight-color-picker" class="color-picker" value="#ffff00">
         </label>
         <label>
             Text Alignment
@@ -231,17 +258,21 @@
     </div>
 
     <script>
+        // Toggle settings menu visibility
         function toggleSettingsMenu() {
             const menu = document.getElementById('settings-menu');
             menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
         }
 
+        // Load settings from local storage
         function loadSettings() {
             const darkMode = localStorage.getItem('dark-mode') === 'true';
             const fontSize = localStorage.getItem('font-size') || '24';
             const textColor = localStorage.getItem('text-color') || '#333333';
             const bgColor = localStorage.getItem('bg-color') || '#ffffff';
-            const textAlign = localStorage.getItem('text-align') || 'right';
+            const textAlign = localStorage.getItem('text-align') || 'left';
+            const fontFamily = localStorage.getItem('font-family') || 'Traditional Arabic';
+            const highlightColor = localStorage.getItem('highlight-color') || '#ffff00';
 
             if (darkMode) {
                 document.body.classList.add('dark-mode');
@@ -252,34 +283,45 @@
                 verse.style.fontSize = fontSize + 'px';
                 verse.style.color = textColor;
                 verse.style.backgroundColor = darkMode ? '#555' : '#F5F5DC';
+                verse.style.textAlign = textAlign;
+                verse.style.backgroundColor = highlightColor; // Updated highlight color
             });
 
             document.querySelector('.details').style.fontSize = fontSize + 'px';
             document.querySelector('.details').style.color = textColor;
             document.querySelector('.details').style.backgroundColor = darkMode ? '#555' : '#eaf0f1';
             document.querySelector('.details').style.borderColor = darkMode ? '#666' : '#d1dbe0';
-            
+
             document.querySelector('.container').style.backgroundColor = darkMode ? '#444' : '#fff';
+            document.querySelector('.container').style.textAlign = textAlign;
+            document.querySelector('.container').style.fontFamily = fontFamily;
 
             document.getElementById('font-size-slider').value = fontSize;
             document.getElementById('font-size-value').textContent = fontSize + 'px';
             document.getElementById('text-color-picker').value = textColor;
             document.getElementById('bg-color-picker').value = bgColor;
             document.getElementById('text-alignment').value = textAlign;
+            document.getElementById('font-family').value = fontFamily;
+            document.getElementById('highlight-color-picker').value = highlightColor;
         }
 
+        // Save settings to local storage
         function saveSettings() {
             const darkMode = document.getElementById('dark-mode-toggle').checked;
             const fontSize = document.getElementById('font-size-slider').value;
             const textColor = document.getElementById('text-color-picker').value;
             const bgColor = document.getElementById('bg-color-picker').value;
             const textAlign = document.getElementById('text-alignment').value;
+            const fontFamily = document.getElementById('font-family').value;
+            const highlightColor = document.getElementById('highlight-color-picker').value;
 
             localStorage.setItem('dark-mode', darkMode);
             localStorage.setItem('font-size', fontSize);
             localStorage.setItem('text-color', textColor);
             localStorage.setItem('bg-color', bgColor);
             localStorage.setItem('text-align', textAlign);
+            localStorage.setItem('font-family', fontFamily);
+            localStorage.setItem('highlight-color', highlightColor);
 
             if (darkMode) {
                 document.body.classList.add('dark-mode');
@@ -292,6 +334,7 @@
                 verse.style.color = textColor;
                 verse.style.backgroundColor = darkMode ? '#555' : '#F5F5DC';
                 verse.style.textAlign = textAlign;
+                verse.style.backgroundColor = highlightColor; // Updated highlight color
             });
 
             document.querySelector('.details').style.fontSize = fontSize + 'px';
@@ -301,8 +344,7 @@
 
             document.querySelector('.container').style.backgroundColor = darkMode ? '#444' : '#fff';
             document.querySelector('.container').style.textAlign = textAlign;
-
-            document.getElementById('font-size-value').textContent = fontSize + 'px';
+            document.querySelector('.container').style.fontFamily = fontFamily;
         }
 
         document.getElementById('dark-mode-toggle').addEventListener('change', saveSettings);
@@ -310,6 +352,8 @@
         document.getElementById('text-color-picker').addEventListener('input', saveSettings);
         document.getElementById('bg-color-picker').addEventListener('input', saveSettings);
         document.getElementById('text-alignment').addEventListener('change', saveSettings);
+        document.getElementById('font-family').addEventListener('change', saveSettings);
+        document.getElementById('highlight-color-picker').addEventListener('input', saveSettings);
 
         async function fetchSurahDetails() {
             const urlParams = new URLSearchParams(window.location.search);
