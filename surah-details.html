@@ -109,12 +109,11 @@
             z-index: 1000;
             width: 220px;
             text-align: left;
-            transition: transform 0.3s, opacity 0.3s;
+            transition: transform 0.3s;
         }
         .settings-menu.show {
             display: block;
             transform: translateY(0);
-            opacity: 1;
         }
         .settings-menu.hide {
             transform: translateY(-10px);
@@ -137,22 +136,6 @@
         }
         .settings-menu input[type="checkbox"] {
             margin-right: 10px;
-        }
-        .settings-menu .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #d9534f;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        .settings-menu .close-button:hover {
-            background-color: #c9302c;
         }
         /* Dark Mode */
         body.dark-mode {
@@ -179,7 +162,6 @@
 <body>
     <button class="settings-button" onclick="toggleSettingsMenu()">⚙️ Settings</button>
     <div class="settings-menu" id="settings-menu">
-        <button class="close-button" onclick="toggleSettingsMenu()">✖</button>
         <h2>Settings</h2>
         <label>
             <input type="checkbox" id="dark-mode-toggle">
@@ -260,21 +242,28 @@
             const surahIndex = urlParams.get('index');
 
             if (!surahIndex) {
-                document.body.innerHTML = '<p>No Surah index provided.</p>';
+                document.body.innerHTML = '<p>No Surah index specified.</p>';
                 return;
             }
 
+            const surahUrl = `https://raw.githubusercontent.com/semarketir/quranjson/master/source/surah/surah_${surahIndex}.json`;
+
             try {
-                const response = await fetch(`https://raw.githubusercontent.com/semarketir/quranjson/master/source/surah/surah_${surahIndex}.json`);
+                const response = await fetch(surahUrl);
                 const surah = await response.json();
 
+                const surahName = document.getElementById('surah-name');
+                const surahCount = document.getElementById('surah-count');
+                const surahJuz = document.getElementById('surah-juz');
+                const surahContent = document.getElementById('surah-content');
+
                 // Update Surah details
-                document.getElementById('surah-name').textContent = surah.name;
-                document.getElementById('surah-count').textContent = surah.count;
-                document.getElementById('surah-juz').textContent = surah.juz.map(j => `Juz ${j.index}: verse ${j.verse.start.replace('verse_', '')} to verse ${j.verse.end.replace('verse_', '')}`).join(', ');
+                surahName.textContent = surah.name;
+                surahCount.textContent = surah.count;
+                surahJuz.textContent = surah.juz.map(j => `Juz ${j.index}: verse ${j.verse.start.replace('verse_', '')} to verse ${j.verse.end.replace('verse_', '')}`).join(', ');
 
                 // Update Surah content
-                document.getElementById('surah-content').innerHTML = `
+                surahContent.innerHTML = `
                     <div class="verse">
                         <span class="circle">0</span>
                         ${surah.verse.verse_0}
