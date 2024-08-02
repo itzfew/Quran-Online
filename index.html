@@ -65,8 +65,8 @@
                     // Convert index to a number to remove leading zeros
                     const surahIndex = parseInt(surah.index, 10);
 
-                    // Construct the URL for the surah details page
-                    const surahDetailsUrl = `surah-details.html?index=${surah.index}`;
+                    // Construct the URL for the surah details page (no leading zeros)
+                    const surahDetailsUrl = `surah-details.html?index=${surahIndex}`;
 
                     row.innerHTML = `
                         <td>${surahIndex}</td>
