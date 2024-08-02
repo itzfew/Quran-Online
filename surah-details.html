@@ -11,6 +11,7 @@
             padding: 0;
             background-color: #f4f4f4;
             text-align: center;
+            transition: background-color 0.3s, color 0.3s;
         }
         .container {
             max-width: 900px;
@@ -20,6 +21,7 @@
             border: 1px solid #ddd;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, color 0.3s;
         }
         h1 {
             font-size: 36px;
@@ -49,6 +51,7 @@
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #ddd;
+            transition: font-size 0.3s;
         }
         .verse:first-of-type {
             font-size: 28px;
@@ -71,9 +74,84 @@
             border: 1px solid #ddd;
             font-weight: bold;
         }
+        /* Settings Button */
+        .settings-button {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: #00796b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            z-index: 1000;
+        }
+        /* Settings Menu */
+        .settings-menu {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+            width: 200px;
+            text-align: left;
+        }
+        .settings-menu h2 {
+            font-size: 18px;
+            margin: 0 0 10px 0;
+        }
+        .settings-menu label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .settings-menu input[type="range"] {
+            width: 100%;
+        }
+        .settings-menu input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+        body.dark-mode .container {
+            background-color: #444;
+            color: #fff;
+        }
+        body.dark-mode .verse {
+            background-color: #555;
+            color: #fff;
+            border-color: #666;
+        }
+        body.dark-mode .details {
+            background-color: #555;
+            color: #fff;
+            border-color: #666;
+        }
     </style>
 </head>
 <body>
+    <button class="settings-button" onclick="toggleSettingsMenu()">⚙️ Settings</button>
+    <div class="settings-menu" id="settings-menu">
+        <h2>Settings</h2>
+        <label>
+            <input type="checkbox" id="dark-mode-toggle">
+            Dark Mode
+        </label>
+        <label>
+            Font Size
+            <input type="range" id="font-size-slider" min="16" max="36" step="2" value="24">
+            <span id="font-size-value">24px</span>
+        </label>
+    </div>
     <div class="container">
         <h1 id="surah-name"></h1>
         <div class="details">
@@ -86,6 +164,56 @@
     </div>
 
     <script>
+        // Toggle settings menu visibility
+        function toggleSettingsMenu() {
+            const menu = document.getElementById('settings-menu');
+            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+        }
+
+        // Load settings from local storage
+        function loadSettings() {
+            const darkMode = localStorage.getItem('dark-mode') === 'true';
+            const fontSize = localStorage.getItem('font-size') || '24';
+
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+                document.getElementById('dark-mode-toggle').checked = true;
+            }
+
+            document.querySelectorAll('.verse').forEach(verse => {
+                verse.style.fontSize = fontSize + 'px';
+            });
+
+            document.getElementById('font-size-slider').value = fontSize;
+            document.getElementById('font-size-value').textContent = fontSize + 'px';
+        }
+
+        // Save settings to local storage
+        function saveSettings() {
+            const darkMode = document.getElementById('dark-mode-toggle').checked;
+            const fontSize = document.getElementById('font-size-slider').value;
+
+            localStorage.setItem('dark-mode', darkMode);
+            localStorage.setItem('font-size', fontSize);
+
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+
+            document.querySelectorAll('.verse').forEach(verse => {
+                verse.style.fontSize = fontSize + 'px';
+            });
+
+            document.getElementById('font-size-value').textContent = fontSize + 'px';
+        }
+
+        // Event listeners for settings
+        document.getElementById('dark-mode-toggle').addEventListener('change', saveSettings);
+        document.getElementById('font-size-slider').addEventListener('input', saveSettings);
+
+        // Fetch Surah details and apply settings
         async function fetchSurahDetails() {
             // Get the Surah index from the URL parameters
             const urlParams = new URLSearchParams(window.location.search);
@@ -126,6 +254,9 @@
                         `;
                     }).join('')}
                 `;
+
+                // Load settings
+                loadSettings();
             } catch (error) {
                 console.error('Error fetching surah details:', error);
                 document.body.innerHTML = '<p>Error loading Surah details.</p>';
