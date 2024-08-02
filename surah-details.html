@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surah Details</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Traditional+Arabic&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Traditional Arabic', Arial, sans-serif;
@@ -22,6 +24,7 @@
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s, color 0.3s;
+            position: relative;
         }
         h1 {
             font-size: 36px;
@@ -74,7 +77,6 @@
             border: 1px solid #ddd;
             font-weight: bold;
         }
-        /* Settings Button */
         .settings-button {
             position: fixed;
             top: 10px;
@@ -88,7 +90,6 @@
             font-size: 16px;
             z-index: 1000;
         }
-        /* Settings Menu */
         .settings-menu {
             position: fixed;
             top: 10px;
@@ -117,24 +118,52 @@
         .settings-menu input[type="checkbox"] {
             margin-right: 10px;
         }
-        /* Dark Mode */
-        body.dark-mode {
+        .dark-mode {
             background-color: #333;
             color: #fff;
         }
-        body.dark-mode .container {
+        .dark-mode .container {
             background-color: #444;
             color: #fff;
         }
-        body.dark-mode .verse {
+        .dark-mode .verse {
             background-color: #555;
             color: #fff;
             border-color: #666;
         }
-        body.dark-mode .details {
+        .dark-mode .details {
             background-color: #555;
             color: #fff;
             border-color: #666;
+        }
+        .nav-buttons {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .nav-buttons a {
+            text-decoration: none;
+            color: #fff;
+            background-color: #00796b;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+        .nav-buttons a:hover {
+            background-color: #004d40;
+        }
+        .nav-buttons i {
+            margin-right: 8px;
         }
     </style>
 </head>
@@ -153,6 +182,11 @@
         </label>
     </div>
     <div class="container">
+        <div class="nav-buttons">
+            <a href="index.html"><i class="fas fa-arrow-left"></i> Back to Index</a>
+            <a id="prev-surah"><i class="fas fa-chevron-left"></i> Previous</a>
+            <a id="next-surah">Next <i class="fas fa-chevron-right"></i></a>
+        </div>
         <h1 id="surah-name"></h1>
         <div class="details">
             <p><strong>Total Verses:</strong> <span id="surah-count"></span></p>
@@ -164,13 +198,11 @@
     </div>
 
     <script>
-        // Toggle settings menu visibility
         function toggleSettingsMenu() {
             const menu = document.getElementById('settings-menu');
             menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
         }
 
-        // Load settings from local storage
         function loadSettings() {
             const darkMode = localStorage.getItem('dark-mode') === 'true';
             const fontSize = localStorage.getItem('font-size') || '24';
@@ -188,7 +220,6 @@
             document.getElementById('font-size-value').textContent = fontSize + 'px';
         }
 
-        // Save settings to local storage
         function saveSettings() {
             const darkMode = document.getElementById('dark-mode-toggle').checked;
             const fontSize = document.getElementById('font-size-slider').value;
@@ -209,15 +240,12 @@
             document.getElementById('font-size-value').textContent = fontSize + 'px';
         }
 
-        // Event listeners for settings
         document.getElementById('dark-mode-toggle').addEventListener('change', saveSettings);
         document.getElementById('font-size-slider').addEventListener('input', saveSettings);
 
-        // Fetch Surah details and apply settings
         async function fetchSurahDetails() {
-            // Get the Surah index from the URL parameters
             const urlParams = new URLSearchParams(window.location.search);
-            const surahIndex = urlParams.get('index');
+            const surahIndex = parseInt(urlParams.get('index'), 10);
 
             if (!surahIndex) {
                 document.body.innerHTML = '<p>No Surah index specified.</p>';
@@ -235,16 +263,13 @@
                 const surahJuz = document.getElementById('surah-juz');
                 const surahContent = document.getElementById('surah-content');
 
-                // Update Surah details
                 surahName.textContent = surah.name;
                 surahCount.textContent = surah.count;
                 surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
 
-                // Update Surah verses
                 surahContent.innerHTML = `
                     <div class="verse">${surah.verse.verse_0}</div>
                     ${Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => {
-                        // Get verse number from key
                         const verseNumber = key.replace('verse_', '');
                         return `
                             <div class="verse">
@@ -255,8 +280,19 @@
                     }).join('')}
                 `;
 
-                // Load settings
                 loadSettings();
+
+                // Handle navigation buttons
+                document.getElementById('prev-surah').href = surahIndex > 1 ? `surah-details.html?index=${surahIndex - 1}` : '#';
+                document.getElementById('next-surah').href = surahIndex < 114 ? `surah-details.html?index=${surahIndex + 1}` : '#';
+
+                if (surahIndex <= 1) {
+                    document.getElementById('prev-surah').style.display = 'none';
+                }
+                if (surahIndex >= 114) {
+                    document.getElementById('next-surah').style.display = 'none';
+                }
+
             } catch (error) {
                 console.error('Error fetching surah details:', error);
                 document.body.innerHTML = '<p>Error loading Surah details.</p>';
