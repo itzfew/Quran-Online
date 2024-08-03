@@ -64,9 +64,39 @@
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #ddd;
-            transition: font-size 0.3s;
+            transition: font-size 0.3s, background-color 0.3s;
+            position: relative;
+            overflow: hidden;
         }
-        .circle {
+        .verse:hover {
+            background-color: #fff;
+        }
+        .verse:hover:before {
+            content: "\f004";
+            font-family: 'Font Awesome 6 Free';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 18px;
+            color: #00796b;
+        }
+        .verse:hover .tooltip {
+            display: block;
+        }
+        .verse .tooltip {
+            display: none;
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #00796b;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            z-index: 1;
+        }
+        .verse .circle {
             display: inline-block;
             width: 40px;
             height: 40px;
@@ -79,6 +109,13 @@
             font-size: 18px;
             border: 1px solid #ddd;
             font-weight: bold;
+            position: relative;
+        }
+        .verse .circle span {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
         .settings-button, .back-to-index {
             position: fixed;
@@ -199,6 +236,23 @@
         .dark-mode .verse {
             background-color: #555;
         }
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            .verse {
+                font-size: 20px;
+            }
+            h1 {
+                font-size: 28px;
+            }
+            h2 {
+                font-size: 22px;
+            }
+            .details {
+                font-size: 18px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -210,22 +264,17 @@
         <h2>Settings</h2>
         <label>
             Font Family
-            <select id="font-family">
-                <option value="Amiri Quran">Amiri Quran</option>
-                <option value="Noto Sans Arabic-100">Noto Sans Arabic (Light)</option>
-                <option value="Noto Sans Arabic-400">Noto Sans Arabic (Regular)</option>
-                <option value="Noto Sans Arabic-700">Noto Sans Arabic (Bold)</option>
-                <option value="Noto Sans Arabic-900">Noto Sans Arabic (Extra Bold)</option>
+            <select id="font-family" onchange="saveSettings()">
+                <option value="Noto Sans Arabic-400">Noto Sans Arabic</option>
+                <option value="Amiri Quran-400">Amiri Quran</option>
             </select>
         </label>
         <label>
-            Font Size
-            <input type="range" id="font-size-slider" min="16" max="36" step="2" value="24">
-            <span id="font-size-value">24px</span>
+            Font Size <span id="font-size-value"></span>
+            <input type="range" id="font-size-slider" min="16" max="36" step="2" onchange="saveSettings()">
         </label>
         <label>
-            <input type="checkbox" id="dark-mode-toggle">
-            Dark Mode
+            <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()"> Dark Mode
         </label>
     </div>
     <div class="container">
@@ -368,6 +417,7 @@
                             <div class="verse">
                                 <span class="circle">${verseNumber}</span>
                                 ${surah.verse[key]}
+                                <div class="tooltip">Tooltip content for verse ${verseNumber}</div>
                             </div>
                         `;
                     }).join('')}
@@ -385,13 +435,78 @@
                     document.getElementById('next-surah').style.display = 'none';
                 }
 
+                // Cache data for offline use
+                cacheSurahData(surahIndex, surah);
+
             } catch (error) {
                 console.error('Error fetching surah details:', error);
                 document.body.innerHTML = '<p>Error loading Surah details.</p>';
             }
         }
 
-        fetchSurahDetails();
+        // Function to cache Surah data
+        function cacheSurahData(surahIndex, surah) {
+            const cachedSurah = {
+                name: surah.name,
+                arabicName: surah.arabicName,
+                count: surah.count,
+                juz: surah.juz,
+                verse: surah.verse
+            };
+
+            localStorage.setItem(`surah_${surahIndex}`, JSON.stringify(cachedSurah));
+        }
+
+        // Check if offline data is available and load if possible
+        async function loadSurahFromCache(surahIndex) {
+            const cachedSurah = localStorage.getItem(`surah_${surahIndex}`);
+
+            if (cachedSurah) {
+                try {
+                    const surah = JSON.parse(cachedSurah);
+
+                    const surahName = document.getElementById('surah-name');
+                    const surahArabicName = document.getElementById('surah-arabic-name');
+                    const surahCount = document.getElementById('surah-count');
+                    const surahJuz = document.getElementById('surah-juz');
+                    const surahContent = document.getElementById('surah-content');
+
+                    surahName.textContent = surah.name;
+                    surahArabicName.textContent = surah.arabicName;
+                    surahCount.textContent = surah.count;
+                    surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
+
+                    surahContent.innerHTML = `
+                        <div class="verse">${surah.verse.verse_0}</div>
+                        ${Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => {
+                            const verseNumber = key.replace('verse_', '');
+                            return `
+                                <div class="verse">
+                                    <span class="circle">${verseNumber}</span>
+                                    ${surah.verse[key]}
+                                    <div class="tooltip">Tooltip content for verse ${verseNumber}</div>
+                                </div>
+                            `;
+                        }).join('')}`;
+
+                    loadSettings();
+
+                } catch (error) {
+                    console.error('Error parsing cached Surah data:', error);
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const surahIndex = parseInt(urlParams.get('index'), 10);
+
+            if (surahIndex) {
+                loadSurahFromCache(surahIndex);
+                fetchSurahDetails();
+            }
+        });
+
     </script>
 </body>
 </html>
