@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -53,7 +53,7 @@
             margin: 10px 0;
         }
         .verse {
-            font-size: 20px;
+            font-size: 18px;
             margin-bottom: 20px;
             text-align: right;
             direction: rtl;
@@ -84,7 +84,7 @@
             border: 2px solid #004d40;
             font-weight: bold;
         }
-        .settings-button, .back-to-index, .audio-button, .search-button {
+        .settings-button, .back-to-index {
             position: fixed;
             top: 15px;
             background-color: #00796b;
@@ -104,19 +104,11 @@
         .back-to-index {
             right: 15px;
         }
-        .audio-button {
-            top: 15px;
-            right: 15px;
-        }
-        .search-button {
-            top: 60px;
-            right: 15px;
-        }
-        .settings-button:hover, .back-to-index:hover, .audio-button:hover, .search-button:hover {
+        .settings-button:hover, .back-to-index:hover {
             background-color: #004d40;
             transform: scale(1.05);
         }
-        .settings-menu, .audio-controls, .search-menu {
+        .settings-menu {
             position: fixed;
             top: 15px;
             left: 15px;
@@ -131,12 +123,12 @@
             text-align: left;
             transition: opacity 0.3s;
         }
-        .settings-menu h2, .audio-controls h2, .search-menu h2 {
+        .settings-menu h2 {
             font-size: 20px;
             margin: 0 0 10px 0;
             position: relative;
         }
-        .settings-menu .close-button, .audio-controls .close-button, .search-menu .close-button {
+        .settings-menu .close-button {
             position: absolute;
             top: 10px;
             right: 10px;
@@ -146,12 +138,11 @@
             color: #333;
             cursor: pointer;
         }
-        .settings-menu label, .audio-controls label, .search-menu label {
+        .settings-menu label {
             display: block;
             margin-bottom: 10px;
         }
-        .settings-menu select, .settings-menu input[type="range"], .settings-menu input[type="color"],
-        .audio-controls input[type="range"], .search-menu input[type="text"] {
+        .settings-menu select, .settings-menu input[type="range"], .settings-menu input[type="color"] {
             width: 100%;
             margin-top: 5px;
         }
@@ -185,90 +176,62 @@
         .nav-buttons i {
             margin-right: 8px;
         }
-        .verse .translation {
-            margin-top: 10px;
-            color: #00796b;
-            font-size: 16px;
-            display: block;
-            text-align: right;
-        }
     </style>
 </head>
 <body>
     <button class="back-to-index" onclick="window.location.href='index.html'">Back to Index</button>
     <button class="settings-button" onclick="toggleSettingsMenu()">⚙️ Settings</button>
-    <button class="audio-button" onclick="toggleAudioControls()">🔊 Audio</button>
-    <button class="search-button" onclick="toggleSearchMenu()">🔍 Search</button>
-    
-    <div id="settings-menu" class="settings-menu">
-        <button class="close-button" onclick="toggleSettingsMenu()">✕</button>
+    <div class="settings-menu" id="settings-menu">
+        <button class="close-button" onclick="toggleSettingsMenu()">✖️</button>
         <h2>Settings</h2>
-        <label for="font-size-slider">Font Size</label>
-        <input type="range" id="font-size-slider" min="12" max="40" value="20">
-        <span id="font-size-value">20px</span>
-
-        <label for="font-family">Font Family</label>
-        <select id="font-family">
-            <option value="Amiri Quran-400">Amiri Quran</option>
-            <option value="Noto Sans Arabic-400">Noto Sans Arabic</option>
-        </select>
+        <label>
+            Font Family
+            <select id="font-family">
+                <option value="Amiri Quran">Amiri Quran</option>
+                <option value="Noto Sans Arabic-100">Noto Sans Arabic (Light)</option>
+                <option value="Noto Sans Arabic-400">Noto Sans Arabic (Regular)</option>
+                <option value="Noto Sans Arabic-700">Noto Sans Arabic (Bold)</option>
+                <option value="Noto Sans Arabic-900">Noto Sans Arabic (Extra Bold)</option>
+            </select>
+        </label>
+        <label>
+            Font Size
+            <input type="range" id="font-size-slider" min="16" max="36" step="2" value="20">
+            <span id="font-size-value">20px</span>
+        </label>
     </div>
-
-    <div id="audio-controls" class="audio-controls">
-        <button class="close-button" onclick="toggleAudioControls()">✕</button>
-        <h2>Audio Controls</h2>
-        <label for="audio-volume">Volume</label>
-        <input type="range" id="audio-volume" min="0" max="100" value="50">
-        <label for="audio-speed">Speed</label>
-        <input type="range" id="audio-speed" min="0.5" max="2" step="0.1" value="1">
-    </div>
-
-    <div id="search-menu" class="search-menu">
-        <button class="close-button" onclick="toggleSearchMenu()">✕</button>
-        <h2>Search</h2>
-        <label for="search-query">Enter keyword</label>
-        <input type="text" id="search-query">
-        <button onclick="searchVerses()">Search</button>
-    </div>
-
     <div class="container">
+        <div class="nav-buttons">
+            <a id="prev-page"><i class="fas fa-chevron-left"></i> Previous</a>
+            <a id="next-page">Next <i class="fas fa-chevron-right"></i></a>
+        </div>
         <h1 id="surah-name"></h1>
         <h2 id="surah-arabic-name"></h2>
         <div class="details">
-            <p>Number of Verses: <span id="surah-count"></span></p>
-            <p>Juz: <span id="surah-juz"></span></p>
+            <p><strong>Total Verses:</strong> <span id="surah-count"></span></p>
+            <p><strong>Juz:</strong> <span id="surah-juz"></span></p>
         </div>
-        <div id="surah-content"></div>
-        <div class="nav-buttons">
-            <a id="prev-page" href="#" onclick="navigatePage(-1)"><i class="fas fa-chevron-left"></i> Previous</a>
-            <a id="next-page" href="#" onclick="navigatePage(1)">Next <i class="fas fa-chevron-right"></i></a>
+        <div id="surah-content">
+            <!-- Verses will be inserted here -->
         </div>
     </div>
-
     <script>
-        let surahData;
+        let versesPerPage = 10; // Maximum verses per page
         let currentPage = 1;
-        let versesPerPage = 5; // Adjust based on screen size
-        let totalVerses;
+        let surahData = null;
+        let totalVerses = 0;
 
         function toggleSettingsMenu() {
             const menu = document.getElementById('settings-menu');
             menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
 
-        function toggleAudioControls() {
-            const menu = document.getElementById('audio-controls');
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function toggleSearchMenu() {
-            const menu = document.getElementById('search-menu');
-            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-        }
-
         function updateVersesPerPage() {
             const containerWidth = document.querySelector('.container').offsetWidth;
-            versesPerPage = Math.floor(containerWidth / 40); // Adjust based on font size
+            const fontSize = parseInt(document.getElementById('font-size-slider').value, 10);
+            const minVerses = 5; // Minimum verses based on small screen size
+
+            versesPerPage = Math.max(Math.floor(containerWidth / (fontSize * 1.2)), minVerses);
             displayVerses(currentPage);
         }
 
@@ -324,96 +287,68 @@
                 return;
             }
 
-            const surahUrl = `https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah/surah_${surahIndex}.json`;
-            const translationUrl = `https://raw.githubusercontent.com/itzfew/Quranv2/main/source/translation/en/en_translation_${surahIndex}.json`;
-
+            const surahUrl = `https://raw.githubusercontent.com/itzfew/Quranv2/main/surah/${surahIndex}.json`;
             try {
-                const [surahResponse, translationResponse] = await Promise.all([
-                    fetch(surahUrl),
-                    fetch(translationUrl)
-                ]);
-                surahData = await surahResponse.json();
-                const translation = await translationResponse.json();
+                const response = await fetch(surahUrl);
+                if (!response.ok) throw new Error('Network response was not ok');
+                surahData = await response.json();
 
-                totalVerses = Object.keys(surahData.verse).length;
+                if (!surahData) throw new Error('Surah data not found');
 
-                const surahName = document.getElementById('surah-name');
-                const surahArabicName = document.getElementById('surah-arabic-name');
-                const surahCount = document.getElementById('surah-count');
-                const surahJuz = document.getElementById('surah-juz');
-                const surahContent = document.getElementById('surah-content');
+                totalVerses = surahData.verses.length;
+                document.getElementById('surah-name').textContent = surahData.englishName;
+                document.getElementById('surah-arabic-name').textContent = surahData.name;
+                document.getElementById('surah-count').textContent = totalVerses;
+                document.getElementById('surah-juz').textContent = surahData.juz;
 
-                surahName.textContent = surahData.name;
-                surahArabicName.textContent = surahData.arabicName;
-                surahCount.textContent = surahData.count;
-                surahJuz.innerHTML = surahData.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
-
-                loadSettings();
-                updateVersesPerPage();
-
-                window.addEventListener('resize', updateVersesPerPage);
-
-                document.getElementById('prev-page').style.display = (currentPage > 1) ? 'block' : 'none';
-                document.getElementById('next-page').style.display = (currentPage * versesPerPage < totalVerses) ? 'block' : 'none';
-
-                document.getElementById('prev-page').addEventListener('click', () => navigatePage(-1));
-                document.getElementById('next-page').addEventListener('click', () => navigatePage(1));
-
+                displayVerses(currentPage);
+                updateNavButtons();
             } catch (error) {
-                console.error('Error fetching surah details:', error);
-                document.body.innerHTML = '<p>Error loading Surah details.</p>';
+                document.body.innerHTML = `<p>Error fetching Surah details: ${error.message}</p>`;
             }
         }
 
         function displayVerses(page) {
-            if (page < 1 || page * versesPerPage > totalVerses) return;
+            if (!surahData) return;
 
-            const start = (page - 1) * versesPerPage;
-            const end = start + versesPerPage;
-            const verses = Object.keys(surahData.verse).slice(start, end);
-
-            const surahContent = document.getElementById('surah-content');
-            surahContent.innerHTML = verses.map(key => {
-                const verseNumber = key.replace('verse_', '');
-                return `
-                    <div class="verse">
-                        <span class="circle">${verseNumber}</span>
-                        ${surahData.verse[key]}
-                        <div class="translation">${surahData.verse[key]}</div>
-                    </div>
-                `;
-            }).join('');
-
-            document.getElementById('prev-page').style.display = (page > 1) ? 'block' : 'none';
-            document.getElementById('next-page').style.display = (end < totalVerses) ? 'block' : 'none';
-        }
-
-        function navigatePage(direction) {
-            currentPage += direction;
-            displayVerses(currentPage);
-        }
-
-        function searchVerses() {
-            const query = document.getElementById('search-query').value.toLowerCase();
-            const verses = Object.keys(surahData.verse).filter(key => surahData.verse[key].toLowerCase().includes(query));
+            const startIndex = (page - 1) * versesPerPage;
+            const endIndex = Math.min(startIndex + versesPerPage, totalVerses);
+            const verses = surahData.verses.slice(startIndex, endIndex);
 
             const surahContent = document.getElementById('surah-content');
-            surahContent.innerHTML = verses.map(key => {
-                const verseNumber = key.replace('verse_', '');
-                return `
-                    <div class="verse">
-                        <span class="circle">${verseNumber}</span>
-                        ${surahData.verse[key]}
-                        <div class="translation">${surahData.verse[key]}</div>
-                    </div>
-                `;
-            }).join('');
-
-            document.getElementById('prev-page').style.display = 'none';
-            document.getElementById('next-page').style.display = 'none';
+            surahContent.innerHTML = verses.map(verse => `
+                <div class="verse">
+                    <span class="circle">${verse.number}</span>
+                    ${verse.text}
+                </div>
+            `).join('');
+            updateNavButtons();
         }
 
-        fetchSurahDetails();
+        function updateNavButtons() {
+            document.getElementById('prev-page').style.display = currentPage > 1 ? 'inline-flex' : 'none';
+            document.getElementById('next-page').style.display = currentPage < Math.ceil(totalVerses / versesPerPage) ? 'inline-flex' : 'none';
+        }
+
+        document.getElementById('prev-page').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                displayVerses(currentPage);
+            }
+        });
+
+        document.getElementById('next-page').addEventListener('click', () => {
+            if (currentPage < Math.ceil(totalVerses / versesPerPage)) {
+                currentPage++;
+                displayVerses(currentPage);
+            }
+        });
+
+        window.addEventListener('resize', updateVersesPerPage);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            fetchSurahDetails();
+        });
     </script>
 </body>
 </html>
