@@ -351,6 +351,7 @@
         // Toggle bookmark state
         function toggleBookmark(verseId) {
             const verse = document.getElementById(verseId);
+            if (!verse) return; // Ensure the verse element exists
             const isBookmarked = verse.classList.toggle('bookmarked');
             localStorage.setItem(verseId, isBookmarked ? 'bookmarked' : '');
         }
@@ -359,8 +360,7 @@
         function loadBookmarks() {
             document.querySelectorAll('.verse').forEach(verse => {
                 const verseId = verse.id;
-                const isBookmarked = localStorage.getItem(verseId) === 'bookmarked';
-                if (isBookmarked) {
+                if (verseId && localStorage.getItem(verseId) === 'bookmarked') {
                     verse.classList.add('bookmarked');
                 }
             });
@@ -393,19 +393,18 @@
                 surahCount.textContent = surah.count;
                 surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
 
-                surahContent.innerHTML = `
-                    <div class="verse" id="verse_0">${surah.verse.verse_0}</div>
-                    ${Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => {
-                        const verseNumber = key.replace('verse_', '');
-                        return `
-                            <div class="verse" id="${key}">
-                                <span class="circle">${verseNumber}</span>
-                                <span class="bookmark-icon" onclick="toggleBookmark('${key}')"><i class="fas fa-bookmark"></i></span>
-                                ${surah.verse[key]}
-                            </div>
-                        `;
-                    }).join('')}
-                `;
+                const versesHtml = Object.keys(surah.verse).map(key => {
+                    const verseNumber = key.replace('verse_', '');
+                    return `
+                        <div class="verse" id="${key}">
+                            <span class="circle">${verseNumber}</span>
+                            <span class="bookmark-icon" onclick="toggleBookmark('${key}')"><i class="fas fa-bookmark"></i></span>
+                            ${surah.verse[key]}
+                        </div>
+                    `;
+                }).join('');
+
+                surahContent.innerHTML = versesHtml;
 
                 loadSettings();
                 loadBookmarks();
