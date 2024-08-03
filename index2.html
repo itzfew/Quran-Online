@@ -13,7 +13,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: auto;
             padding: 20px;
             background-color: #fff;
@@ -31,47 +31,54 @@
             color: #333;
         }
 
-        h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
+        #surahTitle {
+            margin-bottom: 20px;
         }
 
         #surahContent {
-            border-top: 1px solid #ddd;
-            padding-top: 20px;
+            line-height: 1.6;
         }
 
-        p {
-            border-bottom: 1px solid #ddd;
+        #surahContent p {
             padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background-color: #fafafa;
             position: relative;
-            margin: 0;
         }
 
-        p::before {
+        #surahContent p::before {
             content: attr(data-number);
             position: absolute;
             left: -30px;
             top: 50%;
             transform: translateY(-50%);
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
             background-color: #007BFF;
             color: #fff;
-            text-align: center;
-            line-height: 24px;
-            font-weight: bold;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        footer {
-            text-align: center;
+        .dark-mode #surahContent p {
+            background-color: #333;
+            color: #ddd;
+        }
+
+        .dark-mode #surahContent p::before {
+            background-color: #00aaff;
+        }
+
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
             margin-top: 20px;
-            font-size: 14px;
-            color: #666;
         }
 
-        button {
+        .navigation-buttons button {
             padding: 10px;
             background-color: #007BFF;
             color: #fff;
@@ -81,32 +88,30 @@
             transition: background-color 0.3s;
         }
 
-        button:hover {
+        .navigation-buttons button:hover {
             background-color: #0056b3;
         }
 
-        .nav-buttons {
-            margin: 20px 0;
-            display: flex;
-            justify-content: space-between;
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Quran Application</h1>
+            <h1>Surah Details</h1>
+            <button id="prevSurah">Previous Surah</button>
+            <button id="nextSurah">Next Surah</button>
         </header>
         <main>
-            <h2 id="surahTitle">Surah Title</h2>
+            <div id="surahTitle"></div>
             <div id="surahContent">
                 <!-- Surah verses will be populated here -->
             </div>
-            <div class="nav-buttons">
-                <button id="prevSurah">Previous Surah</button>
-                <button id="nextSurah">Next Surah</button>
-            </div>
-            <button onclick="window.location.href='index.html'">Back to Surah List</button>
         </main>
         <footer>
             <p>&copy; 2024 Quran App</p>
