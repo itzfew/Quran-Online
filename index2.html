@@ -6,7 +6,7 @@
     <title>Surah Details</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Noto+Sans+Arabic:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Base styles */
@@ -14,7 +14,7 @@
             font-family: 'Noto Sans Arabic', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
+            background-color: #f4f4f4;
             text-align: center;
             transition: color 0.3s, background-color 0.3s;
         }
@@ -22,79 +22,97 @@
             max-width: 900px;
             margin: auto;
             padding: 20px;
-            background-color: #ffffff;
+            background-color: #fff;
             border: 1px solid #ddd;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, color 0.3s;
             position: relative;
-            background-image: url('https://www.transparenttextures.com/patterns/arabesque.png'); /* Islamic pattern */
-            background-size: cover;
-            color: #333;
         }
         h1 {
             font-size: 36px;
-            color: #004d40;
+            color: #333;
             margin: 20px 0;
         }
         h2 {
             font-size: 28px;
-            color: #00796b;
+            color: #555;
             margin: 10px 0;
             font-weight: normal;
             direction: rtl;
         }
         .details {
-            font-size: 18px;
+            font-size: 20px;
             margin-bottom: 30px;
             text-align: left;
-            padding: 15px;
-            background-color: #e8f5e9;
-            border: 1px solid #c8e6c9;
-            border-radius: 8px;
+            padding: 10px;
+            background-color: #eaf0f1;
+            border: 1px solid #d1dbe0;
+            border-radius: 5px;
             line-height: 1.6;
         }
         .details p {
             margin: 10px 0;
         }
         .verse {
-            font-size: 22px;
+            font-size: 24px;
             margin-bottom: 20px;
             text-align: right;
             direction: rtl;
             font-weight: bold;
-            background-color: #fafafa;
-            padding: 15px;
-            border-radius: 8px;
+            background-color: #F5F5DC;
+            padding: 10px;
+            border-radius: 5px;
             border: 1px solid #ddd;
             transition: font-size 0.3s;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
         .circle {
             display: inline-block;
-            width: 45px;
-            height: 45px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background-color: #c8e6c9;
-            color: #00796b;
-            line-height: 45px;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 40px;
             text-align: center;
-            margin: 0 6px;
-            font-size: 20px;
-            border: 1px solid #a5d6a7;
+            margin: 0 5px;
+            font-size: 18px;
+            border: 1px solid #ddd;
             font-weight: bold;
         }
-        .settings-button, .back-to-index, .dark-mode-toggle {
+        .bookmark-button, .note-button, .share-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            margin-left: 10px;
+            transition: color 0.3s;
+        }
+        .bookmark-button {
+            color: gold;
+        }
+        .note-button {
+            color: blue;
+        }
+        .share-button {
+            color: green;
+        }
+        .bookmark-button:hover, .note-button:hover, .share-button:hover {
+            color: #000;
+        }
+        .settings-button, .back-to-index {
             position: fixed;
             top: 10px;
-            background: linear-gradient(135deg, #004d40, #00796b);
+            background-color: #00796b;
             color: white;
             border: none;
-            border-radius: 12px;
-            padding: 12px 25px;
+            border-radius: 5px;
+            padding: 10px;
             cursor: pointer;
             font-size: 16px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
             z-index: 1000;
         }
         .settings-button {
@@ -103,35 +121,28 @@
         .back-to-index {
             right: 10px;
         }
-        .dark-mode-toggle {
-            bottom: 10px;
-            left: 10px;
-        }
-        .settings-button:hover, .back-to-index:hover, .dark-mode-toggle:hover {
-            background: linear-gradient(135deg, #00796b, #004d40);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+        .settings-button:hover, .back-to-index:hover {
+            background-color: #004d40;
         }
         .settings-menu {
             position: fixed;
             top: 10px;
             left: 10px;
-            background-color: #ffffff;
+            background-color: #fff;
             border: 1px solid #ddd;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             display: none;
             z-index: 1000;
-            width: 320px;
+            width: 300px;
             text-align: left;
             transition: opacity 0.3s;
         }
         .settings-menu h2 {
-            font-size: 20px;
-            margin: 0 0 15px 0;
+            font-size: 18px;
+            margin: 0 0 10px 0;
             position: relative;
-            font-weight: 700;
         }
         .settings-menu .close-button {
             position: absolute;
@@ -145,16 +156,11 @@
         }
         .settings-menu label {
             display: block;
-            margin-bottom: 15px;
-            font-size: 16px;
+            margin-bottom: 10px;
         }
         .settings-menu select, .settings-menu input[type="range"], .settings-menu input[type="color"] {
-            width: calc(100% - 20px);
+            width: 100%;
             margin-top: 5px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 8px;
-            font-size: 16px;
         }
         .nav-buttons {
             position: absolute;
@@ -166,53 +172,75 @@
         }
         .nav-buttons a {
             text-decoration: none;
-            color: #ffffff;
-            background: linear-gradient(135deg, #004d40, #00796b);
+            color: #fff;
+            background-color: #00796b;
             border: none;
-            border-radius: 12px;
-            padding: 12px 25px;
+            border-radius: 5px;
+            padding: 10px 20px;
             font-size: 16px;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
         }
         .nav-buttons a:hover {
-            background: linear-gradient(135deg, #00796b, #004d40);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
+            background-color: #004d40;
         }
         .nav-buttons i {
             margin-right: 8px;
         }
-        .dark-mode {
-            background-color: #333;
-            color: #f0f0f0;
+        .share-buttons {
+            position: fixed;
+            bottom: 60px;
+            left: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
         }
-        .dark-mode .container {
-            background-color: #444;
-            color: #f0f0f0;
+        .share-buttons button {
+            background-color: #00796b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
         }
-        .dark-mode .verse {
-            background-color: #555;
+        .share-buttons button:hover {
+            background-color: #004d40;
+        }
+        .offline-message {
+            display: none;
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            margin: 20px;
+            border: 1px solid #ffeeba;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
     <button class="back-to-index" onclick="window.location.href='index.html'">Back to Index</button>
     <button class="settings-button" onclick="toggleSettingsMenu()">⚙️ Settings</button>
-    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
     <div class="settings-menu" id="settings-menu">
         <button class="close-button" onclick="toggleSettingsMenu()">✖️</button>
         <h2>Settings</h2>
         <label>
             Font Family
             <select id="font-family">
-                <option value="Amiri">Amiri</option>
+                <option value="Amiri Quran">Amiri Quran</option>
+                <option value="Noto Sans Arabic-100">Noto Sans Arabic (Light)</option>
                 <option value="Noto Sans Arabic-400">Noto Sans Arabic (Regular)</option>
                 <option value="Noto Sans Arabic-700">Noto Sans Arabic (Bold)</option>
+                <option value="Noto Sans Arabic-900">Noto Sans Arabic (Extra Bold)</option>
             </select>
         </label>
         <label>
@@ -221,172 +249,135 @@
             <span id="font-size-value">24px</span>
         </label>
         <label>
-            <input type="checkbox" id="dark-mode-toggle">
-            Dark Mode
+            Highlight Color
+            <input type="color" id="highlight-color" value="#f5f5dc">
+        </label>
+        <label>
+            Show Notes
+            <input type="checkbox" id="show-notes">
         </label>
     </div>
+
     <div class="container">
-        <div class="nav-buttons">
-            <a href="#" id="prev-surah"><i class="fas fa-chevron-left"></i> Previous Surah</a>
-            <a href="#" id="next-surah">Next Surah <i class="fas fa-chevron-right"></i></a>
-        </div>
-        <h1 id="surah-name"></h1>
-        <h2 id="surah-arabic-name"></h2>
+        <h1>Surah Name</h1>
+        <h2>Surah Title</h2>
         <div class="details">
-            <p><strong>Surah Count:</strong> <span id="surah-count"></span></p>
-            <p><strong>Juz:</strong> <span id="surah-juz"></span></p>
+            <p>Details about the Surah.</p>
         </div>
-        <div id="surah-content"></div>
+
+        <div id="surah-content">
+            <!-- Example Verse -->
+            <div class="verse" data-verse-id="verse_1">
+                <span class="circle">1</span>
+                <span class="verse-text">بِسْمِ اللَّهِ الرَّحْمَـٰنِ الرَّحِيمِ</span>
+                <button class="bookmark-button" onclick="toggleBookmark('verse_1')">⭐</button>
+                <button class="note-button" onclick="openNoteDialog('verse_1')">📝</button>
+            </div>
+            <!-- More verses here -->
+        </div>
+
+        <div class="nav-buttons">
+            <a href="#previous"><i class="fas fa-chevron-left"></i> Previous</a>
+            <a href="#next">Next <i class="fas fa-chevron-right"></i></a>
+        </div>
     </div>
+
+    <div class="share-buttons">
+        <button onclick="shareContent()">Share</button>
+    </div>
+
+    <div class="offline-message" id="offline-message">
+        <p>You are currently offline. Some features may not be available.</p>
+    </div>
+
     <script>
-        // Toggle settings menu
+        // Local storage for bookmarks and notes
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+        const notes = JSON.parse(localStorage.getItem('notes')) || {};
+
+        function toggleBookmark(verseId) {
+            if (bookmarks.includes(verseId)) {
+                const index = bookmarks.indexOf(verseId);
+                bookmarks.splice(index, 1);
+            } else {
+                bookmarks.push(verseId);
+            }
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+        }
+
+        function openNoteDialog(verseId) {
+            const note = notes[verseId] || '';
+            const newNote = prompt('Add a note:', note);
+            if (newNote !== null) {
+                notes[verseId] = newNote;
+                localStorage.setItem('notes', JSON.stringify(notes));
+            }
+        }
+
+        function shareContent() {
+            const verseText = document.querySelector('.verse-text').innerText;
+            const shareData = {
+                title: 'Quran Verse',
+                text: verseText,
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData)
+                    .then(() => console.log('Content shared successfully'))
+                    .catch((error) => console.log('Error sharing content:', error));
+            } else {
+                alert('Sharing not supported on this browser.');
+            }
+        }
+
         function toggleSettingsMenu() {
             const menu = document.getElementById('settings-menu');
-            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
 
-        // Toggle dark mode
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            const darkMode = document.body.classList.contains('dark-mode');
-            localStorage.setItem('dark-mode', darkMode);
-            applyDarkMode();
-        }
+        document.getElementById('font-family').addEventListener('change', (event) => {
+            document.body.style.fontFamily = event.target.value;
+        });
 
-        // Apply dark mode settings
-        function applyDarkMode() {
-            const darkMode = document.body.classList.contains('dark-mode');
-            if (darkMode) {
-                document.body.style.backgroundColor = '#333';
-                document.querySelector('.container').style.backgroundColor = '#444';
-                document.querySelector('.container').style.color = '#f0f0f0';
-                document.querySelectorAll('.verse').forEach(verse => verse.style.backgroundColor = '#555');
-            } else {
-                document.body.style.backgroundColor = '#f5f5f5';
-                document.querySelector('.container').style.backgroundColor = '#ffffff';
-                document.querySelector('.container').style.color = '#333';
-                document.querySelectorAll('.verse').forEach(verse => verse.style.backgroundColor = '#fafafa');
-            }
-        }
-
-        // Load settings from local storage
-        function loadSettings() {
-            const fontSize = localStorage.getItem('font-size') || '24';
-            const fontFamily = localStorage.getItem('font-family') || 'Noto Sans Arabic-400';
-            const darkMode = localStorage.getItem('dark-mode') === 'true';
-
-            document.getElementById('font-size-slider').value = fontSize;
-            document.getElementById('font-size-value').textContent = fontSize + 'px';
-            document.getElementById('font-family').value = fontFamily;
-            document.getElementById('dark-mode-toggle').checked = darkMode;
-
-            if (darkMode) {
-                document.body.classList.add('dark-mode');
-            }
-            applyDarkMode();
-            applySettings();
-        }
-
-        // Apply settings to the page
-        function applySettings() {
-            const fontSize = document.getElementById('font-size-slider').value;
-            const fontFamily = document.getElementById('font-family').value;
-
-            const [fontFamilyName, fontWeight] = fontFamily.split('-');
-            document.querySelectorAll('.verse').forEach(verse => {
-                verse.style.fontSize = fontSize + 'px';
-                verse.style.fontFamily = fontFamilyName === 'Amiri' ? '"Amiri", serif' : `"Noto Sans Arabic", sans-serif`;
-                verse.style.fontWeight = fontWeight || '400';
+        document.getElementById('font-size-slider').addEventListener('input', (event) => {
+            const fontSize = event.target.value + 'px';
+            document.querySelectorAll('.verse-text').forEach((element) => {
+                element.style.fontSize = fontSize;
             });
-
-            document.querySelector('.details').style.fontSize = fontSize + 'px';
-            document.querySelector('.details').style.fontFamily = fontFamilyName === 'Amiri' ? '"Amiri", serif' : `"Noto Sans Arabic", sans-serif`;
-            document.querySelector('.container').style.fontFamily = fontFamilyName === 'Amiri' ? '"Amiri", serif' : `"Noto Sans Arabic", sans-serif`;
-        }
-
-        // Save settings to local storage
-        function saveSettings() {
-            const fontSize = document.getElementById('font-size-slider').value;
-            const fontFamily = document.getElementById('font-family').value;
-            const darkMode = document.body.classList.contains('dark-mode');
-
-            localStorage.setItem('font-size', fontSize);
-            localStorage.setItem('font-family', fontFamily);
-            localStorage.setItem('dark-mode', darkMode);
-
-            applySettings();
-        }
-
-        // Event listeners for settings
-        document.getElementById('font-size-slider').addEventListener('input', function() {
-            document.getElementById('font-size-value').textContent = this.value + 'px';
-            saveSettings();
-        });
-        document.getElementById('font-family').addEventListener('change', saveSettings);
-        document.getElementById('dark-mode-toggle').addEventListener('change', function() {
-            toggleDarkMode();
-            saveSettings();
+            document.getElementById('font-size-value').innerText = fontSize;
         });
 
-        // Fetch Surah details and apply settings
-        async function fetchSurahDetails() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const surahIndex = parseInt(urlParams.get('index'), 10);
+        document.getElementById('highlight-color').addEventListener('input', (event) => {
+            document.querySelectorAll('.verse').forEach((element) => {
+                element.style.backgroundColor = event.target.value;
+            });
+        });
 
-            if (!surahIndex) {
-                document.body.innerHTML = '<p>No Surah index specified.</p>';
-                return;
-            }
+        document.getElementById('show-notes').addEventListener('change', (event) => {
+            const showNotes = event.target.checked;
+            document.querySelectorAll('.note-button').forEach((button) => {
+                button.style.display = showNotes ? 'inline' : 'none';
+            });
+        });
 
-            const surahUrl = `https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah/surah_${surahIndex}.json`;
+        // Offline message display
+        window.addEventListener('offline', () => {
+            document.getElementById('offline-message').style.display = 'block';
+        });
 
-            try {
-                const surahResponse = await fetch(surahUrl);
-                const surah = await surahResponse.json();
+        window.addEventListener('online', () => {
+            document.getElementById('offline-message').style.display = 'none';
+        });
 
-                const surahName = document.getElementById('surah-name');
-                const surahArabicName = document.getElementById('surah-arabic-name');
-                const surahCount = document.getElementById('surah-count');
-                const surahJuz = document.getElementById('surah-juz');
-                const surahContent = document.getElementById('surah-content');
-
-                surahName.textContent = surah.name;
-                surahArabicName.textContent = surah.arabicName;
-                surahCount.textContent = surah.count;
-                surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
-
-                surahContent.innerHTML = `
-                    <div class="verse">${surah.verse.verse_0}</div>
-                    ${Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => {
-                        const verseNumber = key.replace('verse_', '');
-                        return `
-                            <div class="verse">
-                                <span class="circle">${verseNumber}</span>
-                                ${surah.verse[key]}
-                            </div>
-                        `;
-                    }).join('')}
-                `;
-
-                loadSettings();
-
-                document.getElementById('prev-surah').href = surahIndex > 1 ? `surah-details.html?index=${surahIndex - 1}` : '#';
-                document.getElementById('next-surah').href = surahIndex < 114 ? `surah-details.html?index=${surahIndex + 1}` : '#';
-
-                if (surahIndex <= 1) {
-                    document.getElementById('prev-surah').style.display = 'none';
-                }
-                if (surahIndex >= 114) {
-                    document.getElementById('next-surah').style.display = 'none';
-                }
-
-            } catch (error) {
-                console.error('Error fetching surah details:', error);
-                document.body.innerHTML = '<p>Error loading Surah details.</p>';
-            }
+        // Service Worker registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => console.log('Service Worker registered:', reg))
+                    .catch(err => console.error('Service Worker registration failed:', err));
+            });
         }
-
-        fetchSurahDetails();
     </script>
 </body>
 </html>
