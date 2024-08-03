@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Noto+Sans+Arabic:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Base styles */
         body {
             font-family: 'Noto Sans Arabic', sans-serif;
             margin: 0;
@@ -212,6 +211,7 @@
         let versesPerPage = 0; // Number of verses to display per page based on screen size
         let currentPage = 1;
         let surahData = null;
+        let totalVerses = 0;
 
         function toggleSettingsMenu() {
             const menu = document.getElementById('settings-menu');
@@ -288,6 +288,8 @@
                 surahData = await surahResponse.json();
                 const translation = await translationResponse.json();
 
+                totalVerses = Object.keys(surahData.verse).length;
+                
                 const surahName = document.getElementById('surah-name');
                 const surahArabicName = document.getElementById('surah-arabic-name');
                 const surahCount = document.getElementById('surah-count');
@@ -304,15 +306,8 @@
 
                 window.addEventListener('resize', updateVersesPerPage);
 
-                document.getElementById('prev-page').href = surahIndex > 1 ? `index2.html?index=${surahIndex - 1}` : '#';
-                document.getElementById('next-page').href = surahIndex < 114 ? `index2.html?index=${surahIndex + 1}` : '#';
-
-                if (surahIndex <= 1) {
-                    document.getElementById('prev-page').style.display = 'none';
-                }
-                if (surahIndex >= 114) {
-                    document.getElementById('next-page').style.display = 'none';
-                }
+                document.getElementById('prev-page').style.display = (currentPage > 1) ? 'block' : 'none';
+                document.getElementById('next-page').style.display = (currentPage * versesPerPage < totalVerses) ? 'block' : 'none';
 
                 document.getElementById('prev-page').addEventListener('click', () => navigatePage(-1));
                 document.getElementById('next-page').addEventListener('click', () => navigatePage(1));
@@ -324,6 +319,8 @@
         }
 
         function displayVerses(page) {
+            if (page < 1 || page * versesPerPage > totalVerses) return;
+
             const start = (page - 1) * versesPerPage;
             const end = start + versesPerPage;
             const verses = Object.keys(surahData.verse).slice(start, end);
@@ -341,7 +338,7 @@
             }).join('');
 
             document.getElementById('prev-page').style.display = (page > 1) ? 'block' : 'none';
-            document.getElementById('next-page').style.display = (end < Object.keys(surahData.verse).length) ? 'block' : 'none';
+            document.getElementById('next-page').style.display = (end < totalVerses) ? 'block' : 'none';
         }
 
         function navigatePage(direction) {
