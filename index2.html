@@ -6,7 +6,7 @@
     <title>Quranic Surah Details</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Noto+Sans+Arabic:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Base styles */
@@ -61,10 +61,10 @@
             direction: rtl;
             font-weight: bold;
             background-color: #F5F5DC;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            transition: font-size 0.3s;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.3s;
             position: relative;
         }
         .verse:hover {
@@ -242,27 +242,23 @@
         <label>
             Font Family
             <select id="font-family" onchange="saveSettings()">
-                <option value="Noto Sans Arabic-400">Noto Sans Arabic</option>
-                <option value="Amiri Quran-400">Amiri Quran</option>
+                <option value="Noto Sans Arabic">Noto Sans Arabic</option>
+                <option value="Amiri Quran">Amiri Quran</option>
             </select>
         </label>
         <label>
             Font Size <span id="font-size-value"></span>
-            <input type="range" id="font-size-slider" min="16" max="36" step="2" onchange="saveSettings()">
+            <input type="range" id="font-size-slider" min="18" max="36" step="2" onchange="saveSettings()">
         </label>
         <label class="auto-scroll-toggle">
             Auto Scroll Speed
-            <input type="range" id="scroll-speed-slider" class="scroll-speed" min="1" max="10" step="1" value="5" onchange="saveSettings()">
-        </label>
-        <label>
-            <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()">
-            Dark Mode
+            <input type="range" id="scroll-speed-slider" class="scroll-speed" min="1" max="10" value="5" onchange="saveSettings()">
         </label>
     </div>
     <div class="container">
         <div class="nav-buttons">
-            <a id="prev-surah"><i class="fas fa-chevron-left"></i> Previous</a>
-            <a id="next-surah">Next <i class="fas fa-chevron-right"></i></a>
+            <a id="prev-surah" href="#"><i class="fas fa-chevron-left"></i> Previous</a>
+            <a id="next-surah" href="#">Next <i class="fas fa-chevron-right"></i></a>
         </div>
         <h1 id="surah-name"></h1>
         <h2 id="surah-arabic-name"></h2>
@@ -274,6 +270,7 @@
             <!-- Verses will be inserted here -->
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
     <script>
         // Toggle settings menu visibility
         function toggleSettingsMenu() {
@@ -323,7 +320,7 @@
         // Load settings from local storage
         function loadSettings() {
             const fontSize = localStorage.getItem('font-size') || '24';
-            const fontFamily = localStorage.getItem('font-family') || 'Noto Sans Arabic-400';
+            const fontFamily = localStorage.getItem('font-family') || 'Noto Sans Arabic';
             const darkMode = localStorage.getItem('dark-mode') === 'true';
             const scrollSpeed = localStorage.getItem('scroll-speed') || '5';
 
@@ -342,16 +339,15 @@
             const fontFamily = document.getElementById('font-family').value;
             const scrollSpeed = document.getElementById('scroll-speed-slider').value;
 
-            const [fontFamilyName, fontWeight] = fontFamily.split('-');
+            const [fontFamilyName] = fontFamily.split('-');
             document.querySelectorAll('.verse').forEach(verse => {
                 verse.style.fontSize = fontSize + 'px';
-                verse.style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
-                verse.style.fontWeight = fontWeight || '400';
+                verse.style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : '"Noto Sans Arabic", sans-serif';
             });
 
             document.querySelector('.details').style.fontSize = fontSize + 'px';
-            document.querySelector('.details').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
-            document.querySelector('.container').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
+            document.querySelector('.details').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : '"Noto Sans Arabic", sans-serif';
+            document.querySelector('.container').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : '"Noto Sans Arabic", sans-serif';
 
             // Apply autoscrolling
             applyAutoScroll(scrollSpeed);
@@ -386,8 +382,8 @@
             const urlParams = new URLSearchParams(window.location.search);
             const surahIndex = parseInt(urlParams.get('index'), 10);
 
-            if (!surahIndex) {
-                document.body.innerHTML = '<p>No Surah index specified.</p>';
+            if (!surahIndex || surahIndex < 1 || surahIndex > 114) {
+                document.body.innerHTML = '<p>Invalid Surah index.</p>';
                 return;
             }
 
@@ -416,7 +412,7 @@
                             <div class="verse">
                                 <span class="circle">${verseNumber}</span>
                                 ${surah.verse[key]}
-                                <div class="translation">${translation.verse[key]}</div>
+                                <div class="tooltip">${surah.translation[key]}</div>
                             </div>
                         `;
                     }).join('')}
