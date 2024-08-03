@@ -3,285 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surah List</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <title>Quran Application - Surah</title>
     <style>
         body {
-            font-family: 'Roboto', Arial, sans-serif;
-            margin: 20px;
-            background-color: #f5f5dc; /* Background color */
-            color: #333;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
         }
-        h1 {
-            color: #4CAF50;
-            font-size: 2.5em;
-            margin-bottom: 20px;
-            text-align: center;
-            font-weight: bold;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .search-bar {
-            padding: 12px;
-            font-size: 18px;
-            border: 2px solid #4CAF50;
-            border-radius: 4px;
-            width: 300px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .sort-select {
-            padding: 12px;
-            font-size: 18px;
-            border: 2px solid #4CAF50;
-            border-radius: 4px;
-            background-color: #ffffff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .surah-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-        }
-        .surah-card {
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 12px;
+
+        .container {
+            max-width: 800px;
+            margin: auto;
             padding: 20px;
-            width: 280px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
             text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .surah-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
-        }
-        .surah-card h2 {
-            font-size: 1.6em;
-            color: #4CAF50;
-            margin: 0 0 10px;
-        }
-        .surah-card p {
-            font-size: 1.2em;
-            margin: 5px 0;
-        }
-        .surah-card a {
-            text-decoration: none;
-            color: #ffffff;
-            background: linear-gradient(45deg, #4CAF50, #2c6c2f);
-            border: none;
-            padding: 12px 20px;
-            border-radius: 25px;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 10px;
-            font-size: 1.2em; /* Larger font size */
-            transition: background-color 0.3s, transform 0.3s;
-        }
-        .surah-card a:hover {
-            background: linear-gradient(45deg, #45a049, #2c6c2f);
-            transform: scale(1.05);
-        }
-        .bold {
-            font-weight: bold;
-        }
-        .bookmarked-verse-section {
             margin-bottom: 20px;
         }
-        .bookmarked-verse-section h2 {
-            font-size: 1.8em;
-            color: #4CAF50;
+
+        h1 {
+            font-size: 24px;
         }
-        .bookmarked-verse-section a {
-            text-decoration: none;
-            color: #4CAF50;
-            display: block;
-            margin: 5px 0;
-            font-size: 1.2em;
+
+        h2 {
+            font-size: 20px;
         }
-        .bookmarked-verse-section .show-more {
+
+        #surahContent {
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
-            color: #4CAF50;
-            font-size: 1.2em;
-            margin-top: 10px;
         }
-        .bold {
-            font-weight: bold;
-        }
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .search-bar, .sort-select {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-            .surah-card {
-                width: 100%;
-            }
+
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
-    <h1>Surah List</h1>
-    
-    <!-- Bookmarked Verses Section -->
-    <div class="bookmarked-verse-section" id="bookmarked-verse-section">
-        <h2>Bookmarked Verses</h2>
-        <!-- Bookmarked verses will be inserted here -->
-        <div id="bookmarked-verses"></div>
-        <span id="show-more" class="show-more">Show More</span>
+    <div class="container">
+        <header>
+            <h1>Quran Application</h1>
+        </header>
+        <main>
+            <h2 id="surahTitle">Surah Title</h2>
+            <div id="surahContent">
+                <!-- Surah verses will be populated here -->
+            </div>
+            <button onclick="window.location.href='index.html'">Back to Surah List</button>
+        </main>
+        <footer>
+            <p>&copy; 2024 Quran App</p>
+        </footer>
     </div>
-
-    <!-- Search and Sort Header -->
-    <div class="header">
-        <select class="sort-select" id="sort-select">
-            <option value="index">Sort by Index</option>
-            <option value="title">Sort by Title (English)</option>
-        </select>
-        <input type="text" id="search-bar" class="search-bar" placeholder="Search by title or index...">
-    </div>
-    
-    <!-- Surah List -->
-    <div class="surah-list" id="surah-list">
-        <!-- Surah data will be inserted here -->
-    </div>
-
     <script>
-        async function fetchSurahs() {
-            try {
-                const response = await fetch('https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah.json');
-                const surahs = await response.json();
-                return surahs;
-            } catch (error) {
-                console.error('Error fetching surah data:', error);
-                return [];
-            }
-        }
-
-        function renderSurahs(surahs) {
-            const surahList = document.getElementById('surah-list');
-            surahList.innerHTML = '';
-
-            surahs.forEach(surah => {
-                const surahIndex = parseInt(surah.index, 10);
-                const surahDetailsUrl = `surah-details.html?index=${surahIndex}`;
-
-                const surahCard = document.createElement('div');
-                surahCard.className = 'surah-card';
-                surahCard.innerHTML = `
-                    <h2>${surah.title}</h2>
-                    <p class="bold">Surah: ${surahIndex}</p>
-                    <p>${surah.titleAr}</p>
-                    <p>${surah.type}</p>
-                    <a href="${surahDetailsUrl}" class="bold">Read</a>
-                `;
-
-                surahList.appendChild(surahCard);
-            });
-        }
-
-        function sortSurahs(surahs, criteria) {
-            return surahs.sort((a, b) => {
-                if (criteria === 'index') {
-                    return parseInt(a.index) - parseInt(b.index);
-                } else if (criteria === 'title') {
-                    return a.title.localeCompare(b.title);
-                }
-                return 0;
-            });
-        }
-
-        function filterSurahs(surahs, query) {
-            const lowerCaseQuery = query.toLowerCase();
-            return surahs.filter(surah => 
-                surah.title.toLowerCase().includes(lowerCaseQuery) ||
-                surah.index.includes(lowerCaseQuery)
-            );
-        }
-
-        function renderBookmarkedVerses(bookmarkedVerses) {
-            const bookmarkedVersesSection = document.getElementById('bookmarked-verses');
-            const showMoreButton = document.getElementById('show-more');
-
-            bookmarkedVersesSection.innerHTML = '';
-
-            if (bookmarkedVerses.length === 0) {
-                bookmarkedVersesSection.innerHTML = '<p>No bookmarked verses found.</p>';
-                showMoreButton.style.display = 'none';
+        document.addEventListener('DOMContentLoaded', () => {
+            const surahTitle = document.getElementById('surahTitle');
+            const surahContent = document.getElementById('surahContent');
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const surahIndex = urlParams.get('index');
+            
+            if (!surahIndex) {
+                surahTitle.textContent = 'No Surah selected';
                 return;
             }
-
-            bookmarkedVerses.slice(0, 3).forEach(verse => {
-                const verseElement = document.createElement('a');
-                verseElement.href = `surah-details.html?index=${verse.surahIndex}#${verse.id}`;
-                verseElement.textContent = `Surah ${verse.surahIndex}, Verse ${verse.verseNumber}`;
-                bookmarkedVersesSection.appendChild(verseElement);
-            });
-
-            if (bookmarkedVerses.length > 3) {
-                showMoreButton.style.display = 'block';
-            } else {
-                showMoreButton.style.display = 'none';
-            }
-        }
-
-        function showMoreBookmarkedVerses() {
-            const bookmarkedVerses = JSON.parse(localStorage.getItem('bookmarkedVerses')) || [];
-            const bookmarkedVersesSection = document.getElementById('bookmarked-verses');
-            const showMoreButton = document.getElementById('show-more');
-            const currentCount = bookmarkedVersesSection.querySelectorAll('a').length;
-
-            if (currentCount >= bookmarkedVerses.length) {
-                showMoreButton.style.display = 'none';
-                return;
-            }
-
-            bookmarkedVerses.slice(currentCount, currentCount + 3).forEach(verse => {
-                const verseElement = document.createElement('a');
-                verseElement.href = `surah-details.html?index=${verse.surahIndex}#${verse.id}`;
-                verseElement.textContent = `Surah ${verse.surahIndex}, Verse ${verse.verseNumber}`;
-                bookmarkedVersesSection.appendChild(verseElement);
-            });
-
-            if (currentCount + 3 >= bookmarkedVerses.length) {
-                showMoreButton.style.display = 'none';
-            }
-        }
-
-        async function init() {
-            const surahs = await fetchSurahs();
-            renderSurahs(surahs);
-
-            // Handle search and sort
-            const searchBar = document.getElementById('search-bar');
-            const sortSelect = document.getElementById('sort-select');
-
-            searchBar.addEventListener('input', () => {
-                const filteredSurahs = filterSurahs(surahs, searchBar.value);
-                renderSurahs(filteredSurahs);
-            });
-
-            sortSelect.addEventListener('change', () => {
-                const sortedSurahs = sortSurahs(surahs, sortSelect.value);
-                renderSurahs(sortedSurahs);
-            });
-
-            // Handle bookmarks
-            const bookmarkedVerses = JSON.parse(localStorage.getItem('bookmarkedVerses')) || [];
-            renderBookmarkedVerses(bookmarkedVerses);
-
-            const showMoreButton = document.getElementById('show-more');
-            showMoreButton.addEventListener('click', showMoreBookmarkedVerses);
-        }
-
-        init();
+            
+            fetch(`https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah/surah_${surahIndex}.json`)
+                .then(response => response.json())
+                .then(data => {
+                    surahTitle.textContent = `${data.name} (Surah ${data.index})`;
+                    Object.keys(data.verse).forEach(key => {
+                        const p = document.createElement('p');
+                        p.textContent = data.verse[key];
+                        surahContent.appendChild(p);
+                    });
+                })
+                .catch(error => {
+                    surahTitle.textContent = 'Error loading Surah';
+                    console.error('Error fetching Surah:', error);
+                });
+        });
     </script>
 </body>
 </html>
