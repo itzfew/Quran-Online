@@ -13,39 +13,40 @@
             font-family: 'Noto Sans Arabic', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f4;
+            background: linear-gradient(to bottom, #e0f2f1, #ffffff);
+            color: #333;
             text-align: center;
         }
         .container {
-            max-width: 900px;
+            max-width: 800px;
             margin: auto;
             padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             position: relative;
+            overflow: hidden;
         }
         h1 {
-            font-size: 36px;
-            color: #333;
+            font-size: 34px;
+            color: #00796b;
             margin: 20px 0;
         }
         h2 {
-            font-size: 28px;
-            color: #555;
+            font-size: 26px;
+            color: #004d40;
             margin: 10px 0;
             font-weight: normal;
             direction: rtl;
         }
         .details {
-            font-size: 20px;
+            font-size: 18px;
             margin-bottom: 30px;
             text-align: left;
-            padding: 10px;
-            background-color: #eaf0f1;
-            border: 1px solid #d1dbe0;
-            border-radius: 5px;
+            padding: 15px;
+            background-color: #e0f2f1;
+            border: 1px solid #b2dfdb;
+            border-radius: 10px;
             line-height: 1.6;
         }
         .details p {
@@ -57,59 +58,65 @@
             text-align: right;
             direction: rtl;
             font-weight: bold;
-            background-color: #F5F5DC;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-            transition: font-size 0.3s;
+            background-color: #f1f8e9;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #c8e6c9;
+            transition: all 0.3s ease;
             position: relative;
+        }
+        .verse:hover {
+            background-color: #dcedc8;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
         }
         .verse .circle {
             display: inline-block;
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
-            background-color: #f0f0f0;
-            color: #333;
-            line-height: 30px;
+            background-color: #004d40;
+            color: #ffffff;
+            line-height: 35px;
             text-align: center;
             margin-right: 10px;
-            font-size: 16px;
-            border: 1px solid #ddd;
+            font-size: 18px;
+            border: 2px solid #004d40;
             font-weight: bold;
         }
         .settings-button, .back-to-index {
             position: fixed;
-            top: 10px;
+            top: 15px;
             background-color: #00796b;
             color: white;
             border: none;
-            border-radius: 5px;
-            padding: 10px;
+            border-radius: 10px;
+            padding: 12px 20px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
             z-index: 1000;
         }
         .settings-button {
-            left: 10px;
+            left: 15px;
         }
         .back-to-index {
-            right: 10px;
+            right: 15px;
         }
         .settings-button:hover, .back-to-index:hover {
             background-color: #004d40;
+            transform: scale(1.05);
         }
         .settings-menu {
             position: fixed;
-            top: 10px;
-            left: 10px;
-            background-color: #fff;
+            top: 15px;
+            left: 15px;
+            background-color: #ffffff;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             display: none;
             z-index: 1000;
             width: 300px;
@@ -117,7 +124,7 @@
             transition: opacity 0.3s;
         }
         .settings-menu h2 {
-            font-size: 18px;
+            font-size: 20px;
             margin: 0 0 10px 0;
             position: relative;
         }
@@ -127,7 +134,7 @@
             right: 10px;
             background: none;
             border: none;
-            font-size: 18px;
+            font-size: 20px;
             color: #333;
             cursor: pointer;
         }
@@ -149,21 +156,22 @@
         }
         .nav-buttons a {
             text-decoration: none;
-            color: #fff;
+            color: #ffffff;
             background-color: #00796b;
             border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            font-size: 16px;
+            border-radius: 10px;
+            padding: 12px 20px;
+            font-size: 18px;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.3s;
         }
         .nav-buttons a:hover {
             background-color: #004d40;
+            transform: scale(1.05);
         }
         .nav-buttons i {
             margin-right: 8px;
@@ -215,13 +223,12 @@
 
         function toggleSettingsMenu() {
             const menu = document.getElementById('settings-menu');
-            menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
 
         function updateVersesPerPage() {
             const containerWidth = document.querySelector('.container').offsetWidth;
-            const verseWidth = 300; // Approximate width of a verse block in pixels
-            versesPerPage = Math.floor(containerWidth / verseWidth) * 2; // Display twice as many verses per page
+            versesPerPage = Math.floor(containerWidth / 40); // Adjust based on font size
             displayVerses(currentPage);
         }
 
