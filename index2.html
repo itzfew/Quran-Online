@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surah Details</title>
+    <title>Quranic Surah Details</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Noto+Sans+Arabic:wght@100..900&display=swap" rel="stylesheet">
@@ -64,39 +64,14 @@
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #ddd;
-            transition: font-size 0.3s, background-color 0.3s;
+            transition: font-size 0.3s;
             position: relative;
-            overflow: hidden;
         }
         .verse:hover {
-            background-color: #fff;
+            background-color: #ffecb3;
+            transform: scale(1.02);
         }
-        .verse:hover:before {
-            content: "\f004";
-            font-family: 'Font Awesome 6 Free';
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 18px;
-            color: #00796b;
-        }
-        .verse:hover .tooltip {
-            display: block;
-        }
-        .verse .tooltip {
-            display: none;
-            position: absolute;
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #00796b;
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 14px;
-            z-index: 1;
-        }
-        .verse .circle {
+        .circle {
             display: inline-block;
             width: 40px;
             height: 40px;
@@ -109,13 +84,25 @@
             font-size: 18px;
             border: 1px solid #ddd;
             font-weight: bold;
-            position: relative;
-        }
-        .verse .circle span {
             position: absolute;
-            top: 50%;
+            top: -20px;
+            left: -20px;
+        }
+        .tooltip {
+            display: none;
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            z-index: 1;
+            bottom: 100%;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+        .verse:hover .tooltip {
+            display: block;
         }
         .settings-button, .back-to-index {
             position: fixed;
@@ -236,22 +223,12 @@
         .dark-mode .verse {
             background-color: #555;
         }
-        @media screen and (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            .verse {
-                font-size: 20px;
-            }
-            h1 {
-                font-size: 28px;
-            }
-            h2 {
-                font-size: 22px;
-            }
-            .details {
-                font-size: 18px;
-            }
+        .auto-scroll-toggle {
+            display: block;
+            margin-top: 10px;
+        }
+        .scroll-speed {
+            width: 100%;
         }
     </style>
 </head>
@@ -273,8 +250,13 @@
             Font Size <span id="font-size-value"></span>
             <input type="range" id="font-size-slider" min="16" max="36" step="2" onchange="saveSettings()">
         </label>
+        <label class="auto-scroll-toggle">
+            Auto Scroll Speed
+            <input type="range" id="scroll-speed-slider" class="scroll-speed" min="1" max="10" step="1" value="5" onchange="saveSettings()">
+        </label>
         <label>
-            <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()"> Dark Mode
+            <input type="checkbox" id="dark-mode-toggle" onchange="toggleDarkMode()">
+            Dark Mode
         </label>
     </div>
     <div class="container">
@@ -323,21 +305,34 @@
             }
         }
 
+        // Save settings to local storage
+        function saveSettings() {
+            const fontSize = document.getElementById('font-size-slider').value;
+            const fontFamily = document.getElementById('font-family').value;
+            const darkMode = document.body.classList.contains('dark-mode');
+            const scrollSpeed = document.getElementById('scroll-speed-slider').value;
+
+            localStorage.setItem('font-size', fontSize);
+            localStorage.setItem('font-family', fontFamily);
+            localStorage.setItem('dark-mode', darkMode);
+            localStorage.setItem('scroll-speed', scrollSpeed);
+
+            applySettings();
+        }
+
         // Load settings from local storage
         function loadSettings() {
             const fontSize = localStorage.getItem('font-size') || '24';
             const fontFamily = localStorage.getItem('font-family') || 'Noto Sans Arabic-400';
             const darkMode = localStorage.getItem('dark-mode') === 'true';
+            const scrollSpeed = localStorage.getItem('scroll-speed') || '5';
 
             document.getElementById('font-size-slider').value = fontSize;
             document.getElementById('font-size-value').textContent = fontSize + 'px';
             document.getElementById('font-family').value = fontFamily;
             document.getElementById('dark-mode-toggle').checked = darkMode;
+            document.getElementById('scroll-speed-slider').value = scrollSpeed;
 
-            if (darkMode) {
-                document.body.classList.add('dark-mode');
-            }
-            applyDarkMode();
             applySettings();
         }
 
@@ -345,6 +340,7 @@
         function applySettings() {
             const fontSize = document.getElementById('font-size-slider').value;
             const fontFamily = document.getElementById('font-family').value;
+            const scrollSpeed = document.getElementById('scroll-speed-slider').value;
 
             const [fontFamilyName, fontWeight] = fontFamily.split('-');
             document.querySelectorAll('.verse').forEach(verse => {
@@ -356,19 +352,19 @@
             document.querySelector('.details').style.fontSize = fontSize + 'px';
             document.querySelector('.details').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
             document.querySelector('.container').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
+
+            // Apply autoscrolling
+            applyAutoScroll(scrollSpeed);
         }
 
-        // Save settings to local storage
-        function saveSettings() {
-            const fontSize = document.getElementById('font-size-slider').value;
-            const fontFamily = document.getElementById('font-family').value;
-            const darkMode = document.body.classList.contains('dark-mode');
+        // Apply autoscrolling
+        function applyAutoScroll(scrollSpeed) {
+            clearInterval(window.autoscrollInterval);
+            const scrollDelay = 110 - (scrollSpeed * 10); // Calculate delay based on scroll speed
 
-            localStorage.setItem('font-size', fontSize);
-            localStorage.setItem('font-family', fontFamily);
-            localStorage.setItem('dark-mode', darkMode);
-
-            applySettings();
+            window.autoscrollInterval = setInterval(() => {
+                window.scrollBy(0, 2); // Adjust scroll behavior as needed
+            }, scrollDelay);
         }
 
         // Event listeners for settings
@@ -379,6 +375,9 @@
         document.getElementById('font-family').addEventListener('change', saveSettings);
         document.getElementById('dark-mode-toggle').addEventListener('change', function() {
             toggleDarkMode();
+            saveSettings();
+        });
+        document.getElementById('scroll-speed-slider').addEventListener('input', function() {
             saveSettings();
         });
 
@@ -417,7 +416,7 @@
                             <div class="verse">
                                 <span class="circle">${verseNumber}</span>
                                 ${surah.verse[key]}
-                                <div class="tooltip">Tooltip content for verse ${verseNumber}</div>
+                                <div class="translation">${translation.verse[key]}</div>
                             </div>
                         `;
                     }).join('')}
@@ -435,78 +434,13 @@
                     document.getElementById('next-surah').style.display = 'none';
                 }
 
-                // Cache data for offline use
-                cacheSurahData(surahIndex, surah);
-
             } catch (error) {
                 console.error('Error fetching surah details:', error);
                 document.body.innerHTML = '<p>Error loading Surah details.</p>';
             }
         }
 
-        // Function to cache Surah data
-        function cacheSurahData(surahIndex, surah) {
-            const cachedSurah = {
-                name: surah.name,
-                arabicName: surah.arabicName,
-                count: surah.count,
-                juz: surah.juz,
-                verse: surah.verse
-            };
-
-            localStorage.setItem(`surah_${surahIndex}`, JSON.stringify(cachedSurah));
-        }
-
-        // Check if offline data is available and load if possible
-        async function loadSurahFromCache(surahIndex) {
-            const cachedSurah = localStorage.getItem(`surah_${surahIndex}`);
-
-            if (cachedSurah) {
-                try {
-                    const surah = JSON.parse(cachedSurah);
-
-                    const surahName = document.getElementById('surah-name');
-                    const surahArabicName = document.getElementById('surah-arabic-name');
-                    const surahCount = document.getElementById('surah-count');
-                    const surahJuz = document.getElementById('surah-juz');
-                    const surahContent = document.getElementById('surah-content');
-
-                    surahName.textContent = surah.name;
-                    surahArabicName.textContent = surah.arabicName;
-                    surahCount.textContent = surah.count;
-                    surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
-
-                    surahContent.innerHTML = `
-                        <div class="verse">${surah.verse.verse_0}</div>
-                        ${Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => {
-                            const verseNumber = key.replace('verse_', '');
-                            return `
-                                <div class="verse">
-                                    <span class="circle">${verseNumber}</span>
-                                    ${surah.verse[key]}
-                                    <div class="tooltip">Tooltip content for verse ${verseNumber}</div>
-                                </div>
-                            `;
-                        }).join('')}`;
-
-                    loadSettings();
-
-                } catch (error) {
-                    console.error('Error parsing cached Surah data:', error);
-                }
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const surahIndex = parseInt(urlParams.get('index'), 10);
-
-            if (surahIndex) {
-                loadSurahFromCache(surahIndex);
-                fetchSurahDetails();
-            }
-        });
-
+        fetchSurahDetails();
     </script>
 </body>
 </html>
