@@ -212,6 +212,12 @@
 
             bookmarkedVersesSection.innerHTML = '';
 
+            if (bookmarkedVerses.length === 0) {
+                bookmarkedVersesSection.innerHTML = '<p>No bookmarked verses found.</p>';
+                showMoreButton.style.display = 'none';
+                return;
+            }
+
             bookmarkedVerses.slice(0, 3).forEach(verse => {
                 const verseElement = document.createElement('a');
                 verseElement.href = `surah-details.html?index=${verse.surahIndex}#${verse.id}`;
@@ -231,6 +237,11 @@
             const bookmarkedVersesSection = document.getElementById('bookmarked-verses');
             const showMoreButton = document.getElementById('show-more');
             const currentCount = bookmarkedVersesSection.querySelectorAll('a').length;
+
+            if (currentCount >= bookmarkedVerses.length) {
+                showMoreButton.style.display = 'none';
+                return;
+            }
 
             bookmarkedVerses.slice(currentCount, currentCount + 3).forEach(verse => {
                 const verseElement = document.createElement('a');
