@@ -86,15 +86,15 @@
         .settings-button, .back-to-index, .dark-mode-toggle {
             position: fixed;
             top: 10px;
-            background-color: #00796b;
+            background: linear-gradient(135deg, #004d40, #00796b);
             color: white;
             border: none;
-            border-radius: 6px;
-            padding: 10px 20px;
+            border-radius: 12px;
+            padding: 12px 25px;
             cursor: pointer;
             font-size: 16px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
             z-index: 1000;
         }
         .settings-button {
@@ -108,7 +108,9 @@
             left: 10px;
         }
         .settings-button:hover, .back-to-index:hover, .dark-mode-toggle:hover {
-            background-color: #004d40;
+            background: linear-gradient(135deg, #00796b, #004d40);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
         }
         .settings-menu {
             position: fixed;
@@ -116,19 +118,20 @@
             left: 10px;
             background-color: #ffffff;
             border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
             display: none;
             z-index: 1000;
-            width: 300px;
+            width: 320px;
             text-align: left;
             transition: opacity 0.3s;
         }
         .settings-menu h2 {
-            font-size: 18px;
-            margin: 0 0 10px 0;
+            font-size: 20px;
+            margin: 0 0 15px 0;
             position: relative;
+            font-weight: 700;
         }
         .settings-menu .close-button {
             position: absolute;
@@ -142,11 +145,16 @@
         }
         .settings-menu label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 16px;
         }
         .settings-menu select, .settings-menu input[type="range"], .settings-menu input[type="color"] {
-            width: 100%;
+            width: calc(100% - 20px);
             margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 8px;
+            font-size: 16px;
         }
         .nav-buttons {
             position: absolute;
@@ -159,20 +167,22 @@
         .nav-buttons a {
             text-decoration: none;
             color: #ffffff;
-            background-color: #00796b;
+            background: linear-gradient(135deg, #004d40, #00796b);
             border: none;
-            border-radius: 6px;
-            padding: 10px 20px;
+            border-radius: 12px;
+            padding: 12px 25px;
             font-size: 16px;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
         }
         .nav-buttons a:hover {
-            background-color: #004d40;
+            background: linear-gradient(135deg, #00796b, #004d40);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
         }
         .nav-buttons i {
             margin-right: 8px;
@@ -217,13 +227,13 @@
     </div>
     <div class="container">
         <div class="nav-buttons">
-            <a id="prev-surah"><i class="fas fa-chevron-left"></i> Previous</a>
-            <a id="next-surah">Next <i class="fas fa-chevron-right"></i></a>
+            <a href="#" id="prev-surah"><i class="fas fa-chevron-left"></i> Previous Surah</a>
+            <a href="#" id="next-surah">Next Surah <i class="fas fa-chevron-right"></i></a>
         </div>
         <h1 id="surah-name"></h1>
         <h2 id="surah-arabic-name"></h2>
         <div class="details">
-            <p><strong>Total Verses:</strong> <span id="surah-count"></span></p>
+            <p><strong>Surah Count:</strong> <span id="surah-count"></span></p>
             <p><strong>Juz:</strong> <span id="surah-juz"></span></p>
         </div>
         <div id="surah-content"></div>
