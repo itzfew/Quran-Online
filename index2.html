@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f0f4f8;
             margin: 0;
             padding: 0;
         }
@@ -27,16 +27,41 @@
         }
 
         h1 {
-            font-size: 24px;
+            font-size: 28px;
+            color: #333;
         }
 
         h2 {
-            font-size: 20px;
+            font-size: 24px;
+            margin-bottom: 10px;
         }
 
         #surahContent {
             border-top: 1px solid #ddd;
             padding-top: 20px;
+        }
+
+        p {
+            border-bottom: 1px solid #ddd;
+            padding: 10px;
+            position: relative;
+            margin: 0;
+        }
+
+        p::before {
+            content: attr(data-number);
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #007BFF;
+            color: #fff;
+            text-align: center;
+            line-height: 24px;
+            font-weight: bold;
         }
 
         footer {
@@ -47,17 +72,23 @@
         }
 
         button {
-            margin-top: 20px;
             padding: 10px;
             background-color: #007BFF;
             color: #fff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
 
         button:hover {
             background-color: #0056b3;
+        }
+
+        .nav-buttons {
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
         }
     </style>
 </head>
@@ -71,6 +102,10 @@
             <div id="surahContent">
                 <!-- Surah verses will be populated here -->
             </div>
+            <div class="nav-buttons">
+                <button id="prevSurah">Previous Surah</button>
+                <button id="nextSurah">Next Surah</button>
+            </div>
             <button onclick="window.location.href='index.html'">Back to Surah List</button>
         </main>
         <footer>
@@ -81,22 +116,25 @@
         document.addEventListener('DOMContentLoaded', () => {
             const surahTitle = document.getElementById('surahTitle');
             const surahContent = document.getElementById('surahContent');
-            
+            const prevSurahButton = document.getElementById('prevSurah');
+            const nextSurahButton = document.getElementById('nextSurah');
+
             const urlParams = new URLSearchParams(window.location.search);
-            const surahIndex = urlParams.get('index');
-            
-            if (!surahIndex) {
-                surahTitle.textContent = 'No Surah selected';
+            const surahIndex = parseInt(urlParams.get('index'));
+
+            if (isNaN(surahIndex) || surahIndex < 1 || surahIndex > 114) {
+                surahTitle.textContent = 'Invalid Surah';
                 return;
             }
-            
-            fetch(`https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah/surah_${surahIndex}.json`)
+
+            fetch(`https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah/surah_${String(surahIndex).padStart(3, '0')}.json`)
                 .then(response => response.json())
                 .then(data => {
                     surahTitle.textContent = `${data.name} (Surah ${data.index})`;
-                    Object.keys(data.verse).forEach(key => {
+                    Object.keys(data.verse).forEach((key, index) => {
                         const p = document.createElement('p');
                         p.textContent = data.verse[key];
+                        p.setAttribute('data-number', index + 1);
                         surahContent.appendChild(p);
                     });
                 })
@@ -104,6 +142,19 @@
                     surahTitle.textContent = 'Error loading Surah';
                     console.error('Error fetching Surah:', error);
                 });
+
+            // Navigation buttons
+            prevSurahButton.addEventListener('click', () => {
+                if (surahIndex > 1) {
+                    window.location.href = `surah.html?index=${surahIndex - 1}`;
+                }
+            });
+
+            nextSurahButton.addEventListener('click', () => {
+                if (surahIndex < 114) {
+                    window.location.href = `surah.html?index=${surahIndex + 1}`;
+                }
+            });
         });
     </script>
 </body>
