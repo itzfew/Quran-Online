@@ -64,8 +64,12 @@
             padding: 10px;
             border-radius: 5px;
             border: 1px solid #ddd;
-            transition: font-size 0.3s, background-color 0.3s;
             position: relative;
+            transition: background-color 0.3s, font-size 0.3s;
+        }
+        .verse.bookmarked {
+            background-color: #ffeb3b; /* Highlighted color for bookmarked verses */
+            border: 2px solid yellow;
         }
         .circle {
             display: inline-block;
@@ -84,8 +88,12 @@
             top: -20px;
             left: -20px;
         }
-        .verse.bookmarked {
-            border: 2px solid yellow;
+        .bookmark-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: #333;
         }
         .settings-button, .back-to-index {
             position: fixed;
@@ -237,11 +245,11 @@
     </div>
     <div class="container">
         <div class="nav-buttons">
-            <a id="prev-surah"><i class="fas fa-chevron-left"></i> Previous</a>
-            <a id="next-surah">Next <i class="fas fa-chevron-right"></i></a>
+            <a id="prev-surah" href="#"><i class="fas fa-chevron-left"></i> Previous Surah</a>
+            <a id="next-surah" href="#">Next Surah <i class="fas fa-chevron-right"></i></a>
         </div>
-        <h1 id="surah-name"></h1>
-        <h2 id="surah-arabic-name"></h2>
+        <h1 id="surah-name">Surah Name</h1>
+        <h2 id="surah-arabic-name">سورة الاسم</h2>
         <div class="details">
             <p><strong>Total Verses:</strong> <span id="surah-count"></span></p>
             <p><strong>Juz:</strong> <span id="surah-juz"></span></p>
@@ -340,13 +348,22 @@
             saveSettings();
         });
 
-        // Bookmark functionality
+        // Toggle bookmark state
         function toggleBookmark(verseId) {
             const verse = document.getElementById(verseId);
-            verse.classList.toggle('bookmarked');
-            const isBookmarked = verse.classList.contains('bookmarked');
-            // Example: Implement logic to save bookmark status to local storage
+            const isBookmarked = verse.classList.toggle('bookmarked');
             localStorage.setItem(verseId, isBookmarked ? 'bookmarked' : '');
+        }
+
+        // Load bookmarks from local storage
+        function loadBookmarks() {
+            document.querySelectorAll('.verse').forEach(verse => {
+                const verseId = verse.id;
+                const isBookmarked = localStorage.getItem(verseId) === 'bookmarked';
+                if (isBookmarked) {
+                    verse.classList.add('bookmarked');
+                }
+            });
         }
 
         // Fetch Surah details and apply settings
@@ -391,6 +408,7 @@
                 `;
 
                 loadSettings();
+                loadBookmarks();
 
                 document.getElementById('prev-surah').href = surahIndex > 1 ? `surah-details.html?index=${surahIndex - 1}` : '#';
                 document.getElementById('next-surah').href = surahIndex < 114 ? `surah-details.html?index=${surahIndex + 1}` : '#';
