@@ -14,7 +14,7 @@
             font-family: 'Noto Sans Arabic', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9;
+            background-color: #f2f4f5;
             color: #333;
             text-align: center;
             transition: color 0.3s, background-color 0.3s;
@@ -22,151 +22,156 @@
         .container {
             max-width: 900px;
             margin: auto;
-            padding: 20px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            background-color: #ffffff;
+            border: 2px solid #00796b;
+            border-radius: 16px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
             position: relative;
             overflow: hidden;
         }
         h1 {
-            font-size: 32px;
-            color: #2c3e50;
+            font-size: 36px;
+            color: #004d40;
             margin: 20px 0;
             font-family: 'Amiri Quran', serif;
         }
         h2 {
-            font-size: 24px;
-            color: #34495e;
+            font-size: 26px;
+            color: #004d40;
             margin: 10px 0;
             font-weight: normal;
             direction: rtl;
+            border-bottom: 2px solid #00796b;
+            padding-bottom: 5px;
         }
         .details {
-            font-size: 18px;
+            font-size: 20px;
             margin-bottom: 30px;
             text-align: left;
-            padding: 15px;
-            background-color: #eaf0f1;
-            border: 1px solid #c0d2d3;
-            border-radius: 8px;
-            line-height: 1.6;
+            padding: 20px;
+            background-color: #e0f2f1;
+            border: 2px solid #004d40;
+            border-radius: 12px;
+            line-height: 1.8;
             font-family: 'Amiri Quran', serif;
         }
         .details p {
-            margin: 10px 0;
+            margin: 15px 0;
         }
         .verse {
-            font-size: 22px;
-            margin-bottom: 20px;
+            font-size: 24px;
+            margin-bottom: 25px;
             text-align: right;
             direction: rtl;
             font-weight: bold;
-            background-color: #f5f5dc;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+            background-color: #e8f5e9;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #004d40;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
             transition: font-size 0.3s, background-color 0.3s;
             line-height: 1.6;
         }
         .circle {
             display: inline-block;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            background-color: #e3f2fd;
-            color: #01579b;
-            line-height: 40px;
+            background-color: #a5d6a7;
+            color: #004d40;
+            line-height: 50px;
             text-align: center;
-            margin: 0 5px;
-            font-size: 18px;
-            border: 1px solid #b3e5fc;
+            margin: 0 8px;
+            font-size: 20px;
+            border: 2px solid #004d40;
             font-weight: bold;
         }
         .settings-button, .back-to-index, .dark-mode-toggle {
             position: fixed;
-            top: 10px;
+            top: 20px;
             background-color: #00796b;
             color: white;
             border: none;
-            border-radius: 5px;
-            padding: 10px 15px;
+            border-radius: 8px;
+            padding: 12px 20px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 18px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, box-shadow 0.3s;
             z-index: 1000;
         }
         .settings-button {
-            left: 10px;
+            left: 20px;
         }
         .back-to-index {
-            right: 10px;
+            right: 20px;
         }
         .dark-mode-toggle {
-            bottom: 10px;
-            left: 60px;
+            bottom: 20px;
+            left: 90px;
         }
         .settings-button:hover, .back-to-index:hover, .dark-mode-toggle:hover {
             background-color: #004d40;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         }
         .nav-buttons {
             position: absolute;
-            bottom: 20px;
-            left: 20px;
-            right: 20px;
+            bottom: 30px;
+            left: 30px;
+            right: 30px;
             display: flex;
             justify-content: space-between;
         }
         .nav-buttons a {
             text-decoration: none;
-            color: #fff;
+            color: #ffffff;
             background-color: #00796b;
             border: none;
-            border-radius: 5px;
-            padding: 10px 20px;
-            font-size: 16px;
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-size: 18px;
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, box-shadow 0.3s;
         }
         .nav-buttons a:hover {
             background-color: #004d40;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
         }
         .nav-buttons i {
-            margin-right: 8px;
+            margin-right: 10px;
         }
         .settings-menu {
             display: none;
             position: fixed;
-            top: 50px;
-            right: 10px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            width: 250px;
+            top: 80px;
+            right: 20px;
+            background-color: #ffffff;
+            border: 2px solid #00796b;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            width: 280px;
             z-index: 1000;
         }
         .settings-menu h2 {
             margin-top: 0;
+            color: #00796b;
         }
         .settings-menu label {
             display: block;
-            margin: 10px 0;
+            margin: 12px 0;
         }
         .settings-menu select, .settings-menu input {
             margin-top: 5px;
             width: 100%;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 8px;
+            border: 2px solid #00796b;
+            border-radius: 6px;
         }
         .settings-menu .close-button {
             position: absolute;
@@ -174,24 +179,27 @@
             right: 10px;
             background: none;
             border: none;
-            font-size: 20px;
+            font-size: 22px;
             color: #00796b;
             cursor: pointer;
         }
         .dark-mode {
-            background-color: #333;
-            color: #fff;
+            background-color: #263238;
+            color: #eceff1;
         }
         .dark-mode .container {
-            background-color: #444;
-            color: #fff;
+            background-color: #37474f;
+            color: #eceff1;
+            border-color: #80deea;
         }
         .dark-mode .verse {
-            background-color: #555;
+            background-color: #455a64;
+            border-color: #b0bec5;
         }
         .dark-mode .settings-menu {
-            background-color: #555;
-            color: #fff;
+            background-color: #37474f;
+            color: #eceff1;
+            border-color: #80deea;
         }
     </style>
 </head>
@@ -214,8 +222,8 @@
         </label>
         <label>
             Font Size
-            <input type="range" id="font-size-slider" min="16" max="36" step="2" value="22">
-            <span id="font-size-value">22px</span>
+            <input type="range" id="font-size-slider" min="16" max="36" step="2" value="24">
+            <span id="font-size-value">24px</span>
         </label>
         <label>
             <input type="checkbox" id="dark-mode-toggle">
@@ -224,17 +232,17 @@
     </div>
     <div class="container">
         <div class="nav-buttons">
-            <a id="prev-surah"><i class="fas fa-chevron-left"></i> Previous</a>
-            <a id="next-surah">Next <i class="fas fa-chevron-right"></i></a>
+            <a id="prev-surah"><i class="fas fa-chevron-left"></i> Previous Surah</a>
+            <a id="next-surah">Next Surah <i class="fas fa-chevron-right"></i></a>
         </div>
-        <h1 id="surah-name"></h1>
-        <h2 id="surah-arabic-name"></h2>
+        <h1 id="surah-name">Surah Name</h1>
+        <h2 id="surah-arabic-name">سورة الاسم</h2>
         <div class="details">
-            <p><strong>Total Verses:</strong> <span id="surah-count"></span></p>
+            <p><strong>Surah Number:</strong> <span id="surah-count">0</span></p>
             <p><strong>Juz:</strong> <span id="surah-juz"></span></p>
         </div>
         <div id="surah-content">
-            <!-- Verses will be inserted here -->
+            <!-- Surah verses will be inserted here -->
         </div>
     </div>
     <script>
@@ -250,7 +258,7 @@
 
         function applyDarkMode() {
             document.querySelectorAll('.verse').forEach(verse => {
-                verse.style.backgroundColor = document.body.classList.contains('dark-mode') ? '#555' : '#f5f5dc';
+                verse.style.backgroundColor = document.body.classList.contains('dark-mode') ? '#455a64' : '#e8f5e9';
             });
         }
 
