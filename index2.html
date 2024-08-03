@@ -23,17 +23,17 @@
             padding: 20px;
             background: #ffffff;
             border-radius: 15px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             position: relative;
             overflow: hidden;
         }
         h1 {
-            font-size: 36px;
+            font-size: 34px;
             color: #00796b;
             margin: 20px 0;
         }
         h2 {
-            font-size: 28px;
+            font-size: 26px;
             color: #004d40;
             margin: 10px 0;
             font-weight: normal;
@@ -64,23 +64,23 @@
             border: 1px solid #c8e6c9;
             transition: all 0.3s ease;
             position: relative;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .verse:hover {
             background-color: #dcedc8;
-            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
         }
         .verse .circle {
             display: inline-block;
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             background-color: #004d40;
             color: #ffffff;
-            line-height: 40px;
+            line-height: 35px;
             text-align: center;
             margin-right: 10px;
-            font-size: 20px;
+            font-size: 18px;
             border: 2px solid #004d40;
             font-weight: bold;
         }
@@ -176,22 +176,6 @@
         .nav-buttons i {
             margin-right: 8px;
         }
-        @media (max-width: 768px) {
-            .verse {
-                font-size: 18px;
-                padding: 10px;
-            }
-            .verse .circle {
-                width: 35px;
-                height: 35px;
-                line-height: 35px;
-                font-size: 16px;
-            }
-            .settings-button, .back-to-index {
-                padding: 10px 15px;
-                font-size: 16px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -233,143 +217,143 @@
     </div>
     <script>
         let surahData;
-let currentPage = 1;
-let versesPerPage = 10;
-let totalVerses = 0;
+        let currentPage = 1;
+        let versesPerPage = 10;
+        let totalVerses = 0;
 
-function toggleSettingsMenu() {
-    const menu = document.getElementById('settings-menu');
-    menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-}
-
-function updateVersesPerPage() {
-    const containerWidth = document.querySelector('.container').offsetWidth;
-    const fontSize = parseInt(document.getElementById('font-size-slider').value, 10);
-    const minVerses = 5;
-    versesPerPage = Math.max(Math.floor(containerWidth / (fontSize * 1.2)), minVerses);
-    displayVerses(currentPage);
-}
-
-function loadSettings() {
-    const fontSize = localStorage.getItem('font-size') || '20';
-    const fontFamily = localStorage.getItem('font-family') || 'Noto Sans Arabic-400';
-
-    document.getElementById('font-size-slider').value = fontSize;
-    document.getElementById('font-size-value').textContent = fontSize + 'px';
-    document.getElementById('font-family').value = fontFamily;
-
-    applySettings();
-}
-
-function applySettings() {
-    const fontSize = document.getElementById('font-size-slider').value;
-    const fontFamily = document.getElementById('font-family').value;
-
-    const [fontFamilyName, fontWeight] = fontFamily.split('-');
-    document.querySelectorAll('.verse').forEach(verse => {
-        verse.style.fontSize = fontSize + 'px';
-        verse.style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
-        verse.style.fontWeight = fontWeight || '400';
-    });
-
-    document.querySelector('.details').style.fontSize = fontSize + 'px';
-    document.querySelector('.details').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
-    document.querySelector('.container').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
-}
-
-function saveSettings() {
-    const fontSize = document.getElementById('font-size-slider').value;
-    const fontFamily = document.getElementById('font-family').value;
-
-    localStorage.setItem('font-size', fontSize);
-    localStorage.setItem('font-family', fontFamily);
-
-    applySettings();
-}
-
-document.getElementById('font-size-slider').addEventListener('input', function() {
-    document.getElementById('font-size-value').textContent = this.value + 'px';
-    saveSettings();
-});
-document.getElementById('font-family').addEventListener('change', saveSettings);
-
-async function fetchSurahDetails() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const surahIndex = urlParams.get('index') || '001'; // Default to '001' for this example
-
-    const surahUrl = `path/to/your/json/${surahIndex}.json`; // Adjust this URL to the actual path of your JSON files
-    try {
-        const response = await fetch(surahUrl);
-        if (!response.ok) throw new Error('Network response was not ok');
-        surahData = await response.json();
-
-        if (!surahData) throw new Error('Surah data not found');
-
-        totalVerses = surahData.count;
-        document.getElementById('surah-name').textContent = surahData.name;
-        document.getElementById('surah-arabic-name').textContent = surahData.name; // Adjust if Arabic name is different
-        document.getElementById('surah-count').textContent = totalVerses;
-        document.getElementById('surah-juz').textContent = surahData.juz[0].index;
-
-        displayVerses(currentPage);
-        updateNavButtons();
-    } catch (error) {
-        document.body.innerHTML = `<p>Error fetching Surah details: ${error.message}</p>`;
-    }
-}
-
-function displayVerses(page) {
-    if (!surahData) return;
-
-    const startIndex = (page - 1) * versesPerPage;
-    const endIndex = Math.min(startIndex + versesPerPage, totalVerses);
-    
-    // Get verses from JSON data
-    const verses = [];
-    for (let i = startIndex; i < endIndex; i++) {
-        const verseKey = `verse_${i}`;
-        if (surahData.verse[verseKey]) {
-            verses.push({
-                number: i + 1,
-                text: surahData.verse[verseKey]
-            });
+        function toggleSettingsMenu() {
+            const menu = document.getElementById('settings-menu');
+            menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
         }
-    }
 
-    const surahContent = document.getElementById('surah-content');
-    surahContent.innerHTML = verses.map(verse => `
-        <div class="verse">
-            <span class="circle">${verse.number}</span>
-            ${verse.text}
-        </div>
-    `).join('');
-    updateNavButtons();
-}
+        function updateVersesPerPage() {
+            const containerWidth = document.querySelector('.container').offsetWidth;
+            const fontSize = parseInt(document.getElementById('font-size-slider').value, 10);
+            const minVerses = 5;
+            versesPerPage = Math.max(Math.floor(containerWidth / (fontSize * 1.2)), minVerses);
+            displayVerses(currentPage);
+        }
 
-function updateNavButtons() {
-    document.getElementById('prev-page').style.display = currentPage > 1 ? 'inline-flex' : 'none';
-    document.getElementById('next-page').style.display = currentPage < Math.ceil(totalVerses / versesPerPage) ? 'inline-flex' : 'none';
-}
+        function loadSettings() {
+            const fontSize = localStorage.getItem('font-size') || '20';
+            const fontFamily = localStorage.getItem('font-family') || 'Noto Sans Arabic-400';
 
-document.getElementById('prev-page').addEventListener('click', () => {
-    if (currentPage > 1) {
-        currentPage--;
-        displayVerses(currentPage);
-    }
-});
+            document.getElementById('font-size-slider').value = fontSize;
+            document.getElementById('font-size-value').textContent = fontSize + 'px';
+            document.getElementById('font-family').value = fontFamily;
 
-document.getElementById('next-page').addEventListener('click', () => {
-    if (currentPage < Math.ceil(totalVerses / versesPerPage)) {
-        currentPage++;
-        displayVerses(currentPage);
-    }
-});
+            applySettings();
+        }
 
-window.addEventListener('resize', updateVersesPerPage);
-document.addEventListener('DOMContentLoaded', () => {
-    loadSettings();
-    fetchSurahDetails();
-});
-</script>
+        function applySettings() {
+            const fontSize = document.getElementById('font-size-slider').value;
+            const fontFamily = document.getElementById('font-family').value;
+
+            const [fontFamilyName, fontWeight] = fontFamily.split('-');
+            document.querySelectorAll('.verse').forEach(verse => {
+                verse.style.fontSize = fontSize + 'px';
+                verse.style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
+                verse.style.fontWeight = fontWeight || '400';
+            });
+
+            document.querySelector('.details').style.fontSize = fontSize + 'px';
+            document.querySelector('.details').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
+            document.querySelector('.container').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
+        }
+
+        function saveSettings() {
+            const fontSize = document.getElementById('font-size-slider').value;
+            const fontFamily = document.getElementById('font-family').value;
+
+            localStorage.setItem('font-size', fontSize);
+            localStorage.setItem('font-family', fontFamily);
+
+            applySettings();
+        }
+
+        document.getElementById('font-size-slider').addEventListener('input', function() {
+            document.getElementById('font-size-value').textContent = this.value + 'px';
+            saveSettings();
+        });
+        document.getElementById('font-family').addEventListener('change', saveSettings);
+
+        async function fetchSurahDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const surahIndex = urlParams.get('index') || '001'; // Default to '001' for this example
+
+            const surahUrl = `path/to/your/json/${surahIndex}.json`; // Adjust this URL to the actual path of your JSON files
+            try {
+                const response = await fetch(surahUrl);
+                if (!response.ok) throw new Error('Network response was not ok');
+                surahData = await response.json();
+
+                if (!surahData) throw new Error('Surah data not found');
+
+                totalVerses = surahData.count;
+                document.getElementById('surah-name').textContent = surahData.name;
+                document.getElementById('surah-arabic-name').textContent = surahData.name; // Adjust if Arabic name is different
+                document.getElementById('surah-count').textContent = totalVerses;
+                document.getElementById('surah-juz').textContent = surahData.juz[0].index;
+
+                displayVerses(currentPage);
+                updateNavButtons();
+            } catch (error) {
+                document.body.innerHTML = `<p>Error fetching Surah details: ${error.message}</p>`;
+            }
+        }
+
+        function displayVerses(page) {
+            if (!surahData) return;
+
+            const startIndex = (page - 1) * versesPerPage;
+            const endIndex = Math.min(startIndex + versesPerPage, totalVerses);
+            
+            // Get verses from JSON data
+            const verses = [];
+            for (let i = startIndex; i < endIndex; i++) {
+                const verseKey = `verse_${i}`;
+                if (surahData.verse[verseKey]) {
+                    verses.push({
+                        number: i + 1,
+                        text: surahData.verse[verseKey]
+                    });
+                }
+            }
+
+            const surahContent = document.getElementById('surah-content');
+            surahContent.innerHTML = verses.map(verse => `
+                <div class="verse">
+                    <span class="circle">${verse.number}</span>
+                    ${verse.text}
+                </div>
+            `).join('');
+            updateNavButtons();
+        }
+
+        function updateNavButtons() {
+            document.getElementById('prev-page').style.display = currentPage > 1 ? 'inline-flex' : 'none';
+            document.getElementById('next-page').style.display = currentPage < Math.ceil(totalVerses / versesPerPage) ? 'inline-flex' : 'none';
+        }
+
+        document.getElementById('prev-page').addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                displayVerses(currentPage);
+            }
+        });
+
+        document.getElementById('next-page').addEventListener('click', () => {
+            if (currentPage < Math.ceil(totalVerses / versesPerPage)) {
+                currentPage++;
+                displayVerses(currentPage);
+            }
+        });
+
+        window.addEventListener('resize', updateVersesPerPage);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadSettings();
+            fetchSurahDetails();
+        });
+    </script>
 </body>
 </html>
