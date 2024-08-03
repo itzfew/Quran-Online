@@ -80,7 +80,7 @@
             border: 1px solid #ddd;
             font-weight: bold;
         }
-        .settings-button, .back-to-index, .dark-mode-toggle {
+        .settings-button, .back-to-index {
             position: fixed;
             top: 10px;
             background-color: #00796b;
@@ -100,50 +100,8 @@
         .back-to-index {
             right: 10px;
         }
-        .dark-mode-toggle {
-            bottom: 10px;
-            left: 10px;
-        }
-        .settings-button:hover, .back-to-index:hover, .dark-mode-toggle:hover {
+        .settings-button:hover, .back-to-index:hover {
             background-color: #004d40;
-        }
-        .settings-menu {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            display: none;
-            z-index: 1000;
-            width: 300px;
-            text-align: left;
-            transition: opacity 0.3s;
-        }
-        .settings-menu h2 {
-            font-size: 18px;
-            margin: 0 0 10px 0;
-            position: relative;
-        }
-        .settings-menu .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            font-size: 18px;
-            color: #333;
-            cursor: pointer;
-        }
-        .settings-menu label {
-            display: block;
-            margin-bottom: 10px;
-        }
-        .settings-menu select, .settings-menu input[type="range"], .settings-menu input[type="color"] {
-            width: 100%;
-            margin-top: 5px;
         }
         .nav-buttons {
             position: absolute;
@@ -174,6 +132,24 @@
         .nav-buttons i {
             margin-right: 8px;
         }
+        .dark-mode-toggle {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+            z-index: 1000;
+        }
+        .dark-mode-toggle:hover {
+            background-color: #111;
+        }
         .dark-mode {
             background-color: #333;
             color: #fff;
@@ -184,12 +160,6 @@
         }
         .dark-mode .verse {
             background-color: #555;
-        }
-        /* Additional styles for loading and error messages */
-        .loading, .error {
-            padding: 20px;
-            font-size: 18px;
-            color: #ff0000;
         }
     </style>
 </head>
@@ -236,11 +206,13 @@
         </div>
     </div>
     <script>
+        // Toggle settings menu visibility
         function toggleSettingsMenu() {
             const menu = document.getElementById('settings-menu');
             menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
         }
 
+        // Toggle dark mode
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             const darkMode = document.body.classList.contains('dark-mode');
@@ -248,6 +220,7 @@
             applyDarkMode();
         }
 
+        // Apply dark mode settings
         function applyDarkMode() {
             const darkMode = document.body.classList.contains('dark-mode');
             if (darkMode) {
@@ -263,6 +236,7 @@
             }
         }
 
+        // Load settings from local storage
         function loadSettings() {
             const fontSize = localStorage.getItem('font-size') || '24';
             const fontFamily = localStorage.getItem('font-family') || 'Noto Sans Arabic-400';
@@ -280,6 +254,7 @@
             applySettings();
         }
 
+        // Apply settings to the page
         function applySettings() {
             const fontSize = document.getElementById('font-size-slider').value;
             const fontFamily = document.getElementById('font-family').value;
@@ -296,6 +271,7 @@
             document.querySelector('.container').style.fontFamily = fontFamilyName === 'Amiri Quran' ? '"Amiri Quran", serif' : `"Noto Sans Arabic", sans-serif`;
         }
 
+        // Save settings to local storage
         function saveSettings() {
             const fontSize = document.getElementById('font-size-slider').value;
             const fontFamily = document.getElementById('font-family').value;
@@ -308,6 +284,7 @@
             applySettings();
         }
 
+        // Event listeners for settings
         document.getElementById('font-size-slider').addEventListener('input', function() {
             document.getElementById('font-size-value').textContent = this.value + 'px';
             saveSettings();
@@ -318,27 +295,21 @@
             saveSettings();
         });
 
+        // Fetch Surah details
         async function fetchSurahDetails() {
             const urlParams = new URLSearchParams(window.location.search);
             const surahIndex = parseInt(urlParams.get('index'), 10);
 
             if (!surahIndex) {
-                document.body.innerHTML = '<p class="error">No Surah index specified.</p>';
+                document.body.innerHTML = '<p>No Surah index specified.</p>';
                 return;
             }
 
             const surahUrl = `https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah/surah_${surahIndex}.json`;
-            const translationUrl = `https://raw.githubusercontent.com/itzfew/Quranv2/main/source/translation/en/en_translation_${surahIndex}.json`;
-
-            document.querySelector('.container').innerHTML = '<p class="loading">Loading...</p>';
 
             try {
-                const [surahResponse, translationResponse] = await Promise.all([
-                    fetch(surahUrl),
-                    fetch(translationUrl)
-                ]);
+                const surahResponse = await fetch(surahUrl);
                 const surah = await surahResponse.json();
-                const translation = await translationResponse.json();
 
                 const surahName = document.getElementById('surah-name');
                 const surahArabicName = document.getElementById('surah-arabic-name');
@@ -359,7 +330,6 @@
                             <div class="verse">
                                 <span class="circle">${verseNumber}</span>
                                 ${surah.verse[key]}
-                                <div class="translation">${translation.verse[key]}</div>
                             </div>
                         `;
                     }).join('')}
@@ -379,7 +349,7 @@
 
             } catch (error) {
                 console.error('Error fetching surah details:', error);
-                document.body.innerHTML = '<p class="error">Error loading Surah details.</p>';
+                document.body.innerHTML = '<p>Error loading Surah details.</p>';
             }
         }
 
