@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #f0f4f8;
             margin: 0;
             padding: 0;
         }
@@ -27,7 +27,13 @@
         }
 
         h1 {
+            font-size: 28px;
+            color: #333;
+        }
+
+        h2 {
             font-size: 24px;
+            margin-bottom: 10px;
         }
 
         ul {
@@ -36,13 +42,18 @@
         }
 
         li {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            background-color: #fafafa;
             cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
         }
 
         li:hover {
-            background-color: #f0f0f0;
+            background-color: #e1e1e1;
+            border-color: #007BFF;
         }
 
         footer {
@@ -53,17 +64,37 @@
         }
 
         button {
-            margin-top: 20px;
             padding: 10px;
             background-color: #007BFF;
             color: #fff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
 
         button:hover {
             background-color: #0056b3;
+        }
+
+        .settings-container {
+            margin-top: 20px;
+        }
+
+        .settings-container label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .settings-container select, .settings-container input {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+
+        .settings-container select {
+            width: 100%;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -77,6 +108,23 @@
             <ul id="surahList">
                 <!-- Surah items will be populated here -->
             </ul>
+            <div class="settings-container">
+                <h3>Settings</h3>
+                <label for="fontSize">Font Size:</label>
+                <select id="fontSize">
+                    <option value="14px">Small</option>
+                    <option value="18px">Medium</option>
+                    <option value="22px" selected>Large</option>
+                </select>
+                <label for="fontFamily">Font Style:</label>
+                <select id="fontFamily">
+                    <option value="Arial" selected>Arial</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Courier New">Courier New</option>
+                </select>
+                <button id="saveSettings">Save Settings</button>
+            </div>
         </main>
         <footer>
             <p>&copy; 2024 Quran App</p>
@@ -85,7 +133,20 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const surahList = document.getElementById('surahList');
-            
+            const fontSizeSelect = document.getElementById('fontSize');
+            const fontFamilySelect = document.getElementById('fontFamily');
+            const saveSettingsButton = document.getElementById('saveSettings');
+
+            // Load settings from local storage
+            const savedFontSize = localStorage.getItem('fontSize') || '22px';
+            const savedFontFamily = localStorage.getItem('fontFamily') || 'Arial';
+            fontSizeSelect.value = savedFontSize;
+            fontFamilySelect.value = savedFontFamily;
+
+            document.body.style.fontSize = savedFontSize;
+            document.body.style.fontFamily = savedFontFamily;
+
+            // Fetch and display Surah list
             fetch('https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah.json')
                 .then(response => response.json())
                 .then(data => {
@@ -93,12 +154,22 @@
                         const li = document.createElement('li');
                         li.textContent = `${surah.titleAr} (${surah.title}) - Surah ${surah.index}`;
                         li.onclick = () => {
-                            window.location.href = `index.html?page=surah&index=${surah.index}`;
+                            window.location.href = `surah.html?index=${surah.index}`;
                         };
                         surahList.appendChild(li);
                     });
                 })
                 .catch(error => console.error('Error fetching Surah list:', error));
+
+            // Save settings
+            saveSettingsButton.addEventListener('click', () => {
+                const fontSize = fontSizeSelect.value;
+                const fontFamily = fontFamilySelect.value;
+                localStorage.setItem('fontSize', fontSize);
+                localStorage.setItem('fontFamily', fontFamily);
+                document.body.style.fontSize = fontSize;
+                document.body.style.fontFamily = fontFamily;
+            });
         });
     </script>
 </body>
