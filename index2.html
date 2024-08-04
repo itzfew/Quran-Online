@@ -27,6 +27,7 @@
             font-size: 2em;
             font-weight: bold;
             position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .header .back-btn,
         .header .settings-btn {
@@ -63,7 +64,7 @@
             padding: 20px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             max-width: 800px;
-            margin: 0 auto;
+            margin: 20px auto;
         }
         .surah-details h2 {
             font-size: 2.5em;
@@ -73,12 +74,20 @@
             padding: 10px;
             border-bottom: 2px solid #4CAF50;
             margin-bottom: 20px;
+            background: rgba(76, 175, 80, 0.1);
+        }
+        .info-section {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .info-section p {
+            margin: 10px 0;
         }
         .verse-zero {
             font-size: 2em;
             font-weight: bold;
-            color: #4CAF50;
-            background-color: #e8f5e9;
+            color: #ffffff;
+            background-color: #4CAF50;
             border: 2px solid #4CAF50;
             border-radius: 8px;
             padding: 15px;
@@ -102,6 +111,10 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             flex: 1;
             min-width: 150px;
+            transition: box-shadow 0.3s;
+        }
+        .verse-item:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .verse-number {
             font-size: 1.5em;
@@ -176,6 +189,30 @@
             border-radius: 8px;
             background-color: #f9f9f9;
         }
+        .settings-menu input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            background: #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+        .settings-menu input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #4CAF50;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .settings-menu input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #4CAF50;
+            border-radius: 50%;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -193,34 +230,27 @@
     </div>
 
     <!-- Settings Menu -->
-    <div id="settings-menu" class="settings-menu">
+    <div class="settings-menu" id="settings-menu">
         <h3>Settings</h3>
         <button class="close-btn" id="close-settings">Close</button>
-
         <label for="font-size">Font Size:</label>
-        <input type="range" id="font-size" min="12" max="24" value="16">
-
+        <input type="range" id="font-size" min="12" max="24" step="1" value="16">
         <label for="arabic-font">Arabic Font Style:</label>
         <select id="arabic-font">
-            <option value="">Default</option>
-            <option value="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap">Amiri</option>
-            <option value="https://fonts.googleapis.com/css2?family=Scheherazade:wght@400;700&display=swap">Scheherazade</option>
-            <option value="https://fonts.googleapis.com/css2?family=Lateef:wght@400;700&display=swap">Lateef</option>
-            <option value="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&display=swap">Almarai</option>
+            <option value="https://fonts.googleapis.com/css2?family=Amiri&display=swap">Amiri</option>
+            <option value="https://fonts.googleapis.com/css2?family=Scheherazade+New&display=swap">Scheherazade New</option>
+            <option value="https://fonts.googleapis.com/css2?family=Traditional+Arabic&display=swap">Traditional Arabic</option>
         </select>
-
         <label for="background-color">Background Color:</label>
         <input type="color" id="background-color" value="#f0f2f5">
-
         <label for="text-color">Text Color:</label>
         <input type="color" id="text-color" value="#333">
     </div>
 
     <script>
-        // Function to load user preferences from localStorage
         function loadPreferences() {
             const fontSize = localStorage.getItem('fontSize') || '16';
-            const arabicFont = localStorage.getItem('arabicFont') || '';
+            const arabicFont = localStorage.getItem('arabicFont') || 'https://fonts.googleapis.com/css2?family=Amiri&display=swap';
             const backgroundColor = localStorage.getItem('backgroundColor') || '#f0f2f5';
             const textColor = localStorage.getItem('textColor') || '#333';
 
@@ -229,15 +259,12 @@
             document.getElementById('background-color').value = backgroundColor;
             document.getElementById('text-color').value = textColor;
 
-            if (arabicFont) {
-                document.getElementById('arabic-font-style').href = arabicFont;
-            }
             document.documentElement.style.fontSize = `${fontSize}px`;
+            document.getElementById('arabic-font-style').href = arabicFont;
             document.body.style.backgroundColor = backgroundColor;
             document.body.style.color = textColor;
         }
 
-        // Function to save user preferences to localStorage
         function savePreferences() {
             const fontSize = document.getElementById('font-size').value;
             const arabicFont = document.getElementById('arabic-font').value;
@@ -276,7 +303,6 @@
             document.body.style.color = event.target.value;
         });
 
-        // Initialize page
         async function fetchSurahDetails() {
             const urlParams = new URLSearchParams(window.location.search);
             const surahIndex = urlParams.get('index');
