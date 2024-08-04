@@ -31,6 +31,43 @@
         .verse {
             font-size: 1.2em;
             margin-bottom: 10px;
+            text-align: left;
+            line-height: 1.6;
+        }
+        .navigation {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .settings {
+            margin-top: 20px;
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        select {
+            padding: 8px;
+            font-size: 1em;
+            border: 2px solid #4CAF50;
+            border-radius: 4px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -39,14 +76,29 @@
         <!-- Surah details will be inserted here -->
     </div>
 
-    <script>
-        async function fetchSurahDetails() {
-            try {
-                // Extract surah index from URL query parameter
-                const urlParams = new URLSearchParams(window.location.search);
-                const surahIndex = urlParams.get('index');
+    <div class="navigation">
+        <button class="btn" id="prev-btn">Previous</button>
+        <button class="btn" id="next-btn">Next</button>
+    </div>
 
-                // Fetch specific surah details
+    <div class="settings">
+        <label for="font-size">Font Size:</label>
+        <select id="font-size">
+            <option value="small">Small</option>
+            <option value="medium" selected>Medium</option>
+            <option value="large">Large</option>
+        </select>
+        <label for="font-family">Arabic Font:</label>
+        <select id="font-family">
+            <option value="traditional">Traditional</option>
+            <option value="amiri">Amiri</option>
+            <option value="lateef">Lateef</option>
+        </select>
+    </div>
+
+    <script>
+        async function fetchSurahDetails(surahIndex) {
+            try {
                 const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah/surah_${surahIndex}.json`);
                 const surahDetails = await response.json();
                 return surahDetails;
@@ -65,7 +117,7 @@
                 const juzIndex = surahDetails.juz[0].index;
                 const surahName = surahDetails.name;
 
-                let versesHtml = '<h1>' + surahName + '</h1>';
+                let versesHtml = `<h1>${surahName}</h1>`;
                 Object.keys(verses).forEach(key => {
                     versesHtml += `<p class="verse"><strong>${key}:</strong> ${verses[key]}</p>`;
                 });
@@ -79,8 +131,96 @@
         }
 
         async function init() {
-            const surahDetails = await fetchSurahDetails();
+            const urlParams = new URLSearchParams(window.location.search);
+            const surahIndex = urlParams.get('index');
+            let surahDetails = await fetchSurahDetails(surahIndex);
             renderSurahDetails(surahDetails);
+
+            const prevButton = document.getElementById('prev-btn');
+            const nextButton = document.getElementById('next-btn');
+            const fontSizeSelect = document.getElementById('font-size');
+            const fontFamilySelect = document.getElementById('font-family');
+
+            // Navigation buttons
+            prevButton.addEventListener('click', async () => {
+                const prevIndex = parseInt(surahIndex) - 1;
+                if (prevIndex >= 1) {
+                    surahDetails = await fetchSurahDetails(prevIndex);
+                    renderSurahDetails(surahDetails);
+                    history.pushState({}, '', `surah-details.html?index=${prevIndex}`);
+                }
+            });
+
+            nextButton.addEventListener('click', async () => {
+                const nextIndex = parseInt(surahIndex) + 1;
+                // Assuming a maximum number of surahs
+                if (nextIndex <= 114) {
+                    surahDetails = await fetchSurahDetails(nextIndex);
+                    renderSurahDetails(surahDetails);
+                    history.pushState({}, '', `surah-details.html?index=${nextIndex}`);
+                }
+            });
+
+            // Font size select
+            fontSizeSelect.addEventListener('change', () => {
+                const selectedFontSize = fontSizeSelect.value;
+                surahDetailsContainer.style.fontSize = selectedFontSize === 'small' ? '1em' :
+                                                      selectedFontSize === 'large' ? '1.4em' : '1.2em';
+            });
+
+            // Arabic font family select
+            fontFamilySelect.addEventListener('change', () => {
+                const selectedFontFamily = fontFamilySelect.value;
+                switch (selectedFontFamily) {
+                    case 'traditional':
+                        surahDetailsContainer.style.fontFamily = 'Amiri, serif';
+                        break;
+                    case 'amiri':
+                        surahDetailsContainer.style.fontFamily = 'Amiri, sans-serif';
+                        break;
+                    case 'lateef':
+                        surahDetailsContainer.style.fontFamily = 'Lateef, cursive';
+                        break;
+                    default:
+                        surahDetailsContainer.style.fontFamily = 'Amiri, serif';
+                }
+            });
+
+            // Restore user preferences if available in localStorage
+            const fontSizePref = localStorage.getItem('fontSize');
+            const fontFamilyPref = localStorage.getItem('fontFamily');
+
+            if (fontSizePref) {
+                fontSizeSelect.value = fontSizePref;
+                surahDetailsContainer.style.fontSize = fontSizePref === 'small' ? '1em' :
+                                                      fontSizePref === 'large' ? '1.4em' : '1.2em';
+            }
+
+            if (fontFamilyPref) {
+                fontFamilySelect.value = fontFamilyPref;
+                switch (fontFamilyPref) {
+                    case 'traditional':
+                        surahDetailsContainer.style.fontFamily = 'Amiri, serif';
+                        break;
+                    case 'amiri':
+                        surahDetailsContainer.style.fontFamily = 'Amiri, sans-serif';
+                        break;
+                    case 'lateef':
+                        surahDetailsContainer.style.fontFamily = 'Lateef, cursive';
+                        break;
+                    default:
+                        surahDetailsContainer.style.fontFamily = 'Amiri, serif';
+                }
+            }
+
+            // Save user preferences to localStorage
+            fontSizeSelect.addEventListener('change', () => {
+                localStorage.setItem('fontSize', fontSizeSelect.value);
+            });
+
+            fontFamilySelect.addEventListener('change', () => {
+                localStorage.setItem('fontFamily', fontFamilySelect.value);
+            });
         }
 
         init();
