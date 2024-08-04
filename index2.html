@@ -9,25 +9,37 @@
     <style>
         body {
             font-family: 'Roboto', Arial, sans-serif;
-            margin: 20px;
-            background-color: #f5f5dc;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
             color: #333;
         }
-        h1 {
-            color: #4CAF50;
-            font-size: 2.5em;
-            margin-bottom: 20px;
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: #ffffff;
+            padding: 20px;
             text-align: center;
+            font-size: 2em;
             font-weight: bold;
         }
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
         .surah-details {
-            max-width: 800px;
-            margin: 0 auto;
             background-color: #ffffff;
             border: 1px solid #ddd;
             border-radius: 12px;
             padding: 20px;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            max-width: 800px;
+            margin: 0 auto;
         }
         .surah-details h2 {
             font-size: 2.5em;
@@ -35,11 +47,10 @@
             margin: 0;
             text-align: center;
             padding: 10px;
-            border: 3px solid #4CAF50;
-            border-radius: 8px;
-            background-color: #e8f5e9;
+            border-bottom: 2px solid #4CAF50;
+            margin-bottom: 20px;
         }
-        .surah-details .info-section {
+        .info-section {
             margin-bottom: 20px;
             padding: 15px;
             background-color: #e8f5e9;
@@ -47,7 +58,7 @@
             border: 2px solid #4CAF50;
             text-align: center;
         }
-        .surah-details .info-section p {
+        .info-section p {
             margin: 10px 0;
             font-size: 1.2em;
             font-weight: bold;
@@ -69,13 +80,15 @@
             font-size: 1.2em;
             margin: 5px 0;
             padding: 10px;
-            background-color: #fafafa;
+            background-color: #ffffff;
             border: 1px solid #ddd;
             border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .back-button {
-            display: inline-block;
-            margin-top: 20px;
+        .settings-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
             padding: 12px 20px;
             font-size: 1.2em;
             color: #ffffff;
@@ -86,8 +99,9 @@
             text-align: center;
             font-weight: bold;
             transition: background-color 0.3s, transform 0.3s;
+            cursor: pointer;
         }
-        .back-button:hover {
+        .settings-btn:hover {
             background: linear-gradient(45deg, #45a049, #2c6c2f);
             transform: scale(1.05);
         }
@@ -113,10 +127,13 @@
         .settings-menu h3 {
             margin-top: 0;
             color: #4CAF50;
+            font-size: 1.8em;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 10px;
         }
         .settings-menu button.close-btn {
             display: block;
-            margin: 0 auto;
+            margin: 20px auto 0;
             padding: 10px 20px;
             background: #4CAF50;
             color: #ffffff;
@@ -133,23 +150,30 @@
             display: block;
             margin: 10px 0;
             font-size: 1.2em;
+            color: #333;
         }
         .settings-menu select, .settings-menu input[type="range"] {
-            width: 100%;
+            width: calc(100% - 20px);
             padding: 10px;
             margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
         }
     </style>
 </head>
 <body>
-    <h1>Surah Details</h1>
-    <div class="surah-details" id="surah-details">
-        <!-- Surah details will be inserted here -->
+    <div class="app-container">
+        <div class="header">
+            Surah Details
+        </div>
+        <div class="main-content">
+            <div class="surah-details" id="surah-details">
+                <!-- Surah details will be inserted here -->
+            </div>
+            <button id="settings-btn" class="settings-btn">Settings</button>
+        </div>
     </div>
-    <a href="index.html" class="back-button">Back to Surah List</a>
-
-    <!-- Settings Button -->
-    <button id="settings-btn" class="back-button">Settings</button>
 
     <!-- Settings Menu -->
     <div id="settings-menu" class="settings-menu">
@@ -214,18 +238,17 @@
             const urlParams = new URLSearchParams(window.location.search);
             const surahIndex = urlParams.get('index');
             const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah/surah_${surahIndex}.json`);
-            const surahData = await response.json();
-            return surahData;
+            const surah = await response.json();
+            return surah;
         }
 
         function renderSurahDetails(surah) {
             const surahDetails = document.getElementById('surah-details');
             surahDetails.innerHTML = `
+                <h2>${surah.name} (Surah ${surah.index})</h2>
                 <div class="info-section">
-                    <h2>${surah.name}</h2>
-                    <p>Surah Index: <span class="bold">${surah.index}</span></p>
-                    <p>Number of Verses: <span class="bold">${surah.count}</span></p>
-                    <p>Juz: ${surah.juz.map(j => `<span class="bold">Juz ${j.index} (Verses ${j.verse.start.replace('verse_', '')} to ${j.verse.end.replace('verse_', '')})</span>`).join(', ')}</p>
+                    <p><strong>Number of Verses:</strong> ${surah.count}</p>
+                    <p><strong>Juz:</strong> ${surah.juz.map(j => `(${j.index}) from ${j.verse.start.replace('verse_', '')} to ${j.verse.end.replace('verse_', '')}`).join(', ')}</p>
                 </div>
                 ${Object.keys(surah.verse).map(key => `
                     <div>
