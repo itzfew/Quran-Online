@@ -74,19 +74,34 @@
             border-bottom: 2px solid #4CAF50;
             margin-bottom: 20px;
         }
-        .info-section {
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #e8f5e9;
-            border-radius: 8px;
-            border: 2px solid #4CAF50;
-            text-align: center;
-        }
-        .info-section p {
-            margin: 10px 0;
-            font-size: 1.2em;
+        .verse-zero {
+            font-size: 2em;
             font-weight: bold;
-            color: #333;
+            color: #4CAF50;
+            background-color: #e8f5e9;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: block;
+        }
+        .verse-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .verse-item {
+            display: flex;
+            align-items: center;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            min-width: 150px;
         }
         .verse-number {
             font-size: 1.5em;
@@ -96,18 +111,17 @@
             border: 2px solid #4CAF50;
             border-radius: 8px;
             padding: 10px;
-            margin: 10px 0;
+            margin-right: 10px;
             text-align: center;
-            display: inline-block;
+            width: 40px;
         }
         .verse-text {
             font-size: 1.2em;
-            margin: 5px 0;
             padding: 10px;
             background-color: #ffffff;
             border: 1px solid #ddd;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            flex: 1;
         }
         .settings-menu {
             position: fixed;
@@ -279,12 +293,15 @@
                     <p><strong>Number of Verses:</strong> ${surah.count}</p>
                     <p><strong>Juz:</strong> ${surah.juz.map(j => `(${j.index}) from ${j.verse.start.replace('verse_', '')} to ${j.verse.end.replace('verse_', '')}`).join(', ')}</p>
                 </div>
-                ${Object.keys(surah.verse).map(key => `
-                    <div>
-                        <div class="verse-number">${key.replace('verse_', '')}</div>
-                        <div class="verse-text">${surah.verse[key]}</div>
-                    </div>
-                `).join('')}
+                <div class="verse-zero">${surah.verse.verse_0}</div>
+                <div class="verse-container">
+                    ${Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => `
+                        <div class="verse-item">
+                            <div class="verse-number">${key.replace('verse_', '')}</div>
+                            <div class="verse-text">${surah.verse[key]}</div>
+                        </div>
+                    `).join('')}
+                </div>
             `;
         }
 
