@@ -10,15 +10,19 @@
         integrity="sha512-3KQ1/J/a4qXCu1KlJHvz+B/RCkeDSU05AdCtP0jq3Iee34gK8gA7sn0Nel/Vj6jqjxbCrH0I7QkbQ32aKKv8vg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Google Fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital@0;1&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <style>
-        /* Global styles */
-        body {
-            font-family: 'Amiri', serif;
+        /* Reset and base styles */
+        * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            background-color: #f9f7f7;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
             color: #333;
             line-height: 1.6;
             display: flex;
@@ -27,63 +31,54 @@
             min-height: 100vh;
         }
 
-        /* Surah details container */
-        .surah-details {
-            width: 90%;
+        .container {
+            width: 100%;
             max-width: 800px;
-            background-color: #ffffff;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            margin-bottom: 20px;
-            overflow-y: auto;
-            max-height: calc(100vh - 200px); /* Adjust for the settings panel and navigation */
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            overflow: hidden;
         }
 
-        /* Surah name heading */
         h1 {
             font-size: 2.5em;
+            font-weight: 700;
+            color: #e74c3c;
             margin-bottom: 20px;
-            font-weight: bold;
-            color: #4CAF50; /* Green header */
+            text-align: center;
         }
 
-        /* Individual verse style */
-        .verse {
-            font-size: 1.2em;
+        p {
+            font-size: 1.1em;
+            line-height: 1.8;
             margin-bottom: 10px;
             text-align: justify;
-            padding: 12px;
-            border-radius: 8px;
+        }
+
+        .verse {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #ecf0f1;
+            border-left: 4px solid #e74c3c;
             transition: background-color 0.3s;
-            cursor: pointer;
-            background-color: #f0f0f0; /* Light gray background */
         }
 
-        /* Verse hover effect */
         .verse:hover {
-            background-color: #e0e0e0; /* Slightly darker gray on hover */
+            background-color: #d2d7d3;
         }
 
-        /* Green highlighted verse */
-        .highlighted {
-            background-color: #4CAF50; /* Green highlight */
-            color: #ffffff; /* White text */
-        }
-
-        /* Navigation buttons container */
         .navigation {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 20px;
+            margin-top: 20px;
         }
 
-        /* Generic button style */
         .btn {
-            padding: 12px 24px;
-            background-color: #4CAF50; /* Green buttons */
-            color: #ffffff;
+            padding: 12px 20px;
+            background-color: #e74c3c;
+            color: #fff;
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -91,60 +86,54 @@
             transition: background-color 0.3s;
         }
 
-        /* Button hover effect */
         .btn:hover {
-            background-color: #45a049; /* Darker green on hover */
+            background-color: #c0392b;
         }
 
-        /* Settings button */
         .settings-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-            font-size: 1.5em;
-            color: #888;
-            transition: color 0.3s;
-        }
-
-        /* Settings button hover effect */
-        .settings-btn:hover {
-            color: #555;
-        }
-
-        /* Settings panel */
-        .settings-panel {
             position: fixed;
             top: 20px;
             right: 20px;
-            background-color: #ffffff;
+            font-size: 1.5em;
+            color: #e74c3c;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .settings-btn:hover {
+            color: #c0392b;
+        }
+
+        .settings-panel {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background-color: #fff;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             display: none;
             z-index: 1000;
         }
 
-        /* Settings panel open state */
         .settings-panel.open {
             display: block;
         }
 
-        /* Settings panel label */
         .settings-panel label {
             display: block;
             margin-bottom: 8px;
-            font-weight: bold;
-            color: #555;
+            font-weight: 700;
+            color: #333;
         }
 
-        /* Settings panel select dropdown */
         .settings-panel select {
+            width: 100%;
             padding: 10px;
             font-size: 1em;
-            border: 2px solid #4CAF50;
+            border: 2px solid #e74c3c;
             border-radius: 4px;
-            background-color: #ffffff;
+            background-color: #f9f9f9;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin-bottom: 10px;
         }
@@ -173,15 +162,16 @@
         <button class="btn" id="close-settings-btn">Close</button>
     </div>
 
-    <!-- Surah details container -->
-    <div class="surah-details" id="surah-details">
-        <!-- Surah details will be inserted here -->
-    </div>
-
-    <!-- Navigation buttons container -->
-    <div class="navigation">
-        <button class="btn" id="prev-btn">Previous</button>
-        <button class="btn" id="next-btn">Next</button>
+    <!-- Main container for surah details -->
+    <div class="container">
+        <h1>Surah Details</h1>
+        <div id="surah-details">
+            <!-- Surah details will be inserted here -->
+        </div>
+        <div class="navigation">
+            <button class="btn" id="prev-btn">Previous</button>
+            <button class="btn" id="next-btn">Next</button>
+        </div>
     </div>
 
     <!-- Font Awesome JavaScript -->
@@ -213,7 +203,7 @@
                 const juzIndex = surahDetails.juz[0].index;
                 const surahName = surahDetails.name;
 
-                let versesHtml = `<h1>${surahName}</h1>`;
+                let versesHtml = `<h2>${surahName}</h2>`;
                 Object.keys(verses).forEach(key => {
                     const verseContent = verses[key];
                     versesHtml += `<p class="verse">${verseContent}</p>`;
@@ -257,7 +247,6 @@
             // Next button click event
             nextButton.addEventListener('click', async () => {
                 const nextIndex = parseInt(surahIndex) + 1;
-                // Assuming a maximum number of surahs
                 if (nextIndex <= 114) {
                     surahDetails = await fetchSurahDetails(nextIndex);
                     renderSurahDetails(surahDetails);
