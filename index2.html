@@ -26,6 +26,30 @@
             text-align: center;
             font-size: 2em;
             font-weight: bold;
+            position: relative;
+        }
+        .header .back-btn,
+        .header .settings-btn {
+            position: absolute;
+            top: 20px;
+            font-size: 1.2em;
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.3);
+            border: none;
+            border-radius: 25px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .header .back-btn {
+            left: 20px;
+        }
+        .header .settings-btn {
+            right: 20px;
+        }
+        .header .back-btn:hover,
+        .header .settings-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
         }
         .main-content {
             flex: 1;
@@ -85,33 +109,11 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .settings-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            padding: 12px 20px;
-            font-size: 1.2em;
-            color: #ffffff;
-            background: linear-gradient(45deg, #4CAF50, #2c6c2f);
-            border: none;
-            border-radius: 25px;
-            text-decoration: none;
-            text-align: center;
-            font-weight: bold;
-            transition: background-color 0.3s, transform 0.3s;
-            cursor: pointer;
-        }
-        .settings-btn:hover {
-            background: linear-gradient(45deg, #45a049, #2c6c2f);
-            transform: scale(1.05);
-        }
-
-        /* Settings Menu Styles */
         .settings-menu {
             position: fixed;
             top: 0;
             right: 0;
-            width: 300px;
+            width: 350px;
             height: 100%;
             background-color: #ffffff;
             border-left: 2px solid #4CAF50;
@@ -152,7 +154,7 @@
             font-size: 1.2em;
             color: #333;
         }
-        .settings-menu select, .settings-menu input[type="range"] {
+        .settings-menu select, .settings-menu input[type="range"], .settings-menu input[type="color"] {
             width: calc(100% - 20px);
             padding: 10px;
             margin-top: 5px;
@@ -165,13 +167,14 @@
 <body>
     <div class="app-container">
         <div class="header">
+            <button class="back-btn" onclick="window.history.back()">Back to Surah List</button>
             Surah Details
+            <button id="settings-btn" class="settings-btn">Settings</button>
         </div>
         <div class="main-content">
             <div class="surah-details" id="surah-details">
                 <!-- Surah details will be inserted here -->
             </div>
-            <button id="settings-btn" class="settings-btn">Settings</button>
         </div>
     </div>
 
@@ -179,16 +182,24 @@
     <div id="settings-menu" class="settings-menu">
         <h3>Settings</h3>
         <button class="close-btn" id="close-settings">Close</button>
-        
+
         <label for="font-size">Font Size:</label>
         <input type="range" id="font-size" min="12" max="24" value="16">
-        
+
         <label for="arabic-font">Arabic Font Style:</label>
         <select id="arabic-font">
             <option value="">Default</option>
             <option value="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap">Amiri</option>
             <option value="https://fonts.googleapis.com/css2?family=Scheherazade:wght@400;700&display=swap">Scheherazade</option>
+            <option value="https://fonts.googleapis.com/css2?family=Lateef:wght@400;700&display=swap">Lateef</option>
+            <option value="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&display=swap">Almarai</option>
         </select>
+
+        <label for="background-color">Background Color:</label>
+        <input type="color" id="background-color" value="#f0f2f5">
+
+        <label for="text-color">Text Color:</label>
+        <input type="color" id="text-color" value="#333">
     </div>
 
     <script>
@@ -196,44 +207,62 @@
         function loadPreferences() {
             const fontSize = localStorage.getItem('fontSize') || '16';
             const arabicFont = localStorage.getItem('arabicFont') || '';
+            const backgroundColor = localStorage.getItem('backgroundColor') || '#f0f2f5';
+            const textColor = localStorage.getItem('textColor') || '#333';
 
             document.getElementById('font-size').value = fontSize;
             document.getElementById('arabic-font').value = arabicFont;
+            document.getElementById('background-color').value = backgroundColor;
+            document.getElementById('text-color').value = textColor;
+
             if (arabicFont) {
                 document.getElementById('arabic-font-style').href = arabicFont;
             }
             document.documentElement.style.fontSize = `${fontSize}px`;
+            document.body.style.backgroundColor = backgroundColor;
+            document.body.style.color = textColor;
         }
 
         // Function to save user preferences to localStorage
         function savePreferences() {
             const fontSize = document.getElementById('font-size').value;
             const arabicFont = document.getElementById('arabic-font').value;
+            const backgroundColor = document.getElementById('background-color').value;
+            const textColor = document.getElementById('text-color').value;
 
             localStorage.setItem('fontSize', fontSize);
             localStorage.setItem('arabicFont', arabicFont);
-            if (arabicFont) {
-                document.getElementById('arabic-font-style').href = arabicFont;
-            }
-            document.documentElement.style.fontSize = `${fontSize}px`;
+            localStorage.setItem('backgroundColor', backgroundColor);
+            localStorage.setItem('textColor', textColor);
         }
 
-        // Show or hide the settings menu
         document.getElementById('settings-btn').addEventListener('click', () => {
             document.getElementById('settings-menu').classList.add('open');
         });
 
         document.getElementById('close-settings').addEventListener('click', () => {
             document.getElementById('settings-menu').classList.remove('open');
+            savePreferences();
         });
 
-        // Save preferences when settings change
-        document.getElementById('font-size').addEventListener('input', savePreferences);
-        document.getElementById('arabic-font').addEventListener('change', savePreferences);
+        document.getElementById('font-size').addEventListener('input', () => {
+            document.documentElement.style.fontSize = `${document.getElementById('font-size').value}px`;
+        });
 
-        // Initialize preferences
-        loadPreferences();
+        document.getElementById('arabic-font').addEventListener('change', (event) => {
+            const fontUrl = event.target.value;
+            document.getElementById('arabic-font-style').href = fontUrl;
+        });
 
+        document.getElementById('background-color').addEventListener('input', (event) => {
+            document.body.style.backgroundColor = event.target.value;
+        });
+
+        document.getElementById('text-color').addEventListener('input', (event) => {
+            document.body.style.color = event.target.value;
+        });
+
+        // Initialize page
         async function fetchSurahDetails() {
             const urlParams = new URLSearchParams(window.location.search);
             const surahIndex = urlParams.get('index');
@@ -260,6 +289,7 @@
         }
 
         async function init() {
+            loadPreferences();
             const surah = await fetchSurahDetails();
             renderSurahDetails(surah);
         }
