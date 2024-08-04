@@ -27,6 +27,8 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
             margin-bottom: 20px;
+            overflow-y: auto; /* Enable vertical scrolling */
+            max-height: 80vh; /* Limit height for scrolling */
         }
         h1 {
             color: #4CAF50; /* Green header */
@@ -38,12 +40,14 @@
             font-size: 1.2em;
             margin-bottom: 10px;
             text-align: left;
-            padding: 10px;
+            padding: 12px;
             border-radius: 8px;
             transition: background-color 0.3s;
+            cursor: pointer;
+            background-color: #f0f0f0; /* Light gray background */
         }
         .verse:hover {
-            background-color: #f0f0f0; /* Light gray on hover */
+            background-color: #e0e0e0; /* Slightly darker gray on hover */
         }
         .highlighted {
             background-color: #4CAF50; /* Green highlight */
@@ -69,6 +73,7 @@
         }
         .settings {
             text-align: center;
+            margin-bottom: 20px;
         }
         label {
             display: block;
@@ -241,15 +246,6 @@
                         surahDetailsContainer.style.fontFamily = 'Amiri, serif';
                 }
             }
-
-            // Save user preferences to localStorage
-            fontSizeSelect.addEventListener('change', () => {
-                localStorage.setItem('fontSize', fontSizeSelect.value);
-            });
-
-            fontFamilySelect.addEventListener('change', () => {
-                localStorage.setItem('fontFamily', fontFamilySelect.value);
-            });
         }
 
         init();
