@@ -6,6 +6,7 @@
     <title>Surah Details</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <link id="arabic-font-style" rel="stylesheet" href="">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Roboto', Arial, sans-serif;
@@ -51,6 +52,28 @@
         .header .back-btn:hover,
         .header .settings-btn:hover {
             background: rgba(0, 0, 0, 0.5);
+        }
+        .header .nav-btns {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+        }
+        .header .nav-btn {
+            background: #ffffff;
+            border: 2px solid #4CAF50;
+            color: #4CAF50;
+            font-size: 1.2em;
+            border-radius: 50%;
+            padding: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .header .nav-btn:hover {
+            background: #4CAF50;
+            color: #ffffff;
         }
         .main-content {
             flex: 1;
@@ -202,9 +225,13 @@
 <body>
     <div class="app-container">
         <div class="header">
-            <button class="back-btn" onclick="window.history.back()">Back to Surah List</button>
+            <button class="back-btn" onclick="window.history.back()"><i class="fas fa-arrow-left"></i></button>
             Surah Details
-            <button id="settings-btn" class="settings-btn">Settings</button>
+            <button id="settings-btn" class="settings-btn"><i class="fas fa-cog"></i></button>
+            <div class="nav-btns">
+                <button id="prev-surah" class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                <button id="next-surah" class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
         </div>
         <div class="main-content">
             <div class="surah-details" id="surah-details">
@@ -221,29 +248,32 @@
         <input type="range" id="font-size" min="12" max="24" step="1" value="16">
         <label for="arabic-font">Arabic Font Style:</label>
         <select id="arabic-font">
-            <option value="https://fonts.googleapis.com/css2?family=Amiri&display=swap">Amiri</option>
-            <option value="https://fonts.googleapis.com/css2?family=Scheherazade+New&display=swap">Scheherazade New</option>
-            <option value="https://fonts.googleapis.com/css2?family=Traditional+Arabic&display=swap">Traditional Arabic</option>
+            <option value="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400&display=swap">Scheherazade New</option>
+            <option value="https://fonts.googleapis.com/css2?family=Amiri:wght@400&display=swap">Amiri</option>
+            <option value="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400&display=swap">Noto Sans Arabic</option>
+            <option value="https://fonts.googleapis.com/css2?family=Harmattan:wght@400&display=swap">Harmattan</option>
         </select>
         <label for="background-color">Background Color:</label>
         <input type="color" id="background-color" value="#f0f2f5">
         <label for="text-color">Text Color:</label>
-        <input type="color" id="text-color" value="#333">
+        <input type="color" id="text-color" value="#333333">
     </div>
 
     <script>
         function loadPreferences() {
-            const fontSize = localStorage.getItem('fontSize') || '16';
-            const arabicFont = localStorage.getItem('arabicFont') || 'https://fonts.googleapis.com/css2?family=Amiri&display=swap';
+            const fontSize = localStorage.getItem('fontSize') || 16;
+            const arabicFont = localStorage.getItem('arabicFont') || 'https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400&display=swap';
             const backgroundColor = localStorage.getItem('backgroundColor') || '#f0f2f5';
-            const textColor = localStorage.getItem('textColor') || '#333';
+            const textColor = localStorage.getItem('textColor') || '#333333';
 
             document.getElementById('font-size').value = fontSize;
             document.getElementById('arabic-font').value = arabicFont;
             document.getElementById('background-color').value = backgroundColor;
             document.getElementById('text-color').value = textColor;
 
-            document.documentElement.style.fontSize = `${fontSize}px`;
+            document.querySelectorAll('.verse-text').forEach(verse => {
+                verse.style.fontSize = `${fontSize}px`;
+            });
             document.getElementById('arabic-font-style').href = arabicFont;
             document.body.style.backgroundColor = backgroundColor;
             document.body.style.color = textColor;
@@ -319,6 +349,20 @@
             loadPreferences();
             const surah = await fetchSurahDetails();
             renderSurahDetails(surah);
+
+            document.getElementById('prev-surah').addEventListener('click', () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const currentIndex = parseInt(urlParams.get('index'));
+                const prevIndex = currentIndex > 1 ? currentIndex - 1 : 1;
+                window.location.href = `surah-details.html?index=${prevIndex}`;
+            });
+
+            document.getElementById('next-surah').addEventListener('click', () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const currentIndex = parseInt(urlParams.get('index'));
+                const nextIndex = currentIndex < 114 ? currentIndex + 1 : 114;
+                window.location.href = `surah-details.html?index=${nextIndex}`;
+            });
         }
 
         init();
