@@ -149,6 +149,7 @@
             flex: 1;
             width: 100%;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-family: 'Scheherazade New', serif; /* Fallback font-family */
         }
         .settings-menu {
             position: fixed;
@@ -247,7 +248,6 @@
     </div>
     <div id="settings-menu" class="settings-menu">
         <h3>Settings</h3>
-        <button id="close-settings" class="close-btn">Close</button>
         <label for="font-size">Font Size:</label>
         <input type="range" id="font-size" min="12" max="30" step="1" value="16">
         <label for="arabic-font">Arabic Font Style:</label>
@@ -259,6 +259,7 @@
         </select>
         <label for="text-color">Text Color:</label>
         <input type="color" id="text-color" value="#333333">
+        <button id="close-settings" class="close-btn">Close</button>
     </div>
     <script>
         function loadPreferences() {
