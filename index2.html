@@ -1,64 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surah Details</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-3KQ1/J/a4qXCu1KlJHvz+B/RCkeDSU05AdCtP0jq3Iee34gK8gA7sn0Nel/Vj6jqjxbCrH0I7QkbQ32aKKv8vg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-3KQ1/J/a4qXCu1KlJHvz+B/RCkeDSU05AdCtP0jq3Iee34gK8gA7sn0Nel/Vj6jqjxbCrH0I7QkbQ32aKKv8vg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Google Fonts -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:ital@0;1&display=swap">
+    <!-- Custom CSS -->
     <style>
+        /* Global styles */
         body {
             font-family: 'Amiri', serif;
             margin: 0;
             padding: 0;
-            background-color: #f9f7f7; /* Light background color */
+            background-color: #f9f7f7;
             color: #333;
             line-height: 1.6;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
         }
+
+        /* Surah details container */
         .surah-details {
             width: 90%;
-            max-width: 600px;
-            background-color: #ffffff; /* White background */
+            max-width: 800px;
+            background-color: #ffffff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
             margin-bottom: 20px;
-            overflow-y: auto; /* Enable vertical scrolling */
-            max-height: 80vh; /* Limit height for scrolling */
+            overflow-y: auto;
+            max-height: calc(100vh - 200px); /* Adjust for the settings panel and navigation */
         }
+
+        /* Surah name heading */
         h1 {
-            color: #4CAF50; /* Green header */
             font-size: 2.5em;
             margin-bottom: 20px;
             font-weight: bold;
+            color: #4CAF50; /* Green header */
         }
+
+        /* Individual verse style */
         .verse {
             font-size: 1.2em;
             margin-bottom: 10px;
-            text-align: left;
+            text-align: justify;
             padding: 12px;
             border-radius: 8px;
             transition: background-color 0.3s;
             cursor: pointer;
             background-color: #f0f0f0; /* Light gray background */
         }
+
+        /* Verse hover effect */
         .verse:hover {
             background-color: #e0e0e0; /* Slightly darker gray on hover */
         }
+
+        /* Green highlighted verse */
         .highlighted {
             background-color: #4CAF50; /* Green highlight */
             color: #ffffff; /* White text */
         }
+
+        /* Navigation buttons container */
         .navigation {
             display: flex;
             justify-content: space-between;
             margin-bottom: 20px;
         }
+
+        /* Generic button style */
         .btn {
             padding: 12px 24px;
             background-color: #4CAF50; /* Green buttons */
@@ -69,9 +90,13 @@
             font-size: 1em;
             transition: background-color 0.3s;
         }
+
+        /* Button hover effect */
         .btn:hover {
             background-color: #45a049; /* Darker green on hover */
         }
+
+        /* Settings button */
         .settings-btn {
             position: absolute;
             top: 20px;
@@ -81,9 +106,13 @@
             color: #888;
             transition: color 0.3s;
         }
+
+        /* Settings button hover effect */
         .settings-btn:hover {
             color: #555;
         }
+
+        /* Settings panel */
         .settings-panel {
             position: fixed;
             top: 20px;
@@ -95,15 +124,21 @@
             display: none;
             z-index: 1000;
         }
+
+        /* Settings panel open state */
         .settings-panel.open {
             display: block;
         }
+
+        /* Settings panel label */
         .settings-panel label {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
             color: #555;
         }
+
+        /* Settings panel select dropdown */
         .settings-panel select {
             padding: 10px;
             font-size: 1em;
@@ -115,9 +150,12 @@
         }
     </style>
 </head>
+
 <body>
+    <!-- Settings button -->
     <i class="fas fa-cog settings-btn" id="settings-btn"></i>
 
+    <!-- Settings panel -->
     <div class="settings-panel" id="settings-panel">
         <label for="font-size">Font Size:</label>
         <select id="font-size">
@@ -135,17 +173,25 @@
         <button class="btn" id="close-settings-btn">Close</button>
     </div>
 
+    <!-- Surah details container -->
     <div class="surah-details" id="surah-details">
         <!-- Surah details will be inserted here -->
     </div>
 
+    <!-- Navigation buttons container -->
     <div class="navigation">
         <button class="btn" id="prev-btn">Previous</button>
         <button class="btn" id="next-btn">Next</button>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js" integrity="sha512-p2b+MZP4N0bQcP8+0bZw0K83S6HVtqlY+Kd0mZQTX/NM2lC8l9aHbMzW+DjE22+05m+9T+izvBESjy/gJzgUow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Font Awesome JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"
+        integrity="sha512-p2b+MZP4N0bQcP8+0bZw0K83S6HVtqlY+Kd0mZQTX/NM2lC8l9aHbMzW+DjE22+05m+9T+izvBESjy/gJzgUow=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- JavaScript for functionality -->
     <script>
+        // Function to fetch Surah details
         async function fetchSurahDetails(surahIndex) {
             try {
                 const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah/surah_${surahIndex}.json`);
@@ -157,6 +203,7 @@
             }
         }
 
+        // Function to render Surah details
         function renderSurahDetails(surahDetails) {
             const surahDetailsContainer = document.getElementById('surah-details');
             surahDetailsContainer.innerHTML = '';
@@ -180,12 +227,14 @@
             }
         }
 
+        // Initialization function
         async function init() {
             const urlParams = new URLSearchParams(window.location.search);
             const surahIndex = urlParams.get('index');
             let surahDetails = await fetchSurahDetails(surahIndex);
             renderSurahDetails(surahDetails);
 
+            // Select DOM elements
             const prevButton = document.getElementById('prev-btn');
             const nextButton = document.getElementById('next-btn');
             const fontSizeSelect = document.getElementById('font-size');
@@ -195,7 +244,7 @@
             const applySettingsBtn = document.getElementById('apply-settings-btn');
             const closeSettingsBtn = document.getElementById('close-settings-btn');
 
-            // Navigation buttons
+            // Previous button click event
             prevButton.addEventListener('click', async () => {
                 const prevIndex = parseInt(surahIndex) - 1;
                 if (prevIndex >= 1) {
@@ -205,6 +254,7 @@
                 }
             });
 
+            // Next button click event
             nextButton.addEventListener('click', async () => {
                 const nextIndex = parseInt(surahIndex) + 1;
                 // Assuming a maximum number of surahs
@@ -215,20 +265,20 @@
                 }
             });
 
-            // Settings button
+            // Settings button click event
             settingsBtn.addEventListener('click', () => {
                 settingsPanel.classList.toggle('open');
             });
 
-            // Apply settings button
+            // Apply settings button click event
             applySettingsBtn.addEventListener('click', () => {
                 const selectedFontSize = fontSizeSelect.value;
                 const selectedFontFamily = fontFamilySelect.value;
 
-                // Apply font size
+                // Apply font size to body
                 document.body.style.fontSize = selectedFontSize;
 
-                // Apply Arabic font family
+                // Apply Arabic font family to html root element
                 if (selectedFontFamily === 'amiri') {
                     document.documentElement.style.fontFamily = 'Amiri, serif';
                 } else if (selectedFontFamily === 'lateef') {
@@ -245,12 +295,12 @@
                 settingsPanel.classList.remove('open');
             });
 
-            // Close settings button
+            // Close settings button click event
             closeSettingsBtn.addEventListener('click', () => {
                 settingsPanel.classList.remove('open');
             });
 
-            // Restore settings from localStorage
+            // Restore settings from localStorage on page load
             const storedFontSize = localStorage.getItem('fontSize');
             const storedFontFamily = localStorage.getItem('fontFamily');
 
@@ -271,7 +321,9 @@
             }
         }
 
+        // Initialize the page
         init();
     </script>
 </body>
+
 </html>
