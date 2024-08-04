@@ -26,6 +26,7 @@
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
+            margin-bottom: 20px;
         }
         h1 {
             color: #4CAF50; /* Green header */
@@ -37,11 +38,21 @@
             font-size: 1.2em;
             margin-bottom: 10px;
             text-align: left;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+        .verse:hover {
+            background-color: #f0f0f0; /* Light gray on hover */
+        }
+        .highlighted {
+            background-color: #4CAF50; /* Green highlight */
+            color: #ffffff; /* White text */
         }
         .navigation {
-            margin-top: 20px;
             display: flex;
             justify-content: space-between;
+            margin-bottom: 20px;
         }
         .btn {
             padding: 12px 24px;
@@ -57,7 +68,6 @@
             background-color: #45a049; /* Darker green on hover */
         }
         .settings {
-            margin-top: 20px;
             text-align: center;
         }
         label {
@@ -124,7 +134,8 @@
 
                 let versesHtml = `<h1>${surahName}</h1>`;
                 Object.keys(verses).forEach(key => {
-                    versesHtml += `<p class="verse"><strong>${key}:</strong> ${verses[key]}</p>`;
+                    const verseContent = verses[key];
+                    versesHtml += `<p class="verse">${verseContent}</p>`;
                 });
 
                 versesHtml += `<p><strong>Juz:</strong> ${juzIndex}</p>`;
@@ -188,6 +199,19 @@
                         break;
                     default:
                         surahDetailsContainer.style.fontFamily = 'Amiri, serif';
+                }
+            });
+
+            // Highlight and scroll to verse on click
+            surahDetailsContainer.addEventListener('click', (event) => {
+                const verseClicked = event.target;
+                if (verseClicked.classList.contains('verse')) {
+                    const allVerses = document.querySelectorAll('.verse');
+                    allVerses.forEach(verse => {
+                        verse.classList.remove('highlighted');
+                    });
+                    verseClicked.classList.add('highlighted');
+                    verseClicked.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             });
 
