@@ -32,10 +32,51 @@
             font-size: 2em;
             color: #4CAF50;
             margin: 0 0 10px;
+            text-align: center;
+            padding: 10px;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            background-color: #e8f5e9;
         }
         .surah-details p {
             font-size: 1.2em;
             margin: 5px 0;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        .verse-number {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #4CAF50;
+            background-color: #e8f5e9;
+            border: 2px solid #4CAF50;
+            border-radius: 8px;
+            padding: 5px 10px;
+            margin: 10px 0;
+            text-align: center;
+            display: inline-block;
+        }
+        .verse-text {
+            font-size: 1.1em;
+            margin: 5px 0;
+            padding: 10px;
+            background-color: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .surah-details .info-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            border: 2px solid #4CAF50;
+        }
+        .surah-details .info-section p {
+            margin: 5px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
         }
         .back-button {
             display: inline-block;
@@ -77,13 +118,18 @@
         function renderSurahDetails(surah) {
             const surahDetails = document.getElementById('surah-details');
             surahDetails.innerHTML = `
-                <h2>${surah.name}</h2>
-                <p class="bold">Surah Index: ${surah.index}</p>
-                <p class="bold">Number of Verses: ${surah.count}</p>
-                <p class="bold">Juz: ${surah.juz.map(j => `Juz ${j.index} (Verses ${j.verse.start} to ${j.verse.end})`).join(', ')}</p>
-                <div>
-                    ${Object.keys(surah.verse).map(key => `<p><strong>Verse ${key.replace('verse_', '')}:</strong> ${surah.verse[key]}</p>`).join('')}
+                <div class="info-section">
+                    <h2>${surah.name}</h2>
+                    <p>Surah Index: <span class="bold">${surah.index}</span></p>
+                    <p>Number of Verses: <span class="bold">${surah.count}</span></p>
+                    <p>Juz: ${surah.juz.map(j => `<span class="bold">Juz ${j.index} (Verses ${j.verse.start.replace('verse_', '')} to ${j.verse.end.replace('verse_', '')})</span>`).join(', ')}</p>
                 </div>
+                ${Object.keys(surah.verse).map(key => `
+                    <div>
+                        <div class="verse-number">${key.replace('verse_', '')}</div>
+                        <div class="verse-text">${surah.verse[key]}</div>
+                    </div>
+                `).join('')}
             `;
         }
 
