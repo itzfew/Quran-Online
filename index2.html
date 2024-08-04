@@ -95,26 +95,10 @@
             text-align: center;
             display: block;
         }
-        .verse-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .verse-item {
+        .verse-row {
             display: flex;
             align-items: center;
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            flex: 1;
-            min-width: 150px;
-            transition: box-shadow 0.3s;
-        }
-        .verse-item:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px;
         }
         .verse-number {
             font-size: 1.5em;
@@ -320,14 +304,12 @@
                     <p><strong>Juz:</strong> ${surah.juz.map(j => `(${j.index}) from ${j.verse.start.replace('verse_', '')} to ${j.verse.end.replace('verse_', '')}`).join(', ')}</p>
                 </div>
                 <div class="verse-zero">${surah.verse.verse_0}</div>
-                <div class="verse-container">
-                    ${Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => `
-                        <div class="verse-item">
-                            <div class="verse-number">${key.replace('verse_', '')}</div>
-                            <div class="verse-text">${surah.verse[key]}</div>
-                        </div>
-                    `).join('')}
-                </div>
+                ${Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => `
+                    <div class="verse-row">
+                        <div class="verse-number">${key.replace('verse_', '')}</div>
+                        <div class="verse-text">${surah.verse[key]}</div>
+                    </div>
+                `).join('')}
             `;
         }
 
