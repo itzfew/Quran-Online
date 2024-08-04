@@ -3,219 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quran Application - Surah List</title>
+    <title>Surah Details</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link id="arabic-font-style" rel="stylesheet" href="">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f4f8;
+            font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
             padding: 0;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 28px;
+            background-color: #f5f5f5;
             color: #333;
         }
-
-        .search-bar {
-            margin-bottom: 20px;
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
         }
-
-        .search-bar input {
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #ddd;
-            width: calc(100% - 22px);
-            font-size: 16px;
+        .header {
+            background-color: #004d40;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            font-size: 2.2em;
+            font-weight: bold;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            border-bottom: 4px solid #00332e;
         }
-
-        .card {
+        .header .back-btn,
+        .header .settings-btn {
+            position: absolute;
+            top: 20px;
+            font-size: 1.5em;
+            color: #ffffff;
+            background: rgba(0, 0, 0, 0.3);
+            border: none;
+            border-radius: 30px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .header .back-btn {
+            left: 20px;
+        }
+        .header .settings-btn {
+            right: 20px;
+        }
+        .header .back-btn:hover,
+        .header .settings-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .header .nav-btns {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+        }
+        .header .nav-btn {
+            background: #ffffff;
+            border: 2px solid #004d40;
+            color: #004d40;
+            font-size: 1.5em;
+            border-radius: 50%;
             padding: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .header .nav-btn:hover {
+            background: #004d40;
+            color: #ffffff;
+        }
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .surah-details {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            margin: 0 auto;
+        }
+        .surah-details h2 {
+            font-size: 2.5em;
+            color: #004d40;
+            margin: 0;
+            text-align: center;
+            padding: 15px;
+            border-bottom: 3px solid #004d40;
+            margin-bottom: 20px;
+            background: rgba(0, 77, 64, 0.1);
+            border-radius: 8px;
+        }
+        .info-section {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #004d40;
+            padding-bottom: 10px;
+        }
+        .info-section p {
+            margin: 10px 0;
+        }
+        .verse-zero {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #ffffff;
+            background-color: #004d40;
+            border: 2px solid #004d40;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: block;
+        }
+        .verse-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        .verse-number {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #004d40;
+            background-color: #e0f2f1;
+            border: 2px solid #004d40;
+            border-radius: 8px;
+            padding: 12px;
+            margin-right: 15px;
+            text-align: center;
+            width: 50px;
+        }
+        .verse-text {
+            font-size: 1.2em;
+            padding: 12px;
+            background-color: #ffffff;
             border: 1px solid #ddd;
             border-radius: 8px;
-            margin-bottom: 10px;
-            background-color: #fafafa;
-            cursor: pointer;
-            transition: background-color 0.3s, border-color 0.3s;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex: 1;
+            width: 100%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-
-        .card:hover {
-            background-color: #e1e1e1;
-            border-color: #007BFF;
+        .settings-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 350px;
+            height: 100%;
+            background-color: #ffffff;
+            border-left: 2px solid #004d40;
+            box-shadow: -2px 0 12px rgba(0, 0, 0, 0.3);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            padding: 20px;
+            z-index: 1000;
         }
-
-        .dark-mode .card {
-            background-color: #333;
-            color: #fff;
-            border: 1px solid #555;
+        .settings-menu.open {
+            transform: translateX(0);
         }
-
-        .dark-mode .card:hover {
-            background-color: #444;
-            border-color: #00aaff;
+        .settings-menu h3 {
+            margin-top: 0;
+            color: #004d40;
+            font-size: 1.8em;
+            border-bottom: 3px solid #004d40;
+            padding-bottom: 10px;
         }
-
-        .dark-mode {
-            background-color: #121212;
-            color: #ddd;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        button, .theme-toggle {
-            padding: 10px;
-            background-color: #007BFF;
-            color: #fff;
+        .settings-menu button.close-btn {
+            display: block;
+            margin: 20px auto 0;
+            padding: 12px 20px;
+            background: #004d40;
+            color: #ffffff;
             border: none;
-            border-radius: 4px;
+            border-radius: 30px;
+            font-size: 1.2em;
             cursor: pointer;
             transition: background-color 0.3s;
         }
-
-        button:hover, .theme-toggle:hover {
-            background-color: #0056b3;
+        .settings-menu button.close-btn:hover {
+            background: #00332e;
         }
-
-        .settings-container {
-            margin-top: 20px;
-        }
-
-        .settings-container label {
+        .settings-menu label {
             display: block;
-            margin-bottom: 10px;
+            margin: 12px 0;
+            font-size: 1.2em;
+            color: #333;
         }
-
-        .settings-container select, .settings-container input {
-            padding: 8px;
-            border-radius: 4px;
+        .settings-menu select, .settings-menu input[type="range"], .settings-menu input[type="color"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 5px;
             border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
         }
-
-        .settings-container select {
-            width: 100%;
-            margin-bottom: 10px;
+        .settings-menu input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            height: 8px;
+            background: #ddd;
+            border-radius: 5px;
+            outline: none;
+        }
+        .settings-menu input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            background: #004d40;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .settings-menu input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            background: #004d40;
+            border-radius: 50%;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Quran Application</h1>
-            <button class="theme-toggle">Toggle Dark Mode</button>
-        </header>
-        <main>
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search Surah...">
+    <div class="app-container">
+        <div class="header">
+            <button class="back-btn" onclick="window.history.back()"><i class="fas fa-arrow-left"></i></button>
+            Surah Details
+            <button id="settings-btn" class="settings-btn"><i class="fas fa-cog"></i></button>
+            <div class="nav-btns">
+                <button id="prev-surah" class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                <button id="next-surah" class="nav-btn"><i class="fas fa-chevron-right"></i></button>
             </div>
-            <div id="surahList">
-                <!-- Surah items will be populated here -->
+        </div>
+        <div class="main-content">
+            <div class="surah-details" id="surah-details">
+                <!-- Surah details will be injected here -->
             </div>
-            <div class="settings-container">
-                <h3>Settings</h3>
-                <label for="fontSize">Font Size:</label>
-                <select id="fontSize">
-                    <option value="14px">Small</option>
-                    <option value="18px">Medium</option>
-                    <option value="22px" selected>Large</option>
-                </select>
-                <label for="fontFamily">Font Style:</label>
-                <select id="fontFamily">
-                    <option value="Arial" selected>Arial</option>
-                    <option value="Georgia">Georgia</option>
-                    <option value="Times New Roman">Times New Roman</option>
-                    <option value="Courier New">Courier New</option>
-                </select>
-                <button id="saveSettings">Save Settings</button>
-            </div>
-        </main>
-        <footer>
-            <p>&copy; 2024 Quran App</p>
-        </footer>
+        </div>
+        <div id="settings-menu" class="settings-menu">
+            <h3>Settings</h3>
+            <button id="close-settings" class="close-btn">Close</button>
+            <label for="font-size">Font Size:</label>
+            <input type="range" id="font-size" min="12" max="36" value="16">
+            <label for="arabic-font">Arabic Font Style:</label>
+            <select id="arabic-font">
+                <option value="https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400&display=swap">Scheherazade New</option>
+                <option value="https://fonts.googleapis.com/css2?family=Amiri:wght@400&display=swap">Amiri</option>
+                <option value="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400&display=swap">Noto Sans Arabic</option>
+                <option value="https://fonts.googleapis.com/css2?family=Harmattan:wght@400&display=swap">Harmattan</option>
+            </select>
+            <label for="text-color">Text Color:</label>
+            <input type="color" id="text-color" value="#333333">
+        </div>
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const surahList = document.getElementById('surahList');
-            const fontSizeSelect = document.getElementById('fontSize');
-            const fontFamilySelect = document.getElementById('fontFamily');
-            const saveSettingsButton = document.getElementById('saveSettings');
-            const themeToggleButton = document.querySelector('.theme-toggle');
-            const searchInput = document.getElementById('searchInput');
+        function loadPreferences() {
+            const fontSize = localStorage.getItem('fontSize') || 16;
+            const arabicFont = localStorage.getItem('arabicFont') || 'https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400&display=swap';
+            const textColor = localStorage.getItem('textColor') || '#333333';
 
-            let isDarkMode = localStorage.getItem('darkMode') === 'true';
-            const savedFontSize = localStorage.getItem('fontSize') || '22px';
-            const savedFontFamily = localStorage.getItem('fontFamily') || 'Arial';
+            document.getElementById('font-size').value = fontSize;
+            document.getElementById('arabic-font').value = arabicFont;
+            document.getElementById('text-color').value = textColor;
 
-            document.body.style.fontSize = savedFontSize;
-            document.body.style.fontFamily = savedFontFamily;
-            if (isDarkMode) {
-                document.body.classList.add('dark-mode');
-            }
-
-            themeToggleButton.addEventListener('click', () => {
-                isDarkMode = !isDarkMode;
-                document.body.classList.toggle('dark-mode', isDarkMode);
-                localStorage.setItem('darkMode', isDarkMode);
+            document.querySelectorAll('.verse-text').forEach(verse => {
+                verse.style.fontSize = `${fontSize}px`;
             });
 
-            fetch('https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah.json')
-                .then(response => response.json())
-                .then(data => {
-                    data.forEach(surah => {
-                        const card = document.createElement('div');
-                        card.classList.add('card');
-                        card.innerHTML = `
-                            <span>${surah.titleAr} (${surah.title}) - Surah ${surah.index}</span>
-                            <span>${surah.count} Verses</span>
-                        `;
-                        card.onclick = () => {
-                            window.location.href = `surah.html?index=${surah.index}`;
-                        };
-                        surahList.appendChild(card);
-                    });
+            document.getElementById('arabic-font-style').href = arabicFont;
+            document.body.style.color = textColor;
+        }
 
-                    // Search functionality
-                    searchInput.addEventListener('input', (e) => {
-                        const searchTerm = e.target.value.toLowerCase();
-                        const cards = document.querySelectorAll('.card');
-                        cards.forEach(card => {
-                            const text = card.textContent.toLowerCase();
-                            card.style.display = text.includes(searchTerm) ? '' : 'none';
-                        });
-                    });
-                })
-                .catch(error => console.error('Error fetching Surah list:', error));
+        function savePreferences() {
+            const fontSize = document.getElementById('font-size').value;
+            const arabicFont = document.getElementById('arabic-font').value;
+            const textColor = document.getElementById('text-color').value;
 
-            saveSettingsButton.addEventListener('click', () => {
-                const fontSize = fontSizeSelect.value;
-                const fontFamily = fontFamilySelect.value;
-                localStorage.setItem('fontSize', fontSize);
-                localStorage.setItem('fontFamily', fontFamily);
-                document.body.style.fontSize = fontSize;
-                document.body.style.fontFamily = fontFamily;
+            localStorage.setItem('fontSize', fontSize);
+            localStorage.setItem('arabicFont', arabicFont);
+            localStorage.setItem('textColor', textColor);
+        }
+
+        document.getElementById('settings-btn').addEventListener('click', () => {
+            document.getElementById('settings-menu').classList.add('open');
+        });
+
+        document.getElementById('close-settings').addEventListener('click', () => {
+            document.getElementById('settings-menu').classList.remove('open');
+            savePreferences();
+        });
+
+        document.getElementById('font-size').addEventListener('input', () => {
+            document.querySelectorAll('.verse-text').forEach(verse => {
+                verse.style.fontSize = `${document.getElementById('font-size').value}px`;
             });
         });
+
+        document.getElementById('arabic-font').addEventListener('change', (event) => {
+            const fontUrl = event.target.value;
+            document.getElementById('arabic-font-style').href = fontUrl;
+        });
+
+        document.getElementById('text-color').addEventListener('input', (event) => {
+            document.body.style.color = event.target.value;
+        });
+
+        async function fetchSurahDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const surahIndex = urlParams.get('index');
+            const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah/surah_${surahIndex}.json`);
+            const surah = await response.json();
+            return surah;
+        }
+
+        function renderSurahDetails(surah) {
+            const surahDetails = document.getElementById('surah-details');
+            const lastReadVerse = localStorage.getItem('lastReadVerse') || null;
+
+            let versesHtml = `
+                <h2>${surah.name} (Surah ${surah.index})</h2>
+                <div class="info-section">
+                    <p><strong>Number of Verses:</strong> ${surah.count}</p>
+                    <p><strong>Juz:</strong> ${surah.juz.map(j => `(${j.index}) from ${j.verse.start.replace('verse_', '')} to ${j.verse.end.replace('verse_', '')}`).join(', ')}</p>
+                </div>
+                <div class="verse-zero">${surah.verse.verse_0}</div>
+            `;
+
+            if (lastReadVerse) {
+                versesHtml += `<div class="verse-row"><div class="verse-number">Last</div><div class="verse-text">${surah.verse[`verse_${lastReadVerse}`]}</div></div>`;
+            }
+
+            versesHtml += Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => `
+                <div class="verse-row">
+                    <div class="verse-number">${key.replace('verse_', '')}</div>
+                    <div class="verse-text">${surah.verse[key]}</div>
+                </div>
+            `).join('');
+
+            surahDetails.innerHTML = versesHtml;
+        }
+
+        function saveLastReadVerse(verseNumber) {
+            localStorage.setItem('lastReadVerse', verseNumber);
+        }
+
+        async function init() {
+            loadPreferences();
+            const surah = await fetchSurahDetails();
+            renderSurahDetails(surah);
+
+            document.querySelectorAll('.verse-number').forEach(button => {
+                button.addEventListener('click', () => {
+                    const verseNumber = button.innerText;
+                    saveLastReadVerse(verseNumber);
+                });
+            });
+
+            document.getElementById('prev-surah').addEventListener('click', () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const currentIndex = parseInt(urlParams.get('index'));
+                const prevIndex = currentIndex > 1 ? currentIndex - 1 : 1;
+                window.location.href = `surah-details.html?index=${prevIndex}`;
+            });
+
+            document.getElementById('next-surah').addEventListener('click', () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const currentIndex = parseInt(urlParams.get('index'));
+                const nextIndex = currentIndex < 114 ? currentIndex + 1 : 114;
+                window.location.href = `surah-details.html?index=${nextIndex}`;
+            });
+        }
+
+        init();
     </script>
 </body>
 </html>
