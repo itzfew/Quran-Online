@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,6 +14,7 @@
             margin: 0;
             padding: 0;
             background-color: #e3f2fd;
+            text-align: center;
             color: #333;
             transition: background-color 0.3s, color 0.3s;
         }
@@ -24,23 +25,23 @@
             background-color: #ffffff;
             border-radius: 15px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
             border: 2px solid #0288d1;
         }
         h1 {
-            font-size: 36px;
+            font-size: 32px;
             color: #0288d1;
             margin: 20px 0;
-            text-align: center;
         }
         h2 {
-            font-size: 28px;
+            font-size: 24px;
             color: #0277bd;
             margin: 10px 0;
-            text-align: center;
+            font-weight: normal;
             direction: rtl;
         }
         .details {
-            font-size: 20px;
+            font-size: 18px;
             margin-bottom: 20px;
             text-align: left;
             padding: 10px;
@@ -81,50 +82,6 @@
             border: 1px solid #fbc02d;
             font-weight: bold;
         }
-        .nav-buttons, .settings-menu {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .nav-buttons a {
-            text-decoration: none;
-            color: #ffffff;
-            background-color: #0288d1;
-            border-radius: 10px;
-            padding: 12px 24px;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        .nav-buttons a:hover {
-            background-color: #01579b;
-        }
-        .search-container {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
-        }
-        .search-container input {
-            padding: 10px;
-            border: 1px solid #0288d1;
-            border-radius: 5px;
-            width: 70%;
-            font-size: 16px;
-        }
-        .search-container button {
-            padding: 10px 15px;
-            border: none;
-            background-color: #0288d1;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-left: 5px;
-        }
-        .search-container button:hover {
-            background-color: #01579b;
-        }
         .settings-button, .back-to-index {
             position: fixed;
             top: 10px;
@@ -147,6 +104,75 @@
         }
         .settings-button:hover, .back-to-index:hover {
             background-color: #01579b;
+        }
+        .settings-menu {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background-color: #ffffff;
+            border: 2px solid #0288d1;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+            width: 300px;
+            text-align: left;
+            transition: opacity 0.3s;
+        }
+        .settings-menu h2 {
+            font-size: 20px;
+            margin: 0 0 15px 0;
+            color: #0288d1;
+            position: relative;
+        }
+        .settings-menu .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #0288d1;
+            cursor: pointer;
+        }
+        .settings-menu label {
+            display: block;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .settings-menu select, .settings-menu input[type="range"], .settings-menu input[type="color"] {
+            width: 100%;
+            margin-top: 5px;
+        }
+        .nav-buttons {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .nav-buttons a {
+            text-decoration: none;
+            color: #ffffff;
+            background-color: #0288d1;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
+        }
+        .nav-buttons a:hover {
+            background-color: #01579b;
+        }
+        .nav-buttons i {
+            margin-right: 8px;
         }
         .dark-mode-toggle {
             position: fixed;
@@ -179,6 +205,9 @@
             background-color: #455a64;
             border: 1px solid #607d8b;
         }
+        .dark-mode .settings-menu {
+            border: 2px solid #455a64;
+        }
         .dark-mode .nav-buttons a {
             background-color: #455a64;
         }
@@ -191,8 +220,7 @@
     <button class="back-to-index" onclick="window.location.href='index.html'">🏠</button>
     <button class="settings-button" onclick="toggleSettingsMenu()">⚙️</button>
     <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
-
-    <div class="settings-menu" id="settings-menu" style="display:none;">
+    <div class="settings-menu" id="settings-menu">
         <button class="close-button" onclick="toggleSettingsMenu()">✖️</button>
         <h2>Settings</h2>
         <label>
@@ -213,18 +241,11 @@
             Dark Mode
         </label>
     </div>
-
     <div class="container">
-        <div class="search-container">
-            <input type="text" id="verse-search" placeholder="Search for a verse..." oninput="searchVerses()">
-            <button onclick="searchVerses()">🔍</button>
-        </div>
-        
         <div class="nav-buttons">
             <a id="prev-surah" href="#"><i class="fas fa-chevron-left"></i> Previous</a>
             <a id="next-surah" href="#">Next <i class="fas fa-chevron-right"></i></a>
         </div>
-        
         <h1 id="surah-name"></h1>
         <h2 id="surah-arabic-name"></h2>
         <div class="details">
@@ -233,12 +254,11 @@
         </div>
         <div id="surah-content"></div>
     </div>
-
     <script>
         // Toggle settings menu visibility
         function toggleSettingsMenu() {
             const menu = document.getElementById('settings-menu');
-            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+            menu.style.display = menu.style.display === 'none' || menu.style.display === '' ? 'block' : 'none';
         }
 
         // Toggle dark mode
@@ -252,7 +272,11 @@
         // Apply dark mode settings
         function applyDarkMode() {
             const darkMode = document.body.classList.contains('dark-mode');
-            document.body.style.backgroundColor = darkMode ? '#263238' : '#e3f2fd';
+            if (darkMode) {
+                document.body.style.backgroundColor = '#263238';
+            } else {
+                document.body.style.backgroundColor = '#e3f2fd';
+            }
             document.querySelector('.container').style.borderColor = darkMode ? '#455a64' : '#0288d1';
             document.querySelectorAll('.verse').forEach(verse => {
                 verse.style.backgroundColor = darkMode ? '#455a64' : '#fff3e0';
@@ -323,17 +347,6 @@
             saveSettings();
         });
 
-        // Search verses functionality
-        function searchVerses() {
-            const query = document.getElementById('verse-search').value.toLowerCase();
-            const verses = document.querySelectorAll('.verse');
-
-            verses.forEach(verse => {
-                const verseText = verse.textContent.toLowerCase();
-                verse.style.display = verseText.includes(query) ? 'block' : 'none';
-            });
-        }
-
         // Fetch Surah details and apply settings
         async function fetchSurahDetails() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -361,15 +374,18 @@
                 surahCount.textContent = surah.count;
                 surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
 
-                surahContent.innerHTML = Object.keys(surah.verse).map(key => {
-                    const verseNumber = key.replace('verse_', '');
-                    return `
-                        <div class="verse">
-                            <span class="circle">${verseNumber}</span>
-                            ${surah.verse[key]}
-                        </div>
-                    `;
-                }).join('');
+                surahContent.innerHTML = `
+                    <div class="verse">${surah.verse.verse_0}</div>
+                    ${Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => {
+                        const verseNumber = key.replace('verse_', '');
+                        return `
+                            <div class="verse">
+                                <span class="circle">${verseNumber}</span>
+                                ${surah.verse[key]}
+                            </div>
+                        `;
+                    }).join('')}
+                `;
 
                 loadSettings();
 
