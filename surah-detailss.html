@@ -19,11 +19,11 @@
         }
         .container {
             max-width: 800px;
-            margin: auto;
+            margin: 40px auto;
             padding: 20px;
             background-color: #ffffff;
             border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             border: 2px solid #0288d1;
         }
         h1 {
@@ -46,8 +46,7 @@
         .details {
             font-size: 20px;
             margin-bottom: 20px;
-            text-align: left;
-            padding: 10px;
+            padding: 15px;
             background-color: #b3e5fc;
             border: 2px solid #81d4fa;
             border-radius: 10px;
@@ -58,22 +57,20 @@
         }
         .verse {
             font-size: 22px;
-            margin: 10px auto;
+            margin: 15px auto;
             text-align: center;
             direction: rtl;
             font-weight: bold;
             background-color: #fff3e0;
-            padding: 10px;
+            padding: 15px;
             border: 2px solid #ffcc80;
             border-radius: 10px;
             line-height: 1.8;
-            max-width: 90%;
-            word-wrap: break-word;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s;
         }
         .verse:hover {
             transform: scale(1.02);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         .circle {
             display: inline-block;
@@ -89,30 +86,24 @@
             border: 1px solid #fbc02d;
             font-weight: bold;
         }
-        .nav-buttons, .settings-menu {
+        .nav-buttons, .search-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-        .nav-buttons a {
+        .nav-buttons a, .search-container button {
             text-decoration: none;
-            color: #ffffff;
+            color: white;
             background-color: #0288d1;
             border-radius: 10px;
             padding: 12px 24px;
             font-size: 16px;
             font-weight: bold;
             transition: background-color 0.3s;
-            border: 2px solid #01579b;
         }
-        .nav-buttons a:hover {
+        .nav-buttons a:hover, .search-container button:hover {
             background-color: #01579b;
-        }
-        .search-container {
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: center;
         }
         .search-container input {
             padding: 10px;
@@ -120,23 +111,11 @@
             border-radius: 5px;
             width: 70%;
             font-size: 16px;
-        }
-        .search-container button {
-            padding: 10px 15px;
-            border: none;
-            background-color: #0288d1;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-left: 5px;
-        }
-        .search-container button:hover {
-            background-color: #01579b;
+            margin-right: 5px;
         }
         .settings-button, .back-to-index {
             position: fixed;
-            top: 10px;
+            top: 20px;
             background-color: #0288d1;
             color: white;
             border: none;
@@ -149,20 +128,20 @@
             z-index: 1000;
         }
         .settings-button {
-            left: 10px;
+            left: 20px;
         }
         .back-to-index {
-            right: 10px;
+            right: 20px;
         }
         .settings-button:hover, .back-to-index:hover {
             background-color: #01579b;
         }
         .dark-mode-toggle {
             position: fixed;
-            bottom: 10px;
-            left: 10px;
+            bottom: 20px;
+            left: 20px;
             background-color: #0288d1;
-            color: #fff;
+            color: white;
             border: none;
             border-radius: 50%;
             padding: 12px;
@@ -181,7 +160,6 @@
         }
         .dark-mode .container {
             background-color: #37474f;
-            color: #e0e0e0;
             border: 2px solid #455a64;
         }
         .dark-mode .verse {
@@ -198,6 +176,44 @@
             background-color: #455a64;
             border: 2px solid #607d8b;
         }
+        .settings-menu {
+            position: fixed;
+            top: 60px;
+            left: 20px;
+            background-color: #ffffff;
+            border: 2px solid #0288d1;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+            width: 300px;
+            transition: opacity 0.3s;
+        }
+        .settings-menu h2 {
+            font-size: 20px;
+            margin: 0 0 15px 0;
+            color: #0288d1;
+        }
+        .settings-menu .close-button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #0288d1;
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .settings-menu label {
+            display: block;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        .settings-menu select, .settings-menu input[type="range"] {
+            width: 100%;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -205,7 +221,7 @@
     <button class="settings-button" onclick="toggleSettingsMenu()">⚙️</button>
     <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
 
-    <div class="settings-menu" id="settings-menu" style="display:none;">
+    <div class="settings-menu" id="settings-menu">
         <button class="close-button" onclick="toggleSettingsMenu()">✖️</button>
         <h2>Settings</h2>
         <label>
@@ -231,30 +247,25 @@
             <input type="text" id="verse-search" placeholder="Search for a verse..." oninput="searchVerses()">
             <button onclick="searchVerses()">🔍</button>
         </div>
-        
         <div class="nav-buttons">
             <a id="prev-surah" href="#"><i class="fas fa-chevron-left"></i> Previous</a>
             <a id="next-surah" href="#">Next <i class="fas fa-chevron-right"></i></a>
         </div>
-        
         <h1 id="surah-name"></h1>
         <h2 id="surah-arabic-name"></h2>
         <div class="details">
             <p><strong>Surah Count:</strong> <span id="surah-count"></span></p>
             <p><strong>Juz:</strong> <span id="surah-juz"></span></p>
         </div>
-
         <div id="surah-content"></div>
     </div>
 
     <script>
-        // Toggle settings menu visibility
         function toggleSettingsMenu() {
             const menu = document.getElementById('settings-menu');
-            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+            menu.style.display = menu.style.display === 'none' || menu.style.display === '' ? 'block' : 'none';
         }
 
-        // Toggle dark mode
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
             const darkMode = document.body.classList.contains('dark-mode');
@@ -262,22 +273,20 @@
             applyDarkMode();
         }
 
-        // Apply dark mode settings
         function applyDarkMode() {
             const darkMode = document.body.classList.contains('dark-mode');
-            document.body.style.backgroundColor = darkMode ? '#263238' : '#e3f2fd';
+            if (darkMode) {
+                document.body.style.backgroundColor = '#263238';
+            } else {
+                document.body.style.backgroundColor = '#e3f2fd';
+            }
             document.querySelector('.container').style.borderColor = darkMode ? '#455a64' : '#0288d1';
             document.querySelectorAll('.verse').forEach(verse => {
                 verse.style.backgroundColor = darkMode ? '#455a64' : '#fff3e0';
                 verse.style.borderColor = darkMode ? '#607d8b' : '#ffcc80';
             });
-            document.querySelector('.settings-menu').style.borderColor = darkMode ? '#455a64' : '#0288d1';
-            document.querySelectorAll('.nav-buttons a').forEach(button => {
-                button.style.backgroundColor = darkMode ? '#455a64' : '#0288d1';
-            });
         }
 
-        // Load settings from local storage
         function loadSettings() {
             const fontSize = localStorage.getItem('font-size') || '24';
             const darkMode = localStorage.getItem('dark-mode') === 'true';
@@ -295,7 +304,6 @@
             applySettings();
         }
 
-        // Apply settings to the page
         function applySettings() {
             const fontSize = document.getElementById('font-size-slider').value;
             const arabicFont = document.getElementById('arabic-font-selector').value;
@@ -310,7 +318,6 @@
             document.querySelector('.container').style.fontFamily = arabicFont;
         }
 
-        // Save settings to local storage
         function saveSettings() {
             const fontSize = document.getElementById('font-size-slider').value;
             const darkMode = document.body.classList.contains('dark-mode');
@@ -323,7 +330,6 @@
             applySettings();
         }
 
-        // Event listeners for settings
         document.getElementById('font-size-slider').addEventListener('input', function() {
             document.getElementById('font-size-value').textContent = this.value + 'px';
             saveSettings();
@@ -336,18 +342,6 @@
             saveSettings();
         });
 
-        // Search verses functionality
-        function searchVerses() {
-            const query = document.getElementById('verse-search').value.toLowerCase();
-            const verses = document.querySelectorAll('.verse');
-
-            verses.forEach(verse => {
-                const verseText = verse.textContent.toLowerCase();
-                verse.style.display = verseText.includes(query) ? 'block' : 'none';
-            });
-        }
-
-        // Fetch Surah details and apply settings
         async function fetchSurahDetails() {
             const urlParams = new URLSearchParams(window.location.search);
             const surahIndex = parseInt(urlParams.get('index'), 10);
@@ -374,15 +368,17 @@
                 surahCount.textContent = surah.count;
                 surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
 
-                surahContent.innerHTML = Object.keys(surah.verse).map(key => {
-                    const verseNumber = key.replace('verse_', '');
-                    return `
-                        <div class="verse">
-                            <span class="circle">${verseNumber}</span>
-                            ${surah.verse[key]}
-                        </div>
-                    `;
-                }).join('');
+                surahContent.innerHTML = `
+                    ${Object.keys(surah.verse).map(key => {
+                        const verseNumber = key.replace('verse_', '');
+                        return `
+                            <div class="verse">
+                                <span class="circle">${verseNumber}</span>
+                                ${surah.verse[key]}
+                            </div>
+                        `;
+                    }).join('')}
+                `;
 
                 loadSettings();
 
@@ -402,10 +398,20 @@
             }
         }
 
+        function searchVerses() {
+            const query = document.getElementById('verse-search').value.toLowerCase();
+            const verses = document.querySelectorAll('.verse');
+
+            verses.forEach(verse => {
+                if (verse.textContent.toLowerCase().includes(query)) {
+                    verse.style.display = 'block';
+                } else {
+                    verse.style.display = 'none';
+                }
+            });
+        }
+
         fetchSurahDetails();
-        // JavaScript code from your original design (unchanged).
-        // Make sure to keep the previous functionality and add this in the script section.
-        // Fetch Surah details, handle dark mode, and other functionalities...
     </script>
 </body>
 </html>
