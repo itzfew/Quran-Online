@@ -12,6 +12,7 @@
             color: #333;
             margin: 0;
             padding: 20px;
+            transition: margin-left 0.5s;
         }
         .header {
             text-align: center;
@@ -64,15 +65,14 @@
             margin-right: 10px;
             font-weight: bold;
         }
-        .loading, .error {
+        .loading {
             text-align: center;
             font-size: 1.2em;
-        }
-        .loading {
             color: #3498db;
         }
         .error {
             color: red;
+            text-align: center;
         }
         .button-container {
             text-align: center;
@@ -97,6 +97,38 @@
             font-size: 1.5em;
             direction: rtl;
         }
+        /* Side Menu Styles */
+        .side-menu {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: -250px; /* Hidden by default */
+            background-color: #3498db;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+        .side-menu a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 25px;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+        .side-menu a:hover {
+            background-color: #2980b9;
+        }
+        .menu-icon {
+            font-size: 30px;
+            cursor: pointer;
+            color: #3498db;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 </head>
@@ -104,6 +136,13 @@
 
 <div class="header">
     <h1>Surah Details</h1>
+    <i class="fas fa-bars menu-icon" onclick="toggleMenu()"></i>
+</div>
+
+<div id="mySideMenu" class="side-menu">
+    <a href="index.html">Home</a>
+    <a href="mailto:contactus94@yahoo.com">Contact Us</a>
+    <!-- Add more menu items as needed -->
 </div>
 
 <div class="container">
@@ -116,11 +155,21 @@
     </div>
     <div id="surah-heading" class="surah-heading" style="display: none;"></div>
     <div id="content"></div>
-    <div id="loading" class="loading" style="display: none;" aria-live="polite">Loading...</div>
-    <div id="error" class="error" style="display: none;" aria-live="assertive"></div>
+    <div id="loading" class="loading" style="display: none;">Loading...</div>
+    <div id="error" class="error" style="display: none;"></div>
 </div>
 
 <script>
+    // Function to toggle the side menu
+    function toggleMenu() {
+        const sideMenu = document.getElementById("mySideMenu");
+        if (sideMenu.style.left === "-250px") {
+            sideMenu.style.left = "0";
+        } else {
+            sideMenu.style.left = "-250px";
+        }
+    }
+
     // Function to get URL parameters
     function getQueryParam(param) {
         const urlParams = new URLSearchParams(window.location.search);
@@ -138,7 +187,6 @@
             if (!response.ok) throw new Error('Network response was not ok');
             const data = await response.json();
             displaySurah(data);
-            localStorage.setItem('lastSurah', index); // Store last viewed Surah
         } catch (error) {
             document.getElementById('error').innerText = 'Failed to load Surah. Please try again later.';
             document.getElementById('error').style.display = 'block';
@@ -152,9 +200,8 @@
         const surahHeading = document.getElementById('surah-heading');
         const verses = data.verse;
         const count = data.count;
-        const name = data.name; // Get the name of the Surah
+        const name = data.name;
 
-        // Set the Surah heading
         surahHeading.innerText = name;
         surahHeading.style.display = 'block';
 
@@ -169,10 +216,14 @@
         }
     }
 
-    // Fetch Surah based on the URL parameter or last viewed Surah
+    // Fetch Surah based on the URL parameter when the page loads
     window.onload = () => {
-        const index = getQueryParam('index') || localStorage.getItem('lastSurah');
-        fetchSurah(index ? index : 1); // Default to Surah 1 if none
+        const index = getQueryParam('index');
+        if (index) {
+            fetchSurah(index);
+        } else {
+            fetchSurah(1);
+        }
     };
 </script>
 
