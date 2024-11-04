@@ -51,9 +51,25 @@
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s;
+            position: relative;
         }
         .verse:hover {
             background-color: #ffecb3;
+        }
+        .bookmark-button {
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+        .bookmark-button:hover {
+            background-color: #fb8c00;
         }
         .menu {
             display: flex;
@@ -90,18 +106,6 @@
         .menu-buttons button:hover {
             background-color: #0277bd;
         }
-        .bookmark-button {
-            background-color: #ff9800;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .bookmark-button:hover {
-            background-color: #fb8c00;
-        }
         .settings-menu {
             display: none;
             position: fixed;
@@ -125,6 +129,40 @@
             cursor: pointer;
             margin-bottom: 10px;
         }
+        .bookmark-list {
+            display: none;
+            position: fixed;
+            top: 20%;
+            left: 10%;
+            width: 300px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+        .bookmark-list h2 {
+            text-align: center;
+        }
+        .bookmark-list ul {
+            list-style: none;
+            padding: 0;
+        }
+        .bookmark-list li {
+            margin: 10px 0;
+        }
+        .bookmark-list button {
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .bookmark-list button:hover {
+            background-color: #fb8c00;
+        }
     </style>
 </head>
 <body>
@@ -135,7 +173,7 @@
         <button class="settings-button" onclick="toggleSettingsMenu()">⚙️ Settings</button>
         <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
         <button class="back-to-index" onclick="window.location.href='index.html'">🏠 Home</button>
-        <button class="bookmark-button" id="bookmark-button">⭐ Bookmark</button>
+        <button class="bookmark-button" onclick="showBookmarks()">📖 My Bookmarks</button>
     </div>
     
     <div class="settings-menu" id="settings-menu">
@@ -158,6 +196,12 @@
             <input type="checkbox" id="dark-mode-toggle">
             Dark Mode
         </label>
+    </div>
+
+    <div class="bookmark-list" id="bookmark-list">
+        <h2>My Bookmarks</h2>
+        <ul id="bookmarks"></ul>
+        <button onclick="closeBookmarks()">✖️ Close</button>
     </div>
 
     <div class="container">
@@ -183,6 +227,35 @@
             menu.style.display = menu.style.display === 'none' || menu.style.display === '' ? 'block' : 'none';
         }
 
+        // Show bookmarks list
+        function showBookmarks() {
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            const bookmarksList = document.getElementById('bookmarks');
+            bookmarksList.innerHTML = ''; // Clear the list
+
+            bookmarks.forEach((bookmark, index) => {
+                const li = document.createElement('li');
+                li.textContent = bookmark;
+                li.innerHTML += ` <button onclick="removeBookmark('${bookmark}')">Remove</button>`;
+                bookmarksList.appendChild(li);
+            });
+
+            document.getElementById('bookmark-list').style.display = 'block';
+        }
+
+        // Close bookmarks list
+        function closeBookmarks() {
+            document.getElementById('bookmark-list').style.display = 'none';
+        }
+
+        // Remove a bookmark
+        function removeBookmark(bookmark) {
+            let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            bookmarks = bookmarks.filter(b => b !== bookmark);
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+            showBookmarks(); // Refresh the list
+        }
+
         // Toggle dark mode
         function toggleDarkMode() {
             document.body.classList.toggle('dark-mode');
@@ -194,11 +267,8 @@
         // Apply dark mode settings
         function applyDarkMode() {
             const darkMode = document.body.classList.contains('dark-mode');
+            document.body.style.backgroundColor = darkMode ? '#263238' : '#e3f2fd';
             document.querySelector('.container').style.borderColor = darkMode ? '#455a64' : '#0288d1';
-            document.querySelectorAll('.verse').forEach(verse => {
-                verse.style.backgroundColor = darkMode ? '#455a64' : '#fff3e0';
-            });
-            document.querySelector('.settings-menu').style.borderColor = darkMode ? '#455a64' : '#0288d1';
         }
 
         // Load settings from local storage
@@ -247,35 +317,20 @@
             applySettings();
         }
 
-        // Bookmarking functionality
-        function toggleBookmark() {
-            const surahIndex = new URLSearchParams(window.location.search).get('index');
+        // Bookmark an ayah
+        function toggleBookmark(ayah) {
             let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            const index = bookmarks.indexOf(ayah);
 
-            if (bookmarks.includes(surahIndex)) {
-                bookmarks = bookmarks.filter(index => index !== surahIndex);
-                document.getElementById('bookmark-button').textContent = '⭐ Bookmark';
+            if (index > -1) {
+                bookmarks.splice(index, 1); // Remove bookmark
             } else {
-                bookmarks.push(surahIndex);
-                document.getElementById('bookmark-button').textContent = '🌟 Bookmarked';
+                bookmarks.push(ayah); // Add bookmark
             }
 
             localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+            showBookmarks(); // Refresh bookmarks list
         }
-
-        // Event listeners for settings
-        document.getElementById('font-size-slider').addEventListener('input', function() {
-            document.getElementById('font-size-value').textContent = this.value + 'px';
-            saveSettings();
-        });
-        document.getElementById('dark-mode-toggle').addEventListener('change', function() {
-            toggleDarkMode();
-            saveSettings();
-        });
-        document.getElementById('arabic-font-selector').addEventListener('change', function() {
-            saveSettings();
-        });
-        document.getElementById('bookmark-button').addEventListener('click', toggleBookmark);
 
         // Fetch Surah details and apply settings
         async function fetchSurahDetails() {
@@ -301,7 +356,13 @@
                 const surahContent = document.getElementById('surah-content');
                 surahContent.innerHTML = Object.keys(surah.verse).map(key => {
                     const verseNumber = key.replace('verse_', '');
-                    return `<div class="verse"><span class="circle">${verseNumber}</span>${surah.verse[key]}</div>`;
+                    return `
+                        <div class="verse">
+                            <span class="circle">${verseNumber}</span>
+                            ${surah.verse[key]}
+                            <button class="bookmark-button" onclick="toggleBookmark('${verseNumber}')">⭐</button>
+                        </div>
+                    `;
                 }).join('');
 
                 loadSettings();
@@ -316,11 +377,14 @@
                     document.getElementById('next-surah').style.display = 'none';
                 }
 
-                // Update bookmark button based on current bookmark status
+                // Initialize bookmark button state
                 const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-                if (bookmarks.includes(surahIndex.toString())) {
-                    document.getElementById('bookmark-button').textContent = '🌟 Bookmarked';
-                }
+                document.querySelectorAll('.verse').forEach(verse => {
+                    const verseNum = verse.querySelector('.circle').textContent;
+                    if (bookmarks.includes(verseNum)) {
+                        verse.querySelector('.bookmark-button').textContent = '🌟';
+                    }
+                });
 
             } catch (error) {
                 console.error('Error fetching surah details:', error);
