@@ -107,10 +107,10 @@
 <div class="header">
     <h1>Surah Details</h1>
     <div class="menu">
-        <a href="#surah1">Surah 1</a>
-        <a href="#surah2">Surah 2</a>
-        <a href="#surah3">Surah 3</a>
-        <a href="#surah4">Surah 4</a>
+        <a href="?index=1">Surah 1</a>
+        <a href="?index=2">Surah 2</a>
+        <a href="?index=3">Surah 3</a>
+        <a href="?index=4">Surah 4</a>
         <!-- Add more links for other Surahs as needed -->
     </div>
 </div>
@@ -129,6 +129,12 @@
 </div>
 
 <script>
+    // Function to get URL parameters
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
     async function fetchSurah(index) {
         document.getElementById('content').innerHTML = '';
         document.getElementById('loading').style.display = 'block';
@@ -162,6 +168,17 @@
             content.appendChild(verseDiv);
         }
     }
+
+    // Fetch Surah based on the URL parameter when the page loads
+    window.onload = () => {
+        const index = getQueryParam('index');
+        if (index) {
+            fetchSurah(index);
+        } else {
+            // Optionally fetch the first Surah by default
+            fetchSurah(1);
+        }
+    };
 </script>
 
 </body>
