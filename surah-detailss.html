@@ -16,9 +16,6 @@
             padding: 20px;
             transition: background-color 0.5s, color 0.5s, font-family 0.5s;
             font-size: 18px; /* Default font size */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
         .header {
             text-align: center;
@@ -49,12 +46,10 @@
             color: #2980b9;
             font-weight: bold;
             position: relative;
-            width: 80%;
-            max-width: 600px;
         }
         .verse {
-            margin: 15px 0;
-            padding: 20px;
+            margin: 17px 0;
+            padding: 35px;
             border-radius: 8px;
             background-color: rgba(236, 240, 241, 0.8);
             display: flex;
@@ -62,9 +57,7 @@
             border-left: 5px solid #3498db;
             transition: background-color 0.3s;
             cursor: pointer;
-            font-size: 1.5em;
-            width: 80%;
-            max-width: 600px;
+            font-size: 2.0em;
         }
         .verse:hover {
             background-color: rgba(52, 152, 219, 0.2);
@@ -73,14 +66,14 @@
             background-color: #3498db;
             color: white;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 60px;
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 15px;
             font-weight: bold;
-            font-size: 1.2em;
+            font-size: 1.5em;
             border: 2px solid white;
         }
         .menu-icon {
@@ -118,7 +111,7 @@
         .side-menu a:hover {
             background-color: #2980b9;
         }
-        .text-size-control, .font-control, .theme-control {
+        .text-size-control, .font-control {
             margin: 20px 0;
             text-align: center;
         }
@@ -202,7 +195,7 @@
         </select>
     </div>
     <button class="reset-button" onclick="resetPreferences()">Reset Preferences</button>
-    <div class="theme-control">
+    <div class="text-size-control">
         <button class="text-size-button" onclick="toggleTheme()">Toggle Dark/Light</button>
     </div>
 </div>
@@ -227,12 +220,23 @@
 
         document.body.style.fontSize = textSize + 'px';
         document.body.style.fontFamily = selectedFont;
+
+        document.getElementById('fontSelect').value = selectedFont;
+
+        // Fetch Surah based on URL parameter if provided
+        const index = getQueryParam('index');
+        fetchSurah(index ? index : 1);
     });
 
     function toggleMenu() {
         const sideMenu = document.getElementById("mySideMenu");
         const isOpen = sideMenu.style.left === "0";
         sideMenu.style.left = isOpen ? "-250px" : "0";
+    }
+
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
     }
 
     async function fetchSurah(index) {
@@ -252,6 +256,7 @@
         surahHeading.innerText = name;
         surahHeading.style.display = 'block';
 
+        // Display the first verse centered at the top
         const firstVerseText = verses['verse_0'];
         firstVerseDiv.innerHTML = firstVerseText;
         firstVerseDiv.style.display = 'block';
