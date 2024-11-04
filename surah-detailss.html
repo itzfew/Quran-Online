@@ -17,6 +17,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            background-image: linear-gradient(to right, #e3f2fd, #fff);
+            color: #333;
         }
         .dark-mode {
             background-color: #263238;
@@ -27,30 +29,15 @@
             margin: 20px auto;
             padding: 20px;
             border-radius: 8px;
-            background-color: #e3f2fd;
+            background-color: #ffffff;
             border: 1px solid #0288d1;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: border-color 0.3s, background-color 0.3s;
         }
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .nav-buttons a {
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            background-color: #0288d1;
-            color: white;
-            transition: background-color 0.3s;
-        }
-        .nav-buttons a:hover {
-            background-color: #0277bd;
-        }
         h1, h2 {
             text-align: center;
             margin: 10px 0;
+            font-family: 'Scheherazade New', serif;
         }
         .details {
             margin: 20px 0;
@@ -68,6 +55,53 @@
         .verse:hover {
             background-color: #ffecb3;
         }
+        .menu {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #0288d1;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+        .menu .menu-title {
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+        }
+        .menu-buttons {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .menu-buttons button {
+            background-color: #0288d1;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .menu-buttons button:hover {
+            background-color: #0277bd;
+        }
+        .bookmark-button {
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .bookmark-button:hover {
+            background-color: #fb8c00;
+        }
         .settings-menu {
             display: none;
             position: fixed;
@@ -84,60 +118,25 @@
             display: block;
             margin: 10px 0;
         }
-        .settings-button, .dark-mode-toggle, .back-to-index, .bookmark-button {
-            position: fixed;
-            top: 20px;
-            z-index: 100;
-            background-color: #0288d1;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .settings-button {
-            right: 120px;
-        }
-        .dark-mode-toggle {
-            right: 80px;
-        }
-        .back-to-index {
-            left: 10px;
-        }
-        .bookmark-button {
-            right: 10px;
-        }
         .close-button {
             background: none;
             border: none;
             font-size: 20px;
             cursor: pointer;
-        }
-        .theme-switcher {
-            margin-top: 10px;
-        }
-        .audio-player {
-            margin: 20px 0;
-            text-align: center;
-        }
-        .circle {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: #ffcc80;
-            text-align: center;
-            line-height: 30px;
-            margin-right: 10px;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <button class="back-to-index" onclick="window.location.href='index.html'">🏠</button>
-    <button class="settings-button" onclick="toggleSettingsMenu()">⚙️</button>
-    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
-    <button class="bookmark-button" id="bookmark-button">⭐ Bookmark</button>
+    <div class="menu" onclick="toggleMenu()">
+        <div class="menu-title">Menu</div>
+    </div>
+    <div class="menu-buttons" id="menu-buttons">
+        <button class="settings-button" onclick="toggleSettingsMenu()">⚙️ Settings</button>
+        <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
+        <button class="back-to-index" onclick="window.location.href='index.html'">🏠 Home</button>
+        <button class="bookmark-button" id="bookmark-button">⭐ Bookmark</button>
+    </div>
     
     <div class="settings-menu" id="settings-menu">
         <button class="close-button" onclick="toggleSettingsMenu()">✖️</button>
@@ -159,39 +158,25 @@
             <input type="checkbox" id="dark-mode-toggle">
             Dark Mode
         </label>
-        <div class="theme-switcher">
-            <label>
-                Theme Color
-                <select id="theme-color-selector">
-                    <option value="default">Default</option>
-                    <option value="pastel">Pastel</option>
-                    <option value="dark">Dark</option>
-                </select>
-            </label>
-        </div>
     </div>
 
     <div class="container">
-        <div class="nav-buttons">
-            <a id="prev-surah" href="#"><i class="fas fa-chevron-left"></i> Previous</a>
-            <a id="next-surah" href="#">Next <i class="fas fa-chevron-right"></i></a>
-        </div>
         <h1 id="surah-name"></h1>
         <h2 id="surah-arabic-name"></h2>
         <div class="details">
             <p><strong>Surah Count:</strong> <span id="surah-count"></span></p>
             <p><strong>Juz:</strong> <span id="surah-juz"></span></p>
         </div>
-        <div class="audio-player">
-            <audio id="audio" controls>
-                <source id="audio-source" src="" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-        </div>
         <div id="surah-content"></div>
     </div>
 
     <script>
+        // Toggle menu visibility
+        function toggleMenu() {
+            const menuButtons = document.getElementById('menu-buttons');
+            menuButtons.style.display = menuButtons.style.display === 'flex' ? 'none' : 'flex';
+        }
+
         // Toggle settings menu visibility
         function toggleSettingsMenu() {
             const menu = document.getElementById('settings-menu');
@@ -209,16 +194,11 @@
         // Apply dark mode settings
         function applyDarkMode() {
             const darkMode = document.body.classList.contains('dark-mode');
-            document.body.style.backgroundColor = darkMode ? '#263238' : '#e3f2fd';
             document.querySelector('.container').style.borderColor = darkMode ? '#455a64' : '#0288d1';
             document.querySelectorAll('.verse').forEach(verse => {
                 verse.style.backgroundColor = darkMode ? '#455a64' : '#fff3e0';
-                verse.style.borderColor = darkMode ? '#607d8b' : '#ffcc80';
             });
             document.querySelector('.settings-menu').style.borderColor = darkMode ? '#455a64' : '#0288d1';
-            document.querySelectorAll('.nav-buttons a').forEach(button => {
-                button.style.backgroundColor = darkMode ? '#455a64' : '#0288d1';
-            });
         }
 
         // Load settings from local storage
@@ -226,20 +206,17 @@
             const fontSize = localStorage.getItem('font-size') || '24';
             const darkMode = localStorage.getItem('dark-mode') === 'true';
             const arabicFont = localStorage.getItem('arabic-font') || 'Noto Sans Arabic';
-            const themeColor = localStorage.getItem('theme-color') || 'default';
 
             document.getElementById('font-size-slider').value = fontSize;
             document.getElementById('font-size-value').textContent = fontSize + 'px';
             document.getElementById('dark-mode-toggle').checked = darkMode;
             document.getElementById('arabic-font-selector').value = arabicFont;
-            document.getElementById('theme-color-selector').value = themeColor;
 
             if (darkMode) {
                 document.body.classList.add('dark-mode');
             }
             applyDarkMode();
             applySettings();
-            applyThemeColor(themeColor);
         }
 
         // Apply settings to the page
@@ -262,29 +239,12 @@
             const fontSize = document.getElementById('font-size-slider').value;
             const darkMode = document.body.classList.contains('dark-mode');
             const arabicFont = document.getElementById('arabic-font-selector').value;
-            const themeColor = document.getElementById('theme-color-selector').value;
 
             localStorage.setItem('font-size', fontSize);
             localStorage.setItem('dark-mode', darkMode);
             localStorage.setItem('arabic-font', arabicFont);
-            localStorage.setItem('theme-color', themeColor);
 
             applySettings();
-            applyThemeColor(themeColor);
-        }
-
-        // Apply selected theme color
-        function applyThemeColor(themeColor) {
-            switch (themeColor) {
-                case 'pastel':
-                    document.body.style.backgroundColor = '#fce4ec';
-                    break;
-                case 'dark':
-                    document.body.style.backgroundColor = '#1c1c1c';
-                    break;
-                default:
-                    document.body.style.backgroundColor = '#e3f2fd';
-            }
         }
 
         // Bookmarking functionality
@@ -315,9 +275,6 @@
         document.getElementById('arabic-font-selector').addEventListener('change', function() {
             saveSettings();
         });
-        document.getElementById('theme-color-selector').addEventListener('change', function() {
-            saveSettings();
-        });
         document.getElementById('bookmark-button').addEventListener('click', toggleBookmark);
 
         // Fetch Surah details and apply settings
@@ -336,35 +293,16 @@
                 const surahResponse = await fetch(surahUrl);
                 const surah = await surahResponse.json();
 
-                const surahName = document.getElementById('surah-name');
-                const surahArabicName = document.getElementById('surah-arabic-name');
-                const surahCount = document.getElementById('surah-count');
-                const surahJuz = document.getElementById('surah-juz');
+                document.getElementById('surah-name').textContent = surah.name;
+                document.getElementById('surah-arabic-name').textContent = surah.arabicName;
+                document.getElementById('surah-count').textContent = surah.count;
+                document.getElementById('surah-juz').innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
+
                 const surahContent = document.getElementById('surah-content');
-                const audioSource = document.getElementById('audio-source');
-
-                surahName.textContent = surah.name;
-                surahArabicName.textContent = surah.arabicName;
-                surahCount.textContent = surah.count;
-                surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
-
-                surahContent.innerHTML = `
-                    ${Object.keys(surah.verse).map(key => {
-                        const verseNumber = key.replace('verse_', '');
-                        return `
-                            <div class="verse">
-                                <span class="circle">${verseNumber}</span>
-                                ${surah.verse[key]}
-                            </div>
-                        `;
-                    }).join('')}
-                `;
-
-                // Set audio source if available
-                if (surah.audio) {
-                    audioSource.src = surah.audio;
-                    document.getElementById('audio').load();
-                }
+                surahContent.innerHTML = Object.keys(surah.verse).map(key => {
+                    const verseNumber = key.replace('verse_', '');
+                    return `<div class="verse"><span class="circle">${verseNumber}</span>${surah.verse[key]}</div>`;
+                }).join('');
 
                 loadSettings();
 
