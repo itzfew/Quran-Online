@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surah Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -12,6 +13,13 @@
             margin: 0;
             padding: 20px;
         }
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 8px;
+        }
         .container {
             max-width: 800px;
             margin: auto;
@@ -19,10 +27,10 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ccc;
         }
         h1 {
-            text-align: center;
-            color: #2c3e50;
+            margin: 0;
         }
         .verse {
             margin: 10px 0;
@@ -31,6 +39,7 @@
             background-color: #ecf0f1;
             display: flex;
             align-items: center;
+            border-left: 5px solid #3498db;
         }
         .verse-number {
             background-color: #3498db;
@@ -42,6 +51,7 @@
             align-items: center;
             justify-content: center;
             margin-right: 10px;
+            font-weight: bold;
         }
         .loading {
             text-align: center;
@@ -64,22 +74,54 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
+            margin: 5px;
+            font-size: 16px;
         }
         button:hover {
             background-color: #2980b9;
         }
+        .menu {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .menu a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+        }
+        .menu a:hover {
+            text-decoration: underline;
+        }
+        .arabic-text {
+            font-family: 'Amiri', serif;
+            font-size: 1.5em;
+            direction: rtl;
+        }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="container">
+<div class="header">
     <h1>Surah Details</h1>
+    <div class="menu">
+        <a href="#surah1">Surah 1</a>
+        <a href="#surah2">Surah 2</a>
+        <a href="#surah3">Surah 3</a>
+        <a href="#surah4">Surah 4</a>
+        <!-- Add more links for other Surahs as needed -->
+    </div>
+</div>
+
+<div class="container">
     <div class="button-container">
         <button onclick="fetchSurah(1)">Surah 1</button>
         <button onclick="fetchSurah(2)">Surah 2</button>
         <button onclick="fetchSurah(3)">Surah 3</button>
         <button onclick="fetchSurah(4)">Surah 4</button>
-        <!-- Add more buttons for other surahs as needed -->
+        <!-- Add more buttons for other Surahs as needed -->
     </div>
     <div id="content"></div>
     <div id="loading" class="loading" style="display: none;">Loading...</div>
@@ -116,7 +158,7 @@
 
             const verseDiv = document.createElement('div');
             verseDiv.classList.add('verse');
-            verseDiv.innerHTML = `<div class="verse-number">${i + 1}</div>${verseText}`;
+            verseDiv.innerHTML = `<div class="verse-number">${i + 1}</div><div class="arabic-text">${verseText}</div>`;
             content.appendChild(verseDiv);
         }
     }
