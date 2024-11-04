@@ -36,7 +36,7 @@
         }
         .first-verse {
             text-align: center;
-            font-size: 1.8em;
+            font-size: 2em;
             margin: 20px 0;
             padding: 20px;
             background-color: rgba(255, 255, 255, 0.9);
@@ -46,10 +46,11 @@
             color: #2980b9;
             font-weight: bold;
             position: relative;
+            display: inline-block; /* Centering */
         }
         .verse {
             margin: 15px 0;
-            padding: 30px;
+            padding: 15px;
             border-radius: 8px;
             background-color: rgba(236, 240, 241, 0.8);
             display: flex;
@@ -66,8 +67,8 @@
             background-color: #3498db;
             color: white;
             border-radius: 50%;
-            width: 60px;
-            height: 60px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -258,8 +259,8 @@
 
         content.innerHTML = ''; // Clear previous content
 
-        // Include the first verse as verse_0 and then loop through the remaining verses
-        for (let i = 0; i <= count; i++) {
+        // Loop through the remaining verses
+        for (let i = 1; i <= count; i++) {
             const verseKey = `verse_${i}`;
             const verseText = verses[verseKey];
 
