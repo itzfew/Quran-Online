@@ -211,6 +211,9 @@
 
 <div class="header">
     <div id="surah-heading" class="surah-heading" style="display: none;"></div>
+    <select id="surahSelect" onchange="fetchSurah(this.value)" style="margin: 20px auto; display: block; font-size: 18px;">
+        <option value="">Select a Surah</option>
+    </select>
 </div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 <div id="content"></div>
@@ -218,10 +221,11 @@
 <button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Load user preferences
         const darkMode = localStorage.getItem('darkMode') === 'true';
-        const textSize = localStorage.getItem('textSize') || '18';
-        const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
+        const textSize = localStorage.getItem('textSize') || 18; // Default font size
+        const selectedFont = localStorage.getItem('selectedFont') || 'Arial';
         
         if (darkMode) {
             document.body.classList.add('dark-mode');
@@ -229,16 +233,24 @@
         document.body.style.fontSize = textSize + 'px';
         document.getElementById('fontSelect').value = selectedFont;
 
-        fetchSurah(1); // Fetch the first Surah as an example
+        await loadSurahList(); // Load the list of Surahs on page load
     });
+
+    async function loadSurahList() {
+        const surahSelect = document.getElementById('surahSelect');
+        for (let i = 1; i <= 114; i++) { // Quran has 114 Surahs
+            const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(i).padStart(2, '0')}.json`);
+            const data = await response.json();
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = data.name; // Name of the Surah
+            surahSelect.appendChild(option);
+        }
+    }
 
     function toggleMenu() {
         const menu = document.getElementById("mySideMenu");
-        if (menu.style.left === "0px") {
-            menu.style.left = "-250px";
-        } else {
-            menu.style.left = "0px";
-        }
+        menu.style.left = menu.style.left === "0px" ? "-250px" : "0px";
     }
 
     function closeMenu() {
@@ -278,7 +290,7 @@
     }
 
     async function fetchSurah(index) {
-        const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
+        const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(2, '0')}.json`);
         const data = await response.json();
         displaySurah(data);
     }
