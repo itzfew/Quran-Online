@@ -18,9 +18,9 @@
             max-width: 900px;
             margin: auto;
             background: #ffffff;
-            padding: 0px;
-            border-radius: 0px;
-            box-shadow: 0 0 0px rgba(0, 0, 0, 0.2);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
             transition: background-color 0.5s, border 0.5s;
         }
         .header {
@@ -29,12 +29,12 @@
         }
         .surah-heading {
             font-size: 2.5em;
-            padding: 0px;
+            padding: 10px;
             border: 2px solid #3498db;
-            border-radius: 90px;
+            border-radius: 10px;
             background-color: #ecf0f1;
             color: #3498db;
-            box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .verse {
             margin: 15px 0;
@@ -216,15 +216,16 @@
         <div id="surah-heading" class="surah-heading" style="display: none;"></div>
     </div>
     <div id="content"></div>
-    <div id="loading" class="loading" style="display: none;"></div>
+    <div id="loading" class="loading" style="display: none;">Loading Surah...</div>
     <div id="error" class="error" style="display: none;"></div>
 </div>
 
 <button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
 
 <script>
-    // Load preferences from local storage
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', init);
+
+    function init() {
         const darkMode = localStorage.getItem('darkMode') === 'true';
         const textSize = localStorage.getItem('textSize') || '16';
         const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
@@ -235,23 +236,17 @@
 
         document.body.style.fontSize = textSize + 'px';
         document.body.style.fontFamily = selectedFont;
-
-        // Set the selected font in the dropdown
         document.getElementById('fontSelect').value = selectedFont;
 
-        // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
-    });
-
-    // Function to toggle the side menu
-    function toggleMenu() {
-        const sideMenu = document.getElementById("mySideMenu");
-        const isOpen = sideMenu.style.left === "0";
-        sideMenu.style.left = isOpen ? "-250px" : "0";
     }
 
-    // Close the menu if clicked outside of it
+    function toggleMenu() {
+        const sideMenu = document.getElementById("mySideMenu");
+        sideMenu.style.left = sideMenu.style.left === "0" ? "-250px" : "0";
+    }
+
     document.addEventListener('click', function(event) {
         const sideMenu = document.getElementById("mySideMenu");
         const menuIcon = document.querySelector('.menu-icon');
@@ -260,7 +255,6 @@
         }
     });
 
-    // Function to get URL parameters
     function getQueryParam(param) {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(param);
@@ -304,35 +298,30 @@
             verseDiv.innerHTML = `<div class="verse-number">${i + 1}</div><div class="arabic-text">${verseText}</div>`;
             content.appendChild(verseDiv);
 
-            // Trigger fade-in effect
             setTimeout(() => {
                 verseDiv.classList.add('visible');
-            }, 100 * i); // Staggered effect
+            }, 100 * i);
         }
     }
 
-    // Toggle between light and dark mode
     function toggleTheme() {
         const darkMode = document.body.classList.toggle('dark-mode');
         localStorage.setItem('darkMode', darkMode);
     }
 
-    // Change text size
     function changeTextSize(delta) {
         const currentSize = parseInt(window.getComputedStyle(document.body).fontSize);
-        const newSize = Math.max(currentSize + delta * 2, 12); // minimum font size of 12px
+        const newSize = Math.max(currentSize + delta * 2, 12);
         document.body.style.fontSize = newSize + 'px';
         localStorage.setItem('textSize', newSize);
     }
 
-    // Change font
     function changeFont() {
         const selectedFont = document.getElementById('fontSelect').value;
         document.body.style.fontFamily = selectedFont;
         localStorage.setItem('selectedFont', selectedFont);
     }
 
-    // Back to top button functionality
     window.onscroll = function() {
         const backToTopButton = document.querySelector('.back-to-top');
         if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
