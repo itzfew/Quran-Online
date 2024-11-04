@@ -16,9 +16,6 @@
             padding: 20px;
             transition: background-color 0.5s, color 0.5s, font-family 0.5s;
             font-size: 18px; /* Default font size */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
         .header {
             text-align: center;
@@ -48,12 +45,11 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             color: #2980b9;
             font-weight: bold;
-            width: 80%; /* Center alignment */
-            max-width: 600px; /* Max width for larger screens */
+            position: relative;
         }
         .verse {
             margin: 15px 0;
-            padding: 35px;
+            padding: 30px;
             border-radius: 8px;
             background-color: rgba(236, 240, 241, 0.8);
             display: flex;
@@ -61,9 +57,7 @@
             border-left: 5px solid #3498db;
             transition: background-color 0.3s;
             cursor: pointer;
-            font-size: 2.0em;
-            width: 80%; /* Center alignment */
-            max-width: 600px; /* Max width for larger screens */
+            font-size: 1.5em;
         }
         .verse:hover {
             background-color: rgba(52, 152, 219, 0.2);
@@ -232,6 +226,18 @@
         // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (event) => {
+            const sideMenu = document.getElementById("mySideMenu");
+            const menuIcon = document.querySelector('.menu-icon');
+            const isClickInsideMenu = sideMenu.contains(event.target);
+            const isClickOnMenuIcon = menuIcon.contains(event.target);
+
+            if (sideMenu.style.left === "0" && !isClickInsideMenu && !isClickOnMenuIcon) {
+                toggleMenu();
+            }
+        });
     });
 
     function toggleMenu() {
