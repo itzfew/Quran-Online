@@ -4,363 +4,123 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surah Details</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&family=Noto+Sans+Arabic:wght@100..900&family=Scheherazade+New:wght@400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: 'Noto Sans Arabic', sans-serif;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
             margin: 0;
-            padding: 0;
-            transition: background-color 0.3s;
-            display: flex;
-        }
-        .dark-mode {
-            background-color: #263238;
-            color: #e3f2fd;
+            padding: 20px;
         }
         .container {
             max-width: 800px;
-            margin: 20px auto;
+            margin: auto;
+            background: #fff;
             padding: 20px;
             border-radius: 8px;
-            background-color: #e3f2fd;
-            border: 1px solid #0288d1;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            transition: border-color 0.3s, background-color 0.3s;
-            flex-grow: 1;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .nav-buttons a {
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            background-color: #0288d1;
-            color: white;
-            transition: background-color 0.3s;
-        }
-        .nav-buttons a:hover {
-            background-color: #0277bd;
-        }
-        h1, h2 {
+        h1 {
             text-align: center;
-            margin: 10px 0;
-        }
-        .details {
-            margin: 20px 0;
-            font-size: 18px;
-            text-align: left;
+            color: #2c3e50;
         }
         .verse {
-            background-color: #fff3e0;
             margin: 10px 0;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s;
-            position: relative;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #ecf0f1;
+            display: flex;
+            align-items: center;
         }
-        .verse:hover {
-            background-color: #ffecb3;
+        .verse-number {
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
         }
-        .settings-menu {
-            display: none;
-            position: fixed;
-            top: 20%;
-            right: 10%;
-            width: 300px;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
+        .loading {
+            text-align: center;
+            font-size: 1.2em;
+            color: #3498db;
         }
-        .settings-menu label {
-            display: block;
-            margin: 10px 0;
+        .error {
+            color: red;
+            text-align: center;
         }
-        .settings-button, .dark-mode-toggle, .back-to-index {
-            position: fixed;
-            top: 20px;
-            z-index: 100;
-            background-color: #0288d1;
+        .button-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        button {
+            background-color: #3498db;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        .settings-button {
-            right: 120px;
-        }
-        .dark-mode-toggle {
-            right: 80px;
-        }
-        .back-to-index {
-            left: 10px;
-        }
-        .close-button {
-            background: none;
-            border: none;
-            font-size: 20px;
-            cursor: pointer;
-        }
-        .juz-menu {
-            position: fixed;
-            left: 0;
-            top: 20%;
-            width: 200px;
-            background-color: #0288d1;
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            z-index: 100;
-        }
-        .juz-menu h3 {
-            margin: 0;
-            font-size: 18px;
-        }
-        .juz-menu a {
-            color: white;
-            text-decoration: none;
-            display: block;
-            margin: 5px 0;
-            padding: 5px;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        .juz-menu a:hover {
-            background-color: #0277bd;
+        button:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
 <body>
-    <div class="juz-menu">
-        <h3>Juz Navigation</h3>
-        <a href="#juz1" onclick="scrollToJuz(1)">Juz 1</a>
-        <a href="#juz2" onclick="scrollToJuz(2)">Juz 2</a>
-        <a href="#juz3" onclick="scrollToJuz(3)">Juz 3</a>
-        <a href="#juz4" onclick="scrollToJuz(4)">Juz 4</a>
-        <a href="#juz5" onclick="scrollToJuz(5)">Juz 5</a>
-        <a href="#juz6" onclick="scrollToJuz(6)">Juz 6</a>
-        <a href="#juz7" onclick="scrollToJuz(7)">Juz 7</a>
-        <a href="#juz8" onclick="scrollToJuz(8)">Juz 8</a>
-        <a href="#juz9" onclick="scrollToJuz(9)">Juz 9</a>
-        <a href="#juz10" onclick="scrollToJuz(10)">Juz 10</a>
-        <a href="#juz11" onclick="scrollToJuz(11)">Juz 11</a>
-        <a href="#juz12" onclick="scrollToJuz(12)">Juz 12</a>
-        <a href="#juz13" onclick="scrollToJuz(13)">Juz 13</a>
-        <a href="#juz14" onclick="scrollToJuz(14)">Juz 14</a>
-        <a href="#juz15" onclick="scrollToJuz(15)">Juz 15</a>
-        <a href="#juz16" onclick="scrollToJuz(16)">Juz 16</a>
-        <a href="#juz17" onclick="scrollToJuz(17)">Juz 17</a>
-        <a href="#juz18" onclick="scrollToJuz(18)">Juz 18</a>
-        <a href="#juz19" onclick="scrollToJuz(19)">Juz 19</a>
-        <a href="#juz20" onclick="scrollToJuz(20)">Juz 20</a>
-        <a href="#juz21" onclick="scrollToJuz(21)">Juz 21</a>
-        <a href="#juz22" onclick="scrollToJuz(22)">Juz 22</a>
-        <a href="#juz23" onclick="scrollToJuz(23)">Juz 23</a>
-        <a href="#juz24" onclick="scrollToJuz(24)">Juz 24</a>
-        <a href="#juz25" onclick="scrollToJuz(25)">Juz 25</a>
-        <a href="#juz26" onclick="scrollToJuz(26)">Juz 26</a>
-        <a href="#juz27" onclick="scrollToJuz(27)">Juz 27</a>
-        <a href="#juz28" onclick="scrollToJuz(28)">Juz 28</a>
-        <a href="#juz29" onclick="scrollToJuz(29)">Juz 29</a>
-        <a href="#juz30" onclick="scrollToJuz(30)">Juz 30</a>
+
+<div class="container">
+    <h1>Surah Details</h1>
+    <div class="button-container">
+        <button onclick="fetchSurah(1)">Surah 1</button>
+        <button onclick="fetchSurah(2)">Surah 2</button>
+        <button onclick="fetchSurah(3)">Surah 3</button>
+        <button onclick="fetchSurah(4)">Surah 4</button>
+        <!-- Add more buttons for other surahs as needed -->
     </div>
+    <div id="content"></div>
+    <div id="loading" class="loading" style="display: none;">Loading...</div>
+    <div id="error" class="error" style="display: none;"></div>
+</div>
 
-    <button class="back-to-index" onclick="window.location.href='index.html'">🏠</button>
-    <button class="settings-button" onclick="toggleSettingsMenu()">⚙️</button>
-    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
-    
-    <div class="settings-menu" id="settings-menu">
-        <button class="close-button" onclick="toggleSettingsMenu()">✖️</button>
-        <h2>Settings</h2>
-        <label>
-            Font Size
-            <input type="range" id="font-size-slider" min="16" max="36" step="2" value="24">
-            <span id="font-size-value">24px</span>
-        </label>
-        <label>
-            Arabic Font
-            <select id="arabic-font-selector">
-                <option value="Noto Sans Arabic">Noto Sans Arabic</option>
-                <option value="Amiri Quran">Amiri Quran</option>
-                <option value="Scheherazade New">Scheherazade New</option>
-            </select>
-        </label>
-        <label>
-            <input type="checkbox" id="dark-mode-toggle">
-            Dark Mode
-        </label>
-    </div>
+<script>
+    async function fetchSurah(index) {
+        document.getElementById('content').innerHTML = '';
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('error').style.display = 'none';
 
-    <div class="container">
-        <div class="nav-buttons">
-            <a id="prev-surah" href="#"><i class="fas fa-chevron-left"></i> Previous</a>
-            <a id="next-surah" href="#">Next <i class="fas fa-chevron-right"></i></a>
-        </div>
-        <h1 id="surah-name"></h1>
-        <h2 id="surah-arabic-name"></h2>
-        <div class="details">
-            <p><strong>Surah Count:</strong> <span id="surah-count"></span></p>
-            <p><strong>Juz:</strong> <span id="surah-juz"></span></p>
-        </div>
-        <div id="surah-content"></div>
-    </div>
-
-    <script>
-        function scrollToJuz(juzNumber) {
-            const juzElement = document.getElementById(`juz${juzNumber}`);
-            if (juzElement) {
-                juzElement.scrollIntoView({ behavior: 'smooth' });
-            }
+        try {
+            const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const data = await response.json();
+            displaySurah(data);
+        } catch (error) {
+            document.getElementById('error').innerText = 'Failed to load Surah. Please try again later.';
+            document.getElementById('error').style.display = 'block';
+        } finally {
+            document.getElementById('loading').style.display = 'none';
         }
+    }
 
-        function toggleSettingsMenu() {
-            const menu = document.getElementById('settings-menu');
-            menu.style.display = menu.style.display === 'none' || menu.style.display === '' ? 'block' : 'none';
+    function displaySurah(data) {
+        const content = document.getElementById('content');
+        const verses = data.verse;
+        const count = data.count;
+
+        for (let i = 0; i < count; i++) {
+            const verseKey = `verse_${i}`;
+            const verseText = verses[verseKey];
+
+            const verseDiv = document.createElement('div');
+            verseDiv.classList.add('verse');
+            verseDiv.innerHTML = `<div class="verse-number">${i + 1}</div>${verseText}`;
+            content.appendChild(verseDiv);
         }
+    }
+</script>
 
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-            const darkMode = document.body.classList.contains('dark-mode');
-            localStorage.setItem('dark-mode', darkMode);
-            applyDarkMode();
-        }
-
-        function applyDarkMode() {
-            const darkMode = document.body.classList.contains('dark-mode');
-            document.body.style.backgroundColor = darkMode ? '#263238' : '#e3f2fd';
-            document.querySelector('.container').style.borderColor = darkMode ? '#455a64' : '#0288d1';
-            document.querySelectorAll('.verse').forEach(verse => {
-                verse.style.backgroundColor = darkMode ? '#455a64' : '#fff3e0';
-            });
-            document.querySelector('.settings-menu').style.borderColor = darkMode ? '#455a64' : '#0288d1';
-            document.querySelectorAll('.nav-buttons a').forEach(button => {
-                button.style.backgroundColor = darkMode ? '#455a64' : '#0288d1';
-            });
-        }
-
-        function loadSettings() {
-            const fontSize = localStorage.getItem('font-size') || '24';
-            const darkMode = localStorage.getItem('dark-mode') === 'true';
-            const arabicFont = localStorage.getItem('arabic-font') || 'Noto Sans Arabic';
-
-            document.getElementById('font-size-slider').value = fontSize;
-            document.getElementById('font-size-value').textContent = fontSize + 'px';
-            document.getElementById('dark-mode-toggle').checked = darkMode;
-            document.getElementById('arabic-font-selector').value = arabicFont;
-
-            if (darkMode) {
-                document.body.classList.add('dark-mode');
-            }
-            applyDarkMode();
-            applySettings();
-        }
-
-        function applySettings() {
-            const fontSize = document.getElementById('font-size-slider').value;
-            const arabicFont = document.getElementById('arabic-font-selector').value;
-
-            document.querySelectorAll('.verse').forEach(verse => {
-                verse.style.fontSize = fontSize + 'px';
-                verse.style.fontFamily = arabicFont;
-            });
-
-            document.querySelector('.details').style.fontSize = fontSize + 'px';
-            document.querySelector('.container').style.fontSize = fontSize + 'px';
-            document.querySelector('.container').style.fontFamily = arabicFont;
-        }
-
-        function saveSettings() {
-            const fontSize = document.getElementById('font-size-slider').value;
-            const darkMode = document.body.classList.contains('dark-mode');
-            const arabicFont = document.getElementById('arabic-font-selector').value;
-
-            localStorage.setItem('font-size', fontSize);
-            localStorage.setItem('dark-mode', darkMode);
-            localStorage.setItem('arabic-font', arabicFont);
-
-            applySettings();
-        }
-
-        document.getElementById('font-size-slider').addEventListener('input', function() {
-            document.getElementById('font-size-value').textContent = this.value + 'px';
-            saveSettings();
-        });
-        document.getElementById('dark-mode-toggle').addEventListener('change', function() {
-            toggleDarkMode();
-            saveSettings();
-        });
-        document.getElementById('arabic-font-selector').addEventListener('change', function() {
-            saveSettings();
-        });
-
-        async function fetchSurahDetails() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const surahIndex = parseInt(urlParams.get('index'), 10);
-
-            if (!surahIndex) {
-                document.body.innerHTML = '<p>No Surah index specified.</p>';
-                return;
-            }
-
-            const surahUrl = `https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah/surah_${surahIndex}.json`;
-
-            try {
-                const surahResponse = await fetch(surahUrl);
-                const surah = await surahResponse.json();
-
-                const surahName = document.getElementById('surah-name');
-                const surahArabicName = document.getElementById('surah-arabic-name');
-                const surahCount = document.getElementById('surah-count');
-                const surahJuz = document.getElementById('surah-juz');
-                const surahContent = document.getElementById('surah-content');
-
-                surahName.textContent = surah.name;
-                surahArabicName.textContent = surah.arabicName;
-                surahCount.textContent = surah.count;
-                surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
-
-                surahContent.innerHTML = `
-                    ${Object.keys(surah.verse).map(key => {
-                        const verseNumber = key.replace('verse_', '');
-                        return `
-                            <div class="verse" id="juz${surah.juz[0].index}">
-                                <span class="circle">${verseNumber}</span>
-                                ${surah.verse[key]}
-                            </div>
-                        `;
-                    }).join('')}
-                `;
-
-                loadSettings();
-
-                document.getElementById('prev-surah').href = surahIndex > 1 ? `surah-details.html?index=${surahIndex - 1}` : '#';
-                document.getElementById('next-surah').href = surahIndex < 114 ? `surah-details.html?index=${surahIndex + 1}` : '#';
-
-                if (surahIndex <= 1) {
-                    document.getElementById('prev-surah').style.display = 'none';
-                }
-                if (surahIndex >= 114) {
-                    document.getElementById('next-surah').style.display = 'none';
-                }
-
-            } catch (error) {
-                console.error('Error fetching surah details:', error);
-                document.body.innerHTML = '<p>Error loading Surah details.</p>';
-            }
-        }
-
-        fetchSurahDetails();
-    </script>
 </body>
 </html>
