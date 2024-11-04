@@ -8,72 +8,75 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+            background-color: #f8f9fa;
+            color: #212529;
             margin: 0;
             padding: 20px;
             transition: background-color 0.5s, color 0.5s, font-family 0.5s;
         }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .menu-icon {
+            font-size: 30px;
+            cursor: pointer;
+        }
         .container {
             max-width: 800px;
-            margin: auto;
-            background: #fff;
+            margin: 20px auto;
+            background: #ffffff;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            border: 1px solid #ccc;
-            transition: background-color 0.5s, border 0.5s;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
         }
         .surah-heading {
             text-align: center;
-            font-size: 2em;
+            font-size: 2.5em;
             margin: 20px 0;
             padding: 10px;
-            border: 2px solid #3498db;
+            border: 2px solid #007bff;
             border-radius: 5px;
-            background-color: #ecf0f1;
-            color: #3498db;
-            transition: background-color 0.5s, color 0.5s;
+            background-color: #e9f2ff;
+            color: #007bff;
         }
         .verse {
             margin: 10px 0;
             padding: 15px;
             border-radius: 5px;
-            background-color: #ecf0f1;
+            background-color: #e9ecef;
             display: flex;
             align-items: center;
-            border-left: 5px solid #3498db;
-            transition: background-color 0.5s;
+            border-left: 5px solid #007bff;
         }
         .verse-number {
-            background-color: #3498db;
+            background-color: #007bff;
             color: white;
             border-radius: 50%;
-            width: 35px;
-            height: 35px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 15px;
             font-weight: bold;
-            font-size: 1.1em;
+            font-size: 1.2em;
         }
         .loading {
             text-align: center;
-            font-size: 1.2em;
-            color: #3498db;
+            font-size: 1.5em;
+            color: #007bff;
         }
         .error {
             color: red;
             text-align: center;
-        }
-        .menu-icon {
-            font-size: 30px;
-            cursor: pointer;
-            color: #3498db;
-            position: fixed;
-            top: 20px;
-            left: 20px;
+            font-weight: bold;
         }
         .side-menu {
             height: 100%;
@@ -82,7 +85,7 @@
             z-index: 1;
             top: 0;
             left: -250px; /* Hidden by default */
-            background-color: #3498db;
+            background-color: #007bff;
             overflow-x: hidden;
             transition: 0.5s;
             padding-top: 60px;
@@ -96,27 +99,14 @@
             transition: 0.3s;
         }
         .side-menu a:hover {
-            background-color: #2980b9;
+            background-color: #0056b3;
         }
         .dark-mode {
-            background-color: #333;
-            color: #fff;
+            background-color: #343a40;
+            color: #f8f9fa;
         }
         .dark-mode .container {
-            background-color: #444;
-            border: 1px solid #666;
-        }
-        .dark-mode .surah-heading {
-            background-color: #555;
-            color: #fff;
-            border-color: #1abc9c;
-        }
-        .dark-mode .verse {
-            background-color: #555;
-            border-left: 5px solid #1abc9c;
-        }
-        .dark-mode .verse-number {
-            background-color: #1abc9c;
+            background-color: #495057;
         }
         .text-size-control,
         .font-control {
@@ -125,7 +115,7 @@
         }
         .text-size-button,
         .font-button {
-            background-color: #3498db;
+            background-color: #007bff;
             color: white;
             border: none;
             padding: 10px 15px;
@@ -133,32 +123,38 @@
             cursor: pointer;
             margin: 0 5px;
             font-size: 16px;
-            transition: background-color 0.3s;
         }
         .text-size-button:hover,
         .font-button:hover {
-            background-color: #2980b9;
+            background-color: #0056b3;
         }
         .font-select {
             margin-top: 10px;
             padding: 5px;
+            font-size: 16px;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<i class="fas fa-bars menu-icon" onclick="toggleMenu()"></i>
+<div class="header">
+    <div class="menu-icon" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </div>
+    <h1>Surah Details</h1>
+    <div></div>
+</div>
 
 <div id="mySideMenu" class="side-menu">
-    <a href="index.html"><i class="fas fa-home"></i> Home</a>
-    <a href="mailto:contactus94@yahoo.com"><i class="fas fa-envelope"></i> Contact Us</a>
+    <a href="index.html">Home</a>
+    <a href="mailto:contactus94@yahoo.com">Contact Us</a>
     <div class="text-size-control">
-        <button class="text-size-button" onclick="changeTextSize(1)"><i class="fas fa-plus"></i> A+</button>
-        <button class="text-size-button" onclick="changeTextSize(-1)"><i class="fas fa-minus"></i> A-</button>
+        <button class="text-size-button" onclick="changeTextSize(1)">A+</button>
+        <button class="text-size-button" onclick="changeTextSize(-1)">A-</button>
     </div>
     <div class="font-control">
-        <label for="fontSelect" style="color: white;"><i class="fas fa-font"></i> Select Arabic Font:</label>
+        <label for="fontSelect" style="color: white;">Select Arabic Font:</label>
         <select id="fontSelect" class="font-select" onchange="changeFont()">
             <option value="Amiri">Amiri</option>
             <option value="Cairo">Cairo</option>
@@ -166,7 +162,7 @@
         </select>
     </div>
     <div class="text-size-control">
-        <button class="text-size-button" onclick="toggleTheme()"><i class="fas fa-adjust"></i> Toggle Dark/Light</button>
+        <button class="text-size-button" onclick="toggleTheme()">Toggle Dark/Light</button>
     </div>
 </div>
 
