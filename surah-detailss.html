@@ -22,6 +22,7 @@
             border-radius: 8px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             border: 1px solid #ccc;
+            transition: background-color 0.5s, border 0.5s;
         }
         .surah-heading {
             text-align: center;
@@ -32,6 +33,7 @@
             border-radius: 5px;
             background-color: #ecf0f1;
             color: #3498db;
+            transition: background-color 0.5s, color 0.5s;
         }
         .verse {
             margin: 10px 0;
@@ -41,6 +43,7 @@
             display: flex;
             align-items: center;
             border-left: 5px solid #3498db;
+            transition: background-color 0.5s;
         }
         .verse-number {
             background-color: #3498db;
@@ -103,6 +106,18 @@
             background-color: #444;
             border: 1px solid #666;
         }
+        .dark-mode .surah-heading {
+            background-color: #555;
+            color: #fff;
+            border-color: #1abc9c;
+        }
+        .dark-mode .verse {
+            background-color: #555;
+            border-left: 5px solid #1abc9c;
+        }
+        .dark-mode .verse-number {
+            background-color: #1abc9c;
+        }
         .text-size-control,
         .font-control {
             margin: 20px 0;
@@ -118,6 +133,7 @@
             cursor: pointer;
             margin: 0 5px;
             font-size: 16px;
+            transition: background-color 0.3s;
         }
         .text-size-button:hover,
         .font-button:hover {
@@ -125,6 +141,7 @@
         }
         .font-select {
             margin-top: 10px;
+            padding: 5px;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&display=swap" rel="stylesheet">
@@ -134,14 +151,14 @@
 <i class="fas fa-bars menu-icon" onclick="toggleMenu()"></i>
 
 <div id="mySideMenu" class="side-menu">
-    <a href="index.html">Home</a>
-    <a href="mailto:contactus94@yahoo.com">Contact Us</a>
+    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="mailto:contactus94@yahoo.com"><i class="fas fa-envelope"></i> Contact Us</a>
     <div class="text-size-control">
-        <button class="text-size-button" onclick="changeTextSize(1)">A+</button>
-        <button class="text-size-button" onclick="changeTextSize(-1)">A-</button>
+        <button class="text-size-button" onclick="changeTextSize(1)"><i class="fas fa-plus"></i> A+</button>
+        <button class="text-size-button" onclick="changeTextSize(-1)"><i class="fas fa-minus"></i> A-</button>
     </div>
     <div class="font-control">
-        <label for="fontSelect" style="color: white;">Select Arabic Font:</label>
+        <label for="fontSelect" style="color: white;"><i class="fas fa-font"></i> Select Arabic Font:</label>
         <select id="fontSelect" class="font-select" onchange="changeFont()">
             <option value="Amiri">Amiri</option>
             <option value="Cairo">Cairo</option>
@@ -149,7 +166,7 @@
         </select>
     </div>
     <div class="text-size-control">
-        <button class="text-size-button" onclick="toggleTheme()">Toggle Dark/Light</button>
+        <button class="text-size-button" onclick="toggleTheme()"><i class="fas fa-adjust"></i> Toggle Dark/Light</button>
     </div>
 </div>
 
