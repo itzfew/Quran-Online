@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-image: url('https://yourbackgroundimageurl.com/image.jpg');
+            background-image: url('https://yourbackgroundimageurl.com/image.jpg'); /* Add a background image */
             background-size: cover;
             background-attachment: fixed;
             color: #333;
@@ -47,14 +47,15 @@
             background-color: #3498db;
             color: white;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 45px; /* Fixed size for circle */
+            height: 45px; /* Fixed size for circle */
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 15px;
             font-weight: bold;
-            font-size: 1.3em;
+            font-size: 1.3em; /* Adjust size as needed */
+            border: 2px solid white; /* Border for circle */
         }
         .loading {
             text-align: center;
@@ -171,18 +172,6 @@
         .back-to-top:hover {
             background-color: #2980b9;
         }
-        .search-bar {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .search-input {
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            width: 80%;
-            max-width: 300px;
-            font-size: 16px;
-        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
 </head>
@@ -214,9 +203,6 @@
 </div>
 
 <div class="header">
-    <div class="search-bar">
-        <input type="text" id="searchInput" class="search-input" placeholder="Search Surah..." oninput="filterSurah()">
-    </div>
     <div id="surah-heading" class="surah-heading" style="display: none;"></div>
 </div>
 <div id="content"></div>
@@ -237,8 +223,6 @@
         }
 
         document.body.style.fontSize = textSize + 'px';
-        document.body.style.fontFamily = selectedFont;
-
         document.getElementById('fontSelect').value = selectedFont;
 
         // Fetch Surah based on URL parameter if provided
@@ -303,6 +287,7 @@
             verseDiv.innerHTML = `<div class="verse-number">${i + 1}</div><div class="arabic-text">${verseText}</div>`;
             content.appendChild(verseDiv);
 
+            // Trigger fade-in effect
             setTimeout(() => {
                 verseDiv.classList.add('visible');
             }, 100 * i); // Staggered effect
@@ -353,15 +338,6 @@
 
     function scrollToTop() {
         window.scrollTo({top: 0, behavior: 'smooth'});
-    }
-
-    function filterSurah() {
-        const input = document.getElementById('searchInput').value.toLowerCase();
-        const verses = document.querySelectorAll('.verse');
-        verses.forEach(verse => {
-            const verseText = verse.textContent.toLowerCase();
-            verse.style.display = verseText.includes(input) ? 'flex' : 'none';
-        });
     }
 </script>
 
