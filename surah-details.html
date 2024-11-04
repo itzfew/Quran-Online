@@ -45,7 +45,6 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             color: #2980b9;
             font-weight: bold;
-            position: relative;
         }
         .verse {
             margin: 15px 0;
@@ -285,10 +284,12 @@
         // Display the first verse centered at the top
         const firstVerseText = verses['verse_0'];
         firstVerseDiv.innerHTML = firstVerseText;
+        firstVerseDiv.className = 'first-verse'; // Ensure the first verse has the correct class
         firstVerseDiv.style.display = 'block';
 
         content.innerHTML = ''; // Clear previous content
 
+        // Loop through the remaining verses starting from verse_1
         for (let i = 1; i < count; i++) {
             const verseKey = `verse_${i}`;
             const verseText = verses[verseKey];
@@ -303,7 +304,7 @@
     function toggleTheme() {
         const darkMode = document.body.classList.toggle('dark-mode');
         localStorage.setItem('darkMode', darkMode);
-    } 
+    }
 
     function changeTextSize(delta) {
         const currentSize = parseInt(window.getComputedStyle(document.body).fontSize);
