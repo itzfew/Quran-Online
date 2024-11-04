@@ -44,7 +44,11 @@
             display: flex;
             align-items: center;
             border-left: 5px solid #3498db;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, opacity 0.5s;
+            opacity: 0; /* Start hidden for fade-in */
+        }
+        .verse.visible {
+            opacity: 1; /* Fade in */
         }
         .verse-number {
             background-color: #3498db;
@@ -63,6 +67,17 @@
             text-align: center;
             font-size: 1.5em;
             color: #3498db;
+            display: inline-block;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top: 3px solid #3498db;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         .error {
             color: red;
@@ -76,38 +91,29 @@
             position: fixed;
             top: 20px;
             left: 20px;
-            z-index: 10;
         }
         .side-menu {
+            height: 100%;
             width: 250px;
             position: fixed;
-            top: 50px;
+            z-index: 1;
+            top: 0;
             left: -250px; /* Hidden by default */
             background-color: #3498db;
-            overflow-y: auto;
+            overflow-x: hidden;
             transition: 0.5s;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            max-height: 80vh; /* Limit height */
+            padding-top: 60px;
         }
         .side-menu a {
             padding: 15px 20px;
             text-decoration: none;
-            font-size: 18px;
+            font-size: 20px;
             color: white;
             display: block;
             transition: 0.3s;
-            border-radius: 5px;
         }
         .side-menu a:hover {
             background-color: #2980b9;
-        }
-        .close-menu {
-            font-size: 25px;
-            color: white;
-            cursor: pointer;
-            float: right;
         }
         .dark-mode {
             background-color: #2c3e50;
@@ -161,8 +167,7 @@
 
 <i class="fas fa-bars menu-icon" onclick="toggleMenu()"></i>
 
-<div id="mySideMenu" class="side-menu">
-    <span class="close-menu" onclick="toggleMenu()">&times;</span>
+<div id="mySideMenu" class="side-menu" aria-label="Main Navigation">
     <a href="index.html"><i class="fas fa-home"></i> Home</a>
     <a href="mailto:contactus94@yahoo.com"><i class="fas fa-envelope"></i> Contact Us</a>
     <div class="text-size-control">
@@ -187,7 +192,7 @@
         <div id="surah-heading" class="surah-heading" style="display: none;"></div>
     </div>
     <div id="content"></div>
-    <div id="loading" class="loading" style="display: none;">Loading...</div>
+    <div id="loading" class="loading" style="display: none;"></div>
     <div id="error" class="error" style="display: none;"></div>
 </div>
 
@@ -238,7 +243,7 @@
     async function fetchSurah(index) {
         document.getElementById('content').innerHTML = '';
         document.getElementById('surah-heading').style.display = 'none';
-        document.getElementById('loading').style.display = 'block';
+        document.getElementById('loading').style.display = 'inline-block';
         document.getElementById('error').style.display = 'none';
 
         try {
@@ -272,6 +277,11 @@
             verseDiv.classList.add('verse');
             verseDiv.innerHTML = `<div class="verse-number">${i + 1}</div><div class="arabic-text">${verseText}</div>`;
             content.appendChild(verseDiv);
+
+            // Trigger fade-in effect
+            setTimeout(() => {
+                verseDiv.classList.add('visible');
+            }, 100 * i); // Staggered effect
         }
     }
 
