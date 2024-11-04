@@ -55,7 +55,7 @@
             justify-content: center;
             margin-right: 15px;
             font-weight: bold;
-            font-size: 1.0em; /* Fixed size for verse number */
+            font-size: 0.5em; /* Fixed size for verse number */
             border: 2px solid white; /* Border for circle */
         }
         .loading {
@@ -301,7 +301,7 @@
     function shareSurah() {
         const surahName = document.getElementById('surah-heading').innerText;
         const link = window.location.href;
-        const shareText = `Check out this beautiful Surah: ${surahName} - ${link}`;
+        const shareText = `Check out this beautiful Surah: ${surahName}`;
         if (navigator.share) {
             navigator.share({
                 title: surahName,
