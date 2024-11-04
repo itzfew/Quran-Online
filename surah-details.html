@@ -266,7 +266,7 @@
     }
 
     async function fetchSurah(index) {
-        const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(2, '0')}.json`);
+        const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
         const data = await response.json();
         displaySurah(data);
     }
