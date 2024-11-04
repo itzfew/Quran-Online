@@ -222,47 +222,59 @@
         const darkMode = localStorage.getItem('darkMode') === 'true';
         const textSize = localStorage.getItem('textSize') || '18';
         const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
-
+        
         if (darkMode) {
             document.body.classList.add('dark-mode');
         }
-
         document.body.style.fontSize = textSize + 'px';
-        document.body.style.fontFamily = selectedFont;
-
         document.getElementById('fontSelect').value = selectedFont;
 
-        // Fetch Surah based on URL parameter if provided
-        const index = getQueryParam('index');
-        fetchSurah(index ? index : 1);
-
-        // Close menu when clicking outside
-        document.addEventListener('click', (event) => {
-            const sideMenu = document.getElementById("mySideMenu");
-            const menuIcon = document.querySelector('.menu-icon');
-            const isClickInsideMenu = sideMenu.contains(event.target);
-            const isClickOnMenuIcon = menuIcon.contains(event.target);
-
-            if (sideMenu.style.left === "0" && !isClickInsideMenu && !isClickOnMenuIcon) {
-                closeMenu();
-            }
-        });
+        fetchSurah(1); // Fetch the first Surah as an example
     });
 
     function toggleMenu() {
-        const sideMenu = document.getElementById("mySideMenu");
-        const isOpen = sideMenu.style.left === "0";
-        sideMenu.style.left = isOpen ? "-250px" : "0";
+        const menu = document.getElementById("mySideMenu");
+        if (menu.style.left === "0px") {
+            menu.style.left = "-250px";
+        } else {
+            menu.style.left = "0px";
+        }
     }
 
     function closeMenu() {
-        const sideMenu = document.getElementById("mySideMenu");
-        sideMenu.style.left = "-250px"; // Close the menu
+        document.getElementById("mySideMenu").style.left = "-250px";
     }
 
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
+    function changeTextSize(direction) {
+        const body = document.body;
+        let currentSize = parseInt(window.getComputedStyle(body).fontSize);
+        const newSize = currentSize + direction * 2;
+        body.style.fontSize = newSize + 'px';
+        localStorage.setItem('textSize', newSize);
+    }
+
+    function changeFont() {
+        const font = document.getElementById('fontSelect').value;
+        document.body.style.fontFamily = font;
+        localStorage.setItem('selectedFont', font);
+    }
+
+    function toggleTheme() {
+        const body = document.body;
+        body.classList.toggle('dark-mode');
+        const darkMode = body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', darkMode);
+    }
+
+    function resetPreferences() {
+        localStorage.removeItem('darkMode');
+        localStorage.removeItem('textSize');
+        localStorage.removeItem('selectedFont');
+        location.reload(); // Reload to apply default settings
+    }
+
+    function scrollToTop() {
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     async function fetchSurah(index) {
@@ -282,65 +294,24 @@
         surahHeading.innerText = name;
         surahHeading.style.display = 'block';
 
-        // Display the first verse centered at the top
         const firstVerseText = verses['verse_0'];
         firstVerseDiv.innerHTML = firstVerseText;
         firstVerseDiv.style.display = 'block';
 
         content.innerHTML = ''; // Clear previous content
 
-        for (let i = 1; i < count; i++) {
+        for (let i = 1; i <= count; i++) {
             const verseKey = `verse_${i}`;
             const verseText = verses[verseKey];
 
-            const verseDiv = document.createElement('div');
-            verseDiv.classList.add('verse');
-            verseDiv.innerHTML = `<div class="verse-number">${i}</div><div class="arabic-text">${verseText}</div>`;
-            content.appendChild(verseDiv);
+            if (verseText) {
+                const verseDiv = document.createElement('div');
+                verseDiv.classList.add('verse');
+                verseDiv.innerHTML = `<div class="verse-number">${i}</div><div class="arabic-text">${verseText}</div>`;
+                content.appendChild(verseDiv);
+            }
         }
-    }
-
-    function toggleTheme() {
-        const darkMode = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', darkMode);
-    }
-
-    function changeTextSize(delta) {
-        const currentSize = parseInt(window.getComputedStyle(document.body).fontSize);
-        const newSize = Math.max(currentSize + delta * 2, 12);
-        document.body.style.fontSize = newSize + 'px';
-        localStorage.setItem('textSize', newSize);
-    }
-
-    function changeFont() {
-        const selectedFont = document.getElementById('fontSelect').value;
-        document.body.style.fontFamily = selectedFont;
-        localStorage.setItem('selectedFont', selectedFont);
-    }
-
-    function resetPreferences() {
-        localStorage.removeItem('darkMode');
-        localStorage.removeItem('textSize');
-        localStorage.removeItem('selectedFont');
-        document.body.style.fontSize = '18px'; // Reset to default size
-        document.body.style.fontFamily = 'Arial'; // Reset to default font
-        document.getElementById('fontSelect').value = 'Amiri'; // Reset to default font selection
-        document.body.classList.remove('dark-mode'); // Reset to light mode
-    }
-
-    window.onscroll = function() {
-        const backToTopButton = document.querySelector('.back-to-top');
-        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-            backToTopButton.style.display = "block";
-        } else {
-            backToTopButton.style.display = "none";
-        }
-    };
-
-    function scrollToTop() {
-        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 </script>
-
 </body>
 </html>
