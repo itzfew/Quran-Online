@@ -12,15 +12,7 @@
             color: #333;
             margin: 0;
             padding: 20px;
-            position: relative;
-        }
-        .header {
-            text-align: center;
-            padding: 20px;
-            background-color: #3498db;
-            color: white;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            transition: margin-left 0.5s, background-color 0.5s, color 0.5s;
         }
         .container {
             max-width: 800px;
@@ -30,9 +22,6 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border: 1px solid #ccc;
-        }
-        h1 {
-            margin: 0;
         }
         .surah-heading {
             text-align: center;
@@ -97,69 +86,66 @@
             font-size: 1.5em;
             direction: rtl;
         }
-        .menu-button {
-            position: absolute;
+        /* Side Menu Styles */
+        .side-menu {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: -250px; /* Hidden by default */
+            background-color: #3498db;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+        .side-menu a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 25px;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+        .side-menu a:hover {
+            background-color: #2980b9;
+        }
+        .menu-icon {
+            font-size: 30px;
+            cursor: pointer;
+            color: #3498db;
+            position: fixed;
             top: 20px;
             left: 20px;
+        }
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
             background-color: #3498db;
             color: white;
             border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            padding: 10px;
+            border-radius: 5px;
             cursor: pointer;
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 16px;
         }
-        .slide-menu {
-            position: fixed;
-            top: 0;
-            left: -250px;
-            width: 250px;
-            height: 100%;
-            background-color: #3498db;
-            transition: left 0.3s ease;
-            padding: 20px;
-            color: white;
-            z-index: 1000;
-        }
-        .slide-menu a {
-            color: white;
-            text-decoration: none;
-            display: block;
-            margin: 15px 0;
-        }
-        .slide-menu a:hover {
-            text-decoration: underline;
-        }
-        .close-menu {
-            cursor: pointer;
-            margin-bottom: 20px;
-            font-size: 24px;
-            color: white;
+        .dark-mode {
+            background-color: #333;
+            color: #fff;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="header">
-    <h1>Surah Details</h1>
-</div>
+<i class="fas fa-bars menu-icon" onclick="toggleMenu()"></i>
+<button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
 
-<button class="menu-button" onclick="toggleMenu()">
-    <i class="fas fa-bars"></i>
-</button>
-
-<div class="slide-menu" id="slide-menu">
-    <span class="close-menu" onclick="toggleMenu()">&times;</span>
+<div id="mySideMenu" class="side-menu">
     <a href="index.html">Home</a>
     <a href="mailto:contactus94@yahoo.com">Contact Us</a>
-    <a href="#">Feature 1</a>
-    <a href="#">Feature 2</a>
-    <!-- Add more features as needed -->
+    <!-- Add more menu items as needed -->
 </div>
 
 <div class="container">
@@ -177,6 +163,22 @@
 </div>
 
 <script>
+    // Function to toggle the side menu
+    function toggleMenu() {
+        const sideMenu = document.getElementById("mySideMenu");
+        const isOpen = sideMenu.style.left === "0";
+        sideMenu.style.left = isOpen ? "-250px" : "0";
+    }
+
+    // Close the menu if clicked outside of it
+    document.addEventListener('click', function(event) {
+        const sideMenu = document.getElementById("mySideMenu");
+        const menuIcon = document.querySelector('.menu-icon');
+        if (!sideMenu.contains(event.target) && !menuIcon.contains(event.target)) {
+            sideMenu.style.left = "-250px";
+        }
+    });
+
     // Function to get URL parameters
     function getQueryParam(param) {
         const urlParams = new URLSearchParams(window.location.search);
@@ -207,9 +209,8 @@
         const surahHeading = document.getElementById('surah-heading');
         const verses = data.verse;
         const count = data.count;
-        const name = data.name; // Get the name of the Surah
+        const name = data.name;
 
-        // Set the Surah heading
         surahHeading.innerText = name;
         surahHeading.style.display = 'block';
 
@@ -224,25 +225,20 @@
         }
     }
 
+    // Toggle between light and dark mode
+    function toggleTheme() {
+        document.body.classList.toggle('dark-mode');
+    }
+
     // Fetch Surah based on the URL parameter when the page loads
     window.onload = () => {
         const index = getQueryParam('index');
         if (index) {
             fetchSurah(index);
         } else {
-            // Optionally fetch the first Surah by default
             fetchSurah(1);
         }
     };
-
-    function toggleMenu() {
-        const menu = document.getElementById('slide-menu');
-        if (menu.style.left === '0px') {
-            menu.style.left = '-250px'; // Hide the menu
-        } else {
-            menu.style.left = '0px'; // Show the menu
-        }
-    }
 </script>
 
 </body>
