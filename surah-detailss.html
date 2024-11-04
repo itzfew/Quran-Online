@@ -13,7 +13,8 @@
             font-family: 'Noto Sans Arabic', sans-serif;
             margin: 0;
             padding: 0;
-            transition: background-color 0.3s;
+            background-color: #f5f5f5;
+            color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -24,13 +25,17 @@
         }
         .container {
             max-width: 800px;
-            margin: 20px auto;
+            margin: 20px;
             padding: 20px;
             border-radius: 8px;
-            background-color: #e3f2fd;
+            background-color: #ffffff;
             border: 1px solid #0288d1;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             transition: border-color 0.3s, background-color 0.3s;
+        }
+        h1, h2 {
+            text-align: center;
+            margin: 10px 0;
         }
         .nav-buttons {
             display: flex;
@@ -48,10 +53,6 @@
         .nav-buttons a:hover {
             background-color: #0277bd;
         }
-        h1, h2 {
-            text-align: center;
-            margin: 10px 0;
-        }
         .details {
             margin: 20px 0;
             font-size: 18px;
@@ -68,6 +69,23 @@
         }
         .verse:hover {
             background-color: #ffecb3;
+        }
+        .juz-links {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .juz-link {
+            margin: 0 5px;
+            padding: 5px 10px;
+            background-color: #0288d1;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .juz-link:hover {
+            background-color: #0277bd;
         }
         .settings-menu {
             display: none;
@@ -118,10 +136,6 @@
         .theme-switcher {
             margin-top: 10px;
         }
-        .audio-player {
-            margin: 20px 0;
-            text-align: center;
-        }
         .circle {
             display: inline-block;
             width: 30px;
@@ -131,15 +145,6 @@
             text-align: center;
             line-height: 30px;
             margin-right: 10px;
-        }
-        .bookmark-button {
-            background-color: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 20px;
-            position: absolute;
-            right: 10px;
-            top: 10px;
         }
     </style>
 </head>
@@ -168,16 +173,6 @@
             <input type="checkbox" id="dark-mode-toggle">
             Dark Mode
         </label>
-        <div class="theme-switcher">
-            <label>
-                Theme Color
-                <select id="theme-color-selector">
-                    <option value="default">Default</option>
-                    <option value="pastel">Pastel</option>
-                    <option value="dark">Dark</option>
-                </select>
-            </label>
-        </div>
     </div>
 
     <div class="container">
@@ -191,12 +186,7 @@
             <p><strong>Surah Count:</strong> <span id="surah-count"></span></p>
             <p><strong>Juz:</strong> <span id="surah-juz"></span></p>
         </div>
-        <div class="audio-player">
-            <audio id="audio" controls>
-                <source id="audio-source" src="" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-        </div>
+        <div class="juz-links" id="juz-links"></div>
         <div id="surah-content"></div>
     </div>
 
@@ -218,7 +208,7 @@
         // Apply dark mode settings
         function applyDarkMode() {
             const darkMode = document.body.classList.contains('dark-mode');
-            document.body.style.backgroundColor = darkMode ? '#263238' : '#e3f2fd';
+            document.body.style.backgroundColor = darkMode ? '#263238' : '#f5f5f5';
             document.querySelector('.container').style.borderColor = darkMode ? '#455a64' : '#0288d1';
             document.querySelectorAll('.verse').forEach(verse => {
                 verse.style.backgroundColor = darkMode ? '#455a64' : '#fff3e0';
@@ -234,20 +224,16 @@
             const fontSize = localStorage.getItem('font-size') || '24';
             const darkMode = localStorage.getItem('dark-mode') === 'true';
             const arabicFont = localStorage.getItem('arabic-font') || 'Noto Sans Arabic';
-            const themeColor = localStorage.getItem('theme-color') || 'default';
 
             document.getElementById('font-size-slider').value = fontSize;
             document.getElementById('font-size-value').textContent = fontSize + 'px';
             document.getElementById('dark-mode-toggle').checked = darkMode;
             document.getElementById('arabic-font-selector').value = arabicFont;
-            document.getElementById('theme-color-selector').value = themeColor;
 
             if (darkMode) {
                 document.body.classList.add('dark-mode');
             }
-            applyDarkMode();
             applySettings();
-            applyThemeColor(themeColor);
         }
 
         // Apply settings to the page
@@ -270,82 +256,32 @@
             const fontSize = document.getElementById('font-size-slider').value;
             const darkMode = document.body.classList.contains('dark-mode');
             const arabicFont = document.getElementById('arabic-font-selector').value;
-            const themeColor = document.getElementById('theme-color-selector').value;
 
             localStorage.setItem('font-size', fontSize);
             localStorage.setItem('dark-mode', darkMode);
             localStorage.setItem('arabic-font', arabicFont);
-            localStorage.setItem('theme-color', themeColor);
-
             applySettings();
-            applyThemeColor(themeColor);
         }
 
-        // Apply selected theme color
-        function applyThemeColor(themeColor) {
-            switch (themeColor) {
-                case 'pastel':
-                    document.body.style.backgroundColor = '#fce4ec';
-                    break;
-                case 'dark':
-                    document.body.style.backgroundColor = '#1c1c1c';
-                    break;
-                default:
-                    document.body.style.backgroundColor = '#e3f2fd';
+        // Jump to Juz section
+        function scrollToJuz(juzNumber) {
+            const juzElements = document.querySelectorAll(`.juz-${juzNumber}`);
+            if (juzElements.length > 0) {
+                juzElements[0].scrollIntoView({ behavior: 'smooth' });
             }
         }
 
-        // Bookmarking functionality
-        function toggleBookmark(verseIndex) {
-            const surahIndex = new URLSearchParams(window.location.search).get('index');
-            let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || {};
-
-            if (!bookmarks[surahIndex]) {
-                bookmarks[surahIndex] = [];
-            }
-
-            if (bookmarks[surahIndex].includes(verseIndex)) {
-                bookmarks[surahIndex] = bookmarks[surahIndex].filter(index => index !== verseIndex);
-            } else {
-                bookmarks[surahIndex].push(verseIndex);
-            }
-
-            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-            updateBookmarkButtons();
-        }
-
-        // Update bookmark button based on current bookmark status
-        function updateBookmarkButtons() {
-            const surahIndex = new URLSearchParams(window.location.search).get('index');
-            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || {};
-            const verses = document.querySelectorAll('.verse');
-
-            verses.forEach((verse, index) => {
-                const verseIndex = index + 1; // assuming verses are 1-indexed
-                const isBookmarked = bookmarks[surahIndex] && bookmarks[surahIndex].includes(verseIndex);
-                const bookmarkButton = document.createElement('button');
-                bookmarkButton.innerHTML = isBookmarked ? '🌟' : '⭐';
-                bookmarkButton.className = 'bookmark-button';
-                bookmarkButton.onclick = () => toggleBookmark(verseIndex);
-                verse.appendChild(bookmarkButton);
+        // Create Juz links
+        function createJuzLinks(juzData) {
+            const juzLinksContainer = document.getElementById('juz-links');
+            juzData.forEach(juz => {
+                const juzLink = document.createElement('div');
+                juzLink.className = 'juz-link';
+                juzLink.innerText = `Juz ${juz.index}`;
+                juzLink.onclick = () => scrollToJuz(juz.index);
+                juzLinksContainer.appendChild(juzLink);
             });
         }
-
-        // Event listeners for settings
-        document.getElementById('font-size-slider').addEventListener('input', function() {
-            document.getElementById('font-size-value').textContent = this.value + 'px';
-            saveSettings();
-        });
-        document.getElementById('dark-mode-toggle').addEventListener('change', function() {
-            toggleDarkMode();
-            saveSettings();
-        });
-        document.getElementById('arabic-font-selector').addEventListener('change', function() {
-            saveSettings();
-        });
-        document.getElementById('theme-color-selector').addEventListener('change', function() {
-            saveSettings();
-        });
 
         // Fetch Surah details and apply settings
         async function fetchSurahDetails() {
@@ -363,55 +299,55 @@
                 const surahResponse = await fetch(surahUrl);
                 const surah = await surahResponse.json();
 
-                const surahName = document.getElementById('surah-name');
-                const surahArabicName = document.getElementById('surah-arabic-name');
-                const surahCount = document.getElementById('surah-count');
-                const surahJuz = document.getElementById('surah-juz');
-                const surahContent = document.getElementById('surah-content');
-                const audioSource = document.getElementById('audio-source');
+                document.getElementById('surah-name').textContent = surah.name;
+                document.getElementById('surah-arabic-name').textContent = surah.arabicName;
+                document.getElementById('surah-count').textContent = surah.count;
+                document.getElementById('surah-juz').innerHTML = '';
 
-                surahName.textContent = surah.name;
-                surahArabicName.textContent = surah.arabicName;
-                surahCount.textContent = surah.count;
-                surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
+                // Create Juz links and add content
+                createJuzLinks(surah.juz);
+                let surahContentHTML = '';
 
-                surahContent.innerHTML = `
-                    ${Object.keys(surah.verse).map(key => {
-                        const verseNumber = key.replace('verse_', '');
-                        return `
-                            <div class="verse">
-                                <span class="circle">${verseNumber}</span>
-                                ${surah.verse[key]}
-                            </div>
-                        `;
-                    }).join('')}
-                `;
+                Object.keys(surah.verse).forEach((key, index) => {
+                    const verseNumber = key.replace('verse_', '');
+                    const juzIndex = surah.juz.find(juz => {
+                        return juz.verse.start <= index + 1 && juz.verse.end >= index + 1;
+                    });
+                    surahContentHTML += `
+                        <div class="verse juz-${juzIndex.index}">
+                            <span class="circle">${verseNumber}</span>
+                            ${surah.verse[key]}
+                        </div>
+                    `;
+                });
 
-                // Set audio source if available
-                if (surah.audio) {
-                    audioSource.src = surah.audio;
-                    document.getElementById('audio').load();
-                }
+                document.getElementById('surah-content').innerHTML = surahContentHTML;
 
                 loadSettings();
 
                 document.getElementById('prev-surah').href = surahIndex > 1 ? `surah-details.html?index=${surahIndex - 1}` : '#';
                 document.getElementById('next-surah').href = surahIndex < 114 ? `surah-details.html?index=${surahIndex + 1}` : '#';
-
-                if (surahIndex <= 1) {
-                    document.getElementById('prev-surah').style.display = 'none';
-                }
-                if (surahIndex >= 114) {
-                    document.getElementById('next-surah').style.display = 'none';
-                }
-
-                updateBookmarkButtons();
+                document.getElementById('prev-surah').style.display = surahIndex > 1 ? 'block' : 'none';
+                document.getElementById('next-surah').style.display = surahIndex < 114 ? 'block' : 'none';
 
             } catch (error) {
                 console.error('Error fetching surah details:', error);
                 document.body.innerHTML = '<p>Error loading Surah details.</p>';
             }
         }
+
+        // Event listeners for settings
+        document.getElementById('font-size-slider').addEventListener('input', function() {
+            document.getElementById('font-size-value').textContent = this.value + 'px';
+            saveSettings();
+        });
+        document.getElementById('dark-mode-toggle').addEventListener('change', function() {
+            toggleDarkMode();
+            saveSettings();
+        });
+        document.getElementById('arabic-font-selector').addEventListener('change', function() {
+            saveSettings();
+        });
 
         fetchSurahDetails();
     </script>
