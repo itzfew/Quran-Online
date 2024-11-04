@@ -57,9 +57,9 @@
         .verse {
             background-color: #fff3e0;
             margin: 10px 0;
-            padding: 10px;
-            border-left: 4px solid #ffcc80;
-            border-radius: 5px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s;
         }
         .verse:hover {
@@ -108,12 +108,30 @@
             font-size: 20px;
             cursor: pointer;
         }
+        .theme-switcher {
+            margin-top: 10px;
+        }
+        .audio-player {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .circle {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: #ffcc80;
+            text-align: center;
+            line-height: 30px;
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
     <button class="back-to-index" onclick="window.location.href='index.html'">🏠</button>
     <button class="settings-button" onclick="toggleSettingsMenu()">⚙️</button>
     <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
+    
     <div class="settings-menu" id="settings-menu">
         <button class="close-button" onclick="toggleSettingsMenu()">✖️</button>
         <h2>Settings</h2>
@@ -134,7 +152,18 @@
             <input type="checkbox" id="dark-mode-toggle">
             Dark Mode
         </label>
+        <div class="theme-switcher">
+            <label>
+                Theme Color
+                <select id="theme-color-selector">
+                    <option value="default">Default</option>
+                    <option value="pastel">Pastel</option>
+                    <option value="dark">Dark</option>
+                </select>
+            </label>
+        </div>
     </div>
+
     <div class="container">
         <div class="nav-buttons">
             <a id="prev-surah" href="#"><i class="fas fa-chevron-left"></i> Previous</a>
@@ -146,8 +175,15 @@
             <p><strong>Surah Count:</strong> <span id="surah-count"></span></p>
             <p><strong>Juz:</strong> <span id="surah-juz"></span></p>
         </div>
+        <div class="audio-player">
+            <audio id="audio" controls>
+                <source id="audio-source" src="" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
         <div id="surah-content"></div>
     </div>
+
     <script>
         // Toggle settings menu visibility
         function toggleSettingsMenu() {
@@ -183,11 +219,13 @@
             const fontSize = localStorage.getItem('font-size') || '24';
             const darkMode = localStorage.getItem('dark-mode') === 'true';
             const arabicFont = localStorage.getItem('arabic-font') || 'Noto Sans Arabic';
+            const themeColor = localStorage.getItem('theme-color') || 'default';
 
             document.getElementById('font-size-slider').value = fontSize;
             document.getElementById('font-size-value').textContent = fontSize + 'px';
             document.getElementById('dark-mode-toggle').checked = darkMode;
             document.getElementById('arabic-font-selector').value = arabicFont;
+            document.getElementById('theme-color-selector').value = themeColor;
 
             if (darkMode) {
                 document.body.classList.add('dark-mode');
@@ -216,12 +254,29 @@
             const fontSize = document.getElementById('font-size-slider').value;
             const darkMode = document.body.classList.contains('dark-mode');
             const arabicFont = document.getElementById('arabic-font-selector').value;
+            const themeColor = document.getElementById('theme-color-selector').value;
 
             localStorage.setItem('font-size', fontSize);
             localStorage.setItem('dark-mode', darkMode);
             localStorage.setItem('arabic-font', arabicFont);
+            localStorage.setItem('theme-color', themeColor);
 
             applySettings();
+            applyThemeColor(themeColor);
+        }
+
+        // Apply selected theme color
+        function applyThemeColor(themeColor) {
+            switch (themeColor) {
+                case 'pastel':
+                    document.body.style.backgroundColor = '#fce4ec';
+                    break;
+                case 'dark':
+                    document.body.style.backgroundColor = '#1c1c1c';
+                    break;
+                default:
+                    document.body.style.backgroundColor = '#e3f2fd';
+            }
         }
 
         // Event listeners for settings
@@ -234,6 +289,9 @@
             saveSettings();
         });
         document.getElementById('arabic-font-selector').addEventListener('change', function() {
+            saveSettings();
+        });
+        document.getElementById('theme-color-selector').addEventListener('change', function() {
             saveSettings();
         });
 
@@ -258,6 +316,7 @@
                 const surahCount = document.getElementById('surah-count');
                 const surahJuz = document.getElementById('surah-juz');
                 const surahContent = document.getElementById('surah-content');
+                const audioSource = document.getElementById('audio-source');
 
                 surahName.textContent = surah.name;
                 surahArabicName.textContent = surah.arabicName;
@@ -265,8 +324,7 @@
                 surahJuz.innerHTML = surah.juz.map(j => `Juz ${j.index}: ${j.verse.start} to ${j.verse.end}`).join('<br>');
 
                 surahContent.innerHTML = `
-                    <div class="verse">${surah.verse.verse_0}</div>
-                    ${Object.keys(surah.verse).filter(key => key !== 'verse_0').map(key => {
+                    ${Object.keys(surah.verse).map(key => {
                         const verseNumber = key.replace('verse_', '');
                         return `
                             <div class="verse">
@@ -276,6 +334,12 @@
                         `;
                     }).join('')}
                 `;
+
+                // Set audio source if available
+                if (surah.audio) {
+                    audioSource.src = surah.audio;
+                    document.getElementById('audio').load();
+                }
 
                 loadSettings();
 
