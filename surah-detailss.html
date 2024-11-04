@@ -95,6 +95,31 @@
         .side-menu a:hover {
             background-color: #2980b9;
         }
+        .dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+        .dark-mode .container {
+            background-color: #444;
+            border: 1px solid #666;
+        }
+        .text-size-control {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .text-size-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 5px;
+            font-size: 16px;
+        }
+        .text-size-button:hover {
+            background-color: #2980b9;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 </head>
@@ -105,7 +130,13 @@
 <div id="mySideMenu" class="side-menu">
     <a href="index.html">Home</a>
     <a href="mailto:contactus94@yahoo.com">Contact Us</a>
-    <!-- Add more menu items as needed -->
+    <div class="text-size-control">
+        <button class="text-size-button" onclick="changeTextSize(1)">A+</button>
+        <button class="text-size-button" onclick="changeTextSize(-1)">A-</button>
+    </div>
+    <div class="text-size-control">
+        <button class="text-size-button" onclick="toggleTheme()">Toggle Dark/Light</button>
+    </div>
 </div>
 
 <div class="container">
@@ -116,6 +147,22 @@
 </div>
 
 <script>
+    // Load preferences from local storage
+    document.addEventListener('DOMContentLoaded', () => {
+        const darkMode = localStorage.getItem('darkMode') === 'true';
+        const textSize = localStorage.getItem('textSize') || '16';
+
+        if (darkMode) {
+            document.body.classList.add('dark-mode');
+        }
+
+        document.body.style.fontSize = textSize + 'px';
+
+        // Fetch Surah based on URL parameter if provided
+        const index = getQueryParam('index');
+        fetchSurah(index ? index : 1);
+    });
+
     // Function to toggle the side menu
     function toggleMenu() {
         const sideMenu = document.getElementById("mySideMenu");
@@ -178,15 +225,19 @@
         }
     }
 
-    // Fetch Surah based on the URL parameter when the page loads
-    window.onload = () => {
-        const index = getQueryParam('index');
-        if (index) {
-            fetchSurah(index);
-        } else {
-            fetchSurah(1);
-        }
-    };
+    // Toggle between light and dark mode
+    function toggleTheme() {
+        const darkMode = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', darkMode);
+    }
+
+    // Change text size
+    function changeTextSize(delta) {
+        const currentSize = parseInt(window.getComputedStyle(document.body).fontSize);
+        const newSize = Math.max(currentSize + delta * 2, 12); // minimum font size of 12px
+        document.body.style.fontSize = newSize + 'px';
+        localStorage.setItem('textSize', newSize);
+    }
 </script>
 
 </body>
