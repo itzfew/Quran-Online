@@ -64,14 +64,15 @@
             margin-right: 10px;
             font-weight: bold;
         }
-        .loading {
+        .loading, .error {
             text-align: center;
             font-size: 1.2em;
+        }
+        .loading {
             color: #3498db;
         }
         .error {
             color: red;
-            text-align: center;
         }
         .button-container {
             text-align: center;
@@ -115,8 +116,8 @@
     </div>
     <div id="surah-heading" class="surah-heading" style="display: none;"></div>
     <div id="content"></div>
-    <div id="loading" class="loading" style="display: none;">Loading...</div>
-    <div id="error" class="error" style="display: none;"></div>
+    <div id="loading" class="loading" style="display: none;" aria-live="polite">Loading...</div>
+    <div id="error" class="error" style="display: none;" aria-live="assertive"></div>
 </div>
 
 <script>
@@ -137,6 +138,7 @@
             if (!response.ok) throw new Error('Network response was not ok');
             const data = await response.json();
             displaySurah(data);
+            localStorage.setItem('lastSurah', index); // Store last viewed Surah
         } catch (error) {
             document.getElementById('error').innerText = 'Failed to load Surah. Please try again later.';
             document.getElementById('error').style.display = 'block';
@@ -167,15 +169,10 @@
         }
     }
 
-    // Fetch Surah based on the URL parameter when the page loads
+    // Fetch Surah based on the URL parameter or last viewed Surah
     window.onload = () => {
-        const index = getQueryParam('index');
-        if (index) {
-            fetchSurah(index);
-        } else {
-            // Optionally fetch the first Surah by default
-            fetchSurah(1);
-        }
+        const index = getQueryParam('index') || localStorage.getItem('lastSurah');
+        fetchSurah(index ? index : 1); // Default to Surah 1 if none
     };
 </script>
 
