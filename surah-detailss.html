@@ -64,6 +64,7 @@
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s;
+            position: relative;
         }
         .verse:hover {
             background-color: #ffecb3;
@@ -131,13 +132,21 @@
             line-height: 30px;
             margin-right: 10px;
         }
+        .bookmark-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
     </style>
 </head>
 <body>
     <button class="back-to-index" onclick="window.location.href='index.html'">🏠</button>
     <button class="settings-button" onclick="toggleSettingsMenu()">⚙️</button>
     <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
-    <button class="bookmark-button" id="bookmark-button">⭐ Bookmark</button>
     
     <div class="settings-menu" id="settings-menu">
         <button class="close-button" onclick="toggleSettingsMenu()">✖️</button>
@@ -213,7 +222,6 @@
             document.querySelector('.container').style.borderColor = darkMode ? '#455a64' : '#0288d1';
             document.querySelectorAll('.verse').forEach(verse => {
                 verse.style.backgroundColor = darkMode ? '#455a64' : '#fff3e0';
-                verse.style.borderColor = darkMode ? '#607d8b' : '#ffcc80';
             });
             document.querySelector('.settings-menu').style.borderColor = darkMode ? '#455a64' : '#0288d1';
             document.querySelectorAll('.nav-buttons a').forEach(button => {
@@ -288,19 +296,39 @@
         }
 
         // Bookmarking functionality
-        function toggleBookmark() {
+        function toggleBookmark(verseIndex) {
             const surahIndex = new URLSearchParams(window.location.search).get('index');
-            let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || {};
 
-            if (bookmarks.includes(surahIndex)) {
-                bookmarks = bookmarks.filter(index => index !== surahIndex);
-                document.getElementById('bookmark-button').textContent = '⭐ Bookmark';
+            if (!bookmarks[surahIndex]) {
+                bookmarks[surahIndex] = [];
+            }
+
+            if (bookmarks[surahIndex].includes(verseIndex)) {
+                bookmarks[surahIndex] = bookmarks[surahIndex].filter(index => index !== verseIndex);
             } else {
-                bookmarks.push(surahIndex);
-                document.getElementById('bookmark-button').textContent = '🌟 Bookmarked';
+                bookmarks[surahIndex].push(verseIndex);
             }
 
             localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+            updateBookmarkButtons();
+        }
+
+        // Update bookmark button based on current bookmark status
+        function updateBookmarkButtons() {
+            const surahIndex = new URLSearchParams(window.location.search).get('index');
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || {};
+            const verses = document.querySelectorAll('.verse');
+
+            verses.forEach((verse, index) => {
+                const verseIndex = index + 1; // assuming verses are 1-indexed
+                const isBookmarked = bookmarks[surahIndex] && bookmarks[surahIndex].includes(verseIndex);
+                const bookmarkButton = document.createElement('button');
+                bookmarkButton.innerHTML = isBookmarked ? '🌟' : '⭐';
+                bookmarkButton.className = 'bookmark-button';
+                bookmarkButton.onclick = () => toggleBookmark(verseIndex);
+                verse.appendChild(bookmarkButton);
+            });
         }
 
         // Event listeners for settings
@@ -318,7 +346,6 @@
         document.getElementById('theme-color-selector').addEventListener('change', function() {
             saveSettings();
         });
-        document.getElementById('bookmark-button').addEventListener('click', toggleBookmark);
 
         // Fetch Surah details and apply settings
         async function fetchSurahDetails() {
@@ -378,11 +405,7 @@
                     document.getElementById('next-surah').style.display = 'none';
                 }
 
-                // Update bookmark button based on current bookmark status
-                const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-                if (bookmarks.includes(surahIndex.toString())) {
-                    document.getElementById('bookmark-button').textContent = '🌟 Bookmarked';
-                }
+                updateBookmarkButtons();
 
             } catch (error) {
                 console.error('Error fetching surah details:', error);
