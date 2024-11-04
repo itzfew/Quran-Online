@@ -12,7 +12,15 @@
             color: #333;
             margin: 0;
             padding: 20px;
-            transition: margin-left 0.5s, background-color 0.5s, color 0.5s;
+            transition: background-color 0.5s, color 0.5s;
+        }
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
         .container {
             max-width: 800px;
@@ -22,6 +30,9 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border: 1px solid #ccc;
+        }
+        h1 {
+            margin: 0;
         }
         .surah-heading {
             text-align: center;
@@ -102,7 +113,7 @@
         .side-menu a {
             padding: 10px 15px;
             text-decoration: none;
-            font-size: 25px;
+            font-size: 20px;
             color: white;
             display: block;
             transition: 0.3s;
@@ -118,34 +129,49 @@
             top: 20px;
             left: 20px;
         }
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
+        /* Dark Mode Styles */
         .dark-mode {
             background-color: #333;
-            color: #fff;
+            color: #f4f4f4;
+        }
+        .dark-mode .header {
+            background-color: #222;
+        }
+        .dark-mode .container {
+            background: #444;
+            border-color: #555;
+        }
+        .dark-mode .verse {
+            background-color: #555;
+            border-left-color: #3498db;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 10px 0;
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<i class="fas fa-bars menu-icon" onclick="toggleMenu()"></i>
-<button class="theme-toggle" onclick="toggleTheme()">Toggle Theme</button>
+<div class="header">
+    <h1>Surah Details</h1>
+    <i class="fas fa-bars menu-icon" onclick="toggleMenu()"></i>
+    <button onclick="toggleDarkMode()" style="float: right; background-color: #3498db; border: none; padding: 10px; color: white;">Toggle Dark Mode</button>
+</div>
 
 <div id="mySideMenu" class="side-menu">
     <a href="index.html">Home</a>
     <a href="mailto:contactus94@yahoo.com">Contact Us</a>
-    <!-- Add more menu items as needed -->
+    <a href="#" onclick="fetchSurah(1)">Surah 1</a>
+    <a href="#" onclick="fetchSurah(2)">Surah 2</a>
+    <a href="#" onclick="fetchSurah(3)">Surah 3</a>
+    <a href="#" onclick="fetchSurah(4)">Surah 4</a>
+    <!-- Add more menu items for other Surahs as needed -->
 </div>
 
 <div class="container">
@@ -162,22 +188,21 @@
     <div id="error" class="error" style="display: none;"></div>
 </div>
 
+<div class="footer">
+    <p>© 2024 Surah Details. All rights reserved.</p>
+</div>
+
 <script>
     // Function to toggle the side menu
     function toggleMenu() {
         const sideMenu = document.getElementById("mySideMenu");
-        const isOpen = sideMenu.style.left === "0";
-        sideMenu.style.left = isOpen ? "-250px" : "0";
+        sideMenu.style.left = sideMenu.style.left === "-250px" ? "0" : "-250px";
     }
 
-    // Close the menu if clicked outside of it
-    document.addEventListener('click', function(event) {
-        const sideMenu = document.getElementById("mySideMenu");
-        const menuIcon = document.querySelector('.menu-icon');
-        if (!sideMenu.contains(event.target) && !menuIcon.contains(event.target)) {
-            sideMenu.style.left = "-250px";
-        }
-    });
+    // Function to toggle dark mode
+    function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+    }
 
     // Function to get URL parameters
     function getQueryParam(param) {
@@ -225,19 +250,10 @@
         }
     }
 
-    // Toggle between light and dark mode
-    function toggleTheme() {
-        document.body.classList.toggle('dark-mode');
-    }
-
     // Fetch Surah based on the URL parameter when the page loads
     window.onload = () => {
         const index = getQueryParam('index');
-        if (index) {
-            fetchSurah(index);
-        } else {
-            fetchSurah(1);
-        }
+        fetchSurah(index ? index : 1);
     };
 </script>
 
