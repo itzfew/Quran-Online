@@ -14,6 +14,9 @@
             margin: 0;
             padding: 0;
             transition: background-color 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .dark-mode {
             background-color: #263238;
@@ -81,7 +84,7 @@
             display: block;
             margin: 10px 0;
         }
-        .settings-button, .dark-mode-toggle, .back-to-index {
+        .settings-button, .dark-mode-toggle, .back-to-index, .bookmark-button {
             position: fixed;
             top: 20px;
             z-index: 100;
@@ -94,13 +97,16 @@
             transition: background-color 0.3s;
         }
         .settings-button {
-            right: 60px;
+            right: 120px;
         }
         .dark-mode-toggle {
-            right: 10px;
+            right: 80px;
         }
         .back-to-index {
             left: 10px;
+        }
+        .bookmark-button {
+            right: 10px;
         }
         .close-button {
             background: none;
@@ -131,6 +137,7 @@
     <button class="back-to-index" onclick="window.location.href='index.html'">🏠</button>
     <button class="settings-button" onclick="toggleSettingsMenu()">⚙️</button>
     <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙</button>
+    <button class="bookmark-button" id="bookmark-button">⭐ Bookmark</button>
     
     <div class="settings-menu" id="settings-menu">
         <button class="close-button" onclick="toggleSettingsMenu()">✖️</button>
@@ -232,6 +239,7 @@
             }
             applyDarkMode();
             applySettings();
+            applyThemeColor(themeColor);
         }
 
         // Apply settings to the page
@@ -279,6 +287,22 @@
             }
         }
 
+        // Bookmarking functionality
+        function toggleBookmark() {
+            const surahIndex = new URLSearchParams(window.location.search).get('index');
+            let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+
+            if (bookmarks.includes(surahIndex)) {
+                bookmarks = bookmarks.filter(index => index !== surahIndex);
+                document.getElementById('bookmark-button').textContent = '⭐ Bookmark';
+            } else {
+                bookmarks.push(surahIndex);
+                document.getElementById('bookmark-button').textContent = '🌟 Bookmarked';
+            }
+
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+        }
+
         // Event listeners for settings
         document.getElementById('font-size-slider').addEventListener('input', function() {
             document.getElementById('font-size-value').textContent = this.value + 'px';
@@ -294,6 +318,7 @@
         document.getElementById('theme-color-selector').addEventListener('change', function() {
             saveSettings();
         });
+        document.getElementById('bookmark-button').addEventListener('click', toggleBookmark);
 
         // Fetch Surah details and apply settings
         async function fetchSurahDetails() {
@@ -351,6 +376,12 @@
                 }
                 if (surahIndex >= 114) {
                     document.getElementById('next-surah').style.display = 'none';
+                }
+
+                // Update bookmark button based on current bookmark status
+                const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+                if (bookmarks.includes(surahIndex.toString())) {
+                    document.getElementById('bookmark-button').textContent = '🌟 Bookmarked';
                 }
 
             } catch (error) {
