@@ -15,6 +15,7 @@
             margin: 0;
             padding: 20px;
             transition: background-color 0.5s, color 0.5s, font-family 0.5s;
+            font-size: 16px; /* Set a fixed base font size */
         }
         .header {
             text-align: center;
@@ -54,7 +55,7 @@
             justify-content: center;
             margin-right: 15px;
             font-weight: bold;
-            font-size: 1.3em; /* Adjust size as needed */
+            font-size: 1.5em; /* Fixed size for verse number */
             border: 2px solid white; /* Border for circle */
         }
         .loading {
@@ -223,6 +224,9 @@
         }
 
         document.body.style.fontSize = textSize + 'px';
+        document.body.style.fontFamily = selectedFont;
+
+        // Set the selected font in the dropdown
         document.getElementById('fontSelect').value = selectedFont;
 
         // Fetch Surah based on URL parameter if provided
