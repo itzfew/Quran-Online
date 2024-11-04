@@ -247,23 +247,17 @@
                 closeMenu();
             }
         });
+
+        // Show back to top button based on scroll position
+        window.addEventListener('scroll', () => {
+            const backToTopButton = document.querySelector('.back-to-top');
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                backToTopButton.style.display = "block";
+            } else {
+                backToTopButton.style.display = "none";
+            }
+        });
     });
-
-    function toggleMenu() {
-        const sideMenu = document.getElementById("mySideMenu");
-        const isOpen = sideMenu.style.left === "0";
-        sideMenu.style.left = isOpen ? "-250px" : "0";
-    }
-
-    function closeMenu() {
-        const sideMenu = document.getElementById("mySideMenu");
-        sideMenu.style.left = "-250px"; // Close the menu
-    }
-
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
 
     async function fetchSurah(index) {
         const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
@@ -282,14 +276,15 @@
         surahHeading.innerText = name;
         surahHeading.style.display = 'block';
 
-        // Display the first verse centered at the top
+        // Display the first verse (verse_0) at the top
         const firstVerseText = verses['verse_0'];
         firstVerseDiv.innerHTML = firstVerseText;
         firstVerseDiv.style.display = 'block';
 
         content.innerHTML = ''; // Clear previous content
 
-        for (let i = 1; i < count; i++) {
+        // Display subsequent verses (verse_1 to verse_6)
+        for (let i = 1; i <= count; i++) {
             const verseKey = `verse_${i}`;
             const verseText = verses[verseKey];
 
@@ -300,14 +295,23 @@
         }
     }
 
-    function toggleTheme() {
-        const darkMode = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', darkMode);
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    function toggleMenu() {
+        const sideMenu = document.getElementById("mySideMenu");
+        sideMenu.style.left = sideMenu.style.left === "0px" ? "-250px" : "0px";
+    }
+
+    function closeMenu() {
+        document.getElementById("mySideMenu").style.left = "-250px";
     }
 
     function changeTextSize(delta) {
-        const currentSize = parseInt(window.getComputedStyle(document.body).fontSize);
-        const newSize = Math.max(currentSize + delta * 2, 12);
+        const currentSize = parseInt(localStorage.getItem('textSize')) || 18;
+        const newSize = currentSize + delta;
         document.body.style.fontSize = newSize + 'px';
         localStorage.setItem('textSize', newSize);
     }
@@ -318,29 +322,24 @@
         localStorage.setItem('selectedFont', selectedFont);
     }
 
+    function toggleTheme() {
+        document.body.classList.toggle('dark-mode');
+        const darkMode = document.body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', darkMode);
+    }
+
     function resetPreferences() {
-        localStorage.removeItem('darkMode');
         localStorage.removeItem('textSize');
         localStorage.removeItem('selectedFont');
-        document.body.style.fontSize = '18px'; // Reset to default size
-        document.body.style.fontFamily = 'Arial'; // Reset to default font
-        document.getElementById('fontSelect').value = 'Amiri'; // Reset to default font selection
-        document.body.classList.remove('dark-mode'); // Reset to light mode
+        localStorage.removeItem('darkMode');
+        document.body.style.fontSize = '18px';
+        document.body.style.fontFamily = 'Amiri';
+        document.body.classList.remove('dark-mode');
     }
-
-    window.onscroll = function() {
-        const backToTopButton = document.querySelector('.back-to-top');
-        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-            backToTopButton.style.display = "block";
-        } else {
-            backToTopButton.style.display = "none";
-        }
-    };
 
     function scrollToTop() {
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
-
 </body>
 </html>
