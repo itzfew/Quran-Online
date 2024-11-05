@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Reset and base styles */
         * {
             margin: 0;
             padding: 0;
@@ -18,7 +20,7 @@
             background-color: #f5f5f5;
             color: #333;
             line-height: 1.6;
-            padding-top: 60px; /* To avoid navbar overlap */
+            padding-top: 60px;
             transition: background-color 0.3s, color 0.3s;
         }
 
@@ -50,12 +52,25 @@
             font-weight: bold;
         }
 
-        .navbar .language-toggle {
+        /* Language Buttons */
+        .language-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .language-button {
             cursor: pointer;
             color: white;
-            padding: 10px;
+            padding: 10px 20px;
             border-radius: 5px;
             background-color: #4CAF50;
+            font-size: 1.1em;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .language-button:hover {
+            background-color: #45a049;
         }
 
         /* Menu Toggle Button */
@@ -66,32 +81,83 @@
             color: white;
         }
 
-        /* Surah List Containers */
-        .surah-container {
-            display: flex;
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-            height: calc(100vh - 120px); /* Adjust height based on header */
+        /* Sidebar Menu */
+        .menu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: #333;
+            color: white;
+            transition: left 0.3s ease;
+            padding-top: 60px;
         }
 
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.2em;
+            border-bottom: 1px solid #444;
+            transition: background 0.3s ease;
+        }
+
+        .menu a:hover {
+            background-color: #4CAF50;
+        }
+
+        .menu.active {
+            left: 0;
+        }
+
+        /* Search and Sort */
+        .search-sort-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 10%;
+            margin-top: 80px;
+        }
+
+        .search-bar {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            border: 2px solid #4CAF50;
+            border-radius: 50px;
+            width: 60%;
+            max-width: 350px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #45a049;
+        }
+
+        .sort-select {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            border: 2px solid #4CAF50;
+            border-radius: 50px;
+            background-color: white;
+            max-width: 200px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .sort-select:focus {
+            outline: none;
+            border-color: #45a049;
+        }
+
+        /* Surah List Styles */
         .surah-list {
-            width: 100%;
-            transition: transform 0.3s ease-in-out;
-            padding: 10px 5%;
             display: flex;
             flex-direction: column;
             gap: 10px;
-            height: 100%;
-            overflow-y: auto;
-        }
-
-        .surah-list-english {
-            background-color: #f5f5f5;
-        }
-
-        .surah-list-arabic {
-            background-color: #fff;
+            padding: 0 10%;
+            display: none; /* Hidden by default */
         }
 
         /* Surah Item */
@@ -134,10 +200,8 @@
                 margin-bottom: 10px;
             }
 
-            .surah-container {
-                flex-direction: column;
-                height: auto;
-                max-width: 100%;
+            .surah-list {
+                padding: 0 5%;
             }
 
             .menu-toggle {
@@ -146,50 +210,49 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Navbar -->
     <div class="navbar">
         <div class="logo">Surah List</div>
-        <div class="language-toggle" id="language-toggle">
-            Toggle Language
+        <div class="language-buttons">
+            <button class="language-button" id="english-button">English</button>
+            <button class="language-button" id="arabic-button">Arabic</button>
         </div>
         <div class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation Menu">
             <i class="fas fa-bars"></i>
         </div>
     </div>
 
-    <!-- Surah List Containers -->
-    <div class="surah-container" id="surah-container">
-        <!-- Arabic Surah List -->
-        <div class="surah-list surah-list-arabic" id="surah-list-arabic">
-            <!-- Arabic Surah Items will be injected here -->
-        </div>
+    <!-- Sidebar Menu -->
+    <div class="menu" id="menu">
+        <a href="#">Home</a>
+        <a href="#">Other Features</a>
+        <a href="#">Surah Types</a>
+        <a href="#">Themes</a>
+    </div>
 
-        <!-- English Surah List -->
-        <div class="surah-list surah-list-english" id="surah-list-english">
-            <!-- English Surah Items will be injected here -->
-        </div>
+    <!-- Search and Sort Section -->
+    <div class="search-sort-container">
+        <input type="text" id="search-bar" class="search-bar" placeholder="Search by title or index...">
+        <select class="sort-select" id="sort-select">
+            <option value="index">Sort by Index</option>
+            <option value="title">Sort by Title (English)</option>
+        </select>
+    </div>
+
+    <!-- English Surah List -->
+    <div class="surah-list" id="english-surahs">
+        <!-- English Surah Items will be injected here -->
+    </div>
+
+    <!-- Arabic Surah List -->
+    <div class="surah-list" id="arabic-surahs">
+        <!-- Arabic Surah Items will be injected here -->
     </div>
 
     <script>
-        // Toggle between Arabic and English Surah List
-        document.getElementById('language-toggle').addEventListener('click', () => {
-            const arabicList = document.getElementById('surah-list-arabic');
-            const englishList = document.getElementById('surah-list-english');
-            const container = document.getElementById('surah-container');
-
-            if (container.classList.contains('show-english')) {
-                arabicList.style.transform = 'translateX(0)';
-                englishList.style.transform = 'translateX(100%)';
-                container.classList.remove('show-english');
-            } else {
-                arabicList.style.transform = 'translateX(-100%)';
-                englishList.style.transform = 'translateX(0)';
-                container.classList.add('show-english');
-            }
-        });
-
         // Fetch Surah Data
         async function fetchSurahs() {
             try {
@@ -202,37 +265,58 @@
             }
         }
 
-        // Render Surah Items
-        function renderSurahs(surahs, language = 'arabic') {
-            const surahList = document.getElementById(language === 'arabic' ? 'surah-list-arabic' : 'surah-list-english');
+        // Render Surah Items for a specific language
+        function renderSurahs(surahs, isEnglish) {
+            const surahList = isEnglish ? document.getElementById('english-surahs') : document.getElementById('arabic-surahs');
             surahList.innerHTML = '';
 
             surahs.forEach(surah => {
                 const surahIndex = parseInt(surah.index, 10);
-                const surahDetailsUrl = `surah-details-${language}.html?index=${surahIndex}`;
+                const surahDetailsUrl = isEnglish ? `surah-details-en.html?index=${surahIndex}` : `surah-details.html?index=${surahIndex}`;
 
                 const surahItem = document.createElement('a');
                 surahItem.className = 'surah-item';
                 surahItem.href = surahDetailsUrl;
                 surahItem.innerHTML = `
-                    <h3>${language === 'english' ? surah.title : surah.titleAr}</h3>
+                    <h3>${isEnglish ? surah.title : surah.titleAr}</h3>
                     <p>Surah: ${surahIndex}</p>
-                    <p>${surah.type}</p>
                 `;
-
                 surahList.appendChild(surahItem);
             });
         }
 
-        // Initialize Page
-        async function init() {
-            const surahs = await fetchSurahs();
-            renderSurahs(surahs, 'arabic'); // Default to Arabic
-            renderSurahs(surahs, 'english'); // Render English Surah List as well
+        // Show the English or Arabic Surah List
+        function toggleSurahList(language) {
+            if (language === 'english') {
+                document.getElementById('english-surahs').style.display = 'block';
+                document.getElementById('arabic-surahs').style.display = 'none';
+            } else {
+                document.getElementById('english-surahs').style.display = 'none';
+                document.getElementById('arabic-surahs').style.display = 'block';
+            }
         }
 
-        init();
-    </script>
+        // Event Listeners for Language Buttons
+        document.getElementById('english-button').addEventListener('click', async () => {
+            toggleSurahList('english');
+            const surahs = await fetchSurahs();
+            renderSurahs(surahs, true);
+        });
 
+        document.getElementById('arabic-button').addEventListener('click', async () => {
+            toggleSurahList('arabic');
+            const surahs = await fetchSurahs();
+            renderSurahs(surahs, false);
+        });
+
+        // Initialize with English Surah List
+        (async function init() {
+            const surahs = await fetchSurahs();
+            renderSurahs(surahs, true);
+            toggleSurahList('english');
+        })();
+
+    </script>
 </body>
+
 </html>
