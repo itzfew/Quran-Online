@@ -72,6 +72,21 @@
             border: 2px solid #2980b9;
             border-radius: 50%; /* This makes it a circle */
         }
+        .bookmark-btn {
+            font-size: 16px;
+            color: #fff;
+            background-color: #e74c3c;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+        }
+        .bookmarked {
+            background-color: #27ae60;
+        }
         .menu-icon {
             font-size: 30px;
             cursor: pointer;
@@ -174,7 +189,6 @@
         .back-to-top:hover {
             background-color: #2980b9;
         }
-
         /* Responsive Design */
         @media (max-width: 768px) {
             .verse {
@@ -235,19 +249,17 @@
             <option value="Scheherazade New">Scheherazade New</option>
         </select>
     </div>
+    <button class="text-size-button" onclick="toggleTheme()">Toggle Dark/Light Mode</button>
     <button class="reset-button" onclick="resetPreferences()">Reset Preferences</button>
-    <div class="text-size-control">
-        <button class="text-size-button" onclick="toggleTheme()">Toggle Dark/Light</button>
+</div>
+
+<div id="content">
+    <div class="header">
+        <div id="surah-heading" class="surah-heading" style="display: none;"></div>
+        <div id="first-verse" class="first-verse" style="display: none;"></div>
     </div>
+    <button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
 </div>
-
-<div class="header">
-    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
-</div>
-<div id="first-verse" class="first-verse" style="display: none;"></div>
-<div id="content"></div>
-
-<button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -330,8 +342,39 @@
             verseDiv.classList.add('verse');
             // Append the verse number after the verse text inline
             verseDiv.innerHTML = `<div class="arabic-text">${verseText} <span class="verse-number">${i}</span></div>`;
+            
+            const bookmarkButton = document.createElement('button');
+            bookmarkButton.classList.add('bookmark-btn');
+            bookmarkButton.innerText = 'Bookmark';
+            bookmarkButton.onclick = () => toggleBookmark(i);
+
+            if (isBookmarked(i)) {
+                bookmarkButton.classList.add('bookmarked');
+                bookmarkButton.innerText = 'Bookmarked';
+            }
+
+            verseDiv.appendChild(bookmarkButton);
             content.appendChild(verseDiv);
         }
+    }
+
+    function isBookmarked(verseNumber) {
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+        return bookmarks.includes(verseNumber);
+    }
+
+    function toggleBookmark(verseNumber) {
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+
+        if (bookmarks.includes(verseNumber)) {
+            const index = bookmarks.indexOf(verseNumber);
+            bookmarks.splice(index, 1);
+        } else {
+            bookmarks.push(verseNumber);
+        }
+
+        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+        fetchSurah(getQueryParam('index') || 1);  // Refresh to show updated bookmarks
     }
 
     function toggleTheme() {
@@ -356,10 +399,12 @@
         localStorage.removeItem('darkMode');
         localStorage.removeItem('textSize');
         localStorage.removeItem('selectedFont');
+        localStorage.removeItem('bookmarks');  // Reset bookmarks as well
         document.body.style.fontSize = '18px'; // Reset to default size
         document.body.style.fontFamily = 'Arial'; // Reset to default font
         document.getElementById('fontSelect').value = 'Amiri'; // Reset to default font selection
         document.body.classList.remove('dark-mode'); // Reset to light mode
+        fetchSurah(getQueryParam('index') || 1);  // Refresh page to reset everything
     }
 
     window.onscroll = function() {
