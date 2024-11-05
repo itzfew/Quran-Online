@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -90,7 +91,7 @@
             left: 0;
         }
 
-        /* Search and Sort Section */
+        /* Search and Sort */
         .search-sort-container {
             display: flex;
             justify-content: space-between;
@@ -148,18 +149,15 @@
             text-decoration: none;
             color: inherit;
             transition: background-color 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .surah-item:hover {
             background-color: #f0f0f0;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
         .surah-item h3 {
             font-size: 1.4em;
             color: #4CAF50;
-            font-weight: bold;
         }
 
         .surah-item p {
@@ -190,22 +188,22 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Navbar -->
     <div class="navbar">
         <div class="logo">Surah List</div>
-        <div class="menu-toggle" id="menu-toggle">
+        <div class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation Menu">
             <i class="fas fa-bars"></i>
         </div>
     </div>
 
     <!-- Sidebar Menu -->
     <div class="menu" id="menu">
-        <a href="#">Other Features</a>
-        <a href="#">Surah Types</a>
-        <a href="#">Themes</a>
-        <a href="#">Important Verses</a>
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
     </div>
 
     <!-- Search and Sort Section -->
@@ -279,7 +277,7 @@
         // Filter Surahs by Search Query
         function filterSurahs(surahs, query) {
             const lowerCaseQuery = query.toLowerCase();
-            return surahs.filter(surah => 
+            return surahs.filter(surah =>
                 surah.title.toLowerCase().includes(lowerCaseQuery) ||
                 surah.index.includes(lowerCaseQuery)
             );
@@ -306,6 +304,6 @@
 
         init();
     </script>
-
 </body>
+
 </html>
