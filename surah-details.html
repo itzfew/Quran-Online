@@ -19,45 +19,72 @@
         }
 
         .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding: 10px 0;
-            background-color: rgba(255, 255, 255, 0.7);
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .header .surah-heading {
-            font-size: 1.7em;
-            color: #3498db;
-            font-weight: bold;
-            text-transform: uppercase;
+            z-index: 10;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
         }
 
         .header .controls {
             display: flex;
-            gap: 15px;
+            gap: 20px;
+            align-items: center;
         }
 
-        .header .controls i {
-            font-size: 1.8em;
+        .header .controls i, .header select, .header button {
+            font-size: 1.5em;
             cursor: pointer;
             color: #3498db;
             transition: color 0.3s;
+            border: none;
+            background: none;
         }
 
-        .header .controls i:hover {
+        .header .controls i:hover, .header select:hover {
             color: #2980b9;
+        }
+
+        .header select {
+            font-size: 1.2em;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .header button {
+            font-size: 1.2em;
+            padding: 8px 15px;
+            border-radius: 5px;
+            background-color: #2980b9;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .header button:hover {
+            background-color: #1f6394;
+        }
+
+        .surah-heading {
+            text-align: center;
+            font-size: 2em;
+            color: #3498db;
+            font-weight: bold;
+            margin-top: 100px; /* Space to prevent overlap with fixed header */
         }
 
         .first-verse {
             text-align: center;
             font-size: 1.8em;
-            margin: 5px 0;
             color: #2980b9;
             font-weight: bold;
+            margin-top: 20px;
         }
 
         .verse {
@@ -110,21 +137,6 @@
             background-color: #2980b9;
         }
 
-        .back-button {
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .back-button:hover {
-            background-color: #2980b9;
-        }
-
         /* Dark Mode Styles */
         .dark-mode {
             background-color: #2c3e50;
@@ -154,6 +166,14 @@
             .verse-number {
                 font-size: 1.2em;
             }
+
+            .header .controls i, .header select {
+                font-size: 1.3em;
+            }
+
+            .header {
+                padding: 10px 15px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -165,25 +185,43 @@
             .verse-number {
                 font-size: 1em;
             }
+
+            .header .controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header .controls button, .header select {
+                margin-top: 5px;
+            }
         }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <button class="back-button" onclick="window.location.href='index.html'">
-        <i class="fas fa-arrow-left"></i> Back
-    </button>
-    <div class="surah-heading" id="surah-heading" style="display: none;"></div>
     <div class="controls">
+        <button onclick="window.location.href='index.html'">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
         <i class="fas fa-sun" onclick="toggleTheme()" title="Toggle Dark/Light Mode"></i>
         <i class="fas fa-text-height" onclick="changeTextSize(1)" title="Increase Text Size"></i>
         <i class="fas fa-search-minus" onclick="changeTextSize(-1)" title="Decrease Text Size"></i>
-        <i class="fas fa-font" onclick="showFontPicker()" title="Change Font"></i>
-        <i class="fas fa-sync" onclick="resetPreferences()" title="Reset Preferences"></i>
+        <select id="fontSelect" onchange="changeFont()" title="Select Font">
+            <option value="Amiri">Amiri</option>
+            <option value="Cairo">Cairo</option>
+            <option value="El Messiri">El Messiri</option>
+            <option value="Harmattan">Harmattan</option>
+            <option value="Lateef">Lateef</option>
+            <option value="Scheherazade New">Scheherazade New</option>
+        </select>
+        <button onclick="resetPreferences()">
+            <i class="fas fa-sync"></i> Reset Preferences
+        </button>
     </div>
 </div>
 
+<div class="surah-heading" id="surah-heading" style="display: none;"></div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 <div id="content"></div>
 
@@ -193,7 +231,7 @@
     document.addEventListener('DOMContentLoaded', () => {
         const darkMode = localStorage.getItem('darkMode') === 'true';
         const textSize = localStorage.getItem('textSize') || '18';
-        const selectedFont = localStorage.getItem('selectedFont') || 'Arial';
+        const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
 
         if (darkMode) {
             document.body.classList.add('dark-mode');
@@ -267,12 +305,10 @@
         localStorage.setItem('textSize', newSize);
     }
 
-    function showFontPicker() {
-        const newFont = prompt("Enter font family (e.g. 'Arial', 'Amiri', etc.):", 'Arial');
-        if (newFont) {
-            document.body.style.fontFamily = newFont;
-            localStorage.setItem('selectedFont', newFont);
-        }
+    function changeFont() {
+        const selectedFont = document.getElementById('fontSelect').value;
+        document.body.style.fontFamily = selectedFont;
+        localStorage.setItem('selectedFont', selectedFont);
     }
 
     function resetPreferences() {
