@@ -72,49 +72,6 @@
             border: 2px solid #2980b9;
             border-radius: 50%; /* This makes it a circle */
         }
-        .menu-icon {
-            font-size: 30px;
-            cursor: pointer;
-            color: #3498db;
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 10;
-        }
-        .side-menu {
-            height: auto;
-            width: 250px;
-            position: fixed;
-            z-index: 1;
-            top: 0;
-            left: -250px;
-            background-color: #3498db;
-            overflow-y: auto;
-            transition: 0.5s;
-            padding-top: 20px;
-            border-radius: 10px 0 0 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-        .side-menu .close-btn {
-            font-size: 24px;
-            color: white;
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-        .side-menu a {
-            padding: 15px 20px;
-            text-decoration: none;
-            font-size: 20px;
-            color: white;
-            display: block;
-            transition: 0.3s;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .side-menu a:hover {
-            background-color: #2980b9;
-        }
         .text-size-control, .font-control {
             margin: 20px 0;
             text-align: center;
@@ -184,12 +141,6 @@
             .verse-number {
                 font-size: 1.2em;
             }
-            .side-menu {
-                width: 200px; /* Smaller side menu on mobile */
-            }
-            .menu-icon {
-                font-size: 28px;
-            }
         }
 
         @media (max-width: 480px) {
@@ -200,52 +151,37 @@
             .verse-number {
                 font-size: 1em;
             }
-            .side-menu {
-                width: 180px;
-            }
-            .menu-icon {
-                font-size: 26px;
-            }
-            .header {
-                padding: 10px;
-            }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<i class="fas fa-bars menu-icon" onclick="toggleMenu()"></i>
-
-<div id="mySideMenu" class="side-menu" aria-label="Main Navigation">
-    <span class="close-btn" onclick="closeMenu()">&times;</span>
-    <a href="index.html" onclick="closeMenu()"><i class="fas fa-home"></i> Home</a>
-    <a href="mailto:contactus94@yahoo.com" onclick="closeMenu()"><i class="fas fa-envelope"></i> Contact Us</a>
-    <div class="text-size-control">
-        <button class="text-size-button" onclick="changeTextSize(1)">A+</button>
-        <button class="text-size-button" onclick="changeTextSize(-1)">A-</button>
-    </div>
-    <div class="font-control">
-        <select id="fontSelect" class="font-select" onchange="changeFont()">
-            <option value="Amiri">Amiri</option>
-            <option value="Cairo">Cairo</option>
-            <option value="El Messiri">El Messiri</option>
-            <option value="Harmattan">Harmattan</option>
-            <option value="Lateef">Lateef</option>
-            <option value="Scheherazade New">Scheherazade New</option>
-        </select>
-    </div>
-    <button class="reset-button" onclick="resetPreferences()">Reset Preferences</button>
-    <div class="text-size-control">
-        <button class="text-size-button" onclick="toggleTheme()">Toggle Dark/Light</button>
-    </div>
-</div>
-
 <div class="header">
     <div id="surah-heading" class="surah-heading" style="display: none;"></div>
 </div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 <div id="content"></div>
+
+<!-- Settings Section -->
+<div class="text-size-control">
+    <button class="text-size-button" onclick="changeTextSize(1)">A+</button>
+    <button class="text-size-button" onclick="changeTextSize(-1)">A-</button>
+</div>
+<div class="font-control">
+    <select id="fontSelect" class="font-select" onchange="changeFont()">
+        <option value="Amiri">Amiri</option>
+        <option value="Cairo">Cairo</option>
+        <option value="El Messiri">El Messiri</option>
+        <option value="Harmattan">Harmattan</option>
+        <option value="Lateef">Lateef</option>
+        <option value="Scheherazade New">Scheherazade New</option>
+    </select>
+</div>
+<button class="reset-button" onclick="resetPreferences()">Reset Preferences</button>
+<div class="text-size-control">
+    <button class="text-size-button" onclick="toggleTheme()">Toggle Dark/Light</button>
+</div>
 
 <button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
 
@@ -267,30 +203,7 @@
         // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
-
-        // Close menu when clicking outside
-        document.addEventListener('click', (event) => {
-            const sideMenu = document.getElementById("mySideMenu");
-            const menuIcon = document.querySelector('.menu-icon');
-            const isClickInsideMenu = sideMenu.contains(event.target);
-            const isClickOnMenuIcon = menuIcon.contains(event.target);
-
-            if (sideMenu.style.left === "0" && !isClickInsideMenu && !isClickOnMenuIcon) {
-                closeMenu();
-            }
-        });
     });
-
-    function toggleMenu() {
-        const sideMenu = document.getElementById("mySideMenu");
-        const isOpen = sideMenu.style.left === "0";
-        sideMenu.style.left = isOpen ? "-250px" : "0";
-    }
-
-    function closeMenu() {
-        const sideMenu = document.getElementById("mySideMenu");
-        sideMenu.style.left = "-250px"; // Close the menu
-    }
 
     function getQueryParam(param) {
         const urlParams = new URLSearchParams(window.location.search);
