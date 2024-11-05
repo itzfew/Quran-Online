@@ -258,15 +258,15 @@ function displaySurah(surahData, translationData) {
     surahHeading.style.display = 'block';
 
     // Display First Verse
-    const firstVerseText = verses['verse_1']; // Assuming the first verse is "verse_1"
-    const firstVerseTranslation = translationData['verse_1'];
+    const firstVerseText = verses['verse_0']; // Assuming the first verse is "verse_0"
+    const firstVerseTranslation = translationData['verse_0'];
     firstVerseDiv.innerHTML = `${firstVerseText} <br><em>${firstVerseTranslation}</em>`;
     firstVerseDiv.style.display = 'block';
 
     content.innerHTML = ''; // Clear previous content
 
     // Loop through all verses and display them with translation
-    for (let i = 1; i <= count; i++) {
+    for (let i = 0; i < count; i++) {
         const verseKey = `verse_${i}`;
         const verseText = verses[verseKey];
         const verseTranslation = translationData[verseKey];
@@ -277,7 +277,7 @@ function displaySurah(surahData, translationData) {
         verseDiv.innerHTML = `
             <div class="arabic-text">${verseText}</div>
             <div class="translation-text"><em>${verseTranslation}</em></div>
-            <span class="verse-number">${i}</span>
+            <span class="verse-number">${i + 1}</span>
         `;
         content.appendChild(verseDiv);
     }
@@ -328,7 +328,6 @@ function closeMenu() {
 function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
 </script>
 </body>
 </html>
