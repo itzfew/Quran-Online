@@ -81,6 +81,13 @@
             font-weight: bold;
         }
 
+        /* Arabic Text Styling */
+        .arabic-text {
+            font-size: inherit;
+            line-height: 1.8;
+            display: block;
+        }
+
         /* Verse Container */
         .verse {
             display: flex;
@@ -286,6 +293,11 @@
         const selectedFont = document.getElementById('fontSelect').value;
         document.body.style.fontFamily = selectedFont;
         localStorage.setItem('selectedFont', selectedFont);
+        
+        // Apply the selected font to Arabic text specifically
+        document.querySelectorAll('.arabic-text').forEach((text) => {
+            text.style.fontFamily = selectedFont;
+        });
     }
 
     function scrollToTop() {
