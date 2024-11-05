@@ -78,9 +78,9 @@
             font-size: 1.5em;
             border: 2px solid white;
             position: absolute;
-            top: -0px;
+            top: 50%;
             left: 100%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) translateY(-50%);
             margin-bottom: 10px;
         }
         .menu-icon {
@@ -319,34 +319,35 @@
     }
 
     function displaySurah(data) {
-    const content = document.getElementById('content');
-    const surahHeading = document.getElementById('surah-heading');
-    const firstVerseDiv = document.getElementById('first-verse');
-    const verses = data.verse;
-    const count = data.count;  // Total number of verses in the Surah
-    const name = data.name;
+        const content = document.getElementById('content');
+        const surahHeading = document.getElementById('surah-heading');
+        const firstVerseDiv = document.getElementById('first-verse');
+        const verses = data.verse;
+        const count = data.count;  // Total number of verses in the Surah
+        const name = data.name;
 
-    surahHeading.innerText = name;
-    surahHeading.style.display = 'block';
+        surahHeading.innerText = name;
+        surahHeading.style.display = 'block';
 
-    // Display the first verse centered at the top
-    const firstVerseText = verses['verse_0'];
-    firstVerseDiv.innerHTML = firstVerseText;
-    firstVerseDiv.style.display = 'block';
+        // Display the first verse centered at the top
+        const firstVerseText = verses['verse_0'];
+        firstVerseDiv.innerHTML = firstVerseText;
+        firstVerseDiv.style.display = 'block';
 
-    content.innerHTML = ''; // Clear previous content
+        content.innerHTML = ''; // Clear previous content
 
-    // Loop through the verses from 1 to the total count (or 10 if count exceeds 10)
-    for (let i = 1; i <= count; i++) {
-        const verseKey = `verse_${i}`;
-        const verseText = verses[verseKey];
+        // Loop through the verses from 1 to the total count (or 10 if count exceeds 10)
+        for (let i = 1; i <= count; i++) {
+            const verseKey = `verse_${i}`;
+            const verseText = verses[verseKey];
 
-        const verseDiv = document.createElement('div');
-        verseDiv.classList.add('verse');
-        verseDiv.innerHTML = `<div class="verse-number">${i}</div><div class="arabic-text">${verseText}</div>`;
-        content.appendChild(verseDiv);
+            const verseDiv = document.createElement('div');
+            verseDiv.classList.add('verse');
+            // Append the verse number after the verse text
+            verseDiv.innerHTML = `<div class="arabic-text">${verseText}</div><div class="verse-number">${i}</div>`;
+            content.appendChild(verseDiv);
+        }
     }
-}
 
     function toggleTheme() {
         const darkMode = document.body.classList.toggle('dark-mode');
