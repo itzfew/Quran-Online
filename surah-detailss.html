@@ -52,14 +52,6 @@
             font-weight: bold;
         }
 
-        .navbar .language-toggle {
-            cursor: pointer;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #4CAF50;
-        }
-
         /* Menu Toggle Button */
         .menu-toggle {
             font-size: 1.5em;
@@ -68,82 +60,32 @@
             color: white;
         }
 
-        /* Sidebar Menu */
-        .menu {
-            position: fixed;
-            top: 0;
-            left: -250px;
-            width: 250px;
-            height: 100%;
-            background-color: #333;
-            color: white;
-            transition: left 0.3s ease;
-            padding-top: 60px;
-        }
-
-        .menu a {
-            display: block;
-            text-decoration: none;
-            color: white;
-            padding: 15px 20px;
-            font-size: 1.2em;
-            border-bottom: 1px solid #444;
-            transition: background 0.3s ease;
-        }
-
-        .menu a:hover {
-            background-color: #4CAF50;
-        }
-
-        .menu.active {
-            left: 0;
-        }
-
-        /* Search and Sort */
-        .search-sort-container {
+        /* Surah List Containers */
+        .surah-container {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 10%;
-            margin-top: 80px; /* To account for the fixed navbar */
+            position: relative;
+            width: 100%;
+            height: calc(100vh - 120px); /* Adjust height based on header */
+            overflow: hidden;
         }
 
-        .search-bar {
-            padding: 12px 20px;
-            font-size: 1.1em;
-            border: 2px solid #4CAF50;
-            border-radius: 50px;
-            width: 60%;
-            max-width: 350px;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .search-bar:focus {
-            outline: none;
-            border-color: #45a049;
-        }
-
-        .sort-select {
-            padding: 12px 20px;
-            font-size: 1.1em;
-            border: 2px solid #4CAF50;
-            border-radius: 50px;
-            background-color: white;
-            max-width: 200px;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .sort-select:focus {
-            outline: none;
-            border-color: #45a049;
-        }
-
-        /* Surah List Styles */
         .surah-list {
-            padding: 0 10%;
+            width: 100%;
+            padding: 10px 5%;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            height: 100%;
+            overflow-y: auto;
+            transition: transform 0.5s ease;
+        }
+
+        .surah-list-arabic {
+            background-color: #f5f5f5;
+        }
+
+        .surah-list-english {
+            background-color: #fff;
         }
 
         /* Surah Item */
@@ -173,6 +115,17 @@
             color: #666;
         }
 
+        /* Button to toggle between Arabic and English */
+        .language-toggle {
+            cursor: pointer;
+            color: white;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            border-radius: 5px;
+            margin: 10px;
+            display: inline-block;
+        }
+
         /* Responsive Styles */
         @media (max-width: 768px) {
             .search-sort-container {
@@ -186,8 +139,9 @@
                 margin-bottom: 10px;
             }
 
-            .surah-list {
-                padding: 0 5%;
+            .surah-container {
+                flex-direction: column;
+                height: auto;
             }
 
             .menu-toggle {
@@ -202,47 +156,42 @@
     <!-- Navbar -->
     <div class="navbar">
         <div class="logo">Surah List</div>
-        <div class="language-toggle" id="language-toggle">
-            Toggle Language
+    </div>
+
+    <!-- Surah List Containers -->
+    <div class="surah-container" id="surah-container">
+        <!-- Arabic Surah List -->
+        <div class="surah-list surah-list-arabic" id="surah-list-arabic">
+            <!-- Arabic Surah Items will be injected here -->
         </div>
-        <div class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation Menu">
-            <i class="fas fa-bars"></i>
+
+        <!-- English Surah List -->
+        <div class="surah-list surah-list-english" id="surah-list-english">
+            <!-- English Surah Items will be injected here -->
         </div>
     </div>
 
-    <!-- Sidebar Menu -->
-    <div class="menu" id="menu">
-        <a href="#">Home</a>
-        <a href="#">Other Features</a>
-        <a href="#">Surah Types</a>
-        <a href="#">Themes</a>
-    </div>
-
-    <!-- Search and Sort Section -->
-    <div class="search-sort-container">
-        <input type="text" id="search-bar" class="search-bar" placeholder="Search by title or index...">
-        <select class="sort-select" id="sort-select">
-            <option value="index">Sort by Index</option>
-            <option value="title">Sort by Title (English)</option>
-        </select>
-    </div>
-
-    <!-- Surah List -->
-    <div class="surah-list" id="surah-list">
-        <!-- Surah Items will be injected here -->
+    <!-- Toggle Language Button -->
+    <div class="language-toggle" id="language-toggle">
+        Toggle Language
     </div>
 
     <script>
-        // Toggle Sidebar Menu
-        document.getElementById('menu-toggle').addEventListener('click', () => {
-            const menu = document.getElementById('menu');
-            menu.classList.toggle('active');
-        });
-
-        // Toggle Language
+        // Toggle between Arabic and English Surah List
         document.getElementById('language-toggle').addEventListener('click', () => {
-            const isEnglish = document.body.classList.toggle('english');
-            loadSurahs(isEnglish);
+            const arabicList = document.getElementById('surah-list-arabic');
+            const englishList = document.getElementById('surah-list-english');
+            const container = document.getElementById('surah-container');
+
+            if (container.classList.contains('show-english')) {
+                arabicList.style.transform = 'translateX(0)';
+                englishList.style.transform = 'translateX(100%)';
+                container.classList.remove('show-english');
+            } else {
+                arabicList.style.transform = 'translateX(-100%)';
+                englishList.style.transform = 'translateX(0)';
+                container.classList.add('show-english');
+            }
         });
 
         // Fetch Surah Data
@@ -258,21 +207,20 @@
         }
 
         // Render Surah Items
-        function renderSurahs(surahs, isEnglish) {
-            const surahList = document.getElementById('surah-list');
+        function renderSurahs(surahs, language = 'arabic') {
+            const surahList = document.getElementById(language === 'arabic' ? 'surah-list-arabic' : 'surah-list-english');
             surahList.innerHTML = '';
 
             surahs.forEach(surah => {
                 const surahIndex = parseInt(surah.index, 10);
-                const surahDetailsUrl = isEnglish ? `surah-details-en.html?index=${surahIndex}` : `surah-details.html?index=${surahIndex}`;
+                const surahDetailsUrl = `surah-details-${language}.html?index=${surahIndex}`;
 
                 const surahItem = document.createElement('a');
                 surahItem.className = 'surah-item';
                 surahItem.href = surahDetailsUrl;
                 surahItem.innerHTML = `
-                    <h3>${isEnglish ? surah.title : surah.titleAr}</h3>
+                    <h3>${language === 'english' ? surah.title : surah.titleAr}</h3>
                     <p>Surah: ${surahIndex}</p>
-                    <p>${isEnglish ? surah.title : surah.titleAr}</p>
                     <p>${surah.type}</p>
                 `;
 
@@ -280,51 +228,11 @@
             });
         }
 
-        // Sort Surahs
-        function sortSurahs(surahs, criteria) {
-            return surahs.sort((a, b) => {
-                if (criteria === 'index') {
-                    return parseInt(a.index) - parseInt(b.index);
-                } else if (criteria === 'title') {
-                    return a.title.localeCompare(b.title);
-                }
-                return 0;
-            });
-        }
-
-        // Filter Surahs by Search Query
-        function filterSurahs(surahs, query) {
-            const lowerCaseQuery = query.toLowerCase();
-            return surahs.filter(surah => 
-                surah.title.toLowerCase().includes(lowerCaseQuery) ||
-                surah.index.includes(lowerCaseQuery)
-            );
-        }
-
         // Initialize Page
         async function init() {
-            let surahs = await fetchSurahs();
-            loadSurahs(false); // default to Arabic
-
-            const searchBar = document.getElementById('search-bar');
-            const sortSelect = document.getElementById('sort-select');
-
-            searchBar.addEventListener('input', () => {
-                const filteredSurahs = filterSurahs(surahs, searchBar.value);
-                renderSurahs(filteredSurahs, document.body.classList.contains('english'));
-            });
-
-            sortSelect.addEventListener('change', () => {
-                const sortedSurahs = sortSurahs(surahs, sortSelect.value);
-                renderSurahs(sortedSurahs, document.body.classList.contains('english'));
-            });
-        }
-
-        // Load Surahs (based on language selection)
-        function loadSurahs(isEnglish) {
-            fetchSurahs().then(surahs => {
-                renderSurahs(surahs, isEnglish);
-            });
+            const surahs = await fetchSurahs();
+            renderSurahs(surahs, 'arabic'); // Default to Arabic
+            renderSurahs(surahs, 'english'); // Render English Surah List as well
         }
 
         init();
