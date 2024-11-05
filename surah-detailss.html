@@ -3,121 +3,226 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surah Details - English</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Surah List</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
     <style>
+        /* Global Styles */
         body {
-            font-family: 'Arial', sans-serif;
-            background-image: url('https://yourbackgroundimageurl.com/image.jpg');
-            background-size: cover;
-            background-attachment: fixed;
-            color: #333;
+            font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
             padding: 0;
-            transition: background-color 0.5s, color 0.5s, font-family 0.5s;
-            font-size: 18px;
+            background-color: #f0f2f5; /* Light background color */
+            color: #333;
+            line-height: 1.6;
         }
 
-        .settings-container {
+        h1 {
+            color: #4CAF50;
+            font-size: 2.8em;
+            text-align: center;
+            margin: 40px 0 20px;
+            font-weight: bold;
+        }
+
+        .header {
             display: flex;
-            justify-content: flex-start;
+            justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-bottom: 2px solid #3498db;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            white-space: nowrap;
-            overflow-x: auto;
+            margin: 20px 10%;
+            padding: 10px 0;
         }
 
-        /* Your existing styles... */
+        .search-bar, .sort-select {
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #4CAF50;
+            border-radius: 30px;
+            width: 100%;
+            max-width: 350px;
+            box-sizing: border-box;
+            background-color: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
 
+        .search-bar:focus, .sort-select:focus {
+            outline: none;
+            border-color: #45a049;
+            box-shadow: 0 0 5px rgba(72, 213, 64, 0.5);
+        }
+
+        .surah-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 0 10%;
+            margin-bottom: 40px;
+        }
+
+        .surah-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .surah-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .surah-card h2 {
+            color: #4CAF50;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .surah-card p {
+            font-size: 1.2em;
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .surah-card a {
+            text-decoration: none;
+            color: white;
+            background-color: #4CAF50;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .surah-card a:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                margin: 20px;
+            }
+            .search-bar, .sort-select {
+                margin-bottom: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2.2em;
+            }
+        }
     </style>
 </head>
 <body>
 
-<!-- Settings Section at the top (Fixed) -->
-<div class="settings-container">
-    <div class="settings-item" onclick="goBack()">
-        <i class="fas fa-arrow-left"></i> Back
-    </div>
-    <div class="settings-item" onclick="toggleTheme()">
-        <i class="fas fa-adjust"></i>
-    </div>
-    <div class="settings-item" onclick="changeTextSize(1)">
-        <i class="fas fa-text-height"></i>
-    </div>
-    <div class="settings-item" onclick="changeTextSize(-1)">
-        <i class="fas fa-text-height"></i>
-    </div>
-</div>
+    <h1>Surah List</h1>
 
-<!-- Main Content -->
-<div class="header">
-    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
-</div>
-<div id="first-verse" class="first-verse" style="display: none;"></div>
-<div id="content"></div>
+    <!-- Header Section with Search and Sort -->
+    <div class="header">
+        <input type="text" id="search-bar" class="search-bar" placeholder="Search by title or index...">
+        <select class="sort-select" id="sort-select">
+            <option value="index">Sort by Index</option>
+            <option value="title">Sort by Title (English)</option>
+        </select>
+    </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const index = getQueryParam('index');
-        if (index) {
-            fetchSurah(index);
+    <!-- Surah List Section -->
+    <div class="surah-list" id="surah-list">
+        <!-- Surah cards will be rendered here -->
+    </div>
+
+    <script>
+        async function fetchSurahs() {
+            try {
+                const response = await fetch('https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah.json');
+                const surahs = await response.json();
+                return surahs;
+            } catch (error) {
+                console.error('Error fetching surah data:', error);
+                return [];
+            }
         }
-    });
 
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
+        function renderSurahs(surahs) {
+            const surahList = document.getElementById('surah-list');
+            surahList.innerHTML = ''; // Clear the existing list
 
-    async function fetchSurah(index) {
-        // Assuming the English translations are stored similarly to the original Surah data
-        const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/english/surah_${String(index).padStart(1, '0')}.json`);
-        const data = await response.json();
-        displaySurah(data);
-    }
+            surahs.forEach(surah => {
+                const surahIndex = parseInt(surah.index, 10);
+                const surahDetailsUrl = `surah-details.html?index=${surahIndex}`;
 
-    function displaySurah(data) {
-        const surahHeading = document.getElementById('surah-heading');
-        const firstVerse = document.getElementById('first-verse');
-        const content = document.getElementById('content');
-        const count = data.count;
-        const verses = data.verse;
+                const surahCard = document.createElement('div');
+                surahCard.className = 'surah-card';
+                surahCard.innerHTML = `
+                    <h2>${surah.title}</h2>
+                    <p class="bold">Surah: ${surahIndex}</p>
+                    <p>${surah.titleAr}</p>
+                    <p>${surah.type}</p>
+                    <a href="${surahDetailsUrl}">Read</a>
+                `;
 
-        surahHeading.style.display = 'block';
-        firstVerse.style.display = 'block';
-        content.innerHTML = ''; // Clear content
-
-        surahHeading.innerText = data.name;
-        firstVerse.innerText = verses['verse_0'];
-
-        // Loop through verses
-        for (let i = 0; i <= count; i++) {
-            const verseKey = `verse_${i}`;
-            const verseText = verses[verseKey];
-
-            const verseDiv = document.createElement('div');
-            verseDiv.classList.add('verse');
-            verseDiv.setAttribute('id', `verse-${i}`);
-            verseDiv.innerHTML = `
-                <div class="arabic-text">${verseText}
-                    <span class="verse-number">${i + 1}</span>
-                </div>
-            `;
-            content.appendChild(verseDiv);
+                surahList.appendChild(surahCard);
+            });
         }
-    }
 
-    function goBack() {
-        window.history.back();
-    }
-</script>
+        function sortSurahs(surahs, criteria) {
+            return surahs.sort((a, b) => {
+                if (criteria === 'index') {
+                    return parseInt(a.index) - parseInt(b.index);
+                } else if (criteria === 'title') {
+                    return a.title.localeCompare(b.title);
+                }
+                return 0;
+            });
+        }
+
+        function filterSurahs(surahs, query) {
+            const lowerCaseQuery = query.toLowerCase();
+            return surahs.filter(surah => 
+                surah.title.toLowerCase().includes(lowerCaseQuery) ||
+                surah.index.includes(lowerCaseQuery)
+            );
+        }
+
+        async function init() {
+            let surahs = await fetchSurahs();
+            renderSurahs(surahs);
+
+            const searchBar = document.getElementById('search-bar');
+            const sortSelect = document.getElementById('sort-select');
+
+            // Search functionality
+            searchBar.addEventListener('input', () => {
+                const filteredSurahs = filterSurahs(surahs, searchBar.value);
+                renderSurahs(filteredSurahs);
+            });
+
+            // Sort functionality
+            sortSelect.addEventListener('change', () => {
+                const sortedSurahs = sortSurahs(surahs, sortSelect.value);
+                renderSurahs(sortedSurahs);
+            });
+        }
+
+        init(); // Initialize the page
+    </script>
 
 </body>
 </html>
