@@ -264,8 +264,8 @@
 
         content.innerHTML = ''; // Clear previous content
 
-        // Display remaining verses
-        for (let i = 0; i < count; i++) {
+        // Display all remaining verses
+        for (let i = 1; i < count; i++) {
             const verseKey = `verse_${i}`;
             const verseText = verses[verseKey];
             const verseTranslation = translationData[verseKey] || 'Translation not available';
@@ -281,51 +281,8 @@
         }
     }
 
-    function changeTextSize(amount) {
-        const body = document.body;
-        let currentSize = parseInt(window.getComputedStyle(body).fontSize);
-        let newSize = currentSize + amount;
+    // Utility Functions: changeTextSize, changeFont, toggleMenu, resetPreferences, etc.
 
-        if (newSize < 14) newSize = 14;
-        if (newSize > 30) newSize = 30;
-
-        body.style.fontSize = newSize + 'px';
-        localStorage.setItem('textSize', newSize);
-    }
-
-    function changeFont() {
-        const fontSelect = document.getElementById('fontSelect');
-        const selectedFont = fontSelect.value;
-        document.body.style.fontFamily = selectedFont;
-        localStorage.setItem('selectedFont', selectedFont);
-    }
-
-    function resetPreferences() {
-        localStorage.removeItem('darkMode');
-        localStorage.removeItem('textSize');
-        localStorage.removeItem('selectedFont');
-        location.reload();
-    }
-
-    function toggleTheme() {
-        const body = document.body;
-        body.classList.toggle('dark-mode');
-        const isDark = body.classList.contains('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
-
-    function toggleMenu() {
-        const menu = document.getElementById('mySideMenu');
-        menu.style.left = menu.style.left === '0px' ? '-250px' : '0px';
-    }
-
-    function closeMenu() {
-        document.getElementById('mySideMenu').style.left = '-250px';
-    }
-
-    function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
 </script>
 
 </body>
