@@ -110,6 +110,21 @@
             background-color: #2980b9;
         }
 
+        .back-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #2980b9;
+        }
+
         /* Dark Mode Styles */
         .dark-mode {
             background-color: #2c3e50;
@@ -156,6 +171,9 @@
 <body>
 
 <div class="header">
+    <button class="back-button" onclick="window.location.href='index.html'">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
     <div class="surah-heading" id="surah-heading" style="display: none;"></div>
     <div class="controls">
         <i class="fas fa-sun" onclick="toggleTheme()" title="Toggle Dark/Light Mode"></i>
@@ -183,8 +201,6 @@
 
         document.body.style.fontSize = textSize + 'px';
         document.body.style.fontFamily = selectedFont;
-
-        document.getElementById('fontSelect').value = selectedFont;
 
         // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
@@ -251,6 +267,14 @@
         localStorage.setItem('textSize', newSize);
     }
 
+    function showFontPicker() {
+        const newFont = prompt("Enter font family (e.g. 'Arial', 'Amiri', etc.):", 'Arial');
+        if (newFont) {
+            document.body.style.fontFamily = newFont;
+            localStorage.setItem('selectedFont', newFont);
+        }
+    }
+
     function resetPreferences() {
         localStorage.removeItem('darkMode');
         localStorage.removeItem('textSize');
@@ -262,14 +286,6 @@
 
     function scrollToTop() {
         window.scrollTo({top: 0, behavior: 'smooth'});
-    }
-
-    function showFontPicker() {
-        const newFont = prompt("Enter font family (e.g. 'Arial', 'Amiri', etc.):", 'Arial');
-        if (newFont) {
-            document.body.style.fontFamily = newFont;
-            localStorage.setItem('selectedFont', newFont);
-        }
     }
 </script>
 
