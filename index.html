@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quran Kareem</title>
+    <title>Surah List</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -51,11 +51,11 @@
             font-weight: bold;
         }
 
-        /* Menu Toggle Button */
+        /* Menu Toggle Button (Hamburger Icon) */
         .menu-toggle {
             font-size: 1.5em;
             cursor: pointer;
-            display: none;
+            display: none; /* Initially hidden on large screens */
             color: white;
         }
 
@@ -70,6 +70,7 @@
             color: white;
             transition: left 0.3s ease;
             padding-top: 60px;
+            z-index: 200;
         }
 
         .menu a {
@@ -212,7 +213,20 @@
             }
 
             .menu-toggle {
-                display: block;
+                display: block; /* Show hamburger icon on small screens */
+            }
+
+            .menu {
+                width: 100%;
+                height: 100%;
+                position: fixed;
+                left: -100%;
+                top: 0;
+                transition: left 0.3s ease-in-out;
+            }
+
+            .menu.active {
+                left: 0;
             }
         }
     </style>
@@ -221,7 +235,7 @@
 
     <!-- Navbar -->
     <div class="navbar">
-        <div class="logo">Quran Kareem</div>
+        <div class="logo">Surah List</div>
         <div class="menu-toggle" id="menu-toggle">
             <i class="fas fa-bars"></i>
         </div>
@@ -230,8 +244,9 @@
     <!-- Sidebar Menu -->
     <div class="menu" id="menu">
         <a href="#">Home</a>
-        <a href="#">About</a>
-        <a href="#">Contact</a>
+        <a href="Hadith.html">Hadith</a>
+        <a href="Tasbih.html">Tasbih</a>
+        <a href="100-NAMES.html">100 Names</a>
     </div>
 
     <!-- Search and Sort Section -->
@@ -286,9 +301,9 @@
                 surahItem.className = 'surah-item';
                 surahItem.href = surahDetailsUrl;
                 surahItem.innerHTML = `
-                    <h3>${language === 'en' ? surah.title : surah.titleAr}</h3>
+                    <h3>${language === 'en' ? surah.titleEn : surah.titleAr}</h3>
                     <p>Surah: ${surahIndex}</p>
-                    <p>${language === 'en' ? surah.title : surah.titleAr}</p>
+                    <p>${language === 'en' ? surah.titleEn : surah.titleAr}</p>
                     <p>${surah.type}</p>
                 `;
 
@@ -300,7 +315,7 @@
         function sortSurahs(surahs, criteria) {
             return surahs.sort((a, b) => {
                 if (criteria === 'index') {
-                    return a.index - b.index;
+                    return parseInt(a.index) - parseInt(b.index);
                 } else if (criteria === 'title') {
                     return a.title.localeCompare(b.title);
                 }
