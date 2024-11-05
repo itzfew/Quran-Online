@@ -51,11 +51,11 @@
             font-weight: bold;
         }
 
-        /* Menu Toggle Button (Hamburger Icon) */
+        /* Menu Toggle Button */
         .menu-toggle {
             font-size: 1.5em;
             cursor: pointer;
-            display: none; /* Initially hidden on large screens */
+            display: none;
             color: white;
         }
 
@@ -70,7 +70,6 @@
             color: white;
             transition: left 0.3s ease;
             padding-top: 60px;
-            z-index: 200;
         }
 
         .menu a {
@@ -213,18 +212,10 @@
             }
 
             .menu-toggle {
-                display: block; /* Show hamburger icon on small screens */
+                display: block;
             }
 
-            .menu {
-                width: 100%;
-                height: 100%;
-                position: fixed;
-                left: -100%;
-                top: 0;
-                transition: left 0.3s ease-in-out;
-            }
-
+            /* Hide the menu in small screens */
             .menu.active {
                 left: 0;
             }
@@ -244,6 +235,9 @@
     <!-- Sidebar Menu -->
     <div class="menu" id="menu">
         <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+        <!-- New Links -->
         <a href="Hadith.html">Hadith</a>
         <a href="Tasbih.html">Tasbih</a>
         <a href="100-NAMES.html">100 Names</a>
@@ -301,9 +295,9 @@
                 surahItem.className = 'surah-item';
                 surahItem.href = surahDetailsUrl;
                 surahItem.innerHTML = `
-                    <h3>${language === 'en' ? surah.titleEn : surah.titleAr}</h3>
+                    <h3>${language === 'en' ? surah.title : surah.titleAr}</h3>
                     <p>Surah: ${surahIndex}</p>
-                    <p>${language === 'en' ? surah.titleEn : surah.titleAr}</p>
+                    <p>${language === 'en' ? surah.title : surah.titleAr}</p>
                     <p>${surah.type}</p>
                 `;
 
@@ -315,7 +309,7 @@
         function sortSurahs(surahs, criteria) {
             return surahs.sort((a, b) => {
                 if (criteria === 'index') {
-                    return parseInt(a.index) - parseInt(b.index);
+                    return a.index - b.index;
                 } else if (criteria === 'title') {
                     return a.title.localeCompare(b.title);
                 }
