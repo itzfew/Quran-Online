@@ -39,10 +39,12 @@
             margin-right: 20px;
             font-size: 24px;
             cursor: pointer;
+            transition: transform 0.2s ease-in-out;
         }
 
         .settings-item:hover {
             color: #2980b9;
+            transform: scale(1.1);
         }
 
         #verseSearch {
@@ -124,6 +126,7 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 14px;
+            transition: background-color 0.3s ease;
         }
 
         .bookmark-button:hover {
@@ -159,6 +162,7 @@
             padding: 10px;
             border-bottom: 1px solid #ccc;
             cursor: pointer;
+            font-size: 16px;
         }
 
         .bookmarked-panel ul li:hover {
@@ -166,6 +170,28 @@
             color: white;
         }
 
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            display: none;
+            transition: opacity 0.3s ease;
+            z-index: 1001;
+        }
+
+        .notification.show {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Back to Top Button */
         .back-to-top {
             position: fixed;
             bottom: 30px;
@@ -245,20 +271,24 @@
     </div>
 </div>
 
+<!-- Bookmarked Panel -->
+<div class="bookmarked-panel" id="bookmarked-panel">
+    <h3>Bookmarked Verses</h3>
+    <ul id="bookmarkedList"></ul>
+</div>
+
+<!-- Main Content -->
 <div class="header">
     <div id="surah-heading" class="surah-heading" style="display: none;"></div>
 </div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 <div id="content"></div>
 
-<!-- Bookmarked Panel (Slide-Out) -->
-<div id="bookmarked-panel" class="bookmarked-panel">
-    <h3>Bookmarked Verses</h3>
-    <ul id="bookmarkedList"></ul>
-</div>
-
 <!-- Back to Top Button -->
 <button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
+
+<!-- Notification -->
+<div class="notification" id="notification"></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -319,11 +349,16 @@
                 </div>
             `;
 
-            // Add bookmark button
+            // Check if verse is bookmarked
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            const isBookmarked = bookmarks.includes(i);
+            const bookmarkIcon = isBookmarked ? 'fas fa-bookmark' : 'far fa-bookmark';
+
+            // Add bookmark button with icon
             const bookmarkButton = document.createElement('button');
-            bookmarkButton.textContent = 'Bookmark';
             bookmarkButton.classList.add('bookmark-button');
-            bookmarkButton.onclick = () => toggleBookmark(i);
+            bookmarkButton.innerHTML = `<i class="${bookmarkIcon}"></i> Bookmark`;
+            bookmarkButton.onclick = () => toggleBookmark(i, verseDiv);
             verseDiv.appendChild(bookmarkButton);
 
             // Add event listener to highlight verse
@@ -335,15 +370,19 @@
         loadBookmarkedVerses();
     }
 
-    function toggleBookmark(verseId) {
+    function toggleBookmark(verseId, verseElement) {
         const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+        const notification = document.getElementById('notification');
         if (bookmarks.includes(verseId)) {
             bookmarks.splice(bookmarks.indexOf(verseId), 1);
+            notification.innerText = `Verse ${verseId + 1} removed from bookmarks!`;
         } else {
             bookmarks.push(verseId);
+            notification.innerText = `Verse ${verseId + 1} bookmarked!`;
         }
         localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
         loadBookmarkedVerses();
+        showNotification();
     }
 
     function loadBookmarkedVerses() {
@@ -353,7 +392,7 @@
 
         bookmarks.forEach((verseId) => {
             const li = document.createElement('li');
-            li.textContent = `Verse ${verseId + 1}`;
+            li.innerHTML = `Verse ${verseId + 1}`;
             li.onclick = () => scrollToVerse(verseId);
             bookmarkedList.appendChild(li);
         });
@@ -364,11 +403,23 @@
         if (verseElement) {
             verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
+        toggleBookmarkPanel(); // Close the panel
     }
 
     function toggleBookmarkPanel() {
         const panel = document.getElementById('bookmarked-panel');
         panel.classList.toggle('open');
+    }
+
+    function toggleHighlight(verseId) {
+        const verseElement = document.getElementById(`verse-${verseId}`);
+        verseElement.classList.toggle('highlighted');
+    }
+
+    function showNotification() {
+        const notification = document.getElementById('notification');
+        notification.classList.add('show');
+        setTimeout(() => notification.classList.remove('show'), 3000);
     }
 
     function scrollToTop() {
@@ -411,7 +462,6 @@
             }
         });
     }
-
 </script>
 
 </body>
