@@ -129,12 +129,41 @@
             border-color: #45a049;
         }
 
+        /* Language Switch */
+        .language-switch-container {
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .language-switch {
+            font-size: 1.2em;
+            color: #4CAF50;
+            cursor: pointer;
+            text-decoration: none;
+            padding: 5px 20px;
+            margin: 0 10px;
+            border-radius: 50px;
+            background-color: #f0f0f0;
+            transition: background-color 0.3s;
+        }
+
+        .language-switch:hover {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .language-switch.selected {
+            background-color: #4CAF50;
+            color: white;
+        }
+
         /* Surah List Styles */
         .surah-list {
             padding: 0 10%;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 20px;
         }
 
         /* Surah Item */
@@ -148,6 +177,7 @@
             text-decoration: none;
             color: inherit;
             transition: background-color 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .surah-item:hover {
@@ -213,6 +243,12 @@
         </select>
     </div>
 
+    <!-- Language Switch -->
+    <div class="language-switch-container">
+        <a href="javascript:void(0)" class="language-switch selected" id="arabic-link">Arabic</a> | 
+        <a href="javascript:void(0)" class="language-switch" id="english-link">English</a>
+    </div>
+
     <!-- Surah List -->
     <div class="surah-list" id="surah-list">
         <!-- Surah Items will be injected here -->
@@ -238,21 +274,21 @@
         }
 
         // Render Surah Items
-        function renderSurahs(surahs) {
+        function renderSurahs(surahs, language) {
             const surahList = document.getElementById('surah-list');
             surahList.innerHTML = '';
 
             surahs.forEach(surah => {
                 const surahIndex = parseInt(surah.index, 10);
-                const surahDetailsUrl = `surah-details.html?index=${surahIndex}`;
+                const surahDetailsUrl = `surah-details-${language}.html?index=${surahIndex}`;
 
                 const surahItem = document.createElement('a');
                 surahItem.className = 'surah-item';
                 surahItem.href = surahDetailsUrl;
                 surahItem.innerHTML = `
-                    <h3>${surah.title}</h3>
+                    <h3>${language === 'en' ? surah.title : surah.titleAr}</h3>
                     <p>Surah: ${surahIndex}</p>
-                    <p>${surah.titleAr}</p>
+                    <p>${language === 'en' ? surah.title : surah.titleAr}</p>
                     <p>${surah.type}</p>
                 `;
 
@@ -264,7 +300,7 @@
         function sortSurahs(surahs, criteria) {
             return surahs.sort((a, b) => {
                 if (criteria === 'index') {
-                    return parseInt(a.index) - parseInt(b.index);
+                    return a.index - b.index;
                 } else if (criteria === 'title') {
                     return a.title.localeCompare(b.title);
                 }
@@ -272,35 +308,57 @@
             });
         }
 
-        // Filter Surahs by Search Query
-        function filterSurahs(surahs, query) {
-            const lowerCaseQuery = query.toLowerCase();
-            return surahs.filter(surah => 
-                surah.title.toLowerCase().includes(lowerCaseQuery) ||
-                surah.index.includes(lowerCaseQuery)
-            );
+        // Handle Search
+        document.getElementById('search-bar').addEventListener('input', async function() {
+            const searchQuery = this.value.toLowerCase();
+            const surahs = await fetchSurahs();
+            const filteredSurahs = surahs.filter(surah => {
+                return surah.title.toLowerCase().includes(searchQuery) || surah.index.includes(searchQuery);
+            });
+            const selectedLang = document.querySelector('.language-switch.selected').id === 'arabic-link' ? 'ar' : 'en';
+            renderSurahs(filteredSurahs, selectedLang);
+        });
+
+        // Handle Sort
+        document.getElementById('sort-select').addEventListener('change', async function() {
+            const sortCriteria = this.value;
+            const surahs = await fetchSurahs();
+            const sortedSurahs = sortSurahs(surahs, sortCriteria);
+            const selectedLang = document.querySelector('.language-switch.selected').id === 'arabic-link' ? 'ar' : 'en';
+            renderSurahs(sortedSurahs, selectedLang);
+        });
+
+        // Toggle between Arabic and English
+        document.getElementById('english-link').addEventListener('click', async function() {
+            const surahs = await fetchSurahs();
+            renderSurahs(surahs, 'en');
+            updateLanguageSelection('en');
+        });
+
+        document.getElementById('arabic-link').addEventListener('click', async function() {
+            const surahs = await fetchSurahs();
+            renderSurahs(surahs, 'ar');
+            updateLanguageSelection('ar');
+        });
+
+        // Update language selection UI
+        function updateLanguageSelection(language) {
+            if (language === 'en') {
+                document.getElementById('english-link').classList.add('selected');
+                document.getElementById('arabic-link').classList.remove('selected');
+            } else {
+                document.getElementById('arabic-link').classList.add('selected');
+                document.getElementById('english-link').classList.remove('selected');
+            }
         }
 
-        // Initialize Page
-        async function init() {
-            let surahs = await fetchSurahs();
-            renderSurahs(surahs);
-
-            const searchBar = document.getElementById('search-bar');
-            const sortSelect = document.getElementById('sort-select');
-
-            searchBar.addEventListener('input', () => {
-                const filteredSurahs = filterSurahs(surahs, searchBar.value);
-                renderSurahs(filteredSurahs);
-            });
-
-            sortSelect.addEventListener('change', () => {
-                const sortedSurahs = sortSurahs(surahs, sortSelect.value);
-                renderSurahs(sortedSurahs);
-            });
-        }
-
-        init();
+        // Initial render (default language Arabic)
+        window.onload = async function() {
+            const surahs = await fetchSurahs();
+            renderSurahs(surahs, 'ar');
+            updateLanguageSelection('ar');
+        };
     </script>
+
 </body>
 </html>
