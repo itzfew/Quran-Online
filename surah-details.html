@@ -232,7 +232,7 @@
 
     async function fetchSurah(index) {
         try {
-            const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${index}.json`);
+            const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${index}.json`);
             const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${index}.json`);
 
             const surahData = await surahResponse.json();
