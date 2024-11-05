@@ -15,7 +15,7 @@
             margin: 0;
             padding: 20px;
             transition: background-color 0.5s, color 0.5s, font-family 0.5s;
-            font-size: 18px; /* Default font size */
+            font-size: 18px;
         }
         .header {
             text-align: center;
@@ -52,9 +52,8 @@
             border-radius: 8px;
             background-color: rgba(236, 240, 241, 0.8);
             display: flex;
-            align-items: center;
-            position: relative; /* Make verse a positioned container */
-            border-left: 5px solid #3498db;
+            align-items: flex-start;  /* Align items to the start */
+            position: relative;  /* Make verse a positioned container */
             transition: background-color 0.3s;
             cursor: pointer;
             font-size: 1.5em;
@@ -62,6 +61,8 @@
         .verse:hover {
             background-color: rgba(52, 152, 219, 0.2);
         }
+
+        /* Verse Number Style */
         .verse-number {
             background-color: #3498db;
             color: white;
@@ -71,14 +72,26 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            position: absolute; /* Position it absolutely within the verse */
-            top: 0; /* Align to the top */
-            right: 0; /* Align to the right */
-            margin: 10px; /* Add some space from the top and right */
+            position: absolute;  /* Position it absolutely within the verse */
+            top: -30px;  /* Position it above the text area */
+            right: -30px; /* Align to the top-right corner */
             font-weight: bold;
             font-size: 1.5em;
             border: 2px solid white;
         }
+
+        /* Verse Text Container */
+        .verse-text {
+            padding-right: 80px;  /* Make space for the verse number */
+            border-left: 5px solid #3498db;
+            padding: 20px;
+            margin-left: 60px; /* Indent text to avoid overlap */
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            flex-grow: 1; /* Make sure text takes up the remaining space */
+        }
+
         .menu-icon {
             font-size: 30px;
             cursor: pointer;
@@ -88,20 +101,23 @@
             left: 20px;
             z-index: 10;
         }
+
+        /* Menu and Side Menu Styles */
         .side-menu {
-            height: auto; 
+            height: auto;
             width: 250px;
             position: fixed;
             z-index: 1;
             top: 0;
-            left: -250px; 
+            left: -250px;
             background-color: #3498db;
-            overflow-y: auto; 
+            overflow-y: auto;
             transition: 0.5s;
             padding-top: 20px;
             border-radius: 10px 0 0 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
+
         .side-menu .close-btn {
             font-size: 24px;
             color: white;
@@ -110,6 +126,7 @@
             top: 10px;
             right: 10px;
         }
+
         .side-menu a {
             padding: 15px 20px;
             text-decoration: none;
@@ -119,13 +136,16 @@
             transition: 0.3s;
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
+
         .side-menu a:hover {
             background-color: #2980b9;
         }
+
         .text-size-control, .font-control {
             margin: 20px 0;
             text-align: center;
         }
+
         .text-size-button, .reset-button {
             background-color: #2980b9;
             color: white;
@@ -137,9 +157,11 @@
             font-size: 16px;
             transition: background-color 0.3s;
         }
+
         .text-size-button:hover, .reset-button:hover {
             background-color: #1f6394;
         }
+
         .font-select {
             margin-top: 10px;
             padding: 5px;
@@ -147,22 +169,27 @@
             border: 1px solid #ccc;
             background-color: #fff;
         }
+
         .dark-mode {
             background-color: #2c3e50;
             color: #ecf0f1;
         }
+
         .dark-mode .surah-heading {
             background-color: #1abc9c;
             color: #ecf0f1;
             border-color: #16a085;
         }
+
         .dark-mode .verse {
             background-color: #1a1a1a;
             border-left: 5px solid #16a085;
         }
+
         .dark-mode .verse-number {
             background-color: #16a085;
         }
+
         .back-to-top {
             position: fixed;
             bottom: 30px;
@@ -174,15 +201,16 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            display: none; 
+            display: none;
             transition: background-color 0.3s;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
+
         .back-to-top:hover {
             background-color: #2980b9;
         }
+
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -198,27 +226,31 @@
     </div>
     <div class="font-control">
         <select id="fontSelect" class="font-select" onchange="changeFont()">
+            <option value="Arial">Arial</option>
             <option value="Amiri">Amiri</option>
-            <option value="Cairo">Cairo</option>
-            <option value="El Messiri">El Messiri</option>
-            <option value="Harmattan">Harmattan</option>
-            <option value="Lateef">Lateef</option>
-            <option value="Scheherazade New">Scheherazade New</option>
+            <option value="Noto Sans">Noto Sans</option>
+            <option value="Tajawal">Tajawal</option>
         </select>
     </div>
-    <button class="reset-button" onclick="resetPreferences()">Reset Preferences</button>
     <div class="text-size-control">
-        <button class="text-size-button" onclick="toggleTheme()">Toggle Dark/Light</button>
+        <button class="reset-button" onclick="resetPreferences()">Reset Preferences</button>
     </div>
 </div>
 
 <div class="header">
-    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
+    <h1 class="surah-heading" id="surah-heading">Surah Name</h1>
 </div>
-<div id="first-verse" class="first-verse" style="display: none;"></div>
-<div id="content"></div>
 
-<button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
+<div class="first-verse" id="first-verse">
+    <!-- The first verse will be displayed here -->
+</div>
+
+<div id="content">
+    <!-- Surah verses will be displayed here -->
+</div>
+
+<!-- Scroll-to-top button -->
+<button class="back-to-top" onclick="scrollToTop()">↑</button>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -275,34 +307,37 @@
     }
 
     function displaySurah(data) {
-    const content = document.getElementById('content');
-    const surahHeading = document.getElementById('surah-heading');
-    const firstVerseDiv = document.getElementById('first-verse');
-    const verses = data.verse;
-    const count = data.count;  // Total number of verses in the Surah
-    const name = data.name;
+        const content = document.getElementById('content');
+        const surahHeading = document.getElementById('surah-heading');
+        const firstVerseDiv = document.getElementById('first-verse');
+        const verses = data.verse;
+        const count = data.count;  // Total number of verses in the Surah
+        const name = data.name;
 
-    surahHeading.innerText = name;
-    surahHeading.style.display = 'block';
+        surahHeading.innerText = name;
+        surahHeading.style.display = 'block';
 
-    // Display the first verse centered at the top
-    const firstVerseText = verses['verse_0'];
-    firstVerseDiv.innerHTML = firstVerseText;
-    firstVerseDiv.style.display = 'block';
+        // Display the first verse centered at the top
+        const firstVerseText = verses['verse_0'];
+        firstVerseDiv.innerHTML = firstVerseText;
+        firstVerseDiv.style.display = 'block';
 
-    content.innerHTML = ''; // Clear previous content
+        content.innerHTML = ''; // Clear previous content
 
-    // Loop through the verses from 1 to the total count (or 10 if count exceeds 10)
-    for (let i = 1; i <= count; i++) {
-        const verseKey = `verse_${i}`;
-        const verseText = verses[verseKey];
+        // Loop through the verses from 1 to the total count (or 10 if count exceeds 10)
+        for (let i = 1; i <= count; i++) {
+            const verseKey = `verse_${i}`;
+            const verseText = verses[verseKey];
 
-        const verseDiv = document.createElement('div');
-        verseDiv.classList.add('verse');
-        verseDiv.innerHTML = `<div class="verse-number">${i}</div><div class="arabic-text">${verseText}</div>`;
-        content.appendChild(verseDiv);
+            const verseDiv = document.createElement('div');
+            verseDiv.classList.add('verse');
+            verseDiv.innerHTML = `
+                <div class="verse-number">${i}</div>
+                <div class="verse-text">${verseText}</div>
+            `;
+            content.appendChild(verseDiv);
+        }
     }
-}
 
     function toggleTheme() {
         const darkMode = document.body.classList.toggle('dark-mode');
