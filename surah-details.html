@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surah Details</title>
+    <title>Surah Details with Translation</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* General Styles */
         body {
             font-family: 'Arial', sans-serif;
             background-image: url('https://yourbackgroundimageurl.com/image.jpg');
@@ -24,44 +25,35 @@
         .surah-heading {
             font-size: 1.7em;
             padding: 5px;
-            border: 0px solid #3498db;
-            border-radius: 0px;
             color: #3498db;
-            box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);
+            font-weight: bold;
             text-transform: uppercase;
-            font-weight: bold;
-            letter-spacing: 1px;
-            margin: 0 0px;
-        }
-        .first-verse {
-            text-align: center;
-            font-size: 1.8em;
-            margin: 5px 0;
-            padding: 0px;
-            border-radius: 10px;
-            border: 0px solid #3498db;
-            color: #2980b9;
-            font-weight: bold;
-            position: relative;
         }
         .verse {
-            margin: 5px 0;
-            padding: 15px;
-            border-radius: 8px;
+            margin: 15px 0;
+            padding: 10px;
             background-color: rgba(236, 240, 241, 0.8);
+            border-radius: 8px;
+            font-size: 1.5em;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            position: relative;
             border-left: 5px solid #3498db;
             transition: background-color 0.3s;
             cursor: pointer;
-            font-size: 1.5em;
-            width: 100%;
-            box-sizing: border-box;
         }
         .verse:hover {
             background-color: rgba(52, 152, 219, 0.2);
+        }
+        .arabic-text {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2980b9;
+        }
+        .translation-text {
+            font-size: 1.2em;
+            color: #555;
+            margin-top: 5px;
         }
         .verse-number {
             font-size: 1.0em;
@@ -70,90 +62,6 @@
             font-weight: bold;
             border: 2px solid #2980b9;
             border-radius: 50%;
-        }
-        .menu-icon {
-            font-size: 30px;
-            cursor: pointer;
-            color: #3498db;
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 10;
-        }
-        .side-menu {
-            height: auto;
-            width: 250px;
-            position: fixed;
-            z-index: 1;
-            top: 0;
-            left: -250px;
-            background-color: #3498db;
-            overflow-y: auto;
-            transition: 0.5s;
-            padding-top: 20px;
-            border-radius: 10px 0 0 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-        .side-menu .close-btn {
-            font-size: 24px;
-            color: white;
-            cursor: pointer;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-        }
-        .side-menu a {
-            padding: 15px 20px;
-            text-decoration: none;
-            font-size: 20px;
-            color: white;
-            display: block;
-            transition: 0.3s;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .side-menu a:hover {
-            background-color: #2980b9;
-        }
-        .text-size-control, .font-control {
-            margin: 20px 0;
-            text-align: center;
-        }
-        .text-size-button, .reset-button {
-            background-color: #2980b9;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 0 5px;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-        .text-size-button:hover, .reset-button:hover {
-            background-color: #1f6394;
-        }
-        .font-select {
-            margin-top: 10px;
-            padding: 5px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            background-color: #fff;
-        }
-        .dark-mode {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-        }
-        .dark-mode .surah-heading {
-            background-color: #1abc9c;
-            color: #ecf0f1;
-            border-color: #16a085;
-        }
-        .dark-mode .verse {
-            background-color: #1a1a1a;
-            border-left: 5px solid #16a085;
-        }
-        .dark-mode .verse-number {
-            color: #16a085;
         }
         .back-to-top {
             position: fixed;
@@ -167,64 +75,30 @@
             cursor: pointer;
             font-size: 16px;
             display: none;
-            transition: background-color 0.3s;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
         .back-to-top:hover {
             background-color: #2980b9;
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .verse {
+                font-size: 1.3em;
+                padding: 10px;
+            }
         }
     </style>
 </head>
 <body>
 
-<i class="fas fa-bars menu-icon" onclick="toggleMenu()"></i>
-
-<div id="mySideMenu" class="side-menu">
-    <span class="close-btn" onclick="closeMenu()">&times;</span>
-    <a href="index.html" onclick="closeMenu()"><i class="fas fa-home"></i> Home</a>
-    <a href="mailto:contactus94@yahoo.com" onclick="closeMenu()"><i class="fas fa-envelope"></i> Contact Us</a>
-    <div class="text-size-control">
-        <button class="text-size-button" onclick="changeTextSize(1)">A+</button>
-        <button class="text-size-button" onclick="changeTextSize(-1)">A-</button>
-    </div>
-    <div class="font-control">
-        <select id="fontSelect" class="font-select" onchange="changeFont()">
-            <option value="Amiri">Amiri</option>
-            <option value="Cairo">Cairo</option>
-            <option value="El Messiri">El Messiri</option>
-            <option value="Harmattan">Harmattan</option>
-            <option value="Lateef">Lateef</option>
-            <option value="Scheherazade New">Scheherazade New</option>
-        </select>
-    </div>
-    <button class="reset-button" onclick="resetPreferences()">Reset Preferences</button>
-    <div class="text-size-control">
-        <button class="text-size-button" onclick="toggleTheme()">Toggle Dark/Light</button>
-    </div>
-</div>
-
 <div class="header">
     <div id="surah-heading" class="surah-heading" style="display: none;"></div>
 </div>
-<div id="first-verse" class="first-verse" style="display: none;"></div>
 <div id="content"></div>
 
 <button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        const surahIndex = params.get('index'); // Get the Surah index from the URL
-        if (surahIndex) {
-            fetchSurah(surahIndex); // Fetch Surah based on index
-        }
-document.addEventListener('DOMContentLoaded', () => {
-        const params = new URLSearchParams(window.location.search);
-        const translationIndex = params.get('index'); // Get the Surah index from the URL
-        if (translationIndex) {
-            fetchSurah(translationIndex); // Fetch Surah based on index
-        }
-
         const darkMode = localStorage.getItem('darkMode') === 'true';
         const textSize = localStorage.getItem('textSize') || '18';
         const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
@@ -232,105 +106,84 @@ document.addEventListener('DOMContentLoaded', () => {
         if (darkMode) {
             document.body.classList.add('dark-mode');
         }
+
         document.body.style.fontSize = textSize + 'px';
         document.body.style.fontFamily = selectedFont;
+
+        // Fetch Surah from URL parameter (default to Surah 1)
+        const index = getQueryParam('index') || 1;
+        fetchSurah(index);
     });
 
     async function fetchSurah(index) {
         try {
-            const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${index}.json`);
-            const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${index}.json`);
+            // Fetch Arabic verse data
+            const verseResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(3, '0')}.json`);
+            const verseData = await verseResponse.json();
 
-            const surahData = await surahResponse.json();
+            // Fetch English translation
+            const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(3, '0')}.json`);
             const translationData = await translationResponse.json();
 
-            displaySurah(surahData, translationData);
+            displaySurah(verseData, translationData);
         } catch (error) {
-            console.error("Error fetching Surah data:", error);
+            console.error('Error fetching Surah or translation:', error);
         }
     }
 
-    function displaySurah(surahData, translationData) {
-        const surahHeading = document.getElementById('surah-heading');
-        const firstVerseDiv = document.getElementById('first-verse');
+    function displaySurah(verseData, translationData) {
         const content = document.getElementById('content');
+        const surahHeading = document.getElementById('surah-heading');
+        const name = verseData.name;
+        const count = verseData.count;
+        const verses = verseData.verse;
+        const translations = translationData.translation;
 
-        const name = surahData.name;
-        const verses = surahData.verse;
-        const count = surahData.count;
-
+        // Display Surah Name
         surahHeading.innerText = name;
         surahHeading.style.display = 'block';
 
-        // Display first verse
-        const firstVerseText = verses['verse_0'];
-        const firstVerseTranslation = translationData['verse_0'] || 'Translation not available';
-        firstVerseDiv.innerHTML = `${firstVerseText} <br><em>${firstVerseTranslation}</em>`;
-        firstVerseDiv.style.display = 'block';
+        // Clear any previous content
+        content.innerHTML = '';
 
-        content.innerHTML = ''; // Clear previous content
-
-        // Display remaining verses
+        // Loop through each verse and display the Arabic text and translation
         for (let i = 0; i < count; i++) {
             const verseKey = `verse_${i}`;
-            const verseText = verses[verseKey];
-            const verseTranslation = translationData[verseKey] || 'Translation not available';
+            const arabicText = verses[verseKey];
+            const translationText = translations[`verse_${i}`];
 
+            // Create verse div
             const verseDiv = document.createElement('div');
             verseDiv.classList.add('verse');
+
+            // Append the Arabic text and translation
             verseDiv.innerHTML = `
-                <div class="arabic-text">${verseText}</div>
-                <div class="translation-text"><em>${verseTranslation}</em></div>
-                <span class="verse-number">${i + 1}</span>
+                <div class="arabic-text">${arabicText}</div>
+                <div class="translation-text">${translationText}</div>
+                <div class="verse-number">${i + 1}</div>
             `;
             content.appendChild(verseDiv);
         }
     }
 
-    function changeTextSize(amount) {
-        const body = document.body;
-        let currentSize = parseInt(window.getComputedStyle(body).fontSize);
-        let newSize = currentSize + amount;
-
-        if (newSize < 14) newSize = 14;
-        if (newSize > 30) newSize = 30;
-
-        body.style.fontSize = newSize + 'px';
-        localStorage.setItem('textSize', newSize);
+    // Get query parameter (Surah index) from URL
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
     }
 
-    function changeFont() {
-        const fontSelect = document.getElementById('fontSelect');
-        const selectedFont = fontSelect.value;
-        document.body.style.fontFamily = selectedFont;
-        localStorage.setItem('selectedFont', selectedFont);
-    }
-
-    function resetPreferences() {
-        localStorage.removeItem('darkMode');
-        localStorage.removeItem('textSize');
-        localStorage.removeItem('selectedFont');
-        location.reload();
-    }
-
-    function toggleTheme() {
-        const body = document.body;
-        body.classList.toggle('dark-mode');
-        const isDark = body.classList.contains('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
-
-    function toggleMenu() {
-        const menu = document.getElementById('mySideMenu');
-        menu.style.left = menu.style.left === '0px' ? '-250px' : '0px';
-    }
-
-    function closeMenu() {
-        document.getElementById('mySideMenu').style.left = '-250px';
-    }
+    // Scroll to top function
+    window.onscroll = function() {
+        const backToTopButton = document.querySelector('.back-to-top');
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            backToTopButton.style.display = "block";
+        } else {
+            backToTopButton.style.display = "none";
+        }
+    };
 
     function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 </script>
 
