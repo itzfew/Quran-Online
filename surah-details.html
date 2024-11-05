@@ -3,40 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Surah Quran Display</title>
+    <title>Quran Surah Display</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Basic Reset */
+        /* Global reset */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
         }
 
         body {
-            background-color: #fff;
+            background-color: #f4f4f9;
             color: #333;
             font-size: 18px;
-            transition: background-color 0.3s, color 0.3s, font-family 0.3s;
             line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s, font-family 0.3s;
             margin: 0;
-            padding-top: 60px; /* Space for floating header controls */
+            padding-top: 60px;
         }
 
         .container {
-            padding: 20px;
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
+            padding: 20px;
         }
 
+        /* Control Bar */
         .controls-bar {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 10px 20px;
             display: flex;
             justify-content: space-between;
@@ -46,9 +47,7 @@
             backdrop-filter: blur(10px);
         }
 
-        .controls-bar button,
-        .controls-bar select,
-        .controls-bar i {
+        .controls-bar i, .controls-bar select, .controls-bar button {
             font-size: 1.2rem;
             cursor: pointer;
             background: none;
@@ -57,9 +56,7 @@
             transition: color 0.3s;
         }
 
-        .controls-bar button:hover,
-        .controls-bar select:hover,
-        .controls-bar i:hover {
+        .controls-bar i:hover, .controls-bar select:hover, .controls-bar button:hover {
             color: #2980b9;
         }
 
@@ -72,36 +69,25 @@
             margin-top: 80px;
         }
 
-        /* First Verse */
-        .first-verse {
-            text-align: center;
-            font-size: 1.8rem;
-            color: #2980b9;
-            margin-top: 20px;
-            font-weight: bold;
-        }
-
-        /* Arabic Text Styling */
-        .arabic-text {
-            font-size: inherit;
-            line-height: 1.8;
-            display: block;
-        }
-
         /* Verse Container */
         .verse {
-            display: flex;
-            flex-direction: column;
-            padding: 15px;
-            margin: 10px 0;
             background-color: rgba(236, 240, 241, 0.8);
             border-radius: 10px;
-            cursor: pointer;
+            margin: 15px 0;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s ease;
         }
 
         .verse:hover {
             background-color: rgba(52, 152, 219, 0.1);
+        }
+
+        .arabic-text {
+            font-family: 'Amiri', 'Cairo', 'Scheherazade New', sans-serif;
+            font-size: inherit;
+            line-height: 1.8;
+            direction: rtl;
         }
 
         .verse-number {
@@ -113,7 +99,6 @@
             background-color: #ecf0f1;
         }
 
-        /* Back to Top Button */
         .back-to-top {
             position: fixed;
             right: 20px;
@@ -144,7 +129,6 @@
 
         .dark-mode .verse {
             background-color: #34495e;
-            color: #ecf0f1;
         }
 
         .dark-mode .verse-number {
@@ -185,7 +169,7 @@
 </head>
 <body>
 
-<!-- Floating Control Bar -->
+<!-- Control Bar for theme, font, and size changes -->
 <div class="controls-bar">
     <button onclick="window.location.href='index.html'"><i class="fas fa-arrow-left"></i> Back</button>
     <div>
@@ -293,7 +277,7 @@
         const selectedFont = document.getElementById('fontSelect').value;
         document.body.style.fontFamily = selectedFont;
         localStorage.setItem('selectedFont', selectedFont);
-        
+
         // Apply the selected font to Arabic text specifically
         document.querySelectorAll('.arabic-text').forEach((text) => {
             text.style.fontFamily = selectedFont;
