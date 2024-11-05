@@ -232,7 +232,7 @@
 
     async function fetchSurah(index) {
         try {
-            const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${index}.json`);
+            const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${index}.json`);
             const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${index}.json`);
 
             const surahData = await surahResponse.json();
@@ -258,7 +258,7 @@
 
         // Display first verse
         const firstVerseText = verses['verse_0'];
-        const firstVerseTranslation = translationData['verse_0'];
+        const firstVerseTranslation = translationData['verse_0'] || 'Translation not available';
         firstVerseDiv.innerHTML = `${firstVerseText} <br><em>${firstVerseTranslation}</em>`;
         firstVerseDiv.style.display = 'block';
 
@@ -268,7 +268,7 @@
         for (let i = 0; i < count; i++) {
             const verseKey = `verse_${i}`;
             const verseText = verses[verseKey];
-            const verseTranslation = translationData[verseKey];
+            const verseTranslation = translationData[verseKey] || 'Translation not available';
 
             const verseDiv = document.createElement('div');
             verseDiv.classList.add('verse');
