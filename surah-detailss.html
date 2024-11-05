@@ -18,121 +18,6 @@
             font-size: 18px;
         }
 
-        /* Settings Section */
-        .settings-container {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-bottom: 2px solid #3498db;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            white-space: nowrap;
-            overflow-x: auto;
-        }
-
-        .settings-item {
-            margin-right: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            transition: transform 0.2s ease-in-out;
-        }
-
-        .settings-item:hover {
-            color: #2980b9;
-            transform: scale(1.1);
-        }
-
-        #verseSearch {
-            padding: 5px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #3498db;
-        }
-
-        .header {
-            text-align: center;
-            margin-top: 60px;
-        }
-
-        .surah-heading {
-            font-size: 1.7em;
-            padding: 5px;
-            border: 0px solid #3498db;
-            border-radius: 0px;
-            color: #3498db;
-            box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);
-            text-transform: uppercase;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .first-verse {
-            text-align: center;
-            font-size: 1.8em;
-            margin: 5px 0;
-            padding: 0px;
-            border-radius: 10px;
-            border: 0px solid #3498db;
-            color: #2980b9;
-            font-weight: bold;
-        }
-
-        .verse {
-            margin: 5px 0;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: rgba(236, 240, 241, 0.8);
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            position: relative;
-            border-left: 5px solid #3498db;
-            transition: background-color 0.3s;
-            cursor: pointer;
-            font-size: 1.5em;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .verse:hover {
-            background-color: rgba(52, 152, 219, 0.2);
-        }
-
-        .verse-number {
-            font-size: 1.0em;
-            color: #2980b9;
-            margin-top: 10px;
-            font-weight: bold;
-            border: 2px solid #2980b9;
-            border-radius: 50%;
-        }
-
-        .highlighted {
-            background-color: #f39c12;
-            color: #fff;
-        }
-
-        .bookmark-button {
-            margin-top: 10px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s ease;
-        }
-
-        .bookmark-button:hover {
-            background-color: #2980b9;
-        }
-
         /* Bookmarked Panel */
         .bookmarked-panel {
             position: fixed;
@@ -170,7 +55,6 @@
             color: white;
         }
 
-        /* Notification */
         .notification {
             position: fixed;
             bottom: 20px;
@@ -191,85 +75,13 @@
             opacity: 1;
         }
 
-        /* Back to Top Button */
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            display: none;
-            transition: background-color 0.3s;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .back-to-top:hover {
-            background-color: #2980b9;
-        }
-
         .dark-mode {
             background-color: #2c3e50;
             color: #ecf0f1;
         }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .settings-container {
-                padding: 10px;
-            }
-            .settings-item {
-                font-size: 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .settings-container {
-                padding: 10px;
-            }
-            .settings-item {
-                font-size: 18px;
-                margin-right: 10px;
-            }
-        }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
 </head>
 <body>
-
-<!-- Settings Section at the top (Fixed) -->
-<div class="settings-container">
-    <input type="text" id="verseSearch" placeholder="Search for a verse..." onkeyup="searchVerse()" />
-    <div class="settings-item" onclick="toggleTheme()">
-        <i class="fas fa-adjust"></i>
-    </div>
-    <div class="settings-item" onclick="changeTextSize(1)">
-        <i class="fas fa-text-height"></i>
-    </div>
-    <div class="settings-item" onclick="changeTextSize(-1)">
-        <i class="fas fa-text-height"></i>
-    </div>
-    <div class="settings-item">
-        <select id="fontSelect" onchange="changeFont()">
-            <option value="Amiri">Amiri</option>
-            <option value="Cairo">Cairo</option>
-            <option value="El Messiri">El Messiri</option>
-            <option value="Harmattan">Harmattan</option>
-            <option value="Lateef">Lateef</option>
-            <option value="Scheherazade New">Scheherazade New</option>
-        </select>
-    </div>
-    <div class="settings-item" onclick="resetPreferences()">
-        <i class="fas fa-sync"></i>
-    </div>
-    <div class="settings-item" onclick="toggleBookmarkPanel()">
-        <i class="fas fa-bookmark"></i>
-    </div>
-</div>
 
 <!-- Bookmarked Panel -->
 <div id="bookmarked-panel" class="bookmarked-panel">
@@ -277,33 +89,15 @@
     <ul id="bookmarkedList"></ul>
 </div>
 
-<!-- Main Content -->
-<div class="header">
-    <div class="surah-heading" id="surah-heading" style="display:none;"></div>
-    <div id="first-verse" class="first-verse" style="display: none;"></div>
-    <div id="content"></div>
-</div>
-
 <!-- Notification -->
 <div class="notification" id="notification"></div>
-
-<!-- Back to Top Button -->
-<button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const darkMode = localStorage.getItem('darkMode') === 'true';
-        const textSize = localStorage.getItem('textSize') || '18';
-        const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
-
         if (darkMode) {
             document.body.classList.add('dark-mode');
         }
-
-        document.body.style.fontSize = textSize + 'px';
-        document.body.style.fontFamily = selectedFont;
-
-        document.getElementById('fontSelect').value = selectedFont;
 
         // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
@@ -322,18 +116,16 @@
     }
 
     function displaySurah(data) {
-        const surahHeading = document.getElementById('surah-heading');
-        const firstVerse = document.getElementById('first-verse');
+        const surahHeading = document.createElement('div');
         const content = document.getElementById('content');
         const count = data.count;
         const verses = data.verse;
 
-        surahHeading.style.display = 'block';
-        firstVerse.style.display = 'block';
-        content.innerHTML = ''; // Clear content
-
+        surahHeading.classList.add('surah-heading');
         surahHeading.innerText = data.name;
-        firstVerse.innerText = verses['verse_0'];
+        document.body.appendChild(surahHeading);
+
+        content.innerHTML = ''; // Clear content
 
         // Loop through verses
         for (let i = 0; i <= count; i++) {
@@ -349,20 +141,13 @@
                 </div>
             `;
 
-            // Check if verse is bookmarked
-            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-            const isBookmarked = bookmarks.some(bookmark => bookmark.surah === data.index && bookmark.verse === i);
-            const bookmarkIcon = isBookmarked ? 'fas fa-bookmark' : 'far fa-bookmark';
-
             // Add bookmark button with icon
+            const bookmarkIcon = getBookmarkIcon(data.index, i);
             const bookmarkButton = document.createElement('button');
             bookmarkButton.classList.add('bookmark-button');
             bookmarkButton.innerHTML = `<i class="${bookmarkIcon}"></i>`;
             bookmarkButton.onclick = () => toggleBookmark(data.index, i);
             verseDiv.appendChild(bookmarkButton);
-
-            // Add event listener to highlight verse
-            verseDiv.onclick = () => toggleHighlight(i);
 
             content.appendChild(verseDiv);
         }
@@ -374,6 +159,7 @@
         const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
         const notification = document.getElementById('notification');
         const index = bookmarks.findIndex(bookmark => bookmark.surah === surahIndex && bookmark.verse === verseId);
+
         if (index > -1) {
             bookmarks.splice(index, 1);
             notification.innerText = `Verse ${verseId + 1} removed from bookmarks!`;
@@ -381,6 +167,7 @@
             bookmarks.push({ surah: surahIndex, verse: verseId });
             notification.innerText = `Verse ${verseId + 1} bookmarked!`;
         }
+
         localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
         loadBookmarkedVerses();
         showNotification();
@@ -411,61 +198,21 @@
         toggleBookmarkPanel(); // Close the panel
     }
 
+    function getBookmarkIcon(surahIndex, verseId) {
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+        const isBookmarked = bookmarks.some(bookmark => bookmark.surah === surahIndex && bookmark.verse === verseId);
+        return isBookmarked ? 'fas fa-bookmark' : 'far fa-bookmark';
+    }
+
     function toggleBookmarkPanel() {
         const panel = document.getElementById('bookmarked-panel');
         panel.classList.toggle('open');
-    }
-
-    function toggleHighlight(verseId) {
-        const verseElement = document.getElementById(`verse-${verseId}`);
-        verseElement.classList.toggle('highlighted');
     }
 
     function showNotification() {
         const notification = document.getElementById('notification');
         notification.classList.add('show');
         setTimeout(() => notification.classList.remove('show'), 3000);
-    }
-
-    function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
-
-    function changeTextSize(increment) {
-        const newSize = parseInt(document.body.style.fontSize) + increment;
-        document.body.style.fontSize = newSize + 'px';
-        localStorage.setItem('textSize', newSize);
-    }
-
-    function changeFont() {
-        const selectedFont = document.getElementById('fontSelect').value;
-        document.body.style.fontFamily = selectedFont;
-        localStorage.setItem('selectedFont', selectedFont);
-    }
-
-    function resetPreferences() {
-        localStorage.removeItem('darkMode');
-        localStorage.removeItem('textSize');
-        localStorage.removeItem('selectedFont');
-        location.reload();
-    }
-
-    function searchVerse() {
-        const searchQuery = document.getElementById('verseSearch').value.toLowerCase();
-        const verses = document.querySelectorAll('.verse');
-        verses.forEach((verse) => {
-            const verseText = verse.textContent.toLowerCase();
-            if (verseText.includes(searchQuery)) {
-                verse.style.display = '';
-            } else {
-                verse.style.display = 'none';
-            }
-        });
     }
 </script>
 
