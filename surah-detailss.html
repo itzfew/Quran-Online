@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surah Details</title>
+    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -241,7 +242,7 @@
             }
         }
 
-        @media (max-width: 520px) {
+        @media (max-width: 480px) {
             .settings-container {
                 padding: 10px;
             }
@@ -277,220 +278,124 @@
             <option value="Scheherazade New">Scheherazade New</option>
         </select>
     </div>
-        <!-- Add the Translate button -->
-    <div class="settings-item" onclick="openTranslation()">
-        <i class="fas fa-translate"></i>
-    </div>
     <div class="settings-item" onclick="resetPreferences()">
         <i class="fas fa-undo"></i>
     </div>
-    <div class="settings-item" onclick="toggleBookmarkPanel()">
-        <i class="fas fa-bookmark"></i>
-    </div>
-    <!-- Add the Translate button -->
     <div class="settings-item" onclick="openTranslation()">
         <i class="fas fa-translate"></i>
     </div>
-</div>
-
-<!-- Bookmarked Panel -->
-<div class="bookmarked-panel" id="bookmarked-panel">
-    <h3>Bookmarked Verses</h3>
-    <ul id="bookmarkedList"></ul>
 </div>
 
 <!-- Main Content -->
 <div class="header">
-    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
+    <h1 class="surah-heading">Surah Details</h1>
+    <p class="first-verse">This is the first verse of the Surah.</p>
 </div>
-<div id="first-verse" class="first-verse" style="display: none;"></div>
-<div id="content"></div>
 
-<!-- Back to Top Button -->
-<button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
+<!-- Verse List -->
+<div class="verse" id="verse1" onclick="toggleBookmark('verse1')">
+    <span class="verse-number">1</span>
+    <p>بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</p>
+</div>
+
+<div class="verse" id="verse2" onclick="toggleBookmark('verse2')">
+    <span class="verse-number">2</span>
+    <p>الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</p>
+</div>
+
+<!-- Bookmarked Panel (Initially Hidden) -->
+<div class="bookmarked-panel" id="bookmarkedPanel">
+    <h3>Bookmarked Verses</h3>
+    <ul id="bookmarkedList"></ul>
+</div>
 
 <!-- Notification -->
-<div class="notification" id="notification"></div>
+<div id="notification" class="notification">
+    Verse has been bookmarked!
+</div>
+
+<!-- Back to Top Button -->
+<button id="backToTop" class="back-to-top" onclick="scrollToTop()">Back to Top</button>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const darkMode = localStorage.getItem('darkMode') === 'true';
-        const textSize = localStorage.getItem('textSize') || '18';
-        const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
+    let bookmarkedVerses = [];
 
-        if (darkMode) {
-            document.body.classList.add('dark-mode');
-        }
+    function toggleTheme() {
+        document.body.classList.toggle('dark-mode');
+    }
 
-        document.body.style.fontSize = textSize + 'px';
-        document.body.style.fontFamily = selectedFont;
+    function changeTextSize(increment) {
+        let currentSize = parseFloat(window.getComputedStyle(document.body).fontSize);
+        document.body.style.fontSize = (currentSize + increment) + 'px';
+    }
 
-        document.getElementById('fontSelect').value = selectedFont;
+    function changeFont() {
+        const font = document.getElementById('fontSelect').value;
+        document.body.style.fontFamily = font;
+    }
 
-        // Fetch Surah based on URL parameter if provided
+    function resetPreferences() {
+        document.body.style.fontFamily = 'Amiri';
+        document.body.style.fontSize = '18px';
+        document.body.classList.remove('dark-mode');
+    }
+
+    function openTranslation() {
         const index = getQueryParam('index');
-        fetchSurah(index ? index : 1);
-    });
-
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
+        window.location.href = `surah-details-en?index=${index}`;
     }
 
-    async function fetchSurah(index) {
-        const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
-        const data = await response.json();
-        displaySurah(data);
-    }
+    function toggleBookmark(verseId) {
+        const verse = document.getElementById(verseId);
+        const verseNumber = verse.querySelector('.verse-number').textContent;
 
-    function displaySurah(data) {
-        const surahHeading = document.getElementById('surah-heading');
-        const firstVerse = document.getElementById('first-verse');
-        const content = document.getElementById('content');
-        const count = data.count;
-        const verses = data.verse;
-
-        surahHeading.style.display = 'block';
-        firstVerse.style.display = 'block';
-        content.innerHTML = ''; // Clear content
-
-        surahHeading.innerText = data.name;
-        firstVerse.innerText = verses['verse_0'];
-
-        // Loop through verses
-        for (let i = 0; i <= count; i++) {
-            const verseKey = `verse_${i}`;
-            const verseText = verses[verseKey];
-
-            const verseDiv = document.createElement('div');
-            verseDiv.classList.add('verse');
-            verseDiv.setAttribute('id', `verse-${i}`);
-            verseDiv.innerHTML = `
-                <div class="arabic-text">${verseText}
-                    <span class="verse-number">${i + 1}</span>
-                </div>
-            `;
-
-            // Check if verse is bookmarked
-            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-            const isBookmarked = bookmarks.includes(i);
-            const bookmarkIcon = isBookmarked ? 'fas fa-bookmark' : 'far fa-bookmark';
-
-            // Add bookmark button with icon
-            const bookmarkButton = document.createElement('button');
-            bookmarkButton.classList.add('bookmark-button');
-            bookmarkButton.innerHTML = `<i class="${bookmarkIcon}"></i>`;
-            bookmarkButton.onclick = () => toggleBookmark(i, verseDiv);
-            verseDiv.appendChild(bookmarkButton);
-
-            // Add event listener to highlight verse
-            verseDiv.onclick = () => toggleHighlight(i);
-
-            content.appendChild(verseDiv);
-        }
-
-        loadBookmarkedVerses();
-    }
-
-    function toggleBookmark(verseId, verseElement) {
-        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-        const notification = document.getElementById('notification');
-        if (bookmarks.includes(verseId)) {
-            bookmarks.splice(bookmarks.indexOf(verseId), 1);
-            notification.innerText = `Verse ${verseId + 1} removed from bookmarks!`;
+        if (bookmarkedVerses.includes(verseNumber)) {
+            bookmarkedVerses = bookmarkedVerses.filter(item => item !== verseNumber);
+            verse.classList.remove('highlighted');
+            removeFromBookmarks(verseNumber);
         } else {
-            bookmarks.push(verseId);
-            notification.innerText = `Verse ${verseId + 1} bookmarked!`;
+            bookmarkedVerses.push(verseNumber);
+            verse.classList.add('highlighted');
+            addToBookmarks(verseNumber);
         }
-        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-        loadBookmarkedVerses();
+
         showNotification();
     }
 
-    function loadBookmarkedVerses() {
-        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-        const bookmarkedList = document.getElementById('bookmarkedList');
-        bookmarkedList.innerHTML = ''; // Clear current list
-
-        bookmarks.forEach((verseId) => {
-            const li = document.createElement('li');
-            li.innerHTML = `Verse ${verseId + 1}`;
-            li.onclick = () => scrollToVerse(verseId);
-            bookmarkedList.appendChild(li);
-        });
+    function addToBookmarks(verseNumber) {
+        const list = document.getElementById('bookmarkedList');
+        const item = document.createElement('li');
+        item.textContent = 'Verse ' + verseNumber;
+        list.appendChild(item);
     }
 
-    function scrollToVerse(verseId) {
-        const verseElement = document.getElementById(`verse-${verseId}`);
-        if (verseElement) {
-            verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    function removeFromBookmarks(verseNumber) {
+        const list = document.getElementById('bookmarkedList');
+        const items = list.getElementsByTagName('li');
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].textContent === 'Verse ' + verseNumber) {
+                list.removeChild(items[i]);
+                break;
+            }
         }
-        toggleBookmarkPanel(); // Close the panel
-    }
-
-    function toggleBookmarkPanel() {
-        const panel = document.getElementById('bookmarked-panel');
-        panel.classList.toggle('open');
-    }
-
-    function toggleHighlight(verseId) {
-        const verseElement = document.getElementById(`verse-${verseId}`);
-        verseElement.classList.toggle('highlighted');
     }
 
     function showNotification() {
         const notification = document.getElementById('notification');
         notification.classList.add('show');
-        setTimeout(() => notification.classList.remove('show'), 3000);
+        setTimeout(() => {
+            notification.classList.remove('show');
+        }, 2000);
     }
 
     function scrollToTop() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
-
-    function changeTextSize(increment) {
-        const newSize = parseInt(document.body.style.fontSize) + increment;
-        document.body.style.fontSize = newSize + 'px';
-        localStorage.setItem('textSize', newSize);
-    }
-
-    function changeFont() {
-        const selectedFont = document.getElementById('fontSelect').value;
-        document.body.style.fontFamily = selectedFont;
-        localStorage.setItem('selectedFont', selectedFont);
-    }
-
-    function resetPreferences() {
-        localStorage.removeItem('darkMode');
-        localStorage.removeItem('textSize');
-        localStorage.removeItem('selectedFont');
-        location.reload();
-    }
-
-    function searchVerse() {
-        const searchQuery = document.getElementById('verseSearch').value.toLowerCase();
-        const verses = document.querySelectorAll('.verse');
-        verses.forEach((verse) => {
-            const verseText = verse.textContent.toLowerCase();
-            if (verseText.includes(searchQuery)) {
-                verse.style.display = '';
-            } else {
-                verse.style.display = 'none';
-            }
-        });
-    }
-
-    // Open Translation page
-    function openTranslation() {
-        const index = getQueryParam('index');
-        window.location.href = `surah-details-en?index=${index}`;
+    function getQueryParam(name) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
     }
 </script>
-
 </body>
 </html>
