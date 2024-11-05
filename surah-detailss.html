@@ -11,14 +11,14 @@
             font-family: 'Roboto', Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f0f2f5; /* Light background color */
+            background-color: #f0f2f5;
             color: #333;
             line-height: 1.6;
         }
 
         h1 {
             color: #4CAF50;
-            font-size: 2.8em;
+            font-size: 2.5em;
             text-align: center;
             margin: 40px 0 20px;
             font-weight: bold;
@@ -91,7 +91,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 80px 10% 20px; /* Space for fixed navbar */
+            margin: 80px 10% 20px;
         }
 
         .search-bar, .sort-select {
@@ -114,14 +114,14 @@
 
         /* Surah List Layout */
         .surah-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
             padding: 0 10%;
             margin-bottom: 40px;
         }
 
-        /* Surah Card Design */
+        /* Surah Card Design (Now Entire Card is Clickable) */
         .surah-card {
             background-color: white;
             border-radius: 10px;
@@ -135,66 +135,64 @@
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
+            text-decoration: none;
+            color: inherit;
         }
 
         .surah-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-5px);
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
         }
 
         .surah-card h2 {
             color: #4CAF50;
-            font-size: 1.8em;
+            font-size: 1.5em;
             margin-bottom: 10px;
         }
 
         .surah-card p {
-            font-size: 1.2em;
+            font-size: 1.1em;
             color: #666;
             margin: 5px 0;
         }
 
-        .surah-card a {
-            text-decoration: none;
-            color: white;
-            background-color: #4CAF50;
-            padding: 12px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            margin-top: 15px;
-        }
-
-        .surah-card a:hover {
-            background-color: #45a049;
-            transform: scale(1.05);
-        }
-
-        /* Mobile-first approach for small screens */
+        /* Mobile-First Styles for Small Screens */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2.2em;
-            }
-
             .header {
-                margin: 100px 10% 20px;
+                margin: 100px 5% 20px;
                 flex-direction: column;
-            }
-
-            .surah-list {
-                padding: 0 5%;
             }
 
             .search-bar, .sort-select {
                 max-width: 100%;
                 margin-bottom: 15px;
             }
+
+            .surah-list {
+                padding: 0 5%;
+            }
+
+            .surah-card h2 {
+                font-size: 1.3em;
+            }
+
+            .surah-card p {
+                font-size: 1em;
+            }
         }
 
-        /* For very small screens */
+        /* Very Small Screens (Mobile Portrait) */
         @media (max-width: 480px) {
             h1 {
-                font-size: 1.8em;
+                font-size: 2em;
+            }
+
+            .surah-card h2 {
+                font-size: 1.2em;
+            }
+
+            .surah-card p {
+                font-size: 0.95em;
             }
         }
     </style>
@@ -253,14 +251,14 @@
                 const surahIndex = parseInt(surah.index, 10);
                 const surahDetailsUrl = `surah-details.html?index=${surahIndex}`;
 
-                const surahCard = document.createElement('div');
+                const surahCard = document.createElement('a');
                 surahCard.className = 'surah-card';
+                surahCard.href = surahDetailsUrl;
                 surahCard.innerHTML = `
                     <h2>${surah.title}</h2>
                     <p class="bold">Surah: ${surahIndex}</p>
                     <p>${surah.titleAr}</p>
                     <p>${surah.type}</p>
-                    <a href="${surahDetailsUrl}">Read</a>
                 `;
 
                 surahList.appendChild(surahCard);
@@ -288,7 +286,7 @@
             );
         }
 
-        // Initialize the app
+        // Initialize the page
         async function init() {
             let surahs = await fetchSurahs();
             renderSurahs(surahs);
@@ -309,6 +307,5 @@
 
         init();
     </script>
-
 </body>
 </html>
