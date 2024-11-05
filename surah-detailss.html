@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,6 +50,14 @@
         .navbar .logo {
             font-size: 1.8em;
             font-weight: bold;
+        }
+
+        .navbar .language-toggle {
+            cursor: pointer;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #4CAF50;
         }
 
         /* Menu Toggle Button */
@@ -187,12 +196,16 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Navbar -->
     <div class="navbar">
         <div class="logo">Surah List</div>
-        <div class="menu-toggle" id="menu-toggle">
+        <div class="language-toggle" id="language-toggle">
+            Toggle Language
+        </div>
+        <div class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation Menu">
             <i class="fas fa-bars"></i>
         </div>
     </div>
@@ -225,6 +238,12 @@
             menu.classList.toggle('active');
         });
 
+        // Toggle Language
+        document.getElementById('language-toggle').addEventListener('click', () => {
+            const isEnglish = document.body.classList.toggle('english');
+            loadSurahs(isEnglish);
+        });
+
         // Fetch Surah Data
         async function fetchSurahs() {
             try {
@@ -238,21 +257,21 @@
         }
 
         // Render Surah Items
-        function renderSurahs(surahs) {
+        function renderSurahs(surahs, isEnglish) {
             const surahList = document.getElementById('surah-list');
             surahList.innerHTML = '';
 
             surahs.forEach(surah => {
                 const surahIndex = parseInt(surah.index, 10);
-                const surahDetailsUrl = `surah-details.html?index=${surahIndex}`;
+                const surahDetailsUrl = isEnglish ? `surah-details-en.html?index=${surahIndex}` : `surah-details.html?index=${surahIndex}`;
 
                 const surahItem = document.createElement('a');
                 surahItem.className = 'surah-item';
                 surahItem.href = surahDetailsUrl;
                 surahItem.innerHTML = `
-                    <h3>${surah.title}</h3>
+                    <h3>${isEnglish ? surah.title : surah.titleAr}</h3>
                     <p>Surah: ${surahIndex}</p>
-                    <p>${surah.titleAr}</p>
+                    <p>${isEnglish ? surah.title : surah.titleAr}</p>
                     <p>${surah.type}</p>
                 `;
 
@@ -284,23 +303,31 @@
         // Initialize Page
         async function init() {
             let surahs = await fetchSurahs();
-            renderSurahs(surahs);
+            loadSurahs(false); // default to Arabic
 
             const searchBar = document.getElementById('search-bar');
             const sortSelect = document.getElementById('sort-select');
 
             searchBar.addEventListener('input', () => {
                 const filteredSurahs = filterSurahs(surahs, searchBar.value);
-                renderSurahs(filteredSurahs);
+                renderSurahs(filteredSurahs, document.body.classList.contains('english'));
             });
 
             sortSelect.addEventListener('change', () => {
                 const sortedSurahs = sortSurahs(surahs, sortSelect.value);
-                renderSurahs(sortedSurahs);
+                renderSurahs(sortedSurahs, document.body.classList.contains('english'));
+            });
+        }
+
+        // Load Surahs (based on language selection)
+        function loadSurahs(isEnglish) {
+            fetchSurahs().then(surahs => {
+                renderSurahs(surahs, isEnglish);
             });
         }
 
         init();
     </script>
 </body>
+
 </html>
