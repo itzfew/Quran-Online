@@ -15,7 +15,7 @@
             margin: 0;
             padding: 20px;
             transition: background-color 0.5s, color 0.5s, font-family 0.5s;
-            font-size: 18px; /* Default font size */
+            font-size: 18px;
         }
         .header {
             text-align: center;
@@ -57,8 +57,8 @@
             transition: background-color 0.3s;
             cursor: pointer;
             font-size: 1.5em;
-            width: 100%; /* Full width */
-            box-sizing: border-box; /* Ensure padding does not overflow */
+            width: 100%;
+            box-sizing: border-box;
         }
         .verse:hover {
             background-color: rgba(52, 152, 219, 0.2);
@@ -69,7 +69,7 @@
             margin-top: 10px;
             font-weight: bold;
             border: 2px solid #2980b9;
-            border-radius: 50%; /* This makes it a circle */
+            border-radius: 50%;
         }
         .menu-icon {
             font-size: 30px;
@@ -173,50 +173,13 @@
         .back-to-top:hover {
             background-color: #2980b9;
         }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .verse {
-                font-size: 1.2em; /* Smaller text on smaller devices */
-                padding: 15px; /* Reduce padding */
-            }
-            .verse-number {
-                font-size: 1.2em;
-            }
-            .side-menu {
-                width: 200px; /* Smaller side menu on mobile */
-            }
-            .menu-icon {
-                font-size: 28px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .verse {
-                font-size: 1.1em;
-                padding: 10px; /* Even smaller padding */
-            }
-            .verse-number {
-                font-size: 1em;
-            }
-            .side-menu {
-                width: 180px;
-            }
-            .menu-icon {
-                font-size: 26px;
-            }
-            .header {
-                padding: 10px;
-            }
-        }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
 </head>
 <body>
 
 <i class="fas fa-bars menu-icon" onclick="toggleMenu()"></i>
 
-<div id="mySideMenu" class="side-menu" aria-label="Main Navigation">
+<div id="mySideMenu" class="side-menu">
     <span class="close-btn" onclick="closeMenu()">&times;</span>
     <a href="index.html" onclick="closeMenu()"><i class="fas fa-home"></i> Home</a>
     <a href="mailto:contactus94@yahoo.com" onclick="closeMenu()"><i class="fas fa-envelope"></i> Contact Us</a>
@@ -263,47 +226,22 @@
 
         document.getElementById('fontSelect').value = selectedFont;
 
-        // Fetch Surah based on URL parameter if provided
-        const index = getQueryParam('index');
-        fetchSurah(index ? index : 1);
-
-        // Close menu when clicking outside
-        document.addEventListener('click', (event) => {
-            const sideMenu = document.getElementById("mySideMenu");
-            const menuIcon = document.querySelector('.menu-icon');
-            const isClickInsideMenu = sideMenu.contains(event.target);
-            const isClickOnMenuIcon = menuIcon.contains(event.target);
-
-            if (sideMenu.style.left === "0" && !isClickInsideMenu && !isClickOnMenuIcon) {
-                closeMenu();
-            }
-        });
+        // Fetch Surah 1 by default
+        fetchSurah(1);
     });
 
-    function toggleMenu() {
-        const sideMenu = document.getElementById("mySideMenu");
-        const isOpen = sideMenu.style.left === "0";
-        sideMenu.style.left = isOpen ? "-250px" : "0";
-    }
-
-    function closeMenu() {
-        const sideMenu = document.getElementById("mySideMenu");
-        sideMenu.style.left = "-250px"; // Close the menu
-    }
-
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
-
     async function fetchSurah(index) {
-        const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(3, '0')}.json`);
-        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(3, '0')}.json`);
-        
-        const surahData = await surahResponse.json();
-        const translationData = await translationResponse.json();
-        
-        displaySurah(surahData, translationData);
+        try {
+            const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/main/source/surah/surah_${String(index).padStart(3, '0')}.json`);
+            const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/main/source/translation/en/en_translation_${String(index).padStart(3, '0')}.json`);
+            
+            const surahData = await surahResponse.json();
+            const translationData = await translationResponse.json();
+            
+            displaySurah(surahData, translationData);
+        } catch (error) {
+            console.error("Error fetching Surah data:", error);
+        }
     }
 
     function displaySurah(surahData, translationData) {
@@ -311,13 +249,12 @@
         const surahHeading = document.getElementById('surah-heading');
         const firstVerseDiv = document.getElementById('first-verse');
         const verses = surahData.verse;
-        const count = surahData.count;  // Total number of verses in the Surah
+        const count = surahData.count;
         const name = surahData.name;
 
         surahHeading.innerText = name;
         surahHeading.style.display = 'block';
 
-        // Display the first verse centered at the top
         const firstVerseText = verses['verse_0'];
         const firstVerseTranslation = translationData['verse_0'];
         firstVerseDiv.innerHTML = `${firstVerseText} <br><em>${firstVerseTranslation}</em>`;
@@ -325,7 +262,6 @@
 
         content.innerHTML = ''; // Clear previous content
 
-        // Loop through the verses from 1 to the total count
         for (let i = 1; i <= count; i++) {
             const verseKey = `verse_${i}`;
             const verseText = verses[verseKey];
@@ -333,26 +269,31 @@
 
             const verseDiv = document.createElement('div');
             verseDiv.classList.add('verse');
-            // Append both Arabic verse and translation
-            verseDiv.innerHTML = `<div class="arabic-text">${verseText}</div><div class="translation-text"><em>${verseTranslation}</em></div><span class="verse-number">${i}</span>`;
+            verseDiv.innerHTML = `
+                <div class="arabic-text">${verseText}</div>
+                <div class="translation-text"><em>${verseTranslation}</em></div>
+                <span class="verse-number">${i}</span>
+            `;
             content.appendChild(verseDiv);
         }
     }
 
-    function toggleTheme() {
-        const darkMode = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', darkMode);
-    }
+    function changeTextSize(amount) {
+        const body = document.body;
+        let currentSize = parseInt(window.getComputedStyle(body).fontSize);
+        let newSize = currentSize + amount;
 
-    function changeTextSize(delta) {
-        const currentSize = parseInt(window.getComputedStyle(document.body).fontSize);
-        const newSize = Math.max(currentSize + delta * 2, 12);
-        document.body.style.fontSize = newSize + 'px';
+        // Prevent size from getting too small or too large
+        if (newSize < 14) newSize = 14;
+        if (newSize > 30) newSize = 30;
+
+        body.style.fontSize = newSize + 'px';
         localStorage.setItem('textSize', newSize);
     }
 
     function changeFont() {
-        const selectedFont = document.getElementById('fontSelect').value;
+        const fontSelect = document.getElementById('fontSelect');
+        const selectedFont = fontSelect.value;
         document.body.style.fontFamily = selectedFont;
         localStorage.setItem('selectedFont', selectedFont);
     }
@@ -361,25 +302,28 @@
         localStorage.removeItem('darkMode');
         localStorage.removeItem('textSize');
         localStorage.removeItem('selectedFont');
-        document.body.style.fontSize = '18px'; // Reset to default size
-        document.body.style.fontFamily = 'Arial'; // Reset to default font
-        document.getElementById('fontSelect').value = 'Amiri'; // Reset to default font selection
-        document.body.classList.remove('dark-mode'); // Reset to light mode
+        location.reload();
     }
 
-    window.onscroll = function() {
-        const backToTopButton = document.querySelector('.back-to-top');
-        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-            backToTopButton.style.display = "block";
-        } else {
-            backToTopButton.style.display = "none";
-        }
-    };
+    function toggleTheme() {
+        const body = document.body;
+        body.classList.toggle('dark-mode');
+        const isDark = body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDark);
+    }
+
+    function toggleMenu() {
+        const menu = document.getElementById('mySideMenu');
+        menu.style.left = menu.style.left === '0px' ? '-250px' : '0px';
+    }
+
+    function closeMenu() {
+        document.getElementById('mySideMenu').style.left = '-250px';
+    }
 
     function scrollToTop() {
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
-
 </body>
 </html>
