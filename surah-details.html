@@ -243,7 +243,6 @@ async function fetchSurah(index) {
     } catch (error) {
         console.error("Error fetching Surah data:", error);
     }
-
 }
 
 function displaySurah(surahData, translationData) {
@@ -254,21 +253,25 @@ function displaySurah(surahData, translationData) {
     const count = surahData.count;
     const name = surahData.name;
 
+    // Display Surah Name
     surahHeading.innerText = name;
     surahHeading.style.display = 'block';
 
-    const firstVerseText = verses['verse_0'];
-    const firstVerseTranslation = translationData['verse_0'];
+    // Display First Verse
+    const firstVerseText = verses['verse_1']; // Assuming the first verse is "verse_1"
+    const firstVerseTranslation = translationData['verse_1'];
     firstVerseDiv.innerHTML = `${firstVerseText} <br><em>${firstVerseTranslation}</em>`;
     firstVerseDiv.style.display = 'block';
 
     content.innerHTML = ''; // Clear previous content
 
+    // Loop through all verses and display them with translation
     for (let i = 1; i <= count; i++) {
         const verseKey = `verse_${i}`;
         const verseText = verses[verseKey];
         const verseTranslation = translationData[verseKey];
 
+        // Create HTML element for each verse
         const verseDiv = document.createElement('div');
         verseDiv.classList.add('verse');
         verseDiv.innerHTML = `
@@ -279,7 +282,6 @@ function displaySurah(surahData, translationData) {
         content.appendChild(verseDiv);
     }
 }
-
 function changeTextSize(amount) {
     const body = document.body;
     let currentSize = parseInt(window.getComputedStyle(body).fontSize);
