@@ -6,6 +6,7 @@
     <title>Surah Details</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Body Styles */
         body {
             font-family: 'Arial', sans-serif;
             background-image: url('https://yourbackgroundimageurl.com/image.jpg');
@@ -15,7 +16,7 @@
             margin: 0;
             padding: 0;
             transition: background-color 0.5s, color 0.5s, font-family 0.5s;
-            font-size: 18px; /* Default font size */
+            font-size: 18px;
         }
 
         .settings-container {
@@ -44,133 +45,40 @@
             color: #2980b9;
         }
 
-        .search-bar {
-            margin-left: 20px;
+        /* Back Button Style */
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s;
         }
 
-        #verseSearch {
-            padding: 5px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #3498db;
+        .back-button:hover {
+            background-color: #2980b9;
         }
 
+        /* Header and content styles (similar to previous code) */
         .header {
             text-align: center;
-            margin-top: 60px; /* Space for the settings bar */
+            margin-top: 60px;
         }
 
         .surah-heading {
             font-size: 1.7em;
             padding: 5px;
-            border: 0px solid #3498db;
-            border-radius: 0px;
             color: #3498db;
-            box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);
             text-transform: uppercase;
             font-weight: bold;
             letter-spacing: 1px;
-        }
-
-        .first-verse {
-            text-align: center;
-            font-size: 1.8em;
-            margin: 5px 0;
-            padding: 0px;
-            border-radius: 10px;
-            border: 0px solid #3498db;
-            color: #2980b9;
-            font-weight: bold;
-        }
-
-        .verse {
-            margin: 5px 0;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: rgba(236, 240, 241, 0.8);
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            position: relative;
-            border-left: 5px solid #3498db;
-            transition: background-color 0.3s;
-            cursor: pointer;
-            font-size: 1.5em;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .verse:hover {
-            background-color: rgba(52, 152, 219, 0.2);
-        }
-
-        .verse-number {
-            font-size: 1.0em;
-            color: #2980b9;
-            margin-top: 10px;
-            font-weight: bold;
-            border: 2px solid #2980b9;
-            border-radius: 50%;
-        }
-
-        .highlighted {
-            background-color: #f39c12;
-            color: #fff;
-        }
-
-        .bookmark-button {
-            margin-top: 10px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .bookmark-button:hover {
-            background-color: #2980b9;
-        }
-
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            display: none;
-            transition: background-color 0.3s;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .back-to-top:hover {
-            background-color: #2980b9;
-        }
-
-        .dark-mode {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-        }
-
-        .dark-mode .surah-heading {
-            background-color: #1abc9c;
-            color: #ecf0f1;
-            border-color: #16a085;
-        }
-
-        .dark-mode .verse {
-            background-color: #1a1a1a;
-            border-left: 5px solid #16a085;
-        }
-
-        .dark-mode .verse-number {
-            color: #16a085;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
 
         /* Responsive Design */
@@ -178,6 +86,7 @@
             .settings-container {
                 padding: 10px;
             }
+
             .settings-item {
                 font-size: 20px;
             }
@@ -187,30 +96,29 @@
             .settings-container {
                 padding: 10px;
             }
+
             .settings-item {
                 font-size: 18px;
                 margin-right: 10px;
             }
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<!-- Settings Section at the top (Fixed) -->
+<!-- Settings Section (Fixed) -->
 <div class="settings-container">
-    <input type="text" id="verseSearch" placeholder="Search for a verse..." onkeyup="searchVerse()" />
     <div class="settings-item" onclick="toggleTheme()">
-        <i class="fas fa-adjust"></i>
+        <i class="fas fa-adjust" aria-label="Toggle Dark Mode"></i>
     </div>
-    <div class="settings-item" onclick="changeTextSize(1)">
+    <div class="settings-item" onclick="changeTextSize(1)" aria-label="Increase Text Size">
         <i class="fas fa-text-height"></i>
     </div>
-    <div class="settings-item" onclick="changeTextSize(-1)">
+    <div class="settings-item" onclick="changeTextSize(-1)" aria-label="Decrease Text Size">
         <i class="fas fa-text-height"></i>
     </div>
     <div class="settings-item">
-        <select id="fontSelect" onchange="changeFont()">
+        <select id="fontSelect" onchange="changeFont()" aria-label="Change Font">
             <option value="Amiri">Amiri</option>
             <option value="Cairo">Cairo</option>
             <option value="El Messiri">El Messiri</option>
@@ -219,10 +127,15 @@
             <option value="Scheherazade New">Scheherazade New</option>
         </select>
     </div>
-    <div class="settings-item" onclick="resetPreferences()">
+    <div class="settings-item" onclick="resetPreferences()" aria-label="Reset Preferences">
         <i class="fas fa-undo"></i>
     </div>
 </div>
+
+<!-- Back Button (Fixed) -->
+<button class="back-button" onclick="goBack()">
+    <i class="fas fa-arrow-left"></i>
+</button>
 
 <div class="header">
     <div id="surah-heading" class="surah-heading" style="display: none;"></div>
@@ -265,66 +178,42 @@
     }
 
     function displaySurah(data) {
-        const surahHeading = document.getElementById('surah-heading');
-        const firstVerse = document.getElementById('first-verse');
         const content = document.getElementById('content');
-        const count = data.count;
+        const surahHeading = document.getElementById('surah-heading');
+        const firstVerseDiv = document.getElementById('first-verse');
         const verses = data.verse;
+        const count = data.count;
+        const name = data.name;
 
+        surahHeading.innerText = name;
         surahHeading.style.display = 'block';
-        firstVerse.style.display = 'block';
-        content.innerHTML = ''; // Clear content
 
-        surahHeading.innerText = data.name;
-        firstVerse.innerText = verses['verse_0'];
+        // Display the first verse centered at the top
+        const firstVerseText = verses['verse_0'];
+        firstVerseDiv.innerHTML = firstVerseText;
+        firstVerseDiv.style.display = 'block';
 
-        // Loop through verses
-        for (let i = 0; i <= count; i++) {
+        content.innerHTML = '';
+
+        for (let i = 1; i <= count; i++) {
             const verseKey = `verse_${i}`;
             const verseText = verses[verseKey];
 
             const verseDiv = document.createElement('div');
             verseDiv.classList.add('verse');
-            verseDiv.setAttribute('id', `verse-${i}`);
-            verseDiv.innerHTML = `
-                <div class="arabic-text">${verseText}
-                    <span class="verse-number">${i + 1}</span>
-                </div>
-            `;
-
-            // Add bookmark button
-            const bookmarkButton = document.createElement('button');
-            bookmarkButton.textContent = 'Bookmark';
-            bookmarkButton.classList.add('bookmark-button');
-            bookmarkButton.onclick = () => toggleBookmark(i);
-            verseDiv.appendChild(bookmarkButton);
-
-            // Add event listener to highlight verse
-            verseDiv.onclick = () => toggleHighlight(i);
-
+            verseDiv.innerHTML = `<div class="arabic-text">${verseText} <span class="verse-number">${i}</span></div>`;
             content.appendChild(verseDiv);
         }
     }
 
-    function toggleBookmark(verseId) {
-        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-        if (bookmarks.includes(verseId)) {
-            bookmarks.splice(bookmarks.indexOf(verseId), 1);
-        } else {
-            bookmarks.push(verseId);
-        }
-        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-        alert(bookmarks.includes(verseId) ? 'Bookmarked!' : 'Bookmark Removed');
-    }
-
-    function toggleHighlight(verseId) {
-        const verse = document.getElementById(`verse-${verseId}`);
-        verse.classList.toggle('highlighted');
+    function toggleTheme() {
+        const darkMode = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', darkMode);
     }
 
     function changeTextSize(delta) {
-        const currentSize = parseInt(document.body.style.fontSize);
-        const newSize = currentSize + delta;
+        const currentSize = parseInt(window.getComputedStyle(document.body).fontSize);
+        const newSize = Math.max(currentSize + delta * 2, 12);
         document.body.style.fontSize = newSize + 'px';
         localStorage.setItem('textSize', newSize);
     }
@@ -335,50 +224,28 @@
         localStorage.setItem('selectedFont', selectedFont);
     }
 
-    function toggleTheme() {
-        const currentTheme = document.body.classList.contains('dark-mode');
-        if (currentTheme) {
-            document.body.classList.remove('dark-mode');
-            localStorage.setItem('darkMode', 'false');
-        } else {
-            document.body.classList.add('dark-mode');
-            localStorage.setItem('darkMode', 'true');
-        }
-    }
-
     function resetPreferences() {
         localStorage.removeItem('darkMode');
-        localStorage.removeItem('selectedFont');
         localStorage.removeItem('textSize');
-        localStorage.removeItem('bookmarks');
+        localStorage.removeItem('selectedFont');
         location.reload();
     }
 
-    function searchVerse() {
-        const query = document.getElementById('verseSearch').value.toLowerCase();
-        const verses = document.querySelectorAll('.verse');
-        verses.forEach((verse) => {
-            const verseText = verse.innerText.toLowerCase();
-            if (verseText.includes(query)) {
-                verse.style.display = 'block';
-            } else {
-                verse.style.display = 'none';
-            }
-        });
+    function goBack() {
+        window.location.href = 'index.html';  // Redirect to index.html
     }
 
-    // Scroll to top functionality
-    window.onscroll = function () {
+    window.onscroll = function() {
         const backToTopButton = document.querySelector('.back-to-top');
-        if (document.documentElement.scrollTop > 100) {
-            backToTopButton.style.display = 'block';
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            backToTopButton.style.display = "block";
         } else {
-            backToTopButton.style.display = 'none';
+            backToTopButton.style.display = "none";
         }
     };
 
     function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 </script>
 
