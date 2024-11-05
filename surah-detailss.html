@@ -20,7 +20,7 @@
             background-color: #f5f5f5;
             color: #333;
             line-height: 1.6;
-            padding-top: 60px; /* To avoid navbar overlap */
+            padding-top: 60px;
             transition: background-color 0.3s, color 0.3s;
         }
 
@@ -118,7 +118,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 20px 10%;
-            margin-top: 80px; /* To account for the fixed navbar */
+            margin-top: 80px;
         }
 
         .search-bar {
@@ -153,10 +153,11 @@
 
         /* Surah List Styles */
         .surah-list {
-            padding: 0 10%;
             display: flex;
             flex-direction: column;
             gap: 10px;
+            padding: 0 10%;
+            display: none; /* Hidden by default */
         }
 
         /* Surah Item */
@@ -241,27 +242,17 @@
         </select>
     </div>
 
-    <!-- Surah List -->
-    <div class="surah-list" id="surah-list">
-        <!-- Surah Items will be injected here -->
+    <!-- English Surah List -->
+    <div class="surah-list" id="english-surahs">
+        <!-- English Surah Items will be injected here -->
+    </div>
+
+    <!-- Arabic Surah List -->
+    <div class="surah-list" id="arabic-surahs">
+        <!-- Arabic Surah Items will be injected here -->
     </div>
 
     <script>
-        // Toggle Sidebar Menu
-        document.getElementById('menu-toggle').addEventListener('click', () => {
-            const menu = document.getElementById('menu');
-            menu.classList.toggle('active');
-        });
-
-        // Language Button Event Listeners
-        document.getElementById('english-button').addEventListener('click', () => {
-            loadSurahs(true);  // English language
-        });
-
-        document.getElementById('arabic-button').addEventListener('click', () => {
-            loadSurahs(false);  // Arabic language
-        });
-
         // Fetch Surah Data
         async function fetchSurahs() {
             try {
@@ -274,9 +265,9 @@
             }
         }
 
-        // Render Surah Items
+        // Render Surah Items for a specific language
         function renderSurahs(surahs, isEnglish) {
-            const surahList = document.getElementById('surah-list');
+            const surahList = isEnglish ? document.getElementById('english-surahs') : document.getElementById('arabic-surahs');
             surahList.innerHTML = '';
 
             surahs.forEach(surah => {
@@ -289,62 +280,42 @@
                 surahItem.innerHTML = `
                     <h3>${isEnglish ? surah.title : surah.titleAr}</h3>
                     <p>Surah: ${surahIndex}</p>
-                    <p>${isEnglish ? surah.title : surah.titleAr}</p>
-                    <p>${surah.type}</p>
                 `;
-
                 surahList.appendChild(surahItem);
             });
         }
 
-        // Sort Surahs
-        function sortSurahs(surahs, criteria) {
-            return surahs.sort((a, b) => {
-                if (criteria === 'index') {
-                    return parseInt(a.index) - parseInt(b.index);
-                } else if (criteria === 'title') {
-                    return a.title.localeCompare(b.title);
-                }
-                return 0;
-            });
+        // Show the English or Arabic Surah List
+        function toggleSurahList(language) {
+            if (language === 'english') {
+                document.getElementById('english-surahs').style.display = 'block';
+                document.getElementById('arabic-surahs').style.display = 'none';
+            } else {
+                document.getElementById('english-surahs').style.display = 'none';
+                document.getElementById('arabic-surahs').style.display = 'block';
+            }
         }
 
-        // Filter Surahs by Search Query
-        function filterSurahs(surahs, query) {
-            const lowerCaseQuery = query.toLowerCase();
-            return surahs.filter(surah => 
-                surah.title.toLowerCase().includes(lowerCaseQuery) ||
-                surah.index.includes(lowerCaseQuery)
-            );
-        }
+        // Event Listeners for Language Buttons
+        document.getElementById('english-button').addEventListener('click', async () => {
+            toggleSurahList('english');
+            const surahs = await fetchSurahs();
+            renderSurahs(surahs, true);
+        });
 
-        // Initialize Page
-        async function init() {
-            let surahs = await fetchSurahs();
-            loadSurahs(false); // default to Arabic
+        document.getElementById('arabic-button').addEventListener('click', async () => {
+            toggleSurahList('arabic');
+            const surahs = await fetchSurahs();
+            renderSurahs(surahs, false);
+        });
 
-            const searchBar = document.getElementById('search-bar');
-            const sortSelect = document.getElementById('sort-select');
+        // Initialize with English Surah List
+        (async function init() {
+            const surahs = await fetchSurahs();
+            renderSurahs(surahs, true);
+            toggleSurahList('english');
+        })();
 
-            searchBar.addEventListener('input', () => {
-                const filteredSurahs = filterSurahs(surahs, searchBar.value);
-                renderSurahs(filteredSurahs, document.body.classList.contains('english'));
-            });
-
-            sortSelect.addEventListener('change', () => {
-                const sortedSurahs = sortSurahs(surahs, sortSelect.value);
-                renderSurahs(sortedSurahs, document.body.classList.contains('english'));
-            });
-        }
-
-        // Load Surahs (based on language selection)
-        function loadSurahs(isEnglish) {
-            fetchSurahs().then(surahs => {
-                renderSurahs(surahs, isEnglish);
-            });
-        }
-
-        init();
     </script>
 </body>
 
