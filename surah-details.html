@@ -66,22 +66,10 @@
             background-color: rgba(52, 152, 219, 0.2);
         }
         .verse-number {
-            background-color: #3498db;
-            color: white;
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 1.3em;
+            color: #2980b9;
+            margin-top: 10px;
             font-weight: bold;
-            font-size: 1.5em;
-            border: 2px solid white;
-            position: absolute;
-            top: 50%;
-            left: 100%;
-            transform: translateX(-50%) translateY(-50%);
-            margin-bottom: 10px;
         }
         .menu-icon {
             font-size: 30px;
@@ -165,7 +153,7 @@
             border-left: 5px solid #16a085;
         }
         .dark-mode .verse-number {
-            background-color: #16a085;
+            color: #16a085;
         }
         .back-to-top {
             position: fixed;
@@ -193,8 +181,6 @@
                 padding: 15px; /* Reduce padding */
             }
             .verse-number {
-                width: 50px;
-                height: 50px;
                 font-size: 1.2em;
             }
             .side-menu {
@@ -211,8 +197,6 @@
                 padding: 10px; /* Even smaller padding */
             }
             .verse-number {
-                width: 45px;
-                height: 45px;
                 font-size: 1em;
             }
             .side-menu {
@@ -336,15 +320,15 @@
 
         content.innerHTML = ''; // Clear previous content
 
-        // Loop through the verses from 1 to the total count (or 10 if count exceeds 10)
+        // Loop through the verses from 1 to the total count
         for (let i = 1; i <= count; i++) {
             const verseKey = `verse_${i}`;
             const verseText = verses[verseKey];
 
             const verseDiv = document.createElement('div');
             verseDiv.classList.add('verse');
-            // Append the verse number after the verse text
-            verseDiv.innerHTML = `<div class="arabic-text">${verseText}</div><div class="verse-number">${i}</div>`;
+            // Append the verse number after the verse text inline
+            verseDiv.innerHTML = `<div class="arabic-text">${verseText} <span class="verse-number">${i}</span></div>`;
             content.appendChild(verseDiv);
         }
     }
