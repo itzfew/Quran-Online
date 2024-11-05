@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surah Quran Display</title>
+    <!-- Import Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -213,12 +214,16 @@
         const textSize = localStorage.getItem('textSize') || '18';
         const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
 
+        // Apply stored settings
         if (darkMode) {
             document.body.classList.add('dark-mode');
         }
 
         document.body.style.fontSize = textSize + 'px';
         document.body.style.fontFamily = selectedFont;
+
+        // Set the selected font in the dropdown
+        document.getElementById('fontSelect').value = selectedFont;
 
         // Fetch Surah Data
         const index = getQueryParam('index') || 1;
@@ -250,7 +255,8 @@
         const content = document.getElementById('content');
         const surahHeading = document.getElementById('surah-heading');
         const firstVerseDiv = document.getElementById('first-verse');
-        const verses = data.verse;
+
+        const verses = data.verses;
         const count = data.count;
         const name = data.name;
 
