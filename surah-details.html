@@ -29,6 +29,8 @@
             left: 0;
             width: 100%;
             z-index: 1000;
+            white-space: nowrap; /* Prevent wrapping of icons */
+            overflow-x: auto; /* Allow horizontal scrolling if necessary */
         }
         .settings-item {
             margin-right: 20px;
@@ -128,12 +130,10 @@
         /* Responsive Design */
         @media (max-width: 768px) {
             .settings-container {
-                flex-direction: column;
-                align-items: flex-start;
+                padding: 10px;
             }
             .settings-item {
-                margin-right: 0;
-                margin-bottom: 10px;
+                font-size: 20px;
             }
         }
 
@@ -142,7 +142,8 @@
                 padding: 10px;
             }
             .settings-item {
-                font-size: 20px;
+                font-size: 18px;
+                margin-right: 10px;
             }
         }
     </style>
@@ -241,7 +242,6 @@
 
             const verseDiv = document.createElement('div');
             verseDiv.classList.add('verse');
-            // Append the verse number after the verse text inline
             verseDiv.innerHTML = `<div class="arabic-text">${verseText} <span class="verse-number">${i}</span></div>`;
             content.appendChild(verseDiv);
         }
