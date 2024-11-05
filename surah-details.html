@@ -151,6 +151,15 @@
             color: #16a085;
         }
 
+        /* Fade animation for icons */
+        .fa-moon, .fa-sun {
+            font-size: 1.5em;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .fa-moon.fade-out, .fa-sun.fade-in {
+            opacity: 0;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .verse {
@@ -181,7 +190,10 @@
 
 <!-- Controls Section -->
 <div class="controls-section">
-    <button onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+    <button onclick="toggleTheme()">
+        <i class="fas fa-moon" id="moon-icon"></i>
+        <i class="fas fa-sun fade-out" id="sun-icon"></i>
+    </button>
     <button onclick="changeTextSize(1)"><i class="fas fa-plus"></i></button>
     <button onclick="changeTextSize(-1)"><i class="fas fa-minus"></i></button>
     <select id="fontSelect" onchange="changeFont()">
@@ -216,6 +228,8 @@
 
         if (darkMode) {
             document.body.classList.add('dark-mode');
+            document.getElementById('moon-icon').classList.add('fade-out');
+            document.getElementById('sun-icon').classList.remove('fade-out');
         }
 
         document.body.style.fontSize = textSize + 'px';
@@ -226,18 +240,6 @@
         // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
-
-        // Close menu when clicking outside
-        document.addEventListener('click', (event) => {
-            const sideMenu = document.getElementById("mySideMenu");
-            const menuIcon = document.querySelector('.menu-icon');
-            const isClickInsideMenu = sideMenu.contains(event.target);
-            const isClickOnMenuIcon = menuIcon.contains(event.target);
-
-            if (sideMenu.style.left === "0" && !isClickInsideMenu && !isClickOnMenuIcon) {
-                closeMenu();
-            }
-        });
     });
 
     function getQueryParam(param) {
@@ -284,6 +286,14 @@
 
     function toggleTheme() {
         const darkMode = document.body.classList.toggle('dark-mode');
+        const moonIcon = document.getElementById('moon-icon');
+        const sunIcon = document.getElementById('sun-icon');
+
+        // Add animation for the icons
+        moonIcon.classList.toggle('fade-out');
+        sunIcon.classList.toggle('fade-in');
+
+        // Save to localStorage
         localStorage.setItem('darkMode', darkMode);
     }
 
