@@ -1,144 +1,223 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
-		<title>Tasbeh</title>
-		<style type="text/css">
-* {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Tasbeh</title>
+    <style type="text/css">
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        min-height: 100vh;
+        font-family: sans-serif;
+        background: #0f4c81;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+      }
+
+      .container {
+        width: 90%;
+        max-width: 400px;
+        height: 60vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .container .box {
+        width: 90%;
+        height: 90%;
+        border: 2px solid black;
+        background-color: #0f4c81;
+        border-radius: 10px;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        align-items: center;
+        padding: 20px;
+      }
+
+      .container .box input {
+        width: 100px;
+        text-align: center;
+        font-size: 35px;
+        caret-color: transparent;
+        border: none;
+        border-radius: 5px;
+        background-color: #fff;
+      }
+
+      .container .box .btn,
+      .container .box .btn1 {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        cursor: pointer;
+        background-color: #007bff;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        border: none;
+        outline: none;
+        border: 2px solid #ddd;
+      }
+
+      .container .box .btn1 {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: red;
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        border: none;
+        outline: none;
+        color: white;
+        font-size: 16px;
+        border: 2px solid #ddd;
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
+
+      .container .box .btn:hover {
+        background-color: #0f4c81;
+      }
+
+      .container .box .btn1:hover {
+        background-color: #ff0000;
+      }
+
+      .btnwrap {
+        margin-top: 20px;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .sbtn {
+        padding: 10px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .settings {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background-color: rgba(0, 0, 0, 0.6);
+        padding: 5px 10px;
+        border-radius: 5px;
+        color: white;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .settings label {
+        font-weight: bold;
+      }
+
+      .settings button {
+        background-color: #007bff;
+        color: white;
+        padding: 5px 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .settings button:hover {
+        background-color: #0f4c81;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="settings">
+      <label for="soundToggle">Sound:</label>
+      <button id="soundToggle">ON</button>
+    </div>
+
+    <div class="btnwrap">
+      <select class="sbtn" id="steps" onchange="reset()">
+        <option selected="selected" value="ALHAMDULILLAH">ALHAMDULILLAH</option>
+        <option value="ALLAHU AKBAR">ALLAHU AKBAR</option>
+        <option value="SUBHAN ALLAH">SUBHAN ALLAH</option>
+      </select>
+    </div>
+
+    <div class="container">
+      <div class="box">
+        <input class="input" readonly="readonly" type="text" value="0" />
+        <button class="btn"></button>
+        <button class="btn1">Reset</button>
+      </div>
+    </div>
+
+    <audio id="clickSound" src="https://quran-online.pages.dev/source/click.mp3" preload="auto"></audio>
+
+    <script>
+      let countPlus = document.querySelector('.btn');
+      let countZero = document.querySelector('.btn1');
+      let input = document.querySelector('.input');
+      let soundToggleButton = document.getElementById('soundToggle');
+      let clickSound = document.getElementById('clickSound');
+      let soundEnabled = true;
+
+      // Initialize the sound setting based on local storage
+      if (localStorage.getItem('soundEnabled') === 'false') {
+        soundEnabled = false;
+        soundToggleButton.textContent = 'OFF';
+      } else {
+        soundEnabled = true;
+        soundToggleButton.textContent = 'ON';
+      }
+
+      // Toggle sound on or off
+      soundToggleButton.addEventListener('click', function () {
+        soundEnabled = !soundEnabled;
+        if (soundEnabled) {
+          soundToggleButton.textContent = 'ON';
+          localStorage.setItem('soundEnabled', 'true');
+        } else {
+          soundToggleButton.textContent = 'OFF';
+          localStorage.setItem('soundEnabled', 'false');
         }
+      });
 
-        body {
-            min-height: 100vh;
-            font-family: sans-serif;
-            background: #0F4C81;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+      countPlus.addEventListener('click', function () {
+        if (soundEnabled) {
+          clickSound.play();
         }
-
-        .container {
-            width: 90%;
-            max-width: 400px; /* Adjust max-width as needed */
-            height: 60vh; /* 60% of the viewport height */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        if (!localStorage.clickcount) {
+          localStorage.clickcount = 0;
         }
+        localStorage.clickcount = Number(localStorage.clickcount) + 1;
+        input.value = localStorage.clickcount;
+      });
 
-        .container .box {
-            width: 90%;
-            height: 90%;
-            border: 2px solid black;
-            background-color: #0F4C81; /* Updated color */
-            border-radius: 10px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-around;
-            align-items: center;
-            padding: 20px;
+      countZero.addEventListener('click', function () {
+        if (soundEnabled) {
+          clickSound.play();
         }
+        localStorage.clickcount = 0;
+        input.value = localStorage.clickcount;
+      });
 
-        .container .box input {
-            width: 100px;
-            text-align: center;
-            font-size: 35px;
-            caret-color: transparent;
-            border: none;
-            border-radius: 5px;
-            background-color: #fff; /* Background color for input */
+      function reset() {
+        if (document.getElementById('steps').value !== 'ALHAMDULILLAH') {
+          localStorage.clickcount = 0;
+          input.value = localStorage.clickcount;
         }
+      }
 
-        .container .box .btn, .container .box .btn1 {
-            width: 80px; /* Adjust button size */
-            height: 80px; /* Adjust button size */
-            border-radius: 50%;
-            cursor: pointer;
-            background-color: #007bff; /* Original blue color */
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-            border: none;
-            outline: none;
-            border: 2px solid #ddd; /* border added to create fingerprint-like structure */
-        }
-
-        .container .box .btn1 {
-            width: 40px; /* Adjust reset button size */
-            height: 40px; /* Adjust reset button size */
-            border-radius: 50%;
-            background-color: red;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-            border: none;
-            outline: none;
-            color: white;
-            font-size: 16px;
-            border: 2px solid #ddd; /* border added to create 3D effect */
-            position: absolute; /* Position the reset button */
-            top: 10px;
-            right: 10px;
-        }
-
-        .container .box .btn:hover {
-            background-color: #0F4C81;
-        }
-
-        .container .box .btn1:hover {
-            background-color: #ff0000;
-        }
-.btnwrap {
-    margin-top: 20px;
-    text-align: center;
-    color: white;
-    font-weight: bold;
-
-            text-align: center;
-        }
-
-        .sbtn {
-            padding: 10px;
-            font-size: 16px;
-        }		</style>
-	</head>
-	<body style="background-color: rgb(15, 76, 129); color: rgb(255, 0, 0);">
-		<div class="btnwrap">
-			<select class="sbtn" id="steps" onchange="reset()"><option selected="selected" value="ALHAMDULILLAH">ALHAMDULILLAH</option><option value="ALLAHU AKBAR">ALLAHU AKBAR</option><option value="SUBHAN ALLAH">SUBHAN ALLAH</option></select></div>
-		<div class="container">
-			<div class="box">
-				<input class="input" readonly="readonly" type="text" value="0" /><button class="btn"></button><button class="btn1">Reset</button></div>
-		</div>
-		<script>
-        let countPlus = document.querySelector('.btn');
-        let countZero = document.querySelector('.btn1');
-        let input = document.querySelector('.input');
-
-        countZero.style.backgroundColor = "#0F4C81";
-
-        countPlus.addEventListener('click', function() {
-            if (!localStorage.clickcount) {
-                localStorage.clickcount = 0;
-            }
-            localStorage.clickcount = Number(localStorage.clickcount) + 1;
-            input.value = localStorage.clickcount;
-        });
-
-        countZero.addEventListener('click', function() {
-            localStorage.clickcount = 0;
-            input.value = localStorage.clickcount;
-        });
-
-        function reset() {
-            if (document.getElementById("steps").value !== "ALHAMDULILLAH") {
-                localStorage.clickcount = 0;
-                input.value = localStorage.clickcount;
-            }
-        }
-
-        window.onload = function() {
-            input.value = localStorage.clickcount || 0;
-        }
-    </script></body>
+      window.onload = function () {
+        input.value = localStorage.clickcount || 0;
+      };
+    </script>
+  </body>
 </html>
