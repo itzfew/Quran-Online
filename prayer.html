@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Islamic Prayer Times</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #f2f4f6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+           
+            overflow: hidden;
+        }
+
+        .continer {
+            width: 90%;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 700;
+        }
+
+        #current-time, #location, #countdown {
+            font-size: 18px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #eef2f3;
+            border: 1px solid #d0e1e4;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        #location {
+            background-color: #d0e1e4;
+            color: #1c3d5a;
+            border-left: 6px solid #1c3d5a;
+        }
+
+        #countdown {
+            background-color: #e8f5e9;
+            color: #388e3c;
+            border-left: 6px solid #388e3c;
+        }
+
+        #container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .prayer {
+            padding: 15px;
+            background-color: #ffffff;
+            border: 1px solid #cfd8dc;
+            border-radius: 12px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .prayer.next {
+            background-color: #e0f7fa;
+            border-color: #b2ebf2;
+            border-left: 6px solid #00bcd4;
+            font-weight: 600;
+        }
+
+        .prayer div {
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            #current-time, #location, #countdown {
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            #current-time, #location, #countdown {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Islamic Prayer Times</h1>
+        <div id="location">Fetching location...</div>
+        <div id="current-time">Fetching time...</div>
+        <div id="container"></div>
+        <div id="countdown">Countdown...</div>
+    </div>
+    <script>
+        let timings;
+        let address;
+
+        // Format time to 12-hour format
+        function formatTimeTo12Hour(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            const formattedHours = hours % 12 || 12; // Convert to 12-hour format
+            return `${formattedHours}:${minutes.toString().padStart(2, '0')} ${ampm}`;
+        }
+
+        // Function to fetch prayer times based on address
+        function fetchTimings(address) {
+            if (!address) {
+                document.getElementById('container').innerHTML = '<p>Unable to fetch prayer times. Please provide a valid address.</p>';
+                return;
+            }
+            const apiURL = `https://api.aladhan.com/v1/timingsByAddress?address=${encodeURIComponent(address)}`;
+
+            fetch(apiURL)
+                .then((res) => res.json())
+                .then((data) => {
+                    timings = data.data.timings;
+
+                    const excludeTimings = ['Imsak', 'Midnight', 'Firstthird', 'Lastthird', 'Sunset', 'Sunrise'];
+
+                    const elements = [];
+                    for (const name in timings) {
+                        if (!excludeTimings.includes(name)) {
+                            const value = formatTimeTo12Hour(timings[name]);
+                            elements.push(
+                                `<div class="prayer" data-time="${timings[name]}" data-name="${name}">
+                                    <div>${name}</div>
+                                    <div>${value}</div>
+                                </div>`
+                            );
+                        }
+                    }
+
+                    document.querySelector("#container").innerHTML = elements.join("");
+                    highlightNextPrayer();
+                });
+        }
+
+        // Function to update current date and time
+        function updateCurrentTime() {
+            const d = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            const currentTime = d.toLocaleString('en-US', options);
+            document.getElementById("current-time").textContent = `Current Date & Time: ${currentTime}`;
+        }
+
+        // Function to update countdown to the next prayer time
+        function updateCountdown() {
+            const nextPrayer = document.querySelector(".next");
+            if (nextPrayer) {
+                const { name, time } = nextPrayer.dataset;
+                const currentTime = new Date();
+                const nextTime = new Date();
+                const [hours, minutes] = time.split(":").map(Number);
+                nextTime.setHours(hours, minutes, 0, 0);
+
+                const timeDiff = nextTime - currentTime;
+
+                if (timeDiff > 0) {
+                    // Calculate remaining time
+                    const secondsLeft = Math.floor(timeDiff / 1000);
+                    const minutesLeft = Math.floor(secondsLeft / 60);
+                    const hoursLeft = Math.floor(minutesLeft / 60);
+                    const daysLeft = Math.floor(hoursLeft / 24);
+
+                    const displaySeconds = secondsLeft % 60;
+                    const displayMinutes = minutesLeft % 60;
+                    const displayHours = hoursLeft % 24;
+
+                    // Display countdown message
+                    let countdownMessage = "";
+                    if (daysLeft > 0) countdownMessage += `${daysLeft} day, `;
+                    if (displayHours > 0) countdownMessage += `${displayHours} hour, `;
+                    if (displayMinutes > 0) countdownMessage += `${displayMinutes} minutes, `;
+                    countdownMessage += `${displaySeconds} seconds to ${name}`;
+
+                    document.getElementById("countdown").textContent = countdownMessage;
+                }
+            }
+        }
+
+        // Function to highlight the next prayer time
+        function highlightNextPrayer() {
+            const d = new Date();
+            const hours = d.getHours().toString().padStart(2, "0");
+            const minutes = d.getMinutes().toString().padStart(2, "0");
+            const time = `${hours}:${minutes}`;
+
+            const prayerTimings = Object.values(timings).sort();
+
+            let nextPrayerTime;
+            for (let i = 0; i < prayerTimings.length; i++) {
+                if (prayerTimings[i] >= time) {
+                    nextPrayerTime = prayerTimings[i];
+                    break;
+                }
+            }
+
+            document.querySelectorAll(".prayer").forEach((item) => {
+                item.classList.remove("next");
+
+                if (nextPrayerTime === item.dataset.time) {
+                    item.classList.add("next");
+                }
+            });
+
+            updateCountdown();
+        }
+
+        // Function to fetch user's location
+        function fetchUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    const { latitude, longitude } = position.coords;
+                    const geoApiURL = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
+
+                    fetch(geoApiURL)
+                        .then((res) => res.json())
+                        .then((data) => {
+                            address = data.display_name;
+                            document.getElementById("location").textContent = `Current Location: ${address}`;
+                            fetchTimings(address);
+                        })
+                        .catch((err) => {
+                            console.error('Error fetching location:', err);
+                            document.getElementById("location").textContent = 'Unable to fetch location. Please enable location services.';
+                        });
+                }, (err) => {
+                    console.error('Error getting location:', err);
+                    document.getElementById("location").textContent = 'Unable to fetch location. Please enable location services.';
+                });
+            } else {
+                document.getElementById("location").textContent = 'Geolocation is not supported by this browser.';
+            }
+        }
+
+        // Initial function calls
+        fetchUserLocation();
+        
+        // Update the current time and prayer times every second
+        setInterval(() => {
+            updateCurrentTime();
+            if (timings) {
+                highlightNextPrayer();
+                updateCountdown();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
