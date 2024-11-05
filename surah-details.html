@@ -297,47 +297,54 @@
     }
 
     async function fetchSurah(index) {
-        const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(3, '0')}.json`);
-        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(3, '0')}.json`);
-        
-        const surahData = await surahResponse.json();
-        const translationData = await translationResponse.json();
-        
-        displaySurah(surahData, translationData);
+    const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(3, '0')}.json`);
+    const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(3, '0')}.json`);
+    
+    const surahData = await surahResponse.json();
+    const translationData = await translationResponse.json();
+    
+    displaySurah(surahData, translationData);
+}
+
+function displaySurah(surahData, translationData) {
+    const content = document.getElementById('content');
+    const surahHeading = document.getElementById('surah-heading');
+    const firstVerseDiv = document.getElementById('first-verse');
+    const verses = surahData.verse;
+    const count = surahData.count;  // Total number of verses in the Surah
+    const name = surahData.name;
+
+    // Display Surah Heading
+    surahHeading.innerText = name;
+    surahHeading.style.display = 'block';
+
+    // Display the first verse centered at the top
+    const firstVerseText = verses['verse_0'];
+    const firstVerseTranslation = translationData['verse_0'];
+    firstVerseDiv.innerHTML = `${firstVerseText} <br><em>${firstVerseTranslation}</em>`;
+    firstVerseDiv.style.display = 'block';
+
+    // Clear previous verses before appending new ones
+    content.innerHTML = '';
+
+    // Loop through the verses from 1 to the total count and display them
+    for (let i = 1; i <= count; i++) {
+        const verseKey = `verse_${i}`;
+        const verseText = verses[verseKey];
+        const verseTranslation = translationData[verseKey];
+
+        const verseDiv = document.createElement('div');
+        verseDiv.classList.add('verse');
+        verseDiv.innerHTML = `
+            <div class="arabic-text">${verseText}</div>
+            <div class="translation-text"><em>${verseTranslation}</em></div>
+            <span class="verse-number">${i}</span>
+        `;
+        content.appendChild(verseDiv);
     }
+}
 
-    function displaySurah(surahData, translationData) {
-        const content = document.getElementById('content');
-        const surahHeading = document.getElementById('surah-heading');
-        const firstVerseDiv = document.getElementById('first-verse');
-        const verses = surahData.verse;
-        const count = surahData.count;  // Total number of verses in the Surah
-        const name = surahData.name;
-
-        surahHeading.innerText = name;
-        surahHeading.style.display = 'block';
-
-        // Display the first verse centered at the top
-        const firstVerseText = verses['verse_0'];
-        const firstVerseTranslation = translationData['verse_0'];
-        firstVerseDiv.innerHTML = `${firstVerseText} <br><em>${firstVerseTranslation}</em>`;
-        firstVerseDiv.style.display = 'block';
-
-        content.innerHTML = ''; // Clear previous content
-
-        // Loop through the verses from 1 to the total count
-        for (let i = 1; i <= count; i++) {
-            const verseKey = `verse_${i}`;
-            const verseText = verses[verseKey];
-            const verseTranslation = translationData[verseKey];
-
-            const verseDiv = document.createElement('div');
-            verseDiv.classList.add('verse');
-            // Append both Arabic verse and translation
-            verseDiv.innerHTML = `<div class="arabic-text">${verseText}</div><div class="translation-text"><em>${verseTranslation}</em></div><span class="verse-number">${i}</span>`;
-            content.appendChild(verseDiv);
-        }
-    }
+    
 
     function toggleTheme() {
         const darkMode = document.body.classList.toggle('dark-mode');
