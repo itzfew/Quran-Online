@@ -19,7 +19,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      
       width: 100%;
       text-align: center;
       color: #333;
@@ -84,6 +83,12 @@
       margin-bottom: 15px;
       text-align: center;
       box-sizing: border-box;
+    }
+
+    .name .transliteration {
+      font-size: 1.1em;
+      color: #7f8c8d;
+      margin-top: 8px;
     }
 
     .meaning {
@@ -158,7 +163,10 @@
     <div class="card-container" id="cardContainer">
       <div class="card" id="card1">
         <div class="card-number" id="cardNumber">Name 1</div>
-        <div class="name" id="name"></div>
+        <div class="name" id="name">
+          <span id="nameText"></span>
+          <span class="transliteration" id="transliteration"></span>
+        </div>
         <div class="meaning" id="meaning"></div>
       </div>
     </div>
@@ -171,10 +179,10 @@
     let namesData = [];
     let currentIndex = 0;
 
-    const nameElement = document.getElementById('name');
+    const nameElement = document.getElementById('nameText');
     const meaningElement = document.getElementById('meaning');
     const cardNumber = document.getElementById('cardNumber');
-    const cardContainer = document.getElementById('cardContainer');
+    const swipeArea = document.getElementById('swipeArea');
 
     // Fetch the Names Data from a JSON source
     fetch('https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/names-of-allah.json')
@@ -193,7 +201,8 @@
       if (namesData.length > 0) {
         const currentName = namesData[currentIndex];
         cardNumber.textContent = `Name ${currentIndex + 1}`;
-        nameElement.innerHTML = `${currentName.name} <br><span style="font-size: 0.8em;">(${currentName.transliteration})</span>`;
+        nameElement.innerHTML = currentName.name;
+        document.getElementById('transliteration').innerHTML = `(${currentName.transliteration})`;
         meaningElement.innerHTML = `Meaning: ${currentName.meaning}`;
 
         // Show the card with transition
@@ -206,8 +215,6 @@
     // Swipe Gesture
     let touchStartX = 0;
     let touchEndX = 0;
-    const swipeArea = document.getElementById('swipeArea');
-
     swipeArea.addEventListener('touchstart', function(event) {
       touchStartX = event.changedTouches[0].screenX;
     });
