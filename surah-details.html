@@ -232,9 +232,9 @@
 
 async function fetchSurah(index) {
     try {
-        // Remove the leading zeros by using the index directly
-        const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/main/source/surah/surah_${index}.json`);
-        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/main/source/translation/en/en_translation_${index}.json`);
+        // Fetch Surah and Translation based on index without leading zeros
+        const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${index}.json`);
+        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${index}.json`);
         
         const surahData = await surahResponse.json();
         const translationData = await translationResponse.json();
@@ -243,6 +243,7 @@ async function fetchSurah(index) {
     } catch (error) {
         console.error("Error fetching Surah data:", error);
     }
+
 }
 
 function displaySurah(surahData, translationData) {
