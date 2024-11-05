@@ -218,6 +218,12 @@
         if (surahIndex) {
             fetchSurah(surahIndex); // Fetch Surah based on index
         }
+document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const translationIndex = params.get('index'); // Get the Surah index from the URL
+        if (translationIndex) {
+            fetchSurah(translationIndex); // Fetch Surah based on index
+        }
 
         const darkMode = localStorage.getItem('darkMode') === 'true';
         const textSize = localStorage.getItem('textSize') || '18';
