@@ -8,38 +8,31 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-image: url('https://yourbackgroundimageurl.com/image.jpg');
-            background-size: cover;
-            background-attachment: fixed;
+            background-color: #fff;
             color: #333;
             margin: 0;
             padding: 0;
-            font-size: 18px; /* Default font size */
+            font-size: 18px;
             transition: background-color 0.5s, color 0.5s, font-family 0.5s;
         }
 
-        .header {
+        /* Header Controls */
+        .header-controls {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 15px 20px;
+            padding: 10px 20px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            justify-content: flex-start;
+            gap: 15px;
+            background-color: rgba(255, 255, 255, 0.8);
             z-index: 10;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .header .controls {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .header .controls i, .header select, .header button {
-            font-size: 1.5em;
+        .header-controls i, .header-controls select, .header-controls button {
+            font-size: 1.2em;
             cursor: pointer;
             color: #3498db;
             transition: color 0.3s;
@@ -47,19 +40,18 @@
             background: none;
         }
 
-        .header .controls i:hover, .header select:hover {
+        .header-controls i:hover, .header-controls select:hover {
             color: #2980b9;
         }
 
-        .header select {
-            font-size: 1.2em;
-            padding: 8px;
-            border-radius: 5px;
+        .header-controls select {
+            font-size: 1em;
+            padding: 5px;
         }
 
-        .header button {
+        .header-controls button {
             font-size: 1.2em;
-            padding: 8px 15px;
+            padding: 6px 12px;
             border-radius: 5px;
             background-color: #2980b9;
             color: white;
@@ -67,16 +59,17 @@
             transition: background-color 0.3s;
         }
 
-        .header button:hover {
+        .header-controls button:hover {
             background-color: #1f6394;
         }
 
+        /* Surah Heading and Verse Styles */
         .surah-heading {
             text-align: center;
             font-size: 2.5em;
             color: #3498db;
             font-weight: bold;
-            margin-top: 100px; /* Prevent overlap with fixed header */
+            margin-top: 100px;
         }
 
         .first-verse {
@@ -97,7 +90,6 @@
             align-items: flex-start;
             position: relative;
             border-left: 5px solid #3498db;
-            transition: background-color 0.3s;
             cursor: pointer;
             font-size: 1.5em;
             width: 100%;
@@ -130,7 +122,6 @@
             font-size: 16px;
             display: none;
             transition: background-color 0.3s;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
 
         .back-to-top:hover {
@@ -167,11 +158,11 @@
                 font-size: 1.2em;
             }
 
-            .header .controls i, .header select {
+            .header-controls i, .header-controls select {
                 font-size: 1.3em;
             }
 
-            .header {
+            .header-controls {
                 padding: 10px 15px;
             }
 
@@ -190,12 +181,12 @@
                 font-size: 1em;
             }
 
-            .header .controls {
+            .header-controls {
                 flex-direction: column;
                 align-items: flex-start;
             }
 
-            .header .controls button, .header select {
+            .header-controls button, .header-controls select {
                 margin-top: 5px;
             }
 
@@ -207,32 +198,33 @@
 </head>
 <body>
 
-<div class="header">
-    <div class="controls">
-        <button onclick="window.location.href='index.html'">
-            <i class="fas fa-arrow-left"></i> Back
-        </button>
-        <i class="fas fa-sun" onclick="toggleTheme()" title="Toggle Dark/Light Mode"></i>
-        <i class="fas fa-text-height" onclick="changeTextSize(1)" title="Increase Text Size"></i>
-        <i class="fas fa-search-minus" onclick="changeTextSize(-1)" title="Decrease Text Size"></i>
-        <select id="fontSelect" onchange="changeFont()" title="Select Font">
-            <option value="Amiri">Amiri</option>
-            <option value="Cairo">Cairo</option>
-            <option value="El Messiri">El Messiri</option>
-            <option value="Harmattan">Harmattan</option>
-            <option value="Lateef">Lateef</option>
-            <option value="Scheherazade New">Scheherazade New</option>
-        </select>
-        <button onclick="resetPreferences()">
-            <i class="fas fa-sync"></i> Reset Preferences
-        </button>
-    </div>
+<!-- Header Controls -->
+<div class="header-controls">
+    <button onclick="window.location.href='index.html'">
+        <i class="fas fa-arrow-left"></i> Back
+    </button>
+    <i class="fas fa-sun" onclick="toggleTheme()" title="Toggle Dark/Light Mode"></i>
+    <i class="fas fa-search-plus" onclick="changeTextSize(1)" title="Increase Text Size"></i>
+    <i class="fas fa-search-minus" onclick="changeTextSize(-1)" title="Decrease Text Size"></i>
+    <select id="fontSelect" onchange="changeFont()" title="Select Font">
+        <option value="Amiri">Amiri</option>
+        <option value="Cairo">Cairo</option>
+        <option value="El Messiri">El Messiri</option>
+        <option value="Harmattan">Harmattan</option>
+        <option value="Lateef">Lateef</option>
+        <option value="Scheherazade New">Scheherazade New</option>
+    </select>
+    <button onclick="resetPreferences()">
+        <i class="fas fa-sync"></i> Reset Preferences
+    </button>
 </div>
 
+<!-- Surah Display Section -->
 <div class="surah-heading" id="surah-heading" style="display: none;"></div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 <div id="content"></div>
 
+<!-- Back to Top Button -->
 <button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
 
 <script>
@@ -278,7 +270,7 @@
         const surahHeading = document.getElementById('surah-heading');
         const firstVerseDiv = document.getElementById('first-verse');
         const verses = data.verse;
-        const count = data.count; 
+        const count = data.count;
         const name = data.name;
 
         surahHeading.innerText = name;
@@ -324,7 +316,7 @@
         localStorage.removeItem('textSize');
         localStorage.removeItem('selectedFont');
         document.body.style.fontSize = '18px';
-        document.body.style.fontFamily = 'Arial';
+        document.body.style.fontFamily = 'Amiri';
         document.body.classList.remove('dark-mode');
     }
 
