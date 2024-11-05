@@ -297,13 +297,22 @@
     }
 
     async function fetchSurah(index) {
-        const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(3, '0')}.json`);
-        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(3, '0')}.json`);
-        
-        const surahData = await surahResponse.json();
-        const translationData = await translationResponse.json();
-        
-        displaySurah(surahData, translationData);
+        try {
+            const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(3, '0')}.json`);
+            const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(3, '0')}.json`);
+            
+            if (!surahResponse.ok || !translationResponse.ok) {
+                throw new Error('Unable to fetch Surah data or translation.');
+            }
+
+            const surahData = await surahResponse.json();
+            const translationData = await translationResponse.json();
+            
+            displaySurah(surahData, translationData);
+        } catch (error) {
+            console.error('Error fetching Surah data:', error);
+            alert('Sorry, there was an error loading the Surah data.');
+        }
     }
 
     function displaySurah(surahData, translationData) {
