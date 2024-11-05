@@ -59,6 +59,8 @@
             transition: background-color 0.3s;
             cursor: pointer;
             font-size: 1.5em;
+            width: 100%; /* Full width */
+            box-sizing: border-box; /* Ensure padding does not overflow */
         }
         .verse:hover {
             background-color: rgba(52, 152, 219, 0.2);
@@ -67,15 +69,19 @@
             background-color: #3498db;
             color: white;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
+            width: 60px;
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 1.0em;
+            font-size: 1.5em;
             border: 2px solid white;
-            margin-top: 10px; /* Ensure it appears below the verse text */
+            position: absolute;
+            top: -0px;
+            left: 100%;
+            transform: translateX(-50%);
+            margin-bottom: 10px;
         }
         .menu-icon {
             font-size: 30px;
@@ -179,6 +185,46 @@
         .back-to-top:hover {
             background-color: #2980b9;
         }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .verse {
+                font-size: 1.2em; /* Smaller text on smaller devices */
+                padding: 15px; /* Reduce padding */
+            }
+            .verse-number {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2em;
+            }
+            .side-menu {
+                width: 200px; /* Smaller side menu on mobile */
+            }
+            .menu-icon {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .verse {
+                font-size: 1.1em;
+                padding: 10px; /* Even smaller padding */
+            }
+            .verse-number {
+                width: 45px;
+                height: 45px;
+                font-size: 1em;
+            }
+            .side-menu {
+                width: 180px;
+            }
+            .menu-icon {
+                font-size: 26px;
+            }
+            .header {
+                padding: 10px;
+            }
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
 </head>
@@ -236,45 +282,71 @@
         // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (event) => {
+            const sideMenu = document.getElementById("mySideMenu");
+            const menuIcon = document.querySelector('.menu-icon');
+            const isClickInsideMenu = sideMenu.contains(event.target);
+            const isClickOnMenuIcon = menuIcon.contains(event.target);
+
+            if (sideMenu.style.left === "0" && !isClickInsideMenu && !isClickOnMenuIcon) {
+                closeMenu();
+            }
+        });
     });
 
-    function fetchSurah(index) {
-        fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`)
-            .then(response => response.json())
-            .then(data => displaySurah(data))
-            .catch(error => {
-                console.error('Error fetching Surah:', error);
-                alert('Sorry, there was an issue loading the Surah.');
-            });
+    function toggleMenu() {
+        const sideMenu = document.getElementById("mySideMenu");
+        const isOpen = sideMenu.style.left === "0";
+        sideMenu.style.left = isOpen ? "-250px" : "0";
+    }
+
+    function closeMenu() {
+        const sideMenu = document.getElementById("mySideMenu");
+        sideMenu.style.left = "-250px"; // Close the menu
+    }
+
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    async function fetchSurah(index) {
+        const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
+        const data = await response.json();
+        displaySurah(data);
     }
 
     function displaySurah(data) {
-        const content = document.getElementById('content');
-        const surahHeading = document.getElementById('surah-heading');
-        const firstVerseDiv = document.getElementById('first-verse');
-        const verses = data.verse;
-        const count = data.count;  
-        const name = data.name;
+    const content = document.getElementById('content');
+    const surahHeading = document.getElementById('surah-heading');
+    const firstVerseDiv = document.getElementById('first-verse');
+    const verses = data.verse;
+    const count = data.count;  // Total number of verses in the Surah
+    const name = data.name;
 
-        surahHeading.innerText = name;
-        surahHeading.style.display = 'block';
+    surahHeading.innerText = name;
+    surahHeading.style.display = 'block';
 
-        const firstVerseText = verses['verse_0'];
-        firstVerseDiv.innerHTML = firstVerseText;
-        firstVerseDiv.style.display = 'block';
+    // Display the first verse centered at the top
+    const firstVerseText = verses['verse_0'];
+    firstVerseDiv.innerHTML = firstVerseText;
+    firstVerseDiv.style.display = 'block';
 
-        content.innerHTML = ''; // Clear previous content
+    content.innerHTML = ''; // Clear previous content
 
-        for (let i = 1; i <= count; i++) {
-            const verseKey = `verse_${i}`;
-            const verseText = verses[verseKey];
+    // Loop through the verses from 1 to the total count (or 10 if count exceeds 10)
+    for (let i = 1; i <= count; i++) {
+        const verseKey = `verse_${i}`;
+        const verseText = verses[verseKey];
 
-            const verseDiv = document.createElement('div');
-            verseDiv.classList.add('verse');
-            verseDiv.innerHTML = `<div class="arabic-text">${verseText}</div><div class="verse-number">${i}</div>`;
-            content.appendChild(verseDiv);
-        }
+        const verseDiv = document.createElement('div');
+        verseDiv.classList.add('verse');
+        verseDiv.innerHTML = `<div class="verse-number">${i}</div><div class="arabic-text">${verseText}</div>`;
+        content.appendChild(verseDiv);
     }
+}
 
     function toggleTheme() {
         const darkMode = document.body.classList.toggle('dark-mode');
@@ -298,10 +370,10 @@
         localStorage.removeItem('darkMode');
         localStorage.removeItem('textSize');
         localStorage.removeItem('selectedFont');
-        document.body.style.fontSize = '18px'; 
-        document.body.style.fontFamily = 'Arial';
-        document.getElementById('fontSelect').value = 'Amiri';
-        document.body.classList.remove('dark-mode');
+        document.body.style.fontSize = '18px'; // Reset to default size
+        document.body.style.fontFamily = 'Arial'; // Reset to default font
+        document.getElementById('fontSelect').value = 'Amiri'; // Reset to default font selection
+        document.body.classList.remove('dark-mode'); // Reset to light mode
     }
 
     window.onscroll = function() {
@@ -317,5 +389,6 @@
         window.scrollTo({top: 0, behavior: 'smooth'});
     }
 </script>
+
 </body>
 </html>
