@@ -1,232 +1,212 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surah List</title>
-    <!-- Google Fonts for Roboto and Material Icons -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Global Styles */
-        body {
-            font-family: 'Roboto', Arial, sans-serif;
+        /* Base Styles */
+        * {
             margin: 0;
             padding: 0;
-            background-color: #fafafa;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f5f5f5;
             color: #333;
             line-height: 1.6;
+            padding-top: 80px; /* For fixed navbar */
         }
 
         h1 {
-            color: #388E3C;
             font-size: 2.5em;
             text-align: center;
-            margin: 40px 0;
+            color: #4CAF50;
+            margin-bottom: 20px;
             font-weight: bold;
         }
 
-        /* Navigation Bar (Menu) */
-        .menu {
-            background-color: #388E3C;
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* Navbar */
+        .navbar {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
+            background-color: #333;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
             z-index: 100;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .menu .logo {
+        .navbar .logo {
             font-size: 1.8em;
             font-weight: bold;
         }
 
-        .menu .menu-items {
+        .navbar .nav-links {
             display: flex;
-            gap: 20px;
         }
 
-        .menu a {
-            color: white;
+        .navbar .nav-links a {
             text-decoration: none;
-            font-size: 16px;
-            transition: color 0.3s;
+            color: white;
+            padding: 10px 20px;
+            margin-left: 20px;
+            border-radius: 25px;
+            transition: background 0.3s ease;
         }
 
-        .menu a:hover {
-            color: #81C784;
+        .navbar .nav-links a:hover {
+            background-color: #4CAF50;
         }
 
-        .menu-toggle {
-            display: none;
-            font-size: 30px;
-            cursor: pointer;
-        }
-
-        /* Mobile Menu */
-        @media (max-width: 768px) {
-            .menu .menu-items {
-                display: none;
-                flex-direction: column;
-                width: 100%;
-                text-align: center;
-            }
-
-            .menu .menu-items a {
-                padding: 12px;
-                border-top: 1px solid #ddd;
-                width: 100%;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
-
-            .menu.open .menu-items {
-                display: flex;
-            }
-        }
-
-        /* Search and Sort */
-        .header {
+        /* Search & Sort */
+        .search-sort-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 80px;
-            padding: 0 20px;
+            padding: 20px;
+            margin-top: 60px; /* To account for the fixed navbar */
         }
 
-        .search-bar,
-        .sort-select {
-            padding: 12px;
-            font-size: 16px;
-            border: 2px solid #388E3C;
-            border-radius: 30px;
-            width: 100%;
+        .search-bar {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            border: 2px solid #4CAF50;
+            border-radius: 50px;
+            width: 60%;
             max-width: 350px;
-            background-color: white;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
         }
 
-        .search-bar:focus,
+        .search-bar:focus {
+            outline: none;
+            border-color: #45a049;
+        }
+
+        .sort-select {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            border: 2px solid #4CAF50;
+            border-radius: 50px;
+            background-color: white;
+            max-width: 200px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease-in-out;
+        }
+
         .sort-select:focus {
             outline: none;
-            border-color: #66BB6A;
-            box-shadow: 0 0 5px rgba(102, 187, 106, 0.5);
+            border-color: #45a049;
         }
 
-        /* Surah List Layout */
+        /* Surah List */
         .surah-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 20px;
             padding: 20px;
-            margin-top: 40px;
+            margin: 0 10%;
         }
 
-        /* Surah Card Design */
+        /* Surah Card */
         .surah-card {
             background-color: white;
-            border-radius: 10px;
+            border-radius: 15px;
             padding: 20px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
             text-align: center;
-            transition: all 0.3s ease-in-out;
             cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
             border: 1px solid #ddd;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
         }
 
         .surah-card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-5px);
             box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
         }
 
-        .surah-card h2 {
-            color: #388E3C;
+        .surah-card h3 {
             font-size: 1.6em;
+            color: #4CAF50;
             margin-bottom: 10px;
         }
 
         .surah-card p {
-            font-size: 1.2em;
-            color: #777;
-            margin: 5px 0;
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 10px;
         }
 
-        .surah-card a {
-            text-decoration: none;
-            color: white;
-            background-color: #388E3C;
-            padding: 12px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            margin-top: 15px;
-        }
-
-        .surah-card a:hover {
-            background-color: #66BB6A;
-            transform: scale(1.05);
-        }
-
-        /* Mobile-first approach for small screens */
+        /* Responsive Design */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2.2em;
+            .search-sort-container {
+                flex-direction: column;
+                align-items: flex-start;
             }
 
-            .header {
-                margin-top: 120px;
-                flex-direction: column;
-                gap: 20px;
+            .search-bar {
+                width: 100%;
+                margin-bottom: 10px;
             }
 
             .surah-list {
-                padding: 10px;
+                margin: 0 5%;
             }
         }
 
-        /* For very small screens */
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.8em;
-            }
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
 
-            .search-bar,
-            .sort-select {
-                max-width: 100%;
-            }
+        body.dark-mode .navbar {
+            background-color: #333;
+        }
+
+        body.dark-mode .navbar .nav-links a {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .navbar .nav-links a:hover {
+            background-color: #4CAF50;
+        }
+
+        body.dark-mode .surah-card {
+            background-color: #333;
+            color: #e0e0e0;
+            border: 1px solid #444;
+        }
+
+        body.dark-mode .surah-card:hover {
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
-
 <body>
 
-    <!-- Navigation Bar -->
-    <div class="menu" id="navbar">
+    <!-- Navbar -->
+    <div class="navbar">
         <div class="logo">Surah List</div>
-        <div class="menu-items">
+        <div class="nav-links">
             <a href="#">Home</a>
             <a href="#">About</a>
             <a href="#">Contact</a>
         </div>
-        <div class="menu-toggle" id="menu-toggle">&#9776;</div>
     </div>
 
-    <!-- Header Section with Search and Sort -->
-    <div class="header">
+    <!-- Search and Sort Section -->
+    <div class="search-sort-container">
         <input type="text" id="search-bar" class="search-bar" placeholder="Search by title or index...">
         <select class="sort-select" id="sort-select">
             <option value="index">Sort by Index</option>
@@ -234,18 +214,21 @@
         </select>
     </div>
 
-    <!-- Surah List Section -->
+    <!-- Surah List -->
     <div class="surah-list" id="surah-list">
-        <!-- Surah cards will be rendered here -->
+        <!-- Surah Cards will be injected here -->
     </div>
 
+    <!-- Dark Mode Toggle Button -->
+    <div style="position: fixed; top: 20px; right: 20px; background: #4CAF50; color: white; padding: 10px 20px; border-radius: 25px; cursor: pointer; z-index: 100;" id="dark-mode-toggle">Toggle Dark Mode</div>
+
     <script>
-        // Toggle the mobile menu
-        document.getElementById('menu-toggle').addEventListener('click', () => {
-            document.getElementById('navbar').classList.toggle('open');
+        // Toggle Dark Mode
+        document.getElementById('dark-mode-toggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
         });
 
-        // Fetch Surah data
+        // Fetch Surahs Data
         async function fetchSurahs() {
             try {
                 const response = await fetch('https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah.json');
@@ -257,7 +240,7 @@
             }
         }
 
-        // Render Surah cards
+        // Render Surah Cards
         function renderSurahs(surahs) {
             const surahList = document.getElementById('surah-list');
             surahList.innerHTML = '';
@@ -266,21 +249,21 @@
                 const surahIndex = parseInt(surah.index, 10);
                 const surahDetailsUrl = `surah-details.html?index=${surahIndex}`;
 
-                const surahCard = document.createElement('div');
+                const surahCard = document.createElement('a');
                 surahCard.className = 'surah-card';
+                surahCard.href = surahDetailsUrl;
                 surahCard.innerHTML = `
-                    <h2>${surah.title}</h2>
-                    <p><strong>Surah:</strong> ${surahIndex}</p>
+                    <h3>${surah.title}</h3>
+                    <p class="bold">Surah: ${surahIndex}</p>
                     <p>${surah.titleAr}</p>
-                    <p><em>${surah.type}</em></p>
-                    <a href="${surahDetailsUrl}">Read</a>
+                    <p>${surah.type}</p>
                 `;
 
                 surahList.appendChild(surahCard);
             });
         }
 
-        // Sort Surahs based on selected criteria
+        // Sort Surahs
         function sortSurahs(surahs, criteria) {
             return surahs.sort((a, b) => {
                 if (criteria === 'index') {
@@ -292,16 +275,16 @@
             });
         }
 
-        // Filter Surahs based on search query
+        // Filter Surahs by Search
         function filterSurahs(surahs, query) {
             const lowerCaseQuery = query.toLowerCase();
-            return surahs.filter(surah => 
+            return surahs.filter(surah =>
                 surah.title.toLowerCase().includes(lowerCaseQuery) ||
                 surah.index.includes(lowerCaseQuery)
             );
         }
 
-        // Initialize the app
+        // Initialize Page
         async function init() {
             let surahs = await fetchSurahs();
             renderSurahs(surahs);
@@ -322,7 +305,5 @@
 
         init();
     </script>
-
 </body>
-
 </html>
