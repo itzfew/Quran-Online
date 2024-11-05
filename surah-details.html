@@ -213,117 +213,119 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const darkMode = localStorage.getItem('darkMode') === 'true';
-        const textSize = localStorage.getItem('textSize') || '18';
-        const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    const textSize = localStorage.getItem('textSize') || '18';
+    const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
 
-        if (darkMode) {
-            document.body.classList.add('dark-mode');
-        }
-
-        document.body.style.fontSize = textSize + 'px';
-        document.body.style.fontFamily = selectedFont;
-
-        document.getElementById('fontSelect').value = selectedFont;
-
-        // Fetch Surah 1 by default
-        fetchSurah(1);
-    });
-
-    async function fetchSurah(index) {
-        try {
-            const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/main/source/surah/surah_${String(index).padStart(3, '0')}.json`);
-            const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/main/source/translation/en/en_translation_${String(index).padStart(3, '0')}.json`);
-            
-            const surahData = await surahResponse.json();
-            const translationData = await translationResponse.json();
-            
-            displaySurah(surahData, translationData);
-        } catch (error) {
-            console.error("Error fetching Surah data:", error);
-        }
+    if (darkMode) {
+        document.body.classList.add('dark-mode');
     }
 
-    function displaySurah(surahData, translationData) {
-        const content = document.getElementById('content');
-        const surahHeading = document.getElementById('surah-heading');
-        const firstVerseDiv = document.getElementById('first-verse');
-        const verses = surahData.verse;
-        const count = surahData.count;
-        const name = surahData.name;
+    document.body.style.fontSize = textSize + 'px';
+    document.body.style.fontFamily = selectedFont;
 
-        surahHeading.innerText = name;
-        surahHeading.style.display = 'block';
+    document.getElementById('fontSelect').value = selectedFont;
 
-        const firstVerseText = verses['verse_0'];
-        const firstVerseTranslation = translationData['verse_0'];
-        firstVerseDiv.innerHTML = `${firstVerseText} <br><em>${firstVerseTranslation}</em>`;
-        firstVerseDiv.style.display = 'block';
+    // Fetch Surah 1 by default
+    fetchSurah(1);
+});
 
-        content.innerHTML = ''; // Clear previous content
-
-        for (let i = 1; i <= count; i++) {
-            const verseKey = `verse_${i}`;
-            const verseText = verses[verseKey];
-            const verseTranslation = translationData[verseKey];
-
-            const verseDiv = document.createElement('div');
-            verseDiv.classList.add('verse');
-            verseDiv.innerHTML = `
-                <div class="arabic-text">${verseText}</div>
-                <div class="translation-text"><em>${verseTranslation}</em></div>
-                <span class="verse-number">${i}</span>
-            `;
-            content.appendChild(verseDiv);
-        }
+async function fetchSurah(index) {
+    try {
+        // Remove the leading zeros by using the index directly
+        const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/main/source/surah/surah_${index}.json`);
+        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/main/source/translation/en/en_translation_${index}.json`);
+        
+        const surahData = await surahResponse.json();
+        const translationData = await translationResponse.json();
+        
+        displaySurah(surahData, translationData);
+    } catch (error) {
+        console.error("Error fetching Surah data:", error);
     }
+}
 
-    function changeTextSize(amount) {
-        const body = document.body;
-        let currentSize = parseInt(window.getComputedStyle(body).fontSize);
-        let newSize = currentSize + amount;
+function displaySurah(surahData, translationData) {
+    const content = document.getElementById('content');
+    const surahHeading = document.getElementById('surah-heading');
+    const firstVerseDiv = document.getElementById('first-verse');
+    const verses = surahData.verse;
+    const count = surahData.count;
+    const name = surahData.name;
 
-        // Prevent size from getting too small or too large
-        if (newSize < 14) newSize = 14;
-        if (newSize > 30) newSize = 30;
+    surahHeading.innerText = name;
+    surahHeading.style.display = 'block';
 
-        body.style.fontSize = newSize + 'px';
-        localStorage.setItem('textSize', newSize);
+    const firstVerseText = verses['verse_0'];
+    const firstVerseTranslation = translationData['verse_0'];
+    firstVerseDiv.innerHTML = `${firstVerseText} <br><em>${firstVerseTranslation}</em>`;
+    firstVerseDiv.style.display = 'block';
+
+    content.innerHTML = ''; // Clear previous content
+
+    for (let i = 1; i <= count; i++) {
+        const verseKey = `verse_${i}`;
+        const verseText = verses[verseKey];
+        const verseTranslation = translationData[verseKey];
+
+        const verseDiv = document.createElement('div');
+        verseDiv.classList.add('verse');
+        verseDiv.innerHTML = `
+            <div class="arabic-text">${verseText}</div>
+            <div class="translation-text"><em>${verseTranslation}</em></div>
+            <span class="verse-number">${i}</span>
+        `;
+        content.appendChild(verseDiv);
     }
+}
 
-    function changeFont() {
-        const fontSelect = document.getElementById('fontSelect');
-        const selectedFont = fontSelect.value;
-        document.body.style.fontFamily = selectedFont;
-        localStorage.setItem('selectedFont', selectedFont);
-    }
+function changeTextSize(amount) {
+    const body = document.body;
+    let currentSize = parseInt(window.getComputedStyle(body).fontSize);
+    let newSize = currentSize + amount;
 
-    function resetPreferences() {
-        localStorage.removeItem('darkMode');
-        localStorage.removeItem('textSize');
-        localStorage.removeItem('selectedFont');
-        location.reload();
-    }
+    // Prevent size from getting too small or too large
+    if (newSize < 14) newSize = 14;
+    if (newSize > 30) newSize = 30;
 
-    function toggleTheme() {
-        const body = document.body;
-        body.classList.toggle('dark-mode');
-        const isDark = body.classList.contains('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
+    body.style.fontSize = newSize + 'px';
+    localStorage.setItem('textSize', newSize);
+}
 
-    function toggleMenu() {
-        const menu = document.getElementById('mySideMenu');
-        menu.style.left = menu.style.left === '0px' ? '-250px' : '0px';
-    }
+function changeFont() {
+    const fontSelect = document.getElementById('fontSelect');
+    const selectedFont = fontSelect.value;
+    document.body.style.fontFamily = selectedFont;
+    localStorage.setItem('selectedFont', selectedFont);
+}
 
-    function closeMenu() {
-        document.getElementById('mySideMenu').style.left = '-250px';
-    }
+function resetPreferences() {
+    localStorage.removeItem('darkMode');
+    localStorage.removeItem('textSize');
+    localStorage.removeItem('selectedFont');
+    location.reload();
+}
 
-    function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+function toggleTheme() {
+    const body = document.body;
+    body.classList.toggle('dark-mode');
+    const isDark = body.classList.contains('dark-mode');
+    localStorage.setItem('darkMode', isDark);
+}
+
+function toggleMenu() {
+    const menu = document.getElementById('mySideMenu');
+    menu.style.left = menu.style.left === '0px' ? '-250px' : '0px';
+}
+
+function closeMenu() {
+    document.getElementById('mySideMenu').style.left = '-250px';
+}
+
+function scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 </script>
 </body>
 </html>
