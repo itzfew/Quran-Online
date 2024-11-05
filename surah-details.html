@@ -6,185 +6,215 @@
     <title>Surah Details</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* General Styles */
-        body {
-            font-family: 'Arial', sans-serif;
-            background-image: url('https://yourbackgroundimageurl.com/image.jpg');
-            background-size: cover;
-            background-attachment: fixed;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            transition: background-color 0.5s, color 0.5s, font-family 0.5s;
-            font-size: 18px;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .surah-heading {
-            font-size: 1.7em;
-            padding: 5px;
-            color: #3498db;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        .verse {
-            margin: 15px 0;
-            padding: 10px;
-            background-color: rgba(236, 240, 241, 0.8);
-            border-radius: 8px;
-            font-size: 1.5em;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            border-left: 5px solid #3498db;
-            transition: background-color 0.3s;
-            cursor: pointer;
-        }
-        .verse:hover {
-            background-color: rgba(52, 152, 219, 0.2);
-        }
-        .arabic-text {
-            font-size: 1.5em;
-            font-weight: bold;
-        }
-        .translation-text {
-            font-size: 1.2em;
-            color: #555;
-            margin-top: 5px;
-        }
-        .verse-number {
-            font-size: 1.0em;
-            color: #2980b9;
-            margin-top: 10px;
-            font-weight: bold;
-            border: 2px solid #2980b9;
-            border-radius: 50%;
-        }
-        .back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background-color: #3498db;
+        /* Your previous styles here... */
+        /* Additional styles for new features */
+        .audio-btn {
+            background-color: #2980b9;
             color: white;
-            border: none;
             padding: 10px 15px;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 10px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        .audio-btn:hover {
+            background-color: #1f6394;
+        }
+        .search-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .search-input {
+            padding: 10px;
             font-size: 16px;
-            display: none;
+            width: 200px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
-        .back-to-top:hover {
+        .search-btn {
+            padding: 10px 15px;
             background-color: #2980b9;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .verse {
-                font-size: 1.3em;
-                padding: 10px;
-            }
+        .search-btn:hover {
+            background-color: #1f6394;
+        }
+        .highlighted {
+            background-color: rgba(52, 152, 219, 0.4);
+        }
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .pagination button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 5px;
+            transition: background-color 0.3s;
+        }
+        .pagination button:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
 <body>
+    <!-- Add menu, side menu, header, etc. -->
 
-<div class="header">
-    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
-</div>
-<div id="content"></div>
+    <!-- Search Bar for verse search -->
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search for verse...">
+        <button class="search-btn" onclick="searchVerse()">Search</button>
+    </div>
 
-<button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
+    <!-- Audio Recitation button -->
+    <div id="audioBtnContainer">
+        <button class="audio-btn" onclick="playAudio()">Play Recitation</button>
+    </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const darkMode = localStorage.getItem('darkMode') === 'true';
-        const textSize = localStorage.getItem('textSize') || '18';
-        const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
+    <!-- Surah content display area -->
+    <div id="content"></div>
 
-        if (darkMode) {
-            document.body.classList.add('dark-mode');
+    <!-- Pagination for Surah -->
+    <div id="pagination" class="pagination"></div>
+
+    <!-- Back to top button -->
+    <button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            const textSize = localStorage.getItem('textSize') || '18';
+            const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
+
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+
+            document.body.style.fontSize = textSize + 'px';
+            document.body.style.fontFamily = selectedFont;
+
+            // Load surah from URL or default
+            const index = getQueryParam('index');
+            fetchSurah(index ? index : 1);
+        });
+
+        // Fetch Surah data
+        async function fetchSurah(index) {
+            const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
+            const data = await response.json();
+            displaySurah(data);
         }
 
-        document.body.style.fontSize = textSize + 'px';
-        document.body.style.fontFamily = selectedFont;
+        // Display Surah
+        function displaySurah(data) {
+            const content = document.getElementById('content');
+            const surahHeading = document.getElementById('surah-heading');
+            const verses = data.verse;
+            const count = data.count;
+            const name = data.name;
+            const firstVerseDiv = document.getElementById('first-verse');
 
-        // Fetch Surah from URL parameter (default to Surah 1)
-        const index = getQueryParam('index') || 1;
-        fetchSurah(index);
-    });
+            surahHeading.innerText = name;
+            surahHeading.style.display = 'block';
 
-    async function fetchSurah(index) {
-        try {
-            // Fetch Arabic verse data
-            const verseResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(3, '0')}.json`);
-            const verseData = await verseResponse.json();
+            firstVerseDiv.innerHTML = verses['verse_0'];
+            firstVerseDiv.style.display = 'block';
 
-            // Fetch English translation
-            const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(3, '0')}.json`);
-            const translationData = await translationResponse.json();
+            content.innerHTML = ''; // Clear previous content
 
-            displaySurah(verseData, translationData);
-        } catch (error) {
-            console.error('Error fetching Surah or translation:', error);
+            // Loop through verses and create div elements
+            for (let i = 1; i <= count; i++) {
+                const verseKey = `verse_${i}`;
+                const verseText = verses[verseKey];
+
+                const verseDiv = document.createElement('div');
+                verseDiv.classList.add('verse');
+                verseDiv.innerHTML = `<div class="arabic-text">${verseText} <span class="verse-number">${i}</span></div>`;
+
+                // Add highlighting feature
+                verseDiv.addEventListener('click', () => highlightVerse(verseDiv));
+
+                content.appendChild(verseDiv);
+            }
+
+            // Pagination
+            createPagination(count);
         }
-    }
 
-    function displaySurah(verseData, translationData) {
-        const content = document.getElementById('content');
-        const surahHeading = document.getElementById('surah-heading');
-        const name = verseData.name;
-        const count = verseData.count;
-        const verses = verseData.verse;
-        const translations = translationData.translation;
-
-        // Display Surah Name
-        surahHeading.innerText = name;
-        surahHeading.style.display = 'block';
-
-        // Clear any previous content
-        content.innerHTML = '';
-
-        // Loop through each verse and display the Arabic text and translation
-        for (let i = 0; i < count; i++) {
-            const verseKey = `verse_${i}`;
-            const arabicText = verses[verseKey];
-            const translationText = translations[`verse_${i}`];
-
-            // Create verse div
-            const verseDiv = document.createElement('div');
-            verseDiv.classList.add('verse');
-
-            // Append the Arabic text
-            verseDiv.innerHTML = `
-                <div class="arabic-text">${arabicText}</div>
-                <div class="translation-text">${translationText}</div>
-                <div class="verse-number">${i + 1}</div>
-            `;
-            content.appendChild(verseDiv);
+        // Audio functionality
+        function playAudio() {
+            const audio = new Audio('https://verses-audio-link');  // Replace with actual link
+            audio.play();
         }
-    }
 
-    // Get query parameter (Surah index) from URL
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
-
-    // Scroll to top function
-    window.onscroll = function() {
-        const backToTopButton = document.querySelector('.back-to-top');
-        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
-            backToTopButton.style.display = "block";
-        } else {
-            backToTopButton.style.display = "none";
+        // Search functionality
+        function searchVerse() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const verses = document.querySelectorAll('.verse');
+            verses.forEach((verseDiv, index) => {
+                const verseText = verseDiv.innerText.toLowerCase();
+                if (verseText.includes(searchTerm)) {
+                    verseDiv.style.display = 'block';
+                } else {
+                    verseDiv.style.display = 'none';
+                }
+            });
         }
-    };
 
-    function scrollToTop() {
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }
-</script>
+        // Highlight verse when clicked
+        function highlightVerse(verseDiv) {
+            verseDiv.classList.toggle('highlighted');
+        }
 
+        // Create pagination buttons
+        function createPagination(totalCount) {
+            const paginationDiv = document.getElementById('pagination');
+            const pages = Math.ceil(totalCount / 10);  // Assuming 10 verses per page
+            paginationDiv.innerHTML = ''; // Clear previous pagination
+
+            for (let i = 1; i <= pages; i++) {
+                const button = document.createElement('button');
+                button.innerText = i;
+                button.onclick = () => loadPage(i);
+                paginationDiv.appendChild(button);
+            }
+        }
+
+        // Load specific page of verses
+        function loadPage(pageNum) {
+            const verses = document.querySelectorAll('.verse');
+            const startIndex = (pageNum - 1) * 10;
+            const endIndex = startIndex + 10;
+            verses.forEach((verseDiv, index) => {
+                if (index >= startIndex && index < endIndex) {
+                    verseDiv.style.display = 'block';
+                } else {
+                    verseDiv.style.display = 'none';
+                }
+            });
+        }
+
+        // Scroll to top
+        function scrollToTop() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        // Get query parameter from URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+    </script>
 </body>
 </html>
