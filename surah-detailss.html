@@ -5,9 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surah List</title>
-    <!-- Google Fonts for Roboto and Material Icons -->
+    <!-- Google Fonts for Roboto -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         /* Global Styles */
         body {
@@ -133,38 +132,20 @@
         }
 
         .surah-list li {
-            background-color: white;
-            padding: 15px;
+            background-color: transparent;
+            padding: 10px;
             margin-bottom: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            border-radius: 8px;
-            transition: box-shadow 0.3s ease;
+            font-size: 1.2em;
+            cursor: pointer;
         }
 
         .surah-list li:hover {
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-        }
-
-        .surah-list h2 {
             color: #388E3C;
-            font-size: 1.4em;
-            margin-bottom: 10px;
-            margin-top: 0;
-        }
-
-        .surah-list p {
-            font-size: 1.1em;
-            color: #777;
-            margin: 5px 0;
         }
 
         .surah-list a {
+            color: inherit;
             text-decoration: none;
-            color: #388E3C;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 12px;
-            transition: color 0.3s ease;
         }
 
         .surah-list a:hover {
@@ -263,11 +244,12 @@
 
                 const surahItem = document.createElement('li');
                 surahItem.innerHTML = `
-                    <h2>${surah.title}</h2>
-                    <p><strong>Surah:</strong> ${surahIndex}</p>
-                    <p>${surah.titleAr}</p>
-                    <p><em>${surah.type}</em></p>
-                    <a href="${surahDetailsUrl}">Read More</a>
+                    <a href="${surahDetailsUrl}">
+                        <h2>${surah.title}</h2>
+                        <p><strong>Surah:</strong> ${surahIndex}</p>
+                        <p>${surah.titleAr}</p>
+                        <p><em>${surah.type}</em></p>
+                    </a>
                 `;
 
                 surahList.appendChild(surahItem);
