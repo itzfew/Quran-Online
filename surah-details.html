@@ -13,9 +13,9 @@
             background-attachment: fixed;
             color: #333;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            font-size: 18px; /* Default font size */
             transition: background-color 0.5s, color 0.5s, font-family 0.5s;
-            font-size: 18px;
         }
 
         .header {
@@ -23,13 +23,13 @@
             top: 0;
             left: 0;
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.9);
             padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 10;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .header .controls {
@@ -73,10 +73,10 @@
 
         .surah-heading {
             text-align: center;
-            font-size: 2em;
+            font-size: 2.5em;
             color: #3498db;
             font-weight: bold;
-            margin-top: 100px; /* Space to prevent overlap with fixed header */
+            margin-top: 100px; /* Prevent overlap with fixed header */
         }
 
         .first-verse {
@@ -88,7 +88,7 @@
         }
 
         .verse {
-            margin: 5px 0;
+            margin: 15px 0;
             padding: 15px;
             border-radius: 8px;
             background-color: rgba(236, 240, 241, 0.8);
@@ -109,7 +109,7 @@
         }
 
         .verse-number {
-            font-size: 1.0em;
+            font-size: 1.2em;
             color: #2980b9;
             margin-top: 10px;
             font-weight: bold;
@@ -159,7 +159,7 @@
         /* Responsive Design */
         @media (max-width: 768px) {
             .verse {
-                font-size: 1.2em;
+                font-size: 1.3em;
                 padding: 12px;
             }
 
@@ -173,6 +173,10 @@
 
             .header {
                 padding: 10px 15px;
+            }
+
+            .surah-heading {
+                font-size: 2em;
             }
         }
 
@@ -193,6 +197,10 @@
 
             .header .controls button, .header select {
                 margin-top: 5px;
+            }
+
+            .surah-heading {
+                font-size: 1.8em;
             }
         }
     </style>
@@ -270,7 +278,7 @@
         const surahHeading = document.getElementById('surah-heading');
         const firstVerseDiv = document.getElementById('first-verse');
         const verses = data.verse;
-        const count = data.count;
+        const count = data.count; 
         const name = data.name;
 
         surahHeading.innerText = name;
