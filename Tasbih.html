@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
+		<title>Tasbeh</title>
+		<style type="text/css">
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: sans-serif;
+            background: #0F4C81;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 400px; /* Adjust max-width as needed */
+            height: 60vh; /* 60% of the viewport height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container .box {
+            width: 90%;
+            height: 90%;
+            border: 2px solid black;
+            background-color: #0F4C81; /* Updated color */
+            border-radius: 10px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container .box input {
+            width: 100px;
+            text-align: center;
+            font-size: 35px;
+            caret-color: transparent;
+            border: none;
+            border-radius: 5px;
+            background-color: #fff; /* Background color for input */
+        }
+
+        .container .box .btn, .container .box .btn1 {
+            width: 80px; /* Adjust button size */
+            height: 80px; /* Adjust button size */
+            border-radius: 50%;
+            cursor: pointer;
+            background-color: #007bff; /* Original blue color */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            border: none;
+            outline: none;
+            border: 2px solid #ddd; /* border added to create fingerprint-like structure */
+        }
+
+        .container .box .btn1 {
+            width: 40px; /* Adjust reset button size */
+            height: 40px; /* Adjust reset button size */
+            border-radius: 50%;
+            background-color: red;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 16px;
+            border: 2px solid #ddd; /* border added to create 3D effect */
+            position: absolute; /* Position the reset button */
+            top: 10px;
+            right: 10px;
+        }
+
+        .container .box .btn:hover {
+            background-color: #0F4C81;
+        }
+
+        .container .box .btn1:hover {
+            background-color: #ff0000;
+        }
+.btnwrap {
+    margin-top: 20px;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+
+            text-align: center;
+        }
+
+        .sbtn {
+            padding: 10px;
+            font-size: 16px;
+        }		</style>
+	</head>
+	<body style="background-color: rgb(15, 76, 129); color: rgb(255, 0, 0);">
+		<div class="btnwrap">
+			<select class="sbtn" id="steps" onchange="reset()"><option selected="selected" value="ALHAMDULILLAH">ALHAMDULILLAH</option><option value="ALLAHU AKBAR">ALLAHU AKBAR</option><option value="SUBHAN ALLAH">SUBHAN ALLAH</option></select></div>
+		<div class="container">
+			<div class="box">
+				<input class="input" readonly="readonly" type="text" value="0" /><button class="btn"></button><button class="btn1">Reset</button></div>
+		</div>
+		<script>
+        let countPlus = document.querySelector('.btn');
+        let countZero = document.querySelector('.btn1');
+        let input = document.querySelector('.input');
+
+        countZero.style.backgroundColor = "#0F4C81";
+
+        countPlus.addEventListener('click', function() {
+            if (!localStorage.clickcount) {
+                localStorage.clickcount = 0;
+            }
+            localStorage.clickcount = Number(localStorage.clickcount) + 1;
+            input.value = localStorage.clickcount;
+        });
+
+        countZero.addEventListener('click', function() {
+            localStorage.clickcount = 0;
+            input.value = localStorage.clickcount;
+        });
+
+        function reset() {
+            if (document.getElementById("steps").value !== "ALHAMDULILLAH") {
+                localStorage.clickcount = 0;
+                input.value = localStorage.clickcount;
+            }
+        }
+
+        window.onload = function() {
+            input.value = localStorage.clickcount || 0;
+        }
+    </script></body>
+</html>
