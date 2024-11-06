@@ -53,6 +53,9 @@
             font-family: 'Arial', sans-serif;
             color: #555;
         }
+        .highlight {
+            background-color: yellow;
+        }
         .loading, .error {
             text-align: center;
             font-size: 20px;
@@ -73,148 +76,165 @@
         .header-meta strong {
             color: #2c3e50;
         }
-        
-        /* Settings Section */
-        .settings-container {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            padding: 10px 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-bottom: 2px solid #3498db;
+
+        .pagination {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .pagination a {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 20px;
+            margin: 0 10px;
+        }
+
+        .pagination a:hover {
+            text-decoration: underline;
+        }
+
+        #darkModeToggle {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            white-space: nowrap;
-            overflow-x: auto;
-        }
-        .settings-item {
-            margin-right: 20px;
-            font-size: 24px;
+            top: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
             cursor: pointer;
-            transition: transform 0.2s ease-in-out;
+            font-size: 24px;
         }
-        .settings-item:hover {
-            color: #2980b9;
-            transform: scale(1.1);
+
+        body.dark-mode {
+            background-color: #333;
+            color: #f4f4f4;
         }
-        #verseSearch {
-            padding: 5px;
+
+        body.dark-mode .hadith {
+            background-color: #444;
+            color: #ccc;
+        }
+
+        body.dark-mode .hadith p {
+            color: #ccc;
+        }
+
+        .search-bar {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .search-bar input {
+            padding: 10px;
+            width: 80%;
+            max-width: 400px;
             font-size: 16px;
             border-radius: 5px;
-            border: 1px solid #3498db;
+            border: 1px solid #ddd;
         }
 
-        /* Dark Mode */
-        .dark-mode {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-        }
-        .dark-mode .hadith {
-            background-color: rgba(52, 152, 219, 0.2);
-            color: #ecf0f1;
-        }
-        .dark-mode .hadith h3 {
-            color: #ecf0f1;
-        }
-        .dark-mode .header-meta {
-            background-color: #34495e;
-        }
-        .dark-mode .hadith .english-text {
-            color: #ecf0f1;
-        }
-        
-        /* Bookmark Section */
-        .bookmarks-container {
-            margin-top: 50px;
-            padding: 20px;
-        }
-        .bookmark-list {
-            list-style: none;
-            padding: 0;
-        }
-        .bookmark-list li {
-            background: #ecf0f1;
-            padding: 10px;
-            margin: 5px;
-            border-radius: 5px;
+        .search-bar button {
+            padding: 10px 20px;
+            font-size: 16px;
             cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        .bookmark-list li:hover {
-            background: #3498db;
-            color: #fff;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-left: 10px;
         }
 
-        /* Responsive Design */
+        .search-bar button:hover {
+            background-color: #2980b9;
+        }
+
+        .clear-search {
+            cursor: pointer;
+            font-size: 16px;
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+
+        .clear-search:hover {
+            text-decoration: underline;
+        }
+
+        .font-size-controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .font-size-controls button {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
         @media (max-width: 768px) {
-            .settings-container {
-                padding: 10px;
-            }
-            .settings-item {
-                font-size: 20px;
+            .pagination a {
+                font-size: 16px;
             }
         }
 
-        @media (max-width: 480px) {
-            .settings-container {
-                padding: 10px;
-            }
-            .settings-item {
-                font-size: 18px;
-                margin-right: 10px;
-            }
-        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Settings Panel -->
-    <div class="settings-container">
-        <input type="text" id="verseSearch" placeholder="Search for a Hadith..." onkeyup="searchHadith()">
-        <div class="settings-item" onclick="toggleTheme()">
-            <i class="fas fa-adjust"></i> Theme
-        </div>
-        <div class="settings-item" onclick="changeTextSize(1)">
-            <i class="fas fa-text-height"></i> A+
-        </div>
-        <div class="settings-item" onclick="changeTextSize(-1)">
-            <i class="fas fa-text-height"></i> A-
-        </div>
-        <div class="settings-item">
-            <select id="fontSelect" onchange="changeFont()">
-                <option value="Amiri">Amiri</option>
-                <option value="Arial">Arial</option>
-            </select>
-        </div>
-    </div>
-
-    <!-- Header Section -->
     <h1>Hadith Viewer</h1>
     <p style="text-align: center; font-size: 18px; color: #7f8c8d;">
         Enter a book and chapter number in the URL to view the Hadiths (e.g., <code>?book=muslim&chapter=10</code>).
     </p>
 
-    <!-- Loading Indicator -->
-    <div id="loading" class="loading">Loading...</div>
-
-    <!-- Hadith Display Section -->
-    <div id="hadithResult"></div>
-
-    <!-- Bookmarked Hadith Section -->
-    <div id="bookmarksContainer" class="bookmarks-container">
-        <h2>Bookmarked Hadiths</h2>
-        <ul id="bookmarkedList" class="bookmark-list"></ul>
+    <!-- Dark Mode Toggle Button -->
+    <div id="darkModeToggle" onclick="toggleDarkMode()">
+        <i class="fas fa-moon"></i>
     </div>
 
-    <script>
-        // Global variables
-        let currentTextSize = 16;
+    <!-- Search Bar and Clear Search Button -->
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search Hadiths" onkeyup="searchHadith()">
+        <button onclick="clearSearch()">Clear Search</button>
+    </div>
 
-        // Function to get book and chapter parameters from URL
+    <!-- Font Size Controls -->
+    <div class="font-size-controls">
+        <button onclick="adjustFontSize('increase')">Increase Font</button>
+        <button onclick="adjustFontSize('decrease')">Decrease Font</button>
+    </div>
+
+    <!-- Bookmarks -->
+    <div id="bookmarkMessage"></div>
+
+    <div id="loading" class="loading">Loading...</div>
+    <div id="hadithResult"></div>
+
+    <div class="pagination" id="pagination"></div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+    <script>
+        let currentPage = 1;
+        const itemsPerPage = 5;
+        let allHadiths = [];
+        let currentFontSize = 16;
+
+        // Toggle Dark Mode
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        // Apply user preferences for dark mode and font size
+        function applyUserPreferences() {
+            const savedDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (savedDarkMode) {
+                document.body.classList.add('dark-mode');
+            }
+        }
+
+        // Get URL parameters for book and chapter
         function getURLParams() {
             const urlParams = new URLSearchParams(window.location.search);
             const book = urlParams.get('book');
@@ -222,107 +242,105 @@
             return { book, chapter };
         }
 
-        // Fetch Hadiths from the server based on book and chapter
+        // Fetch Hadiths based on book and chapter
         function fetchHadiths(book, chapter) {
             const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book}/${chapter}.json`;
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    displayHadiths(data);
+                    allHadiths = data.hadiths;
+                    displayHadiths();
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
-                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load the Hadiths. Please try again later.</p>';
+                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load the hadiths. Please try again later.</p>';
                     document.getElementById('loading').style.display = 'none';
                 });
         }
 
-        // Display fetched Hadiths
-        function displayHadiths(data) {
+        // Display Hadiths for the current page
+        function displayHadiths() {
             const hadithResult = document.getElementById('hadithResult');
             const loading = document.getElementById('loading');
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
 
             loading.style.display = 'none';
 
-            if (data.hadiths && data.hadiths.length > 0) {
-                let htmlContent = `
-                    <div class="header-meta">
-                        <h2>${data.metadata.english.title} (Chapter: ${data.metadata.english.introduction})</h2>
-                        <p><strong>Author:</strong> ${data.metadata.english.author}</p>
-                        <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
+            // Filter Hadiths by search query
+            const filteredHadiths = allHadiths.filter(hadith => hadith.english.text.toLowerCase().includes(searchQuery));
+
+            // Paginate the filtered Hadiths
+            const paginatedHadiths = filteredHadiths.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+            let htmlContent = '';
+            paginatedHadiths.forEach(hadith => {
+                let englishText = hadith.english.text;
+
+                // Highlight search query in the Hadith
+                if (searchQuery) {
+                    const regex = new RegExp(searchQuery, 'gi');
+                    englishText = englishText.replace(regex, match => `<span class="highlight">${match}</span>`);
+                }
+
+                htmlContent += `
+                    <div class="hadith">
+                        <h3>Hadith #${hadith.id}</h3>
+                        <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
+                        <p class="english-text"><strong>English:</strong> ${englishText}</p>
                     </div>
                 `;
-
-                data.hadiths.forEach(hadith => {
-                    htmlContent += `
-                        <div class="hadith">
-                            <h3>Hadith #${hadith.id}</h3>
-                            <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
-                            <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
-                            <button onclick="bookmarkHadith(${hadith.id})">Bookmark</button>
-                        </div>
-                    `;
-                });
-
-                hadithResult.innerHTML = htmlContent;
-            } else {
-                hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
-            }
-        }
-
-        // Bookmark a Hadith
-        function bookmarkHadith(hadithId) {
-            let bookmarks = JSON.parse(localStorage.getItem('bookmarkedHadiths')) || [];
-            if (!bookmarks.includes(hadithId)) {
-                bookmarks.push(hadithId);
-                localStorage.setItem('bookmarkedHadiths', JSON.stringify(bookmarks));
-                alert('Hadith bookmarked!');
-                displayBookmarks();
-            }
-        }
-
-        // Display Bookmarked Hadiths
-        function displayBookmarks() {
-            const bookmarks = JSON.parse(localStorage.getItem('bookmarkedHadiths')) || [];
-            const bookmarkList = document.getElementById('bookmarkedList');
-            bookmarkList.innerHTML = '';
-
-            bookmarks.forEach(id => {
-                const li = document.createElement('li');
-                li.textContent = `Hadith #${id}`;
-                li.onclick = () => alert(`You selected Hadith #${id}`);
-                bookmarkList.appendChild(li);
             });
+
+            hadithResult.innerHTML = htmlContent;
+            updatePagination(filteredHadiths.length);
         }
 
-        // Toggle between light and dark mode
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
+        // Update pagination links
+        function updatePagination(totalItems) {
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+            let paginationHtml = '';
+
+            if (currentPage > 1) {
+                paginationHtml += `<a href="?book=${getURLParams().book}&chapter=${parseInt(getURLParams().chapter) - 1}">Previous</a>`;
+            }
+
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHtml += `<a href="?book=${getURLParams().book}&chapter=${i}" ${i === currentPage ? 'style="font-weight:bold"' : ''}>${i}</a>`;
+            }
+
+            if (currentPage < totalPages) {
+                paginationHtml += `<a href="?book=${getURLParams().book}&chapter=${parseInt(getURLParams().chapter) + 1}">Next</a>`;
+            }
+
+            pagination.innerHTML = paginationHtml;
         }
 
-        // Change font
-        function changeFont() {
-            const font = document.getElementById('fontSelect').value;
-            document.body.style.fontFamily = font;
-        }
-
-        // Adjust text size
-        function changeTextSize(increment) {
-            currentTextSize += increment;
-            document.body.style.fontSize = `${currentTextSize}px`;
-        }
-
-        // Search through Hadiths
+        // Search functionality
         function searchHadith() {
-            const searchTerm = document.getElementById('verseSearch').value.toLowerCase();
-            const hadithElements = document.querySelectorAll('.hadith');
-            hadithElements.forEach(hadith => {
-                const text = hadith.textContent.toLowerCase();
-                hadith.style.display = text.includes(searchTerm) ? 'block' : 'none';
-            });
+            currentPage = 1;
+            displayHadiths();
         }
 
-        // On page load
+        // Clear search input
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            searchHadith();
+        }
+
+        // Adjust font size
+        function adjustFontSize(action) {
+            if (action === 'increase') {
+                currentFontSize++;
+            } else if (action === 'decrease') {
+                currentFontSize--;
+            }
+            document.body.style.fontSize = currentFontSize + 'px';
+            localStorage.setItem('fontSize', currentFontSize);
+        }
+
+        // On page load, apply user preferences
         window.onload = () => {
             const { book, chapter } = getURLParams();
             if (book && chapter) {
@@ -331,9 +349,8 @@
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=muslim&chapter=10).</p>';
             }
-            displayBookmarks();
+            applyUserPreferences();
         };
     </script>
-
 </body>
 </html>
