@@ -6,10 +6,7 @@
     <title>Quran Kareem</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json">
-
+    <link rel="manifest" href="manifest.json">
     <style>
         /* Reset and base styles */
         * {
@@ -55,6 +52,14 @@
             font-weight: bold;
         }
 
+        /* Menu Toggle Button */
+        .menu-toggle {
+            font-size: 1.5em;
+            cursor: pointer;
+            display: none;
+            color: white;
+        }
+
         /* Sidebar Menu */
         .menu {
             position: fixed;
@@ -66,7 +71,6 @@
             color: white;
             transition: left 0.3s ease;
             padding-top: 60px;
-            overflow-y: auto;
         }
 
         .menu a {
@@ -87,66 +91,72 @@
             left: 0;
         }
 
-        /* Install Button in Menu */
-        .install-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            margin-top: 20px;
-            text-align: center;
-            font-size: 1.2em;
-            border-radius: 5px;
-            cursor: pointer;
-            border: none;
-            transition: background-color 0.3s ease;
-            margin-left: 20px;
-        }
-
-        .install-btn:hover {
-            background-color: #45a049;
-        }
-
-        /* Install Prompt */
-        .install-prompt {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #333;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        /* Search and Sort */
+        .search-sort-container {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            width: 90%;
-            max-width: 500px;
-            z-index: 101;
-            font-size: 1.1em;
-            flex-direction: row;
+            align-items: center;
+            padding: 20px 10%;
+            margin-top: 80px; /* To account for the fixed navbar */
         }
 
-        .install-prompt button {
+        .search-bar {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            border: 2px solid #4CAF50;
+            border-radius: 50px;
+            width: 60%;
+            max-width: 350px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .search-bar:focus {
+            outline: none;
+            border-color: #45a049;
+        }
+
+        .sort-select {
+            padding: 12px 20px;
+            font-size: 1.1em;
+            border: 2px solid #4CAF50;
+            border-radius: 50px;
+            background-color: white;
+            max-width: 200px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .sort-select:focus {
+            outline: none;
+            border-color: #45a049;
+        }
+
+        /* Language Switch */
+        .language-switch-container {
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+        }
+
+        .language-switch {
+            font-size: 1.2em;
+            color: #4CAF50;
+            cursor: pointer;
+            text-decoration: none;
+            padding: 5px 20px;
+            margin: 0 10px;
+            border-radius: 50px;
+            background-color: #f0f0f0;
+            transition: background-color 0.3s;
+        }
+
+        .language-switch:hover {
             background-color: #4CAF50;
             color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
         }
 
-        .install-prompt button:hover {
-            background-color: #45a049;
-        }
-
-        .install-prompt button.close {
-            background-color: #f44336;
-        }
-
-        .install-prompt button.close:hover {
-            background-color: #e53935;
+        .language-switch.selected {
+            background-color: #4CAF50;
+            color: white;
         }
 
         /* Surah List Styles */
@@ -157,6 +167,7 @@
             gap: 20px;
         }
 
+        /* Surah Item */
         .surah-item {
             background-color: white;
             padding: 15px;
@@ -184,70 +195,61 @@
             color: #666;
         }
 
+        /* Install Prompt */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 300px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            display: none;
+        }
+
+        .install-prompt button {
+            background-color: #fff;
+            color: #4CAF50;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .install-prompt button:hover {
+            background-color: #ddd;
+        }
+
         /* Responsive Styles */
         @media (max-width: 768px) {
-            .menu-toggle {
-                display: block;
+            .search-sort-container {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 20px;
             }
 
-            .menu.active {
-                left: 0;
-            }
-
-            .navbar .logo {
-                font-size: 1.5em;
+            .search-bar {
+                width: 100%;
+                margin-bottom: 10px;
             }
 
             .surah-list {
                 padding: 0 5%;
             }
 
-            /* Install Prompt (Responsive) */
-            .install-prompt {
-                width: 80%;
-                flex-direction: column;
-                align-items: center;
-                font-size: 1em;
+            .menu-toggle {
+                display: block;
             }
 
-            .install-prompt button {
-                width: 100%;
-                padding: 12px;
-                font-size: 1em;
-                margin-top: 10px;
-            }
-
-            .install-btn {
-                font-size: 1em;
-                padding: 12px;
-                margin-top: 15px;
-            }
-
-            /* Menu Item Styling for Smaller Screens */
-            .menu a {
-                font-size: 1em;
-                padding: 12px 15px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            /* Even smaller screens */
-            .surah-item h3 {
-                font-size: 1.2em;
-            }
-
-            .surah-item p {
-                font-size: 1em;
-            }
-
-            .menu a {
-                font-size: 0.9em;
-                padding: 10px 12px;
-            }
-
-            .install-btn {
-                font-size: 1.1em;
-                padding: 10px 12px;
+            /* Hide the menu in small screens */
+            .menu.active {
+                left: 0;
             }
         }
     </style>
@@ -268,7 +270,21 @@
         <a href="prayer.html">Prayer</a>
         <a href="tasbih.html">Tasbih</a>
         <a href="99-names.html">100 Names</a>
-        <button class="install-btn" id="install-menu-btn">Install App</button>
+    </div>
+
+    <!-- Search and Sort Section -->
+    <div class="search-sort-container">
+        <input type="text" id="search-bar" class="search-bar" placeholder="Search by title or index...">
+        <select class="sort-select" id="sort-select">
+            <option value="index">Sort by Index</option>
+            <option value="title">Sort by Title (English)</option>
+        </select>
+    </div>
+
+    <!-- Language Switch -->
+    <div class="language-switch-container">
+        <a href="javascript:void(0)" class="language-switch selected" id="arabic-link">Arabic</a> | 
+        <a href="javascript:void(0)" class="language-switch" id="english-link">English</a>
     </div>
 
     <!-- Surah List -->
@@ -276,13 +292,10 @@
         <!-- Surah Items will be injected here -->
     </div>
 
-    <!-- Install Prompt (Initial) -->
-    <div class="install-prompt" id="install-prompt" style="display: none;">
-        <span>Install the Quran Kareem app for a better experience!</span>
-        <div>
-            <button id="install-accept">Install</button>
-            <button id="install-close" class="close">Close</button>
-        </div>
+    <!-- Install Prompt -->
+    <div class="install-prompt" id="install-prompt">
+        <span>Install this app for offline access</span>
+        <button id="install-button">Install</button>
     </div>
 
     <script>
@@ -290,39 +303,6 @@
         document.getElementById('menu-toggle').addEventListener('click', () => {
             const menu = document.getElementById('menu');
             menu.classList.toggle('active');
-        });
-
-        // Handle Install Button
-        const installButton = document.getElementById('install-menu-btn');
-        let deferredPrompt;
-        const installPrompt = document.getElementById('install-prompt');
-        
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            if (!localStorage.getItem('installPromptDismissed')) {
-                installPrompt.style.display = 'flex';
-            }
-        });
-
-        document.getElementById('install-accept').addEventListener('click', () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the installation prompt');
-                    } else {
-                        console.log('User dismissed the installation prompt');
-                    }
-                    deferredPrompt = null;
-                });
-            }
-            installPrompt.style.display = 'none';
-        });
-
-        document.getElementById('install-close').addEventListener('click', () => {
-            localStorage.setItem('installPromptDismissed', 'true');
-            installPrompt.style.display = 'none';
         });
 
         // Fetch Surah Data
@@ -338,29 +318,109 @@
         }
 
         // Render Surah Items
-        function renderSurahs(surahs) {
+        function renderSurahs(surahs, language) {
             const surahList = document.getElementById('surah-list');
             surahList.innerHTML = '';
 
             surahs.forEach(surah => {
                 const surahIndex = parseInt(surah.index, 10);
+                const surahDetailsUrl = `surah-details-${language}.html?index=${surahIndex}`;
+
                 const surahItem = document.createElement('a');
                 surahItem.className = 'surah-item';
-                surahItem.href = `surah-details.html?index=${surahIndex}`;
+                surahItem.href = surahDetailsUrl;
                 surahItem.innerHTML = `
-                    <h3>${surah.title}</h3>
+                    <h3>${language === 'en' ? surah.title : surah.titleAr}</h3>
                     <p>Surah: ${surahIndex}</p>
+                    <p>${language === 'en' ? surah.title : surah.titleAr}</p>
                     <p>${surah.type}</p>
                 `;
+
                 surahList.appendChild(surahItem);
             });
         }
 
-        fetchSurahs().then(surahs => {
-            renderSurahs(surahs);
+        // Sort Surahs
+        function sortSurahs(surahs, criteria) {
+            return surahs.sort((a, b) => {
+                if (criteria === 'index') {
+                    return a.index - b.index;
+                } else if (criteria === 'title') {
+                    return a.title.localeCompare(b.title);
+                }
+                return 0;
+            });
+        }
+
+        // Handle Search
+        document.getElementById('search-bar').addEventListener('input', async function() {
+            const searchQuery = this.value.toLowerCase();
+            const surahs = await fetchSurahs();
+            const filteredSurahs = surahs.filter(surah => {
+                return surah.title.toLowerCase().includes(searchQuery) || surah.index.includes(searchQuery);
+            });
+            const selectedLang = document.querySelector('.language-switch.selected').id === 'arabic-link' ? 'ar' : 'en';
+            renderSurahs(filteredSurahs, selectedLang);
         });
 
-    </script>
+        // Handle Sort
+        document.getElementById('sort-select').addEventListener('change', async function() {
+            const sortCriteria = this.value;
+            const surahs = await fetchSurahs();
+            const sortedSurahs = sortSurahs(surahs, sortCriteria);
+            const selectedLang = document.querySelector('.language-switch.selected').id === 'arabic-link' ? 'ar' : 'en';
+            renderSurahs(sortedSurahs, selectedLang);
+        });
 
+        // Toggle between Arabic and English
+        document.getElementById('english-link').addEventListener('click', async function() {
+            const surahs = await fetchSurahs();
+            renderSurahs(surahs, 'en');
+            updateLanguageSelection('en');
+        });
+
+        document.getElementById('arabic-link').addEventListener('click', async function() {
+            const surahs = await fetchSurahs();
+            renderSurahs(surahs, 'ar');
+            updateLanguageSelection('ar');
+        });
+
+        // Update language selection UI
+        function updateLanguageSelection(language) {
+            if (language === 'en') {
+                document.getElementById('english-link').classList.add('selected');
+                document.getElementById('arabic-link').classList.remove('selected');
+            } else {
+                document.getElementById('arabic-link').classList.add('selected');
+                document.getElementById('english-link').classList.remove('selected');
+            }
+        }
+
+        // Install Prompt
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            document.getElementById('install-prompt').style.display = 'flex';
+        });
+
+        document.getElementById('install-button').addEventListener('click', async () => {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                console.log('User accepted the A2HS prompt');
+            }
+            deferredPrompt = null;
+            document.getElementById('install-prompt').style.display = 'none';
+        });
+
+        // Initial render (default language Arabic)
+        window.onload = async function() {
+            const surahs = await fetchSurahs();
+            renderSurahs(surahs, 'ar');
+            updateLanguageSelection('ar');
+        };
+    </script>
 </body>
 </html>
