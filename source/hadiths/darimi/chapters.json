@@ -1,8 +1,9 @@
-{
+{ 
+  "title": "Sunan ad-Darimi",
+  "author": "Imam Abdullah ibn Abd ar-Rahman ad-Darimi",
   "collection": {
-    "name": "Sunan ad-Darimi",
-    "compiled_by": "Imam Abdullah ibn Abd ar-Rahman ad-Darimi",
     "description": "Sunan ad-Darimi is one of the important collections of hadith compiled by Imam Abdullah ibn Abd ar-Rahman ad-Darimi (rahimahullah). It is widely considered to be a significant work in the Islamic tradition, included among the 'Nine Books' of hadith collections. The book contains around 3,400 hadith organized by topic (as in the Sunan format). Unfortunately, this collection has not been fully translated into English yet.",
+    "total_hadith": 5274,
     "books": [
       {
         "book_number": 1,
