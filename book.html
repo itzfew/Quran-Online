@@ -48,7 +48,7 @@
 </head>
 <body>
     <div class="container">
-        <h1 id="bookTitle">Chapters</h1>
+        <h1 id="bookTitle">Loading...</h1>
         <ul id="chapterList">
             <!-- Chapters will be populated here dynamically -->
         </ul>
@@ -67,10 +67,17 @@
         // Construct the API URL based on the 'bookSlug'
         const apiUrl = `https://www.hadithapi.com/api/${bookSlug}/chapters?apiKey=$2y$10$tRU6Mfq4SwT9N8lesjlLEzPLw9J6DN0yAxrM5hA4JEsHJytUve`;
 
+        console.log("Fetching chapters from API:", apiUrl); // Debug log
+
         // Fetch chapters from the API
         fetch(apiUrl)
-        .then(response => response.json())
+        .then(response => {
+            console.log("API Response Status:", response.status); // Log status
+            return response.json();
+        })
         .then(data => {
+            console.log("API Response Data:", data); // Debug log for data
+
             // Check if the response is valid
             if (data.status === 200 && data.chapters) {
                 const chapters = data.chapters;
