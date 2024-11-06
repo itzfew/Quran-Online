@@ -55,26 +55,44 @@
     </div>
 
     <script>
+        // Extract the 'slug' from the URL query parameters
         const urlParams = new URLSearchParams(window.location.search);
         const bookSlug = urlParams.get('slug');
+        
+        if (!bookSlug) {
+            document.getElementById('bookTitle').innerHTML = 'No book selected';
+            return;
+        }
+
+        // Construct the API URL based on the 'bookSlug'
         const apiUrl = `https://www.hadithapi.com/api/${bookSlug}/chapters?apiKey=$2y$10$tRU6Mfq4SwT9N8lesjlLEzPLw9J6DN0yAxrM5hA4JEsHJytUve`;
 
+        // Fetch chapters from the API
         fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
-            const chapters = data.chapters;
-            const bookTitle = document.getElementById('bookTitle');
-            const chapterList = document.getElementById('chapterList');
-            bookTitle.innerHTML = `Chapters of ${data.books[0].bookName}`;
+            // Check if the response is valid
+            if (data.status === 200 && data.chapters) {
+                const chapters = data.chapters;
+                const bookTitle = document.getElementById('bookTitle');
+                const chapterList = document.getElementById('chapterList');
 
-            chapters.forEach(chapter => {
-                const listItem = document.createElement('li');
-                listItem.innerHTML = `<a href="hadith.html?slug=${bookSlug}&chapterId=${chapter.id}">Chapter ${chapter.chapterNumber}: ${chapter.chapterEnglish}</a>`;
-                chapterList.appendChild(listItem);
-            });
+                // Update the title of the page with the book's name
+                bookTitle.innerHTML = `Chapters of ${bookSlug.replace('-', ' ').toUpperCase()}`;
+
+                // Populate the chapters
+                chapters.forEach(chapter => {
+                    const listItem = document.createElement('li');
+                    listItem.innerHTML = `<a href="hadith.html?slug=${bookSlug}&chapterId=${chapter.id}">Chapter ${chapter.chapterNumber}: ${chapter.chapterEnglish}</a>`;
+                    chapterList.appendChild(listItem);
+                });
+            } else {
+                document.getElementById('bookTitle').innerHTML = 'No chapters found for this book.';
+            }
         })
         .catch(error => {
             console.log('Error:', error);
+            document.getElementById('bookTitle').innerHTML = 'Error fetching chapters.';
         });
     </script>
 </body>
