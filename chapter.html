@@ -267,7 +267,7 @@
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    displayHadiths(data);
+                    displayHadiths(data, book, chapter);
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
@@ -277,7 +277,7 @@
         }
 
         // Function to display the hadiths on the page
-        function displayHadiths(data) {
+        function displayHadiths(data, book, chapter) {
             const hadithResult = document.getElementById('hadithResult');
             const loading = document.getElementById('loading');
             loading.style.display = 'none';
@@ -293,15 +293,19 @@
                 
                 data.hadiths.forEach(hadith => {
                     let arabicText = `<p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>`;
-                    let englishText = hadith.english.text.length > 200 ? 
-                        `<p class="english-text" id="hadith${hadith.id}">${hadith.english.text.slice(0, 200)}... <span class="view-all" onclick="viewFullHadith(${hadith.id})">View All</span></p>` : 
-                        `<p class="english-text">${hadith.english.text}</p>`;
+                    
+                    let englishText = hadith.english.text.split('\n').slice(0, 6).join('\n');
+                    let showMoreButton = '';
+                    
+                    if (hadith.english.text.split('\n').length > 6) {
+                        englishText += '... <span class="view-all" onclick="viewFullHadith(event, ' + hadith.id + ')">View All</span>';
+                    }
                     
                     htmlContent += `
                         <div class="hadith">
                             <h3>Hadith #${hadith.id}</h3>
                             ${arabicText}
-                            ${englishText}
+                            <p class="english-text" id="hadith-${hadith.id}">${englishText}</p>
                         </div>
                     `;
                 });
@@ -310,38 +314,32 @@
             } else {
                 hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
             }
+
+            // Handle previous and next chapter navigation
+            document.getElementById('prevChapter').onclick = () => navigateChapter(book, chapter, 'prev');
+            document.getElementById('nextChapter').onclick = () => navigateChapter(book, chapter, 'next');
         }
 
-        // Function to view the full hadith
-        function viewFullHadith(id) {
-            const hadith = document.getElementById(`hadith${id}`);
-            const fullText = hadith.innerHTML.split('...')[0];
-            hadith.innerHTML = `${fullText} <span class="view-all" onclick="collapseHadith(${id})">Collapse</span>`;
+        function viewFullHadith(event, id) {
+            const hadithText = document.getElementById('hadith-' + id);
+            hadithText.innerHTML = hadithText.innerHTML.split('...')[0] + ' <span class="view-all" onclick="collapseHadith(event, ' + id + ')">Collapse</span>';
         }
 
-        // Function to collapse the hadith back to short version
-        function collapseHadith(id) {
-            const hadith = document.getElementById(`hadith${id}`);
-            const shortText = hadith.innerHTML.split('...')[0];
-            hadith.innerHTML = `${shortText}... <span class="view-all" onclick="viewFullHadith(${id})">View All</span>`;
+        function collapseHadith(event, id) {
+            const hadithText = document.getElementById('hadith-' + id);
+            const fullText = hadithText.getAttribute('data-full-text');
+            hadithText.innerHTML = fullText.split('\n').slice(0, 6).join('\n') + '... <span class="view-all" onclick="viewFullHadith(event, ' + id + ')">View All</span>';
         }
 
-        // Event listener for settings button
-        document.getElementById('settingsBtn').addEventListener('click', () => {
-            const panel = document.getElementById('settingsPanel');
-            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
-        });
-
-        // Pagination logic
-        document.getElementById('prevChapter').addEventListener('click', () => {
-            // Handle previous chapter logic
-            alert('Go to previous chapter');
-        });
-
-        document.getElementById('nextChapter').addEventListener('click', () => {
-            // Handle next chapter logic
-            alert('Go to next chapter');
-        });
+        function navigateChapter(book, chapter, direction) {
+            let newChapter = parseInt(chapter);
+            if (direction === 'prev') {
+                newChapter--;
+            } else {
+                newChapter++;
+            }
+            window.location.href = `?book=${book}&chapter=${newChapter}`;
+        }
     </script>
 </body>
 </html>
