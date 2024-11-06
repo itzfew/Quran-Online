@@ -3,93 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hadith Details</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <title>Chapters List</title>
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f7f6;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
             line-height: 1.6;
         }
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 20px;
-        }
         h1 {
             text-align: center;
             color: #2c3e50;
+            margin-top: 20px;
         }
-        .hadith-list {
-            padding: 0;
+        .chapter-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 30px;
         }
-        .hadith-item {
+        .chapter-item {
             background-color: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            margin: 10px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin: 15px;
             padding: 20px;
+            text-align: center;
+            width: 150px;
+            transition: transform 0.2s ease;
         }
-        .hadith-item h3 {
-            color: #16a085;
+        .chapter-item:hover {
+            transform: translateY(-5px);
         }
-        .hadith-item p {
-            color: #555;
-            font-size: 16px;
+        .chapter-item a {
+            text-decoration: none;
+            color: #3498db;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .chapter-item a:hover {
+            color: #2980b9;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Hadith Details</h1>
-        <div class="hadith-list">
-            <!-- Dynamically populate hadiths -->
-        </div>
+
+    <h1>Chapters List</h1>
+
+    <div class="chapter-list">
+        <!-- Dynamically populated list of chapters -->
     </div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const bookBase = urlParams.get('book');
-        const chapter = urlParams.get('chapter');
-
-        // Example hadiths for the demo
-        const hadiths = {
-            bukhari: {
-                1: [
-                    { hadithNumber: 1, text: "Hadith text for Chapter 1 of Sahih al-Bukhari..." },
-                    { hadithNumber: 2, text: "Hadith text for Chapter 2 of Sahih al-Bukhari..." },
-                    // More hadiths for this chapter
-                ],
-                // Other chapters...
-            },
-            muslim: {
-                "introduction": [
-                    { hadithNumber: 1, text: "Hadith text for the introduction of Sahih Muslim..." },
-                    // More hadiths
-                ],
-                // Other chapters...
-            },
-            // More books...
+        const chapters = {
+            bukhari: [
+                { id: 1, name: "Book 1: Revelation" },
+                { id: 2, name: "Book 2: Knowledge" },
+                { id: 3, name: "Book 3: Faith" },
+                { id: 4, name: "Book 4: Prayer" },
+                { id: 5, name: "Book 5: Fasting" }
+                // Add more chapters for Bukhari
+            ],
+            muslim: [
+                { id: 1, name: "Book 1: The Book of Faith" },
+                { id: 2, name: "Book 2: The Book of Purification" },
+                { id: 3, name: "Book 3: The Book of Prayer" },
+                { id: 4, name: "Book 4: The Book of Fasting" }
+                // Add more chapters for Muslim
+            ],
+            // Add more books and their chapters
         };
 
-        const hadithListElement = document.querySelector('.hadith-list');
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookSlug = urlParams.get('book');
+        const chapterListElement = document.querySelector('.chapter-list');
 
-        if (hadiths[bookBase] && hadiths[bookBase][chapter]) {
-            const selectedHadiths = hadiths[bookBase][chapter];
-            selectedHadiths.forEach(hadith => {
-                const hadithElement = document.createElement('div');
-                hadithElement.classList.add('hadith-item');
-                hadithElement.innerHTML = `
-                    <h3>Hadith #${hadith.hadithNumber}</h3>
-                    <p>${hadith.text}</p>
+        if (chapters[bookSlug]) {
+            chapters[bookSlug].forEach(chapter => {
+                const chapterElement = document.createElement('div');
+                chapterElement.classList.add('chapter-item');
+                chapterElement.innerHTML = `
+                    <h3>${chapter.name}</h3>
+                    <a href="hadith.html?book=${bookSlug}&chapter=${chapter.id}">View Hadiths</a>
                 `;
-                hadithListElement.appendChild(hadithElement);
+                chapterListElement.appendChild(chapterElement);
             });
         } else {
-            hadithListElement.innerHTML = "<p>No hadiths found for this chapter.</p>";
+            chapterListElement.innerHTML = "<p>No chapters found for this book.</p>";
         }
     </script>
 </body>
