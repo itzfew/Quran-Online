@@ -47,19 +47,29 @@
 </div>
 
 <script>
+  // Extract query parameters from the URL (book and chapter)
   const urlParams = new URLSearchParams(window.location.search);
   const bookSlug = urlParams.get('book');
   const chapterNumber = urlParams.get('chapter');
 
+  // API URL to fetch Hadiths based on book and chapter
   const apiUrl = `https://www.hadithapi.com/api/hadiths?apiKey=$2y$10$tRU6Mfq4SwT9N8lesjlLEzPLw9J6DN0yAxrM5hA4JEsHJytUve&bookSlug=${bookSlug}&chapterId=${chapterNumber}`;
 
+  // Fetch data from the API
   fetch(apiUrl)
     .then(response => response.json())
     .then(data => {
       if (data.status === 200) {
-        const hadiths = data.hadiths.data;
+        const hadiths = data.hadiths.data; // Hadiths array
         const hadithListElement = document.getElementById('hadith-list');
 
+        // Check if Hadiths exist for the given chapter
+        if (hadiths.length === 0) {
+          hadithListElement.innerHTML = `<p>No hadiths found for this chapter.</p>`;
+          return;
+        }
+
+        // Display each Hadith for the requested chapter and book
         hadiths.forEach(hadith => {
           const hadithItem = document.createElement('div');
           hadithItem.classList.add('hadith-item');
@@ -74,6 +84,7 @@
             <div class="hadith-content">
               <strong>Arabic:</strong> ${hadith.hadithArabic}
             </div>
+            <p><strong>Source:</strong> ${hadith.book.bookName} - Chapter ${hadith.chapter.chapterNumber}: ${hadith.chapter.chapterEnglish}</p>
           `;
           hadithListElement.appendChild(hadithItem);
         });
