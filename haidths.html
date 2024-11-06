@@ -1,36 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hadith Books List</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hadith Books</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    .book-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .book-item {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .book-item:hover {
+      transform: translateY(-10px);
+    }
+    .book-title {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+    .book-details {
+      color: #555;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Hadith Books</h1>
-        <ul id="bookList">
-            <!-- Books will be populated here dynamically -->
-        </ul>
-    </div>
 
-    <script>
-        const apiUrl = 'https://www.hadithapi.com/api/books?apiKey=$2y$10$tRU6Mfq4SwT9N8lesjlLEzPLw9J6DN0yAxrM5hA4JEsHJytUve';
+<header>
+  <h1>Hadith Books</h1>
+</header>
 
-        fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            const books = data.books;
-            const bookList = document.getElementById('bookList');
-            books.forEach(book => {
-                const listItem = document.createElement('li');
-                listItem.innerHTML = `<a href="book.html?slug=${book.bookSlug}">${book.bookName}</a> - ${book.writerName}`;
-                bookList.appendChild(listItem);
-            });
-        })
-        .catch(error => {
-            console.log('Error:', error);
+<div class="book-list" id="book-list">
+  <!-- Book items will be injected here by JavaScript -->
+</div>
+
+<script>
+  const apiUrl = 'https://www.hadithapi.com/api/books?apiKey=$2y$10$tRU6Mfq4SwT9N8lesjlLEzPLw9J6DN0yAxrM5hA4JEsHJytUve';
+
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 200) {
+        const books = data.books;
+        const bookListElement = document.getElementById('book-list');
+
+        books.forEach(book => {
+          const bookItem = document.createElement('div');
+          bookItem.classList.add('book-item');
+          bookItem.innerHTML = `
+            <h3 class="book-title">${book.bookName}</h3>
+            <p class="book-details">By: ${book.writerName} | Death: ${book.writerDeath} | Hadiths: ${book.hadiths_count} | Chapters: ${book.chapters_count}</p>
+          `;
+          bookItem.onclick = () => {
+            window.location.href = `book.html?slug=${book.bookSlug}`;
+          };
+          bookListElement.appendChild(bookItem);
         });
-    </script>
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    });
+</script>
+
 </body>
 </html>
