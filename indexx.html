@@ -1,116 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset='utf-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <title>Page Title</title>
-    <meta name='viewport' content='width=device-width, initial-scale=1'>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-messaging.js"></script>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Push Notifications with Firebase</title>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.10.0/firebase-messaging.js"></script>
 </head>
 <body>
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-12">
-                <button class="btn btn-secondary" id="subscribe" onclick="subscribe()">Generate Token</button>
-                <div id="token" class="mt-5"></div>
-            </div>
-        </div>
-    </div>
+    <h1>Push Notifications Example</h1>
+    <button id="enableNotifications">Enable Notifications</button>
+    <p id="status">Notifications are disabled by default.</p>
+
     <script>
-        // Firebase Configurations
-var firebaseConfig = {
-  apiKey: "AIzaSyAWblATQVo78bKiO5uEhOB5xDGhFu3oBqE",
-  authDomain: "quran-online-a43be.firebaseapp.com",
-  projectId: "quran-online-a43be",
-  storageBucket: "quran-online-a43be.firebasestorage.app",
-  messagingSenderId: "382216468952",
-  appId: "1:382216468952:web:235ea2c2d81ebe81ec1aad",
-  measurementId: "G-ZW77HK1NH4"
-};
-// Initializing Firebase App
-firebase.initializeApp(firebaseConfig);
+        // Firebase config (replace with your own credentials from Firebase Console)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAWblATQVo78bKiO5uEhOB5xDGhFu3oBqE",
+            authDomain: "quran-online-a43be.firebaseapp.com",
+            projectId: "quran-online-a43be",
+            storageBucket: "quran-online-a43be.firebasestorage.app",
+            messagingSenderId: "382216468952",
+            appId: "1:382216468952:web:235ea2c2d81ebe81ec1aad",
+            measurementId: "G-ZW77HK1NH4"
+        };
 
-// Initializing Cloud Messanging
-const messaging = firebase.messaging();
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const messaging = firebase.messaging();
 
+        // VAPID Key (replace this with your VAPID key from Firebase)
+        const vapidKey = "YOUR_VAPID_KEY_HERE"; // Replace with your actual VAPID key
 
-// Registering Service worker
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js').then(res => {
-        console.log("Register Success");
-        messaging.useServiceWorker(res);
-    }).catch(e => {
-        console.log(e);
-    });
-}
+        // Enable notifications button event listener
+        document.getElementById("enableNotifications").addEventListener("click", function () {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    document.getElementById("status").textContent = "Notification permission granted.";
 
-// Subscribing to push Notifications
-const subscribe = () => {
-    const token = document.getElementById('token');
-    // getting PushNotification permission from browser
-    Notification.requestPermission().then(permission => {
-        if (permission == "granted") {
-            // if Permission is allowed then getting firebase messanging token from firebase
-            messaging.getToken().then(currentToken => {
-                console.log(currentToken);
-                // displaying token in index file
-                token.textContent = currentToken;
+                    // Get the FCM token
+                    messaging.getToken({ vapidKey: vapidKey })
+                        .then(currentToken => {
+                            if (currentToken) {
+                                console.log("FCM Token:", currentToken);
+                                // Save token to localStorage (or use it for later use)
+                                localStorage.setItem("fcmToken", currentToken);
+                                alert("FCM Token saved locally.");
+                            } else {
+                                console.log("No token available.");
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error getting token:", error);
+                        });
+                } else {
+                    document.getElementById("status").textContent = "Notification permission denied.";
+                }
             });
-        } else {
-            token.textContent = "Permission not granted";
-        }
-    }).catch(e=>{
-        token.textContent=e;
-    });
-};
-
-
-// Sending Push Notifications
-const sendPush = () => {
-    // Getting From Data when button clicked
-    const token = document.getElementById('usertoken').value;
-    const notificationTitle = document.getElementById('title').value;
-    const notificationBody = document.getElementById('body').value;
-
-    // Adding data to payload for sending push notifications
-    let body = {
-        to: token,
-        notification: {
-            title: notificationTitle,
-            body: notificationBody,
-            click_action: "/",
-        }
-    };
-
-    // Setting options for push notification
-    const options = {
-        method: "POST",
-        headers: new Headers({
-            // Add your server key after key=
-            Authorization: "key=e-2Lc3BLhqonfI1eeVyaVa:APA91bEeHox1JM3WFzA6f5f3n93ycoSN_7up3lr7D3kBAdCiHiSa1VYlV2mFwUru6TzWYqOVBoHTQTvARnGOPR2oAj7yPlQ_mJMx8w3a3XDuVMJqOytlTEg",
-            "Content-Type": "application/json"
-        }),
-        body: JSON.stringify(body)
-    };
-
-    // Sending Push notifications to user using fetch api
-    fetch("https://fcm.googleapis.com/fcm/send", options)
-        .then(res => res.json())
-        .then(data => {
-            if (data.failure == 1) {
-                alert("Token Expire");
-            } else {
-                alert("Send Success");
-            }
-        })
-        .catch(err => {
-            alert(err);
         });
-};
-        
+
+        // Handling background notifications (when the app is closed or in the background)
+        messaging.onBackgroundMessage(function(payload) {
+            console.log('[firebase-messaging-sw.js] Received background message:', payload);
+
+            const notificationTitle = payload.notification.title;
+            const notificationOptions = {
+                body: payload.notification.body,
+                icon: payload.notification.icon
+            };
+
+            self.registration.showNotification(notificationTitle, notificationOptions);
+        });
+
+        // Handling foreground notifications (when the app is open)
+        messaging.onMessage(function(payload) {
+            console.log("Message received.", payload);
+            const notificationTitle = payload.notification.title;
+            const notificationOptions = {
+                body: payload.notification.body,
+                icon: payload.notification.icon
+            };
+            new Notification(notificationTitle, notificationOptions);
+        });
     </script>
+
+    <!-- Firebase Service Worker -->
+    <script src="/firebase-messaging-sw.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        p {
+            font-size: 18px;
+        }
+    </style>
 </body>
 </html>
