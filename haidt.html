@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadith of Chapter 1 - Sahih Muslim</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        header nav a {
+            color: white;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        #hadith-container {
+            margin: 20px;
+            padding: 10px;
+            background-color: white;
+            border-radius: 5px;
+        }
+
+        .hadith {
+            margin-bottom: 20px;
+        }
+
+        .arabic {
+            font-size: 1.5em;
+            direction: rtl;
+        }
+
+        .english {
+            margin-top: 10px;
+            font-size: 1.2em;
+        }
+
+        .narrator {
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Sahih Muslim - Book of Faith</h1>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="chapter2.html">Next Chapter</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="hadith-container">
+            <!-- Hadith content will be injected here -->
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Your Site Name</p>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Define the chapter JSON URL
+            const chapterId = 1;  // Example for Chapter 1
+            const jsonUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadith/chapters/muslim/${chapterId}.json`;
+
+            // Fetch and display the Hadiths
+            fetch(jsonUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const hadithContainer = document.getElementById('hadith-container');
+                    const metadata = data.metadata;
+                    
+                    // Display Book Info
+                    const title = document.createElement('h2');
+                    title.textContent = `${metadata.english.title}: ${metadata.english.introduction}`;
+                    hadithContainer.appendChild(title);
+
+                    // Display each Hadith
+                    data.hadiths.forEach(hadith => {
+                        const hadithElement = document.createElement('div');
+                        hadithElement.classList.add('hadith');
+
+                        // Arabic Text
+                        const arabicText = document.createElement('p');
+                        arabicText.classList.add('arabic');
+                        arabicText.textContent = hadith.arabic;
+                        hadithElement.appendChild(arabicText);
+
+                        // English Translation
+                        const englishText = document.createElement('p');
+                        englishText.classList.add('english');
+                        englishText.textContent = hadith.english.text;
+                        hadithElement.appendChild(englishText);
+
+                        // Narrator Info
+                        const narrator = document.createElement('p');
+                        narrator.classList.add('narrator');
+                        narrator.textContent = `Narrated by: ${hadith.english.narrator}`;
+                        hadithElement.appendChild(narrator);
+
+                        hadithContainer.appendChild(hadithElement);
+                    });
+                })
+                .catch(error => console.error("Error fetching Hadith data:", error));
+        });
+    </script>
+
+</body>
+</html>
