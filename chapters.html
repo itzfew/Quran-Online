@@ -52,6 +52,7 @@
             text-align: center;
             direction: rtl;
             color: #2c3e50;
+            transition: font-size 0.3s;
         }
         .hadith .english-text {
             font-size: 16px;
@@ -126,10 +127,69 @@
         .theme-toggle:hover {
             background-color: #1abc9c;
         }
+        /* Toolbar at the top */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #16a085;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+        }
+        .toolbar select, .toolbar input {
+            margin: 0 10px;
+            background-color: #1abc9c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        .toolbar label {
+            margin-right: 10px;
+        }
+        .toolbar button {
+            background-color: #1abc9c;
+            color: white;
+            padding: 5px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .toolbar button:hover {
+            background-color: #16a085;
+        }
+        .toolbar .light-dark-toggle {
+            cursor: pointer;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 </head>
 <body>
+
+    <!-- Toolbar with options at the top -->
+    <div class="toolbar">
+        <div>
+            <label for="fontSelect">Arabic Font:</label>
+            <select id="fontSelect" onchange="changeArabicFont()">
+                <option value="Amiri">Amiri</option>
+                <option value="Scheherazade">Scheherazade</option>
+                <option value="Cairo">Cairo</option>
+                <option value="Lalezar">Lalezar</option>
+            </select>
+        </div>
+        <div>
+            <label for="fontSizeRange">Arabic Text Size:</label>
+            <input type="range" id="fontSizeRange" min="14" max="30" value="18" oninput="resizeArabicText(event)" />
+        </div>
+        <div>
+            <button class="light-dark-toggle" onclick="toggleTheme()">🌙 / 🌞</button>
+        </div>
+    </div>
 
     <h1>Hadith Viewer</h1>
     <p style="text-align: center; font-size: 18px; color: #7f8c8d;">
@@ -143,6 +203,7 @@
         let chaptersData = []; // To store chapter data
         let currentPage = 1; // Current page for pagination
         const itemsPerPage = 5; // Hadiths per page
+        let arabicFontSize = 18; // Default font size for Arabic text
 
         // Function to fetch the chapters data from the remote JSON
         function fetchChaptersData() {
@@ -183,26 +244,21 @@
                 });
         }
 
-        // Function to display the hadiths on the page with pagination
+        // Function to display the hadiths on the page
         function displayHadiths(data, bookSlug) {
             const hadithResult = document.getElementById('hadithResult');
             const loading = document.getElementById('loading');
-
-            // Hide loading spinner
+            
             loading.style.display = 'none';
 
-            // Add mapping for book slugs to full names
             const bookSlugToName = {
                 bukhari: "Sahih al-Bukhari",
                 muslim: "Sahih Muslim",
                 tirmidhi: "Jami` at-Tirmidhi",
-                // Add other mappings here
             };
 
-            // Find the book name based on the book slug
             const bookName = bookSlugToName[bookSlug.toLowerCase()] || 'Unknown Book';
 
-            // Check if the data contains hadiths
             if (data.hadiths && data.hadiths.length > 0) {
                 let htmlContent = `
                     <div class="header-meta">
@@ -211,14 +267,8 @@
                         <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
                     </div>
                 `;
-                
-                // Calculate pagination range
-                const startIndex = (currentPage - 1) * itemsPerPage;
-                const endIndex = Math.min(startIndex + itemsPerPage, data.hadiths.length);
-                
-                // Loop through and display each hadith for the current page
-                for (let i = startIndex; i < endIndex; i++) {
-                    const hadith = data.hadiths[i];
+
+                data.hadiths.forEach(hadith => {
                     htmlContent += `
                         <div class="hadith">
                             <h3>Hadith #${hadith.id}</h3>
@@ -226,31 +276,28 @@
                             <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
                         </div>
                     `;
-                }
+                });
 
                 hadithResult.innerHTML = htmlContent;
-
-                // Add pagination
-                const totalPages = Math.ceil(data.hadiths.length / itemsPerPage);
-                if (totalPages > 1) {
-                    hadithResult.innerHTML += `
-                        <div class="pagination">
-                            <button onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>Prev</button>
-                            <span>Page ${currentPage} of ${totalPages}</span>
-                            <button onclick="changePage(1)" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>
-                        </div>
-                    `;
-                }
             } else {
                 hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
             }
         }
 
-        // Change page for pagination
-        function changePage(direction) {
-            currentPage += direction;
-            const { book, chapter } = getURLParams();
-            fetchHadiths(book, chapter);
+        // Resize Arabic Text based on user input
+        function resizeArabicText(event) {
+            arabicFontSize = event.target.value;
+            document.querySelectorAll('.arabic-text').forEach((element) => {
+                element.style.fontSize = arabicFontSize + 'px';
+            });
+        }
+
+        // Change Arabic Font based on user selection
+        function changeArabicFont() {
+            const selectedFont = document.getElementById('fontSelect').value;
+            document.querySelectorAll('.arabic-text').forEach((element) => {
+                element.style.fontFamily = selectedFont;
+            });
         }
 
         // Initialize the viewer by fetching chapters data and URL parameters
@@ -264,21 +311,20 @@
             }
         }
 
+        // Toggle light/dark mode
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+        }
+
         // Scroll to top
         function scrollToTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Toggle between dark and light mode
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
         }
 
         // On page load, fetch the chapters data and initialize the viewer
         window.onload = fetchChaptersData;
     </script>
 
-    <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
     <div class="back-to-top" onclick="scrollToTop()">↑</div>
 
 </body>
