@@ -1,9 +1,11 @@
-{
+ {
+  "title": "Sunan an-Nasa'i",
+  "author": "Imam Ahmad an-Nasa'i",
   "collection": {
-    "name": "Sunan an-Nasa'i",
-    "compiled_by": "Imam Ahmad an-Nasa'i",
     "description": "Sunan an-Nasa'i is a collection of hadith compiled by Imam Ahmad an-Nasa'i (rahimahullah). His collection is unanimously considered to be one of the six canonical collections of hadith (Kutub as-Sittah) of the Sunnah of the Prophet (ﷺ). It contains roughly 5700 hadith (with repetitions) in 52 books.",
-    "books": [
+    "total_hadith": 51,
+    "books": [    
+      
       {
         "book_number": 1,
         "book_name": "The Book of Purification (كتاب الطهارة)",
