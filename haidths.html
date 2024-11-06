@@ -3,120 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hadith Books List</title>
+    <title>Hadith Books</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7f6;
             margin: 0;
             padding: 0;
             line-height: 1.6;
         }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
         h1 {
             text-align: center;
             color: #2c3e50;
-            margin-top: 20px;
         }
         .book-list {
             display: flex;
-            justify-content: center;
             flex-wrap: wrap;
-            margin: 20px;
+            justify-content: space-between;
         }
         .book-item {
             background-color: #fff;
-            margin: 10px;
-            padding: 20px;
-            width: 250px;
+            border: 1px solid #ddd;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            padding: 15px;
+            width: 30%;
+            transition: transform 0.2s ease;
         }
         .book-item:hover {
-            background-color: #ecf0f1;
+            transform: translateY(-5px);
         }
         .book-item h3 {
+            font-size: 18px;
             color: #16a085;
-            margin: 10px 0;
+            margin-bottom: 10px;
         }
         .book-item p {
             font-size: 14px;
-            color: #34495e;
+            color: #555;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .btn:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
 <body>
-
-    <h1>Hadith Books</h1>
-    <div id="bookList" class="book-list"></div>
+    <div class="container">
+        <h1>Hadith Books</h1>
+        <div class="book-list">
+            <!-- Dynamically populate books -->
+        </div>
+    </div>
 
     <script>
         const books = [
             {
                 id: 1,
-                arabic: {
-                    title: "صحيح البخاري",
-                    author: "الإمام محمد بن إسماعيل البخاري",
-                },
-                english: {
-                    title: "Sahih al-Bukhari",
-                    author: "Imam Muhammad ibn Ismail al-Bukhari",
-                },
-                route: {
-                    base: "bukhari",
-                    chapters: Array.from({ length: 97 }, (_, i) => (i + 1).toString()),
-                },
+                arabic: { title: "صحيح البخاري", author: "الإمام محمد بن إسماعيل البخاري" },
+                english: { title: "Sahih al-Bukhari", author: "Imam Muhammad ibn Ismail al-Bukhari" },
+                path: ["the_9_books", "bukhari"],
+                route: { base: "bukhari", chapters: Array.from({ length: 97 }, (_, i) => (i + 1).toString()) }
             },
             {
                 id: 2,
-                arabic: {
-                    title: "صحيح مسلم",
-                    author: "الإمام مسلم بن الحجاج القشيري النيسابوري",
-                },
-                english: {
-                    title: "Sahih Muslim",
-                    author: "Imam Muslim ibn al-Hajjaj al-Naysaburi",
-                },
-                route: {
-                    base: "muslim",
-                    chapters: [
-                        "introduction", 
-                        ...Array.from({ length: 56 }, (_, i) => (i + 1).toString())
-                    ],
-                },
+                arabic: { title: "صحيح مسلم", author: "الإمام مسلم بن الحجاج القشيري النيسابوري" },
+                english: { title: "Sahih Muslim", author: "Imam Muslim ibn al-Hajjaj al-Naysaburi" },
+                path: ["the_9_books", "muslim"],
+                route: { base: "muslim", chapters: ["introduction", ...Array.from({ length: 56 }, (_, i) => (i + 1).toString())] }
             },
-            // Add other books as needed...
+            {
+                id: 3,
+                arabic: { title: "سنن النسائي", author: "الإمام أبو عبد الرحمن أحمد بن شعيب النسائي" },
+                english: { title: "Sunan al-Nasa'i", author: "Imam Ahmad ibn Shu'ayb al-Nasa'i" },
+                path: ["the_9_books", "nasai"],
+                route: { base: "nasai", chapters: [...Array.from({ length: 51 }, (_, i) => (i + 1).toString()), "35b"] }
+            },
+            // Add other books similarly...
         ];
 
-        // Function to generate and display the books list
-        function generateBooksList() {
-            const bookListContainer = document.getElementById('bookList');
-            books.forEach(book => {
-                const bookItem = document.createElement('div');
-                bookItem.classList.add('book-item');
-                
-                const bookTitle = document.createElement('h3');
-                bookTitle.innerText = book.english.title;
-                
-                const bookAuthor = document.createElement('p');
-                bookAuthor.innerText = `Author: ${book.english.author}`;
+        const bookListElement = document.querySelector('.book-list');
 
-                bookItem.appendChild(bookTitle);
-                bookItem.appendChild(bookAuthor);
-                
-                bookItem.onclick = () => {
-                    // Redirect to chapter list page
-                    window.location.href = `chapter.html?book=${book.route.base}`;
-                };
-
-                bookListContainer.appendChild(bookItem);
-            });
-        }
-
-        // On page load, generate the books list
-        window.onload = generateBooksList;
+        books.forEach(book => {
+            const bookElement = document.createElement('div');
+            bookElement.classList.add('book-item');
+            bookElement.innerHTML = `
+                <h3>${book.english.title}</h3>
+                <p>Author: ${book.english.author}</p>
+                <a href="chapter.html?book=${book.route.base}" class="btn">View Chapters</a>
+            `;
+            bookListElement.appendChild(bookElement);
+        });
     </script>
-
 </body>
 </html>
