@@ -1,0 +1,290 @@
+{
+  "collection": {
+    "name": "Sahih Muslim",
+    "compiled_by": "Imam Muslim ibn al-Hajjaj al-Naysaburi",
+    "description": "Sahih Muslim is a collection of hadith compiled by Imam Muslim ibn al-Hajjaj al-Naysaburi (rahimahullah). His collection is considered one of the most authentic collections of the Sunnah of the Prophet (ﷺ), and along with Sahih al-Bukhari forms the 'Sahihain,' or the 'Two Sahihs.' It contains roughly 7500 hadith (with repetitions) in 57 books.",
+    "translation_by": "Abdul Hamid Siddiqui",
+    "books": [
+      {
+        "book_number": 1,
+        "book_name": "The Book of Faith (كتاب الإيمان)",
+        "hadith_range": "8 to 222"
+      },
+      {
+        "book_number": 2,
+        "book_name": "The Book of Purification (كتاب الطهارة)",
+        "hadith_range": "223 to 292"
+      },
+      {
+        "book_number": 3,
+        "book_name": "The Book of Menstruation (كتاب الحيض)",
+        "hadith_range": "293 to 376"
+      },
+      {
+        "book_number": 4,
+        "book_name": "The Book of Prayers (كتاب الصلاة)",
+        "hadith_range": "377 to 519"
+      },
+      {
+        "book_number": 5,
+        "book_name": "The Book of Mosques and Places of Prayer (كتاب الْمَسَاجِدِ وَمَوَاضِعِ الصَّلاَةِ)",
+        "hadith_range": "520 to 684"
+      },
+      {
+        "book_number": 6,
+        "book_name": "The Book of Prayer - Travellers (كتاب صلاة المسافرين وقصرها)",
+        "hadith_range": "685 to 843"
+      },
+      {
+        "book_number": 7,
+        "book_name": "The Book of Prayer - Friday (كتاب الجمعة)",
+        "hadith_range": "844 to 883"
+      },
+      {
+        "book_number": 8,
+        "book_name": "The Book of Prayer - Two Eids (كتاب صلاة العيدين)",
+        "hadith_range": "884 to 893"
+      },
+      {
+        "book_number": 9,
+        "book_name": "The Book of Prayer - Rain (كتاب صلاة الاستسقاء)",
+        "hadith_range": "894 to 900"
+      },
+      {
+        "book_number": 10,
+        "book_name": "The Book of Prayer - Eclipses (كتاب الكسوف)",
+        "hadith_range": "901 to 915"
+      },
+      {
+        "book_number": 11,
+        "book_name": "The Book of Prayer - Funerals (كتاب الجنائز)",
+        "hadith_range": "916 to 978"
+      },
+      {
+        "book_number": 12,
+        "book_name": "The Book of Zakat (كتاب الزكاة)",
+        "hadith_range": "979 to 1078"
+      },
+      {
+        "book_number": 13,
+        "book_name": "The Book of Fasting (كتاب الصيام)",
+        "hadith_range": "1079 to 1170"
+      },
+      {
+        "book_number": 14,
+        "book_name": "The Book of I'tikaf (كتاب الاعتكاف)",
+        "hadith_range": "1171 to 1176"
+      },
+      {
+        "book_number": 15,
+        "book_name": "The Book of Pilgrimage (كتاب الحج)",
+        "hadith_range": "1177 to 1399"
+      },
+      {
+        "book_number": 16,
+        "book_name": "The Book of Marriage (كتاب النكاح)",
+        "hadith_range": "1400 to 1443"
+      },
+      {
+        "book_number": 17,
+        "book_name": "The Book of Suckling (كتاب الرضاع)",
+        "hadith_range": "1444 to 1470"
+      },
+      {
+        "book_number": 18,
+        "book_name": "The Book of Divorce (كتاب الطلاق)",
+        "hadith_range": "1471 to 1491"
+      },
+      {
+        "book_number": 19,
+        "book_name": "The Book of Invoking Curses (كتاب اللعان)",
+        "hadith_range": "1492 to 1500"
+      },
+      {
+        "book_number": 20,
+        "book_name": "The Book of Emancipating Slaves (كتاب العتق)",
+        "hadith_range": "1501 to 1510"
+      },
+      {
+        "book_number": 21,
+        "book_name": "The Book of Transactions (كتاب البيوع)",
+        "hadith_range": "1511 to 1550"
+      },
+      {
+        "book_number": 22,
+        "book_name": "The Book of Musaqah (كتاب المساقاة)",
+        "hadith_range": "1551 to 1613"
+      },
+      {
+        "book_number": 23,
+        "book_name": "The Book of the Rules of Inheritance (كتاب الفرائض)",
+        "hadith_range": "1614 to 1619"
+      },
+      {
+        "book_number": 24,
+        "book_name": "The Book of Gifts (كتاب الهبات)",
+        "hadith_range": "1620 to 1626"
+      },
+      {
+        "book_number": 25,
+        "book_name": "The Book of Wills (كتاب الوصية)",
+        "hadith_range": "1627 to 1637"
+      },
+      {
+        "book_number": 26,
+        "book_name": "The Book of Vows (كتاب النذر)",
+        "hadith_range": "1638 to 1645"
+      },
+      {
+        "book_number": 27,
+        "book_name": "The Book of Oaths (كتاب الأيمان)",
+        "hadith_range": "1646 to 1668"
+      },
+      {
+        "book_number": 28,
+        "book_name": "The Book of Oaths, Muharibin, Qasas (Retaliation), and Diyat (Blood Money) (كتاب القسامة والمحاربين والقصاص والديات)",
+        "hadith_range": "1669 to 1683"
+      },
+      {
+        "book_number": 29,
+        "book_name": "The Book of Legal Punishments (كتاب الحدود)",
+        "hadith_range": "1684 to 1710"
+      },
+      {
+        "book_number": 30,
+        "book_name": "The Book of Judicial Decisions (كتاب الأقضية)",
+        "hadith_range": "1711 to 1721"
+      },
+      {
+        "book_number": 31,
+        "book_name": "The Book of Lost Property (كتاب اللقطة)",
+        "hadith_range": "1722 to 1729"
+      },
+      {
+        "book_number": 32,
+        "book_name": "The Book of Jihad and Expeditions (كتاب الجهاد والسير)",
+        "hadith_range": "1730 to 1817"
+      },
+      {
+        "book_number": 33,
+        "book_name": "The Book on Government (كتاب الإمارة)",
+        "hadith_range": "1818 to 1928"
+      },
+      {
+        "book_number": 34,
+        "book_name": "The Book of Hunting, Slaughter, and what may be Eaten (كتاب الصيد والذبائح وما يؤكل من الحيوان)",
+        "hadith_range": "1929 to 1959"
+      },
+      {
+        "book_number": 35,
+        "book_name": "The Book of Sacrifices (كتاب الأضاحى)",
+        "hadith_range": "1960 to 1978"
+      },
+      {
+        "book_number": 36,
+        "book_name": "The Book of Drinks (كتاب الأشربة)",
+        "hadith_range": "1979 to 2064"
+      },
+      {
+        "book_number": 37,
+        "book_name": "The Book of Clothes and Adornment (كتاب اللباس والزينة)",
+        "hadith_range": "2065 to 2130"
+      },
+      {
+        "book_number": 38,
+        "book_name": "The Book of Manners and Etiquette (كتاب الآداب)",
+        "hadith_range": "2131 to 2159"
+      },
+      {
+        "book_number": 39,
+        "book_name": "The Book of Greetings (كتاب السلام)",
+        "hadith_range": "2160 to 2245"
+      },
+      {
+        "book_number": 40,
+        "book_name": "The Book Concerning the Use of Correct Words (كتاب الألفاظ من الأدب وغيرها)",
+        "hadith_range": "2246 to 2254"
+      },
+      {
+        "book_number": 41,
+        "book_name": "The Book of Poetry (كتاب الشعر)",
+        "hadith_range": "2255 to 2260"
+      },
+      {
+        "book_number": 42,
+        "book_name": "The Book of Dreams (كتاب الرؤيا)",
+        "hadith_range": "2261 to 2275"
+      },
+      {
+        "book_number": 43,
+        "book_name": "The Book of Virtues (كتاب الفضائل)",
+        "hadith_range": "2276 to 2380"
+      },
+      {
+        "book_number": 44,
+        "book_name": "The Book of the Merits of the Companions (كتاب فضائل الصحابة)",
+        "hadith_range": "2381 to 2547"
+      },
+      {
+        "book_number": 45,
+        "book_name": "The Book of Virtue, Enjoining Good Manners, and Joining of the Ties of Kinship (كتاب البر والصلة والآداب)",
+        "hadith_range": "2548 to 2642"
+      },
+      {
+        "book_number": 46,
+        "book_name": "The Book of Destiny (كتاب القدر)",
+        "hadith_range": "2643 to 2664"
+      },
+      {
+        "book_number": 47,
+        "book_name": "The Book of Knowledge (كتاب العلم)",
+        "hadith_range": "2665 to 2674"
+      },
+      {
+        "book_number": 48,
+        "book_name": "The Book Pertaining to the Remembrance of Allah, Supplication, Repentance and Seeking Forgiveness (كتاب الذكر والدعاء والتوبة والاستغفار)",
+        "hadith_range": "2675 to 2735"
+      },
+      {
+        "book_number": 49,
+        "book_name": "The Book of Heart-Melting Traditions (كتاب الرقاق)",
+        "hadith_range": "2736 to 2743"
+      },
+      {
+        "book_number": 50,
+        "book_name": "The Book of Repentance (كتاب التوبة)",
+        "hadith_range": "2744 to 2771"
+      },
+      {
+        "book_number": 51,
+        "book_name": "Characteristics of The Hypocrites And Rulings Concerning Them (كتاب صفات المنافقين وأحكامهم)",
+        "hadith_range": "2772 to 2784"
+      },
+      {
+        "book_number": 52,
+        "book_name": "Characteristics of the Day of Judgment, Paradise, and Hell (كتاب صفة القيامة والجنة والنار)",
+        "hadith_range": "2785 to 2821"
+      },
+      {
+        "book_number": 53,
+        "book_name": "The Book of Paradise, its Description, its Bounties and its Inhabitants (كتاب الجنة وصفة نعيمها وأهلها)",
+        "hadith_range": "2822 to 2879"
+      },
+      {
+        "book_number": 54,
+        "book_name": "The Book of Tribulations and Portents of the Last Hour (كتاب الفتن وأشراط الساعة)",
+        "hadith_range": "2880 to 2955"
+      },
+      {
+        "book_number": 55,
+        "book_name": "The Book of Zuhd and Softening of Hearts (كتاب الزهد والرقائق)",
+        "hadith_range": "2956 to 3014"
+      },
+      {
+        "book_number": 56,
+        "book_name": "The Book of Commentary on the Qur'an (كتاب التفسير)",
+        "hadith_range": "3015 to 3033"
+      }
+    ]
+  }
+}
