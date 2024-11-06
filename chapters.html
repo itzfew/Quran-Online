@@ -223,10 +223,12 @@
         let chaptersData = [];
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Load preferences from localStorage
             const darkMode = localStorage.getItem('darkMode') === 'true';
             const textSize = localStorage.getItem('textSize') || '18';
             const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
 
+            // Apply preferences on page load
             if (darkMode) {
                 document.body.classList.add('dark-mode');
             }
@@ -235,6 +237,12 @@
             document.body.style.fontFamily = selectedFont;
 
             document.getElementById('fontSelect').value = selectedFont;
+
+            // Apply Arabic text size from localStorage
+            const arabicTextSize = localStorage.getItem('arabicTextSize') || '18';
+            document.querySelectorAll('.arabic-text').forEach(text => {
+                text.style.fontSize = arabicTextSize + 'px';
+            });
 
             const { book } = getURLParams();
             if (book) {
@@ -248,10 +256,13 @@
         }
 
         function changeTextSize(increment) {
+            // Change the size of Arabic text only
             const arabicText = document.querySelectorAll('.arabic-text');
             arabicText.forEach(text => {
-                const currentSize = parseInt(window.getComputedStyle(text).fontSize);
-                text.style.fontSize = (currentSize + increment) + 'px';
+                let currentSize = parseInt(window.getComputedStyle(text).fontSize);
+                const newSize = currentSize + increment;
+                text.style.fontSize = newSize + 'px';
+                localStorage.setItem('arabicTextSize', newSize);
             });
         }
 
@@ -265,6 +276,7 @@
             localStorage.removeItem('darkMode');
             localStorage.removeItem('textSize');
             localStorage.removeItem('selectedFont');
+            localStorage.removeItem('arabicTextSize');
             location.reload();
         }
 
