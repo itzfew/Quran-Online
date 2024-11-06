@@ -63,14 +63,19 @@
         const hadiths = data.hadiths.data; // Hadiths array
         const hadithListElement = document.getElementById('hadith-list');
 
-        // Check if Hadiths exist for the given chapter
-        if (hadiths.length === 0) {
-          hadithListElement.innerHTML = `<p>No hadiths found for this chapter.</p>`;
+        // Filter the Hadiths based on the requested bookSlug and chapterNumber
+        const filteredHadiths = hadiths.filter(hadith => {
+          return hadith.bookSlug === bookSlug && hadith.chapterId === chapterNumber;
+        });
+
+        // Check if filtered Hadiths exist for the given chapter and book
+        if (filteredHadiths.length === 0) {
+          hadithListElement.innerHTML = `<p>No hadiths found for this chapter in ${bookSlug}.</p>`;
           return;
         }
 
         // Display each Hadith for the requested chapter and book
-        hadiths.forEach(hadith => {
+        filteredHadiths.forEach(hadith => {
           const hadithItem = document.createElement('div');
           hadithItem.classList.add('hadith-item');
           hadithItem.innerHTML = `
