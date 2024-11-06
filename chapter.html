@@ -96,7 +96,7 @@
 
         // Function to fetch the hadiths from the JSON file based on book and chapter
         function fetchHadiths(book, chapter) {
-            const url = `https://raw.githubusercontent.com/AhmedBaset/hadith-json/refs/heads/main/db/by_chapter/the_9_books/${book}/${chapter}.json`;
+            const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book}/${chapter}.json`;
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
