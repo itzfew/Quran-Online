@@ -1,87 +1,128 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chapters of Hadith Book</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #333;
-      color: white;
-      padding: 15px;
-      text-align: center;
-    }
-    .chapter-list {
-      padding: 20px;
-    }
-    .chapter-item {
-      background: white;
-      padding: 20px;
-      margin-bottom: 10px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      transition: transform 0.3s;
-    }
-    .chapter-item:hover {
-      transform: translateY(-10px);
-    }
-    .chapter-title {
-      font-size: 1.2em;
-      margin-bottom: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapters List</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-top: 20px;
+        }
+        .chapter-list {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px;
+        }
+        .chapter-item {
+            background-color: #fff;
+            margin: 10px;
+            padding: 20px;
+            width: 150px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            cursor: pointer;
+        }
+        .chapter-item:hover {
+            background-color: #ecf0f1;
+        }
+        .chapter-item h3 {
+            color: #16a085;
+            margin: 10px 0;
+        }
+    </style>
 </head>
 <body>
 
-<header>
-  <h1>Chapters of Hadith Book</h1>
-</header>
+    <h1>Chapters</h1>
+    <div id="chapterList" class="chapter-list"></div>
 
-<div class="chapter-list" id="chapter-list">
-  <!-- Chapter items will be injected here by JavaScript -->
-</div>
+    <script>
+        // Function to get the book parameter from the URL
+        function getURLParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('book');
+        }
 
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const bookSlug = urlParams.get('slug');
+        const books = [
+            {
+                id: 1,
+                arabic: {
+                    title: "صحيح البخاري",
+                    author: "الإمام محمد بن إسماعيل البخاري",
+                },
+                english: {
+                    title: "Sahih al-Bukhari",
+                    author: "Imam Muhammad ibn Ismail al-Bukhari",
+                },
+                route: {
+                    base: "bukhari",
+                    chapters: Array.from({ length: 97 }, (_, i) => (i + 1).toString()),
+                },
+            },
+            {
+                id: 2,
+                arabic: {
+                    title: "صحيح مسلم",
+                    author: "الإمام مسلم بن الحجاج القشيري النيسابوري",
+                },
+                english: {
+                    title: "Sahih Muslim",
+                    author: "Imam Muslim ibn al-Hajjaj al-Naysaburi",
+                },
+                route: {
+                    base: "muslim",
+                    chapters: [
+                        "introduction", 
+                        ...Array.from({ length: 56 }, (_, i) => (i + 1).toString())
+                    ],
+                },
+            },
+            // Add other books as needed...
+        ];
 
-  const apiUrl = `https://www.hadithapi.com/api/${bookSlug}/chapters?apiKey=$2y$10$tRU6Mfq4SwT9N8lesjlLEzPLw9J6DN0yAxrM5hA4JEsHJytUve`;
+        // Function to generate and display the chapters list for a specific book
+        function generateChaptersList() {
+            const bookId = getURLParams();
+            const book = books.find(b => b.route.base === bookId);
+            
+            if (!book) {
+                document.getElementById('chapterList').innerText = "No book found.";
+                return;
+            }
 
-  fetch(apiUrl)
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 200) {
-        const chapters = data.chapters;
-        const chapterListElement = document.getElementById('chapter-list');
+            const chapterListContainer = document.getElementById('chapterList');
+            book.route.chapters.forEach(chapter => {
+                const chapterItem = document.createElement('div');
+                chapterItem.classList.add('chapter-item');
+                
+                const chapterTitle = document.createElement('h3');
+                chapterTitle.innerText = `Chapter ${chapter}`;
+                
+                chapterItem.appendChild(chapterTitle);
+                
+                chapterItem.onclick = () => {
+                    // Redirect to hadith.html for the selected chapter
+                    window.location.href = `hadith.html?book=${book.route.base}&chapter=${chapter}`;
+                };
 
-        chapters.forEach(chapter => {
-          const chapterItem = document.createElement('div');
-          chapterItem.classList.add('chapter-item');
-          chapterItem.innerHTML = `
-            <h3 class="chapter-title">${chapter.chapterEnglish} (${chapter.chapterNumber})</h3>
-            <p>${chapter.chapterUrdu}</p>
-          `;
-          chapterItem.onclick = () => {
-            window.location.href = `/hadith.html?book=${bookSlug}&chapter=${chapter.chapterNumber}`;
-          };
-          chapterListElement.appendChild(chapterItem);
-        });
-      } else {
-        alert("Error fetching chapters.");
-      }
-    })
-    .catch(error => {
-      console.error(error);
-      alert("Failed to fetch chapter data.");
-    });
-</script>
+                chapterListContainer.appendChild(chapterItem);
+            });
+        }
+
+        // On page load, generate the chapters list
+        window.onload = generateChaptersList;
+    </script>
 
 </body>
 </html>
