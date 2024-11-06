@@ -1,144 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hadith Finder</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f7f7f7;
-      margin: 0;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-      color: #333;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background-color: white;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    select, button {
-      width: 100%;
-      padding: 10px;
-      margin: 5px 0;
-      border-radius: 5px;
-      border: 1px solid #ddd;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .hadith-result {
-      margin-top: 20px;
-    }
-    .hadith {
-      background-color: #f1f1f1;
-      border-left: 5px solid #4CAF50;
-      padding: 10px;
-      margin-bottom: 15px;
-      font-size: 16px;
-      color: #333;
-    }
-    .loading {
-      text-align: center;
-      font-size: 18px;
-      color: #888;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadith Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .hadith-container {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .hadith {
+            margin-bottom: 20px;
+        }
+        .hadith h3 {
+            margin: 0;
+            color: #16a085;
+        }
+        .hadith p {
+            margin: 10px 0;
+        }
+        .loading {
+            font-size: 20px;
+            color: #3498db;
+        }
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
-
-  <h1>Find Hadith</h1>
-  
-  <div class="container">
-    <div class="form-group">
-      <label for="book">Select Book</label>
-      <select id="book">
-        <option value="sahih-bukhari">Sahih Bukhari</option>
-        <option value="sahih-muslim">Sahih Muslim</option>
-        <option value="al-tirmidhi">Jami' Al-Tirmidhi</option>
-        <option value="abu-dawood">Sunan Abu Dawood</option>
-        <option value="ibn-e-majah">Sunan Ibn-e-Majah</option>
-        <option value="sunan-nasai">Sunan An-Nasa`i</option>
-        <option value="mishkat">Mishkat Al-Masabih</option>
-        <option value="musnad-ahmad">Musnad Ahmad</option>
-        <option value="al-silsila-sahiha">Al-Silsila Sahiha</option>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label for="chapter">Select Chapter</label>
-      <input type="number" id="chapter" placeholder="Chapter Number" min="1" required>
-    </div>
-
-    <button id="fetchHadithBtn">Get Hadith</button>
-
-    <div class="loading" id="loadingText" style="display:none;">Loading...</div>
+    <h1>Hadith Viewer</h1>
+    <p>Enter a book and chapter number in the URL as query parameters to view the Hadiths (e.g., <code>?book=muslim&chapter=10</code>).</p>
     
-    <div class="hadith-result" id="hadithResult"></div>
-  </div>
+    <div id="loading" class="loading">Loading...</div>
+    <div id="hadithResult"></div>
 
-  <script>
-    document.getElementById('fetchHadithBtn').addEventListener('click', function() {
-      const book = document.getElementById('book').value;
-      const chapter = document.getElementById('chapter').value;
-      const loadingText = document.getElementById('loadingText');
-      const hadithResult = document.getElementById('hadithResult');
+    <script>
+        // Function to get the book and chapter from URL parameters
+        function getURLParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const book = urlParams.get('book');
+            const chapter = urlParams.get('chapter');
+            return { book, chapter };
+        }
 
-      if (!chapter) {
-        alert('Please enter a valid chapter number.');
-        return;
-      }
+        // Function to fetch the hadiths from the JSON file based on book and chapter
+        function fetchHadiths(book, chapter) {
+            const url = `https://raw.githubusercontent.com/AhmedBaset/hadith-json/refs/heads/main/db/by_chapter/the_9_books/${book}/${chapter}.json`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    displayHadiths(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load the hadiths. Please try again later.</p>';
+                    document.getElementById('loading').style.display = 'none';
+                });
+        }
 
-      // Show loading text
-      loadingText.style.display = 'block';
-      hadithResult.innerHTML = '';
+        // Function to display the hadiths on the page
+        function displayHadiths(data) {
+            const hadithResult = document.getElementById('hadithResult');
+            const loading = document.getElementById('loading');
 
-      // API URL with the provided apiKey
-      const apiUrl = `https://hadithapi.com/api/hadiths/?apiKey=$2y$10$tRU6Mfq4SwT9N8lesjlLEzPLw9J6DN0yAxrM5hA4JEsHJytUve&book=${book}&chapter=${chapter}`;
+            // Hide loading spinner
+            loading.style.display = 'none';
 
-      // Fetch the data from the API
-      fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-          loadingText.style.display = 'none'; // Hide loading text
+            // Check if the data contains hadiths
+            if (data.hadiths && data.hadiths.length > 0) {
+                let htmlContent = `
+                    <h2>Book: ${data.metadata.english.title} (Chapter: ${data.metadata.english.introduction})</h2>
+                    <h3>Hadiths in Chapter ${data.metadata.english.title} - ${data.metadata.english.introduction}</h3>
+                    <div><strong>Introduction:</strong> ${data.metadata.english.introduction}</div>
+                    <div><strong>Author:</strong> ${data.metadata.english.author}</div>
+                `;
+                
+                // Loop through and display each hadith
+                data.hadiths.forEach(hadith => {
+                    htmlContent += `
+                        <div class="hadith">
+                            <h3>Hadith #${hadith.id}</h3>
+                            <p><strong>Arabic:</strong> ${hadith.arabic}</p>
+                            <p><strong>English:</strong> ${hadith.english.text}</p>
+                        </div>
+                    `;
+                });
 
-          if (data && data.hadiths && data.hadiths.length > 0) {
-            let htmlContent = '';
-            data.hadiths.forEach(hadith => {
-              htmlContent += `
-                <div class="hadith">
-                  <p><strong>Hadith #${hadith.hadithNumber}</strong></p>
-                  <p><em>${hadith.hadith}</em></p>
-                </div>
-              `;
-            });
-            hadithResult.innerHTML = htmlContent;
-          } else {
-            hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
-          }
-        })
-        .catch(error => {
-          loadingText.style.display = 'none';
-          hadithResult.innerHTML = '<p>There was an error fetching the data. Please try again later.</p>';
-          console.error('Error fetching Hadiths:', error);
-        });
-    });
-  </script>
+                hadithResult.innerHTML = htmlContent;
+            } else {
+                hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
+            }
+        }
 
+        // On page load, fetch the hadiths based on URL parameters
+        window.onload = () => {
+            const { book, chapter } = getURLParams();
+            if (book && chapter) {
+                fetchHadiths(book, chapter);
+            } else {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=muslim&chapter=10).</p>';
+            }
+        };
+    </script>
 </body>
 </html>
