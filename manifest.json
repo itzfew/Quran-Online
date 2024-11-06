@@ -2,7 +2,7 @@
     "name": "Quran Kareem",
     "short_name": "Quran Kareem",
     "description": "A comprehensive guide to the Quran, Hadith, and more",
-    "start_url": "/index.html",
+    "start_url": "/index",
     "display": "standalone",
     "background_color": "#ffffff",
     "theme_color": "#4CAF50",
