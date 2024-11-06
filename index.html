@@ -6,6 +6,10 @@
     <title>Quran Kareem</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+
     <style>
         /* Reset and base styles */
         * {
@@ -19,7 +23,7 @@
             background-color: #f5f5f5;
             color: #333;
             line-height: 1.6;
-            padding-top: 60px;
+            padding-top: 60px; /* To avoid navbar overlap */
             transition: background-color 0.3s, color 0.3s;
         }
 
@@ -51,14 +55,6 @@
             font-weight: bold;
         }
 
-        /* Menu Toggle Button */
-        .menu-toggle {
-            font-size: 1.5em;
-            cursor: pointer;
-            display: none;
-            color: white;
-        }
-
         /* Sidebar Menu */
         .menu {
             position: fixed;
@@ -88,45 +84,6 @@
 
         .menu.active {
             left: 0;
-        }
-
-        /* Search and Sort */
-        .search-sort-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 10%;
-            margin-top: 80px;
-        }
-
-        .search-bar {
-            padding: 12px 20px;
-            font-size: 1.1em;
-            border: 2px solid #4CAF50;
-            border-radius: 50px;
-            width: 60%;
-            max-width: 350px;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .search-bar:focus {
-            outline: none;
-            border-color: #45a049;
-        }
-
-        .sort-select {
-            padding: 12px 20px;
-            font-size: 1.1em;
-            border: 2px solid #4CAF50;
-            border-radius: 50px;
-            background-color: white;
-            max-width: 200px;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .sort-select:focus {
-            outline: none;
-            border-color: #45a049;
         }
 
         /* Surah List Styles */
@@ -164,20 +121,15 @@
             color: #666;
         }
 
-        /* Install Button */
-        #install-button {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1em;
-            cursor: pointer;
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .menu.active {
+                left: 0;
+            }
         }
     </style>
 </head>
@@ -200,7 +152,7 @@
     </div>
 
     <!-- Search and Sort Section -->
-    <div class="search-sort-container">
+    <div class="search-sort-container" style="padding: 20px;">
         <input type="text" id="search-bar" class="search-bar" placeholder="Search by title or index...">
         <select class="sort-select" id="sort-select">
             <option value="index">Sort by Index</option>
@@ -214,9 +166,7 @@
     </div>
 
     <!-- Install Button -->
-    <button id="install-button">
-        Install App
-    </button>
+    <button id="install-button" style="display: none;">Install App</button>
 
     <script>
         // Toggle Sidebar Menu
@@ -292,37 +242,13 @@
             renderSurahs(sortedSurahs, selectedLang);
         });
 
-        // Toggle between Arabic and English
-        document.getElementById('english-link').addEventListener('click', async function() {
-            const surahs = await fetchSurahs();
-            renderSurahs(surahs, 'en');
-            updateLanguageSelection('en');
-        });
-
-        document.getElementById('arabic-link').addEventListener('click', async function() {
-            const surahs = await fetchSurahs();
-            renderSurahs(surahs, 'ar');
-            updateLanguageSelection('ar');
-        });
-
-        // Update language selection UI
-        function updateLanguageSelection(language) {
-            if (language === 'en') {
-                document.getElementById('english-link').classList.add('selected');
-                document.getElementById('arabic-link').classList.remove('selected');
-            } else {
-                document.getElementById('arabic-link').classList.add('selected');
-                document.getElementById('english-link').classList.remove('selected');
-            }
-        }
-
-        // Handle PWA installation prompt
+        // Install PWA
         let deferredPrompt;
         const installButton = document.getElementById('install-button');
 
-        window.addEventListener('beforeinstallprompt', (event) => {
-            event.preventDefault();
-            deferredPrompt = event;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
             installButton.style.display = 'block';
         });
 
@@ -331,24 +257,25 @@
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the install prompt');
+                        console.log('User accepted the installation prompt');
                     } else {
-                        console.log('User dismissed the install prompt');
+                        console.log('User dismissed the installation prompt');
                     }
                     deferredPrompt = null;
-                    installButton.style.display = 'none';
                 });
             }
         });
 
-        // Initial render (default language Arabic)
-        window.onload = async function() {
-            const surahs = await fetchSurahs();
-            renderSurahs(surahs, 'ar');
-            updateLanguageSelection('ar');
-        };
+        // Initialize Surah Data and Language
+        let surahsData = [];
+        let currentLanguage = 'arabic';
 
-        // Register Service Worker
+        fetchSurahs().then(data => {
+            surahsData = data;
+            renderSurahs(surahsData, currentLanguage);
+        });
+
+        // Register Service Worker for PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/service-worker.js').then((registration) => {
