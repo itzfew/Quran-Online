@@ -35,7 +35,7 @@
             background-color: #fff;
             border-radius: 8px;
             margin-bottom: 30px;
-            box-shadow: none;
+            box-shadow: none;  /* Removed shadow */
         }
 
         .book-details h2 {
@@ -61,13 +61,13 @@
             background-color: #fff;
             padding: 20px;
             margin-bottom: 15px;
-            border-left: 4px solid #3498db;
+            border-left: 4px solid #3498db;  /* Simple accent line */
             border-radius: 8px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease; /* Smooth color transition */
         }
 
         .chapter-item:hover {
-            background-color: #f1f1f1;
+            background-color: #f1f1f1; /* Light background on hover */
         }
 
         .chapter-item h3 {
@@ -229,41 +229,30 @@
                 .then(response => response.json())
                 .then(data => {
                     const chapterList = document.getElementById("chapterList");
-                    let isBook35 = bookSlug === "nasai";
 
                     // Iterate over the chapters from the fetched JSON and display them
                     data.collection.books.forEach(chapter => {
                         const chapterElement = document.createElement('li');
                         chapterElement.classList.add('chapter-item');
 
-                        if (chapter.book_number === 35 && isBook35) {
-                            chapterElement.innerHTML = `
-                                <h3>Chapter 35</h3>
-                                <p>${chapter.book_name}</p>
-                                <a href="chapter.html?book=${bookSlug}&chapter=35">View Hadiths</a>
+                        // Special case for Nasai's chapter 35b
+                        if (bookSlug === 'nasai' && chapter.book_number === 35) {
+                            const chapterBElement = document.createElement('li');
+                            chapterBElement.classList.add('chapter-item');
+                            chapterBElement.innerHTML = `
+                                <h3>Chapter 35b</h3>
+                                <p>Special Case Chapter for Sunan al-Nasa'i</p>
+                                <a href="chapter.html?book=${bookSlug}&chapter=35b">View Hadiths</a>
                             `;
-                            chapterList.appendChild(chapterElement);
-
-                            // Add Book 35b after Book 35
-                            const chapter35b = data.collection.books.find(c => c.book_number === '35b');
-                            if (chapter35b) {
-                                const chapter35bElement = document.createElement('li');
-                                chapter35bElement.classList.add('chapter-item');
-                                chapter35bElement.innerHTML = `
-                                    <h3>Chapter 35b</h3>
-                                    <p>${chapter35b.book_name}</p>
-                                    <a href="chapter.html?book=${bookSlug}&chapter=35b">View Hadiths</a>
-                                `;
-                                chapterList.appendChild(chapter35bElement);
-                            }
-                        } else if (chapter.book_number !== 35b) {
-                            chapterElement.innerHTML = `
-                                <h3>Chapter ${chapter.book_number}</h3>
-                                <p>${chapter.book_name}</p>
-                                <a href="chapter.html?book=${bookSlug}&chapter=${chapter.book_number}">View Hadiths</a>
-                            `;
-                            chapterList.appendChild(chapterElement);
+                            chapterList.appendChild(chapterBElement);
                         }
+
+                        chapterElement.innerHTML = `
+                            <h3>Chapter ${chapter.book_number}</h3>
+                            <p>${chapter.book_name}</p>
+                            <a href="chapter.html?book=${bookSlug}&chapter=${chapter.book_number}">View Hadiths</a>
+                        `;
+                        chapterList.appendChild(chapterElement);
                     });
                 })
                 .catch(error => {
