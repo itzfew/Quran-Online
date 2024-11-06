@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,7 +52,6 @@
             font-weight: bold;
         }
 
-        /* Menu Toggle Button */
         .menu-toggle {
             font-size: 1.5em;
             cursor: pointer;
@@ -194,6 +194,26 @@
             color: #666;
         }
 
+        /* Share Button */
+        .share-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            text-decoration: none;
+        }
+
+        .share-btn:hover {
+            background-color: #45a049;
+        }
+
         /* Responsive Styles */
         @media (max-width: 768px) {
             .search-sort-container {
@@ -222,6 +242,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Navbar -->
@@ -251,13 +272,18 @@
 
     <!-- Language Switch -->
     <div class="language-switch-container">
-        <a href="javascript:void(0)" class="language-switch selected" id="arabic-link">Arabic</a> | 
+        <a href="javascript:void(0)" class="language-switch selected" id="arabic-link">Arabic</a> |
         <a href="javascript:void(0)" class="language-switch" id="english-link">English</a>
     </div>
 
     <!-- Surah List -->
     <div class="surah-list" id="surah-list">
         <!-- Surah Items will be injected here -->
+    </div>
+
+    <!-- Share Button -->
+    <div class="share-btn" id="share-btn">
+        <i class="fas fa-share-alt"></i> Share this Website
     </div>
 
     <script>
@@ -358,6 +384,14 @@
             }
         }
 
+        // Share Button Functionality
+        document.getElementById('share-btn').addEventListener('click', () => {
+            const url = window.location.href;
+            const text = "Explore the Quran Kareem website and its resources!";
+            const shareText = `${text} ${url}`;
+            navigator.share ? navigator.share({ text: shareText, url }) : prompt("Copy this link:", shareText);
+        });
+
         // Initial render (default language Arabic)
         window.onload = async function() {
             const surahs = await fetchSurahs();
@@ -367,4 +401,5 @@
     </script>
 
 </body>
+
 </html>
