@@ -18,6 +18,35 @@
             color: #2c3e50;
             margin-top: 20px;
         }
+     /* Settings Section */
+        .settings-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-bottom: 2px solid #3498db;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
+        .settings-item {
+            margin-right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .settings-item:hover {
+            color: #2980b9;
+            transform: scale(1.1);
+        }
+
         .hadith-container {
             margin: 20px;
             padding: 20px;
@@ -90,35 +119,43 @@
             background-color: #34495e;
         }
 
-        /* Toolbar Styling */
-        .toolbar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background-color: #16a085;
-            color: white;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 999;
+        .dark-mode {
+            background-color: #2c3e50;
+            color: #ecf0f1;
         }
-        .toolbar label {
-            margin-right: 10px;
+
+        .dark-mode .verse {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: #ecf0f1;
         }
-        .toolbar select, .toolbar input, .toolbar button {
-            background-color: #1abc9c;
-            border: none;
-            border-radius: 5px;
-            padding: 5px;
-            color: white;
+
+        .dark-mode .verse-number {
+            color: #ecf0f1;
         }
-        .toolbar button {
-            cursor: pointer;
+
+        .dark-mode .bookmarked-panel {
+            background-color: #2c3e50;
+            color: #ecf0f1;
         }
-        .toolbar button:hover {
-            background-color: #16a085;
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .settings-container {
+                padding: 10px;
+            }
+            .settings-item {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .settings-container {
+                padding: 10px;
+            }
+            .settings-item {
+                font-size: 18px;
+                margin-right: 10px;
+            }
         }
 
     </style>
@@ -126,24 +163,31 @@
 </head>
 <body>
 
-    <!-- Toolbar with options at the top -->
-    <div class="toolbar">
-        <div>
-            <label for="fontSelect">Arabic Font:</label>
-            <select id="fontSelect" onchange="changeArabicFont()">
-                <option value="Amiri">Amiri</option>
-                <option value="Scheherazade New">Scheherazade</option>
-                <option value="Cairo">Cairo</option>
-                <option value="Lalezar">Lalezar</option>
-            </select>
-        </div>
-        <div>
-            <label for="fontSizeRange">Arabic Text Size:</label>
-            <input type="range" id="fontSizeRange" min="14" max="30" value="18" oninput="resizeArabicText(event)" />
-        </div>
-        <div>
-            <button onclick="toggleTheme()">🌙 / 🌞</button>
-        </div>
+    
+<!-- Settings Section at the top (Fixed) -->
+<div class="settings-container">
+    <input type="text" id="verseSearch" placeholder="Search for a verse..." onkeyup="searchVerse()" />
+    <div class="settings-item" onclick="toggleTheme()">
+        <i class="fas fa-adjust"></i>
+    </div>
+    <div class="settings-item" onclick="changeTextSize(1)">
+        <i class="fas fa-text-height"></i>
+    </div>
+    <div class="settings-item" onclick="changeTextSize(-1)">
+        <i class="fas fa-text-height"></i>
+    </div>
+    <div class="settings-item">
+        <select id="fontSelect" onchange="changeFont()">
+            <option value="Amiri">Amiri</option>
+            <option value="Cairo">Cairo</option>
+            <option value="El Messiri">El Messiri</option>
+            <option value="Harmattan">Harmattan</option>
+            <option value="Lateef">Lateef</option>
+            <option value="Scheherazade New">Scheherazade New</option>
+        </select>
+    </div>
+    <div class="settings-item" onclick="resetPreferences()">
+        <i class="fas fa-undo"></i>
     </div>
 
     <h1>Hadith Viewer</h1>
@@ -170,28 +214,19 @@
 
         let chaptersData = [];
 
-        // Load user preferences from localStorage and apply them
-        function loadUserPreferences() {
-            const savedTheme = localStorage.getItem('theme');
-            const savedFont = localStorage.getItem('font');
-            const savedFontSize = localStorage.getItem('fontSize');
+            document.addEventListener('DOMContentLoaded', () => {
+        const darkMode = localStorage.getItem('darkMode') === 'true';
+        const textSize = localStorage.getItem('textSize') || '18';
+        const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
 
-            // Apply saved theme
-            if (savedTheme) {
-                document.body.classList.toggle('dark-mode', savedTheme === 'dark');
-            }
-
-            // Apply saved font and size if they exist
-            if (savedFont) {
-                document.getElementById('fontSelect').value = savedFont;
-                changeArabicFont(); // Update font immediately
-            }
-
-            if (savedFontSize) {
-                document.getElementById('fontSizeRange').value = savedFontSize;
-                resizeArabicText({ target: { value: savedFontSize } }); // Update size immediately
-            }
+        if (darkMode) {
+            document.body.classList.add('dark-mode');
         }
+
+        document.body.style.fontSize = textSize + 'px';
+        document.body.style.fontFamily = selectedFont;
+
+        document.getElementById('fontSelect').value = selectedFont;
 
         // Function to fetch chapters data from remote JSON
         function fetchChaptersData(bookSlug) {
@@ -276,33 +311,29 @@
             }
         }
 
-        // Toggle light/dark theme
-        function toggleTheme() {
-            const isDark = document.body.classList.toggle('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        }
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', isDark);
+    }
 
-        // Resize Arabic text based on slider value
-        function resizeArabicText(event) {
-            const arabicFontSize = event.target.value;
-            document.querySelectorAll('.arabic-text').forEach((element) => {
-                element.style.fontSize = arabicFontSize + 'px';
-            });
-            localStorage.setItem('fontSize', arabicFontSize);
-        }
+    function changeTextSize(increment) {
+        const newSize = parseInt(document.body.style.fontSize) + increment;
+        document.body.style.fontSize = newSize + 'px';
+        localStorage.setItem('textSize', newSize);
+    }
 
-        // Change Arabic font based on user selection
-        function changeArabicFont() {
-            const arabicFont = document.getElementById('fontSelect').value;
-            document.querySelectorAll('.arabic-text').forEach((element) => {
-                element.style.fontFamily = arabicFont;
-            });
-            localStorage.setItem('font', arabicFont);
-        }
+    function changeFont() {
+        const selectedFont = document.getElementById('fontSelect').value;
+        document.body.style.fontFamily = selectedFont;
+        localStorage.setItem('selectedFont', selectedFont);
+    }
 
-        // On page load, fetch chapters data for the specified book
-        window.onload = function() {
-            loadUserPreferences();
+    function resetPreferences() {
+        localStorage.removeItem('darkMode');
+        localStorage.removeItem('textSize');
+        localStorage.removeItem('selectedFont');
+        location.reload();
+    }
             const { book } = getURLParams();
             if (book) {
                 fetchChaptersData(book);
