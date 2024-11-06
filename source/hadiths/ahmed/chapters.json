@@ -1,0 +1,37 @@
+{
+  "collection": {
+    "name": "Musnad Ahmad",
+    "compiled_by": "Imam Ahmad ibn Hanbal",
+    "description": "Musnad Ahmad is one of the most comprehensive and important collections of hadith, compiled by Imam Ahmad ibn Hanbal (rahimahullah). It is the largest collection of hadith divided by the names of individual companions, with approximately 28,199 narrations. This collection is highly respected in Islamic tradition and is a key source of the Sunnah of the Prophet Muhammad (ﷺ).",
+    "books": [
+      {
+        "book_number": 1,
+        "book_name": "Musnad Abu Bakr as-Siddiq (ra) - مُسْنَدُ أَبِي بَكْرٍ الصِّدِّيقِ رَضِيَ اللَّهُ عَنْهُ"
+      },
+      {
+        "book_number": 2,
+        "book_name": "Musnad `Umar b. al-Khattab (ra) - مُسْنَدِ عُمَرَ بْنِ الْخَطَّابِ رَضِيَ اللَّهُ عَنْهُ"
+      },
+      {
+        "book_number": 3,
+        "book_name": "The Hadeeth of Saqeefah - حَدِيثُ السَّقِيفَة"
+      },
+      {
+        "book_number": 4,
+        "book_name": "Musnad Uthman ibn Affan - مُسْنَدُ عُثْمَانَ بْنِ عَفَّانَ رَضِيَ اللَّهُ عَنْهُ"
+      },
+      {
+        "book_number": 5,
+        "book_name": "Musnad 'Ali Ibn Abi Talib - وَمِنْ مُسْنَدِ عَلِيِّ بْنِ أَبِي طَالِبٍ رَضِيَ اللَّهُ عَنْهُ"
+      },
+      {
+        "book_number": 6,
+        "book_name": "Musnad of Abu Muhammad Talhah bin 'Ubaidullah - مُسْنَدُ أَبِي مُحَمَّدٍ طَلْحَةَ بْنِ عُبَيْدِ اللَّهِ رَضِيَ اللَّهُ تَعَالَى عَنْهُ"
+      },
+      {
+        "book_number": 7,
+        "book_name": "The Musnad of az-Zubair bin al-'Awwam - مُسْنَدُ الزُّبَيْرِ بْنِ الْعَوَّامِ رَضِيَ اللَّهُ عَنْهُ"
+      }
+    ]
+  }
+}
