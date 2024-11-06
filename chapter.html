@@ -72,22 +72,41 @@
         .header-meta strong {
             color: #2c3e50;
         }
-        .view-all-btn {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 8px 15px;
-            background-color: #3498db;
-            color: #fff;
-            text-align: center;
+        select, input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 0;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #16a085;
+            color: white;
+            border: none;
             border-radius: 5px;
             cursor: pointer;
-            text-decoration: none;
         }
-        .view-all-btn:hover {
-            background-color: #2980b9;
+        button:hover {
+            background-color: #1abc9c;
         }
-        .hidden-text {
-            display: none;
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .pagination button {
+            padding: 5px 10px;
+            margin: 0 5px;
+            background-color: #16a085;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .pagination button:hover {
+            background-color: #1abc9c;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
@@ -99,16 +118,53 @@
         Enter a book and chapter number in the URL to view the Hadiths (e.g., <code>?book=muslim&chapter=10</code>).
     </p>
 
+    <div style="text-align: center;">
+        <input type="text" id="searchInput" placeholder="Search for a Hadith..." onkeyup="searchHadiths()">
+        <br>
+        <select id="bookSelect" onchange="updateHadiths()">
+            <option value="">Select Book</option>
+            <option value="muslim">Muslim</option>
+            <option value="bukhari">Bukhari</option>
+            <option value="tirmidhi">Tirmidhi</option>
+            <option value="abu-dawood">Abu Dawood</option>
+        </select>
+        <select id="chapterSelect" onchange="updateHadiths()">
+            <option value="">Select Chapter</option>
+        </select>
+        <button onclick="updateHadiths()">Load Hadiths</button>
+    </div>
+
     <div id="loading" class="loading">Loading...</div>
     <div id="hadithResult"></div>
 
+    <div class="pagination" id="pagination"></div>
+
     <script>
+        let currentHadiths = [];
+        let currentPage = 1;
+        let itemsPerPage = 5;
+
         // Function to get the book and chapter from URL parameters
         function getURLParams() {
             const urlParams = new URLSearchParams(window.location.search);
             const book = urlParams.get('book');
             const chapter = urlParams.get('chapter');
             return { book, chapter };
+        }
+
+        // Function to update the chapter select dropdown based on selected book
+        function updateChapterSelect(book) {
+            const chapterSelect = document.getElementById('chapterSelect');
+            chapterSelect.innerHTML = '';
+            if (book) {
+                // Populate with sample chapters (you can customize this based on your data structure)
+                for (let i = 1; i <= 10; i++) {
+                    const option = document.createElement('option');
+                    option.value = i;
+                    option.textContent = `Chapter ${i}`;
+                    chapterSelect.appendChild(option);
+                }
+            }
         }
 
         // Function to fetch the hadiths from the JSON file based on book and chapter
@@ -136,70 +192,89 @@
 
             // Check if the data contains hadiths
             if (data.hadiths && data.hadiths.length > 0) {
-                let htmlContent = `
-                    <div class="header-meta">
-                        <h2>${data.metadata.english.title} <span style="font-size: 18px;">(Chapter: ${data.metadata.english.introduction})</span></h2>
-                        <p><strong>Author:</strong> ${data.metadata.english.author}</p>
-                        <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
-                    </div>
-                `;
-                
-                // Loop through and display each hadith
-                data.hadiths.forEach(hadith => {
-                    let englishText = hadith.english.text;
-                    let arabicText = hadith.arabic;
-
-                    // Split the English text into lines
-                    const englishLines = englishText.split('\n');
-                    const displayLines = englishLines.slice(0, 6);
-                    const hiddenLines = englishLines.slice(6);
-
-                    htmlContent += `
-                        <div class="hadith">
-                            <h3>Hadith #${hadith.id}</h3>
-                            <p class="arabic-text"><strong>Arabic:</strong> ${arabicText}</p>
-                            <div class="english-text">
-                                <strong>English:</strong>
-                                <p>${displayLines.join('<br>')}</p>
-                                
-                                ${hiddenLines.length > 0 ? `
-                                    <p class="hidden-text">${hiddenLines.join('<br>')}</p>
-                                    <a href="javascript:void(0);" class="view-all-btn" onclick="toggleHadithText(this)">View All</a>
-                                ` : ''}
-                            </div>
-                        </div>
-                    `;
-                });
-
-                hadithResult.innerHTML = htmlContent;
+                currentHadiths = data.hadiths;
+                paginateHadiths();
             } else {
                 hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
             }
         }
 
-        // Function to toggle the visibility of long hadith text
-        function toggleHadithText(button) {
-            const hiddenText = button.previousElementSibling;
-            const isHidden = hiddenText.classList.contains('hidden-text');
-            if (isHidden) {
-                hiddenText.classList.remove('hidden-text');
-                button.innerText = 'View Less';
-            } else {
-                hiddenText.classList.add('hidden-text');
-                button.innerText = 'View All';
+        // Function to handle pagination
+        function paginateHadiths() {
+            const hadithResult = document.getElementById('hadithResult');
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageHadiths = currentHadiths.slice(startIndex, endIndex);
+
+            let htmlContent = '';
+            pageHadiths.forEach(hadith => {
+                htmlContent += `
+                    <div class="hadith">
+                        <h3>Hadith #${hadith.id}</h3>
+                        <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
+                        <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
+                    </div>
+                `;
+            });
+
+            hadithResult.innerHTML = htmlContent;
+            updatePagination();
+        }
+
+        // Function to update pagination buttons
+        function updatePagination() {
+            const totalPages = Math.ceil(currentHadiths.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            if (totalPages > 1) {
+                for (let i = 1; i <= totalPages; i++) {
+                    const button = document.createElement('button');
+                    button.textContent = i;
+                    button.onclick = () => {
+                        currentPage = i;
+                        paginateHadiths();
+                    };
+                    pagination.appendChild(button);
+                }
             }
         }
 
-        // On page load, fetch the hadiths based on URL parameters
+        // Function to search through the hadiths
+        function searchHadiths() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filteredHadiths = currentHadiths.filter(hadith => 
+                hadith.english.text.toLowerCase().includes(query) || hadith.arabic.toLowerCase().includes(query)
+            );
+            currentHadiths = filteredHadiths;
+            paginateHadiths();
+        }
+
+        // Function to update hadiths based on book and chapter selection
+        function updateHadiths() {
+            const book = document.getElementById('bookSelect').value;
+            const chapter = document.getElementById('chapterSelect').value;
+
+            if (book && chapter) {
+                fetchHadiths(book, chapter);
+            }
+        }
+
+        // On page load, check for URL parameters
         window.onload = () => {
             const { book, chapter } = getURLParams();
             if (book && chapter) {
+                document.getElementById('bookSelect').value = book;
+                updateChapterSelect(book);
+                document.getElementById('chapterSelect').value = chapter;
                 fetchHadiths(book, chapter);
-            } else {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=muslim&chapter=10).</p>';
             }
         };
+
+        // Populate chapter dropdown if a book is selected
+        document.getElementById('bookSelect').addEventListener('change', (e) => {
+            updateChapterSelect(e.target.value);
+        });
     </script>
 </body>
 </html>
