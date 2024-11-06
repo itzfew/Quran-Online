@@ -5,12 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hadith Viewer</title>
-
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-    <!-- Google Fonts for Arabic fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade+New&family=Cairo&family=Lalezar&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
     <style>
         body {
@@ -22,12 +18,14 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        h1, h2 {
+        h1,
+        h2 {
             text-align: center;
             color: #2c3e50;
             margin-top: 20px;
         }
 
+        /* Settings Section */
         .settings-container {
             display: flex;
             justify-content: flex-start;
@@ -70,6 +68,11 @@
             border: 1px solid #eee;
             border-radius: 8px;
             background-color: #fafafa;
+            transition: background-color 0.2s ease;
+        }
+
+        .hadith:hover {
+            background-color: #e2f1f8;
         }
 
         .hadith h3 {
@@ -88,7 +91,7 @@
             font-size: 18px;
             text-align: center;
             direction: rtl;
-            transition: font-size 0.3s ease;
+            transition: font-size 0.3s ease, font-family 0.3s ease;
         }
 
         .hadith .english-text {
@@ -123,6 +126,7 @@
             color: #2c3e50;
         }
 
+        /* Light/Dark Mode Styling */
         body.dark-mode {
             background-color: #2c3e50;
             color: white;
@@ -149,6 +153,7 @@
             color: #ecf0f1;
         }
 
+        /* Responsive Design */
         @media (max-width: 768px) {
             .settings-container {
                 padding: 10px;
@@ -180,18 +185,17 @@
         <div class="settings-item" onclick="toggleTheme()">
             <i class="fas fa-adjust"></i>
         </div>
-        <div class="settings-item" onclick="changeTextSize(1)">
-            <i class="fas fa-text-height"></i>
+        <div class="settings-item" onclick="resizeArabicText(1)">
+            <i class="fas fa-search-plus"></i>
         </div>
-        <div class="settings-item" onclick="changeTextSize(-1)">
-            <i class="fas fa-text-height"></i>
+        <div class="settings-item" onclick="resizeArabicText(-1)">
+            <i class="fas fa-search-minus"></i>
         </div>
         <div class="settings-item">
             <select id="fontSelect" onchange="changeFont()">
                 <option value="Amiri">Amiri</option>
                 <option value="Cairo">Cairo</option>
                 <option value="Scheherazade New">Scheherazade New</option>
-                <option value="Lalezar">Lalezar</option>
             </select>
         </div>
         <div class="settings-item" onclick="resetPreferences()">
@@ -223,12 +227,10 @@
         let chaptersData = [];
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Load preferences from localStorage
             const darkMode = localStorage.getItem('darkMode') === 'true';
             const textSize = localStorage.getItem('textSize') || '18';
             const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
 
-            // Apply preferences on page load
             if (darkMode) {
                 document.body.classList.add('dark-mode');
             }
@@ -237,12 +239,6 @@
             document.body.style.fontFamily = selectedFont;
 
             document.getElementById('fontSelect').value = selectedFont;
-
-            // Apply Arabic text size from localStorage
-            const arabicTextSize = localStorage.getItem('arabicTextSize') || '18';
-            document.querySelectorAll('.arabic-text').forEach(text => {
-                text.style.fontSize = arabicTextSize + 'px';
-            });
 
             const { book } = getURLParams();
             if (book) {
@@ -255,14 +251,11 @@
             localStorage.setItem('darkMode', isDark);
         }
 
-        function changeTextSize(increment) {
-            // Change the size of Arabic text only
-            const arabicText = document.querySelectorAll('.arabic-text');
-            arabicText.forEach(text => {
-                let currentSize = parseInt(window.getComputedStyle(text).fontSize);
-                const newSize = currentSize + increment;
-                text.style.fontSize = newSize + 'px';
-                localStorage.setItem('arabicTextSize', newSize);
+        function resizeArabicText(increment) {
+            const arabicTextElements = document.querySelectorAll('.arabic-text');
+            arabicTextElements.forEach(el => {
+                let currentSize = parseInt(window.getComputedStyle(el).fontSize);
+                el.style.fontSize = (currentSize + increment) + 'px';
             });
         }
 
@@ -276,7 +269,6 @@
             localStorage.removeItem('darkMode');
             localStorage.removeItem('textSize');
             localStorage.removeItem('selectedFont');
-            localStorage.removeItem('arabicTextSize');
             location.reload();
         }
 
@@ -288,72 +280,29 @@
         }
 
         function fetchChaptersData(bookSlug) {
-            const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
-            fetch(chaptersUrl)
-                .then(response => response.json())
-                .then(data => {
-                    chaptersData = data.collection.books;
-                    initializeViewer(bookSlug);
-                })
-                .catch(error => {
-                    console.error('Error fetching chapters data:', error);
-                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load chapters data for this book. Please try again later.</p>';
-                    document.getElementById('loading').style.display = 'none';
-                });
-        }
-
-        function fetchHadiths(bookSlug, chapterNumber) {
-            const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/${chapterNumber}.json`;
+            const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    displayHadiths(data, bookSlug);
+                    chaptersData = data;
+                    displayChapters(bookSlug);
                 })
                 .catch(error => {
-                    console.error('Error fetching data:', error);
-                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load Hadiths for this chapter. Please try again later.</p>';
-                    document.getElementById('loading').style.display = 'none';
+                    console.error('Error fetching chapters:', error);
+                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load chapters. Please try again later.</p>';
                 });
         }
 
-        function displayHadiths(data, bookSlug) {
-            const hadithResult = document.getElementById('hadithResult');
-            const loading = document.getElementById('loading');
-            loading.style.display = 'none';
-
-            const bookName = books.find(b => b.slug === bookSlug)?.name || 'Unknown Book';
-
-            if (data.hadiths && data.hadiths.length > 0) {
-                let htmlContent = `
-                    <div class="header-meta">
-                        <h2>${bookName} <span style="font-size: 18px;">(Chapter: ${data.metadata.english.introduction})</span></h2>
-                        <p><strong>Author:</strong> ${data.metadata.english.author}</p>
-                        <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
-                    </div>
-                `;
-                data.hadiths.forEach(hadith => {
-                    htmlContent += `
-                        <div class="hadith">
-                            <h3>Hadith #${hadith.id}</h3>
-                            <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
-                            <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
-                        </div>
-                    `;
-                });
-                hadithResult.innerHTML = htmlContent;
-            } else {
-                hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
-            }
-        }
-
-        function initializeViewer(bookSlug) {
-            const { book, chapter } = getURLParams();
-            if (book && chapter) {
-                fetchHadiths(book, chapter);
-            } else {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=bukhari&chapter=10).</p>';
-            }
+        function displayChapters(bookSlug) {
+            const chapterList = chaptersData.map(chapter => `
+                <div class="hadith">
+                    <h3>Chapter ${chapter.chapter}: ${chapter.title}</h3>
+                    <p class="arabic-text">${chapter.arabic}</p>
+                    <p class="english-text">${chapter.english}</p>
+                </div>
+            `).join('');
+            document.getElementById('hadithResult').innerHTML = chapterList;
+            document.getElementById('loading').style.display = 'none';
         }
 
         function searchVerse() {
@@ -370,6 +319,7 @@
             });
         }
     </script>
+
 </body>
 
 </html>
