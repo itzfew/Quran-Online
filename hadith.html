@@ -34,6 +34,22 @@
     .hadith-content {
       margin-bottom: 15px;
     }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .pagination a {
+      margin: 0 5px;
+      padding: 8px 12px;
+      background-color: #333;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+    }
+    .pagination a:hover {
+      background-color: #555;
+    }
   </style>
 </head>
 <body>
@@ -46,11 +62,16 @@
   <!-- Hadith items will be injected here by JavaScript -->
 </div>
 
+<div class="pagination" id="pagination">
+  <!-- Pagination links will be injected here -->
+</div>
+
 <script>
   // Extract query parameters from the URL (book and chapter)
   const urlParams = new URLSearchParams(window.location.search);
   const bookSlug = urlParams.get('book');
   const chapterNumber = urlParams.get('chapter');
+  const paginate = parseInt(urlParams.get('paginate')) || 25; // Default to 25 if not specified
 
   // If bookSlug or chapterNumber is not provided, handle it (show a message or redirect)
   if (!bookSlug || !chapterNumber) {
@@ -58,55 +79,84 @@
     throw new Error('Missing book or chapter parameter.');
   }
 
-  // API URL to fetch Hadiths based on book and chapter
-  const apiUrl = `https://www.hadithapi.com/api/hadiths?apiKey=$2y$10$tRU6Mfq4SwT9N8lesjlLEzPLw9J6DN0yAxrM5hA4JEsHJytUve&bookSlug=${bookSlug}&chapterId=${chapterNumber}`;
+  // Function to fetch all Hadiths with pagination
+  async function fetchAllHadiths() {
+    let allHadiths = [];
+    let currentPage = 1;
+    let totalPages = 1;
 
-  // Fetch data from the API
-  fetch(apiUrl)
-    .then(response => response.json())
-    .then(data => {
-      if (data.status === 200) {
-        const hadiths = data.hadiths.data; // Hadiths array
-        const hadithListElement = document.getElementById('hadith-list');
-
-        // Filter the Hadiths based on the requested bookSlug and chapterNumber
-        const filteredHadiths = hadiths.filter(hadith => {
-          return hadith.bookSlug === bookSlug && hadith.chapterId === chapterNumber;
-        });
-
-        // If no Hadiths are found for the given book and chapter, show a message
-        if (filteredHadiths.length === 0) {
-          hadithListElement.innerHTML = `<p>No hadiths found for Chapter ${chapterNumber} in the ${bookSlug} book.</p>`;
+    while (currentPage <= totalPages) {
+      const apiUrl = `https://www.hadithapi.com/api/hadiths?apiKey=$2y$10$tRU6Mfq4SwT9N8lesjlLEzPLw9J6DN0yAxrM5hA4JEsHJytUve&bookSlug=${bookSlug}&chapterId=${chapterNumber}&paginate=${paginate}&page=${currentPage}`;
+      
+      // Fetch data from the API
+      await fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+          if (data.status === 200) {
+            allHadiths = [...allHadiths, ...data.hadiths.data];  // Append results to the allHadiths array
+            totalPages = data.hadiths.last_page;  // Set total pages for pagination
+          } else {
+            document.getElementById('hadith-list').innerHTML = `<p>No Hadiths found for the given parameters.</p>`;
+            throw new Error('Failed to fetch Hadiths');
+          }
+        })
+        .catch(error => {
+          console.error(error);
+          document.getElementById('hadith-list').innerHTML = '<p>Failed to load Hadith data.</p>';
           return;
-        }
-
-        // Display each Hadith for the requested chapter and book
-        filteredHadiths.forEach(hadith => {
-          const hadithItem = document.createElement('div');
-          hadithItem.classList.add('hadith-item');
-          hadithItem.innerHTML = `
-            <p class="hadith-title">Hadith #${hadith.hadithNumber}</p>
-            <div class="hadith-content">
-              <strong>English:</strong> ${hadith.hadithEnglish}
-            </div>
-            <div class="hadith-content">
-              <strong>Urdu:</strong> ${hadith.hadithUrdu}
-            </div>
-            <div class="hadith-content">
-              <strong>Arabic:</strong> ${hadith.hadithArabic}
-            </div>
-            <p><strong>Source:</strong> ${hadith.book.bookName} - Chapter ${hadith.chapter.chapterNumber}: ${hadith.chapter.chapterEnglish}</p>
-          `;
-          hadithListElement.appendChild(hadithItem);
         });
-      } else {
-        document.getElementById('hadith-list').innerHTML = `<p>No Hadiths found for the given parameters.</p>`;
-      }
-    })
-    .catch(error => {
-      console.error(error);
-      document.getElementById('hadith-list').innerHTML = '<p>Failed to load Hadith data.</p>';
+
+      currentPage++;
+    }
+
+    return allHadiths;  // Return all fetched Hadiths
+  }
+
+  // Call fetchAllHadiths to retrieve all Hadiths and filter them
+  fetchAllHadiths().then(allHadiths => {
+    const filteredHadiths = allHadiths.filter(hadith => {
+      return hadith.bookSlug === bookSlug && hadith.chapterId === chapterNumber;
     });
+
+    const hadithListElement = document.getElementById('hadith-list');
+
+    // If no Hadiths are found for the given book and chapter, show a message
+    if (filteredHadiths.length === 0) {
+      hadithListElement.innerHTML = `<p>No Hadiths found for Chapter ${chapterNumber} in the ${bookSlug} book.</p>`;
+      return;
+    }
+
+    // Display each Hadith for the requested chapter and book
+    filteredHadiths.forEach(hadith => {
+      const hadithItem = document.createElement('div');
+      hadithItem.classList.add('hadith-item');
+      hadithItem.innerHTML = `
+        <p class="hadith-title">Hadith #${hadith.hadithNumber}</p>
+        <div class="hadith-content">
+          <strong>English:</strong> ${hadith.hadithEnglish}
+        </div>
+        <div class="hadith-content">
+          <strong>Urdu:</strong> ${hadith.hadithUrdu}
+        </div>
+        <div class="hadith-content">
+          <strong>Arabic:</strong> ${hadith.hadithArabic}
+        </div>
+        <p><strong>Source:</strong> ${hadith.book.bookName} - Chapter ${hadith.chapter.chapterNumber}: ${hadith.chapter.chapterEnglish}</p>
+      `;
+      hadithListElement.appendChild(hadithItem);
+    });
+
+    // Optionally, create pagination links based on total pages
+    const paginationElement = document.getElementById('pagination');
+    paginationElement.innerHTML = '';
+    for (let i = 1; i <= totalPages; i++) {
+      const pageLink = document.createElement('a');
+      pageLink.href = `?book=${bookSlug}&chapter=${chapterNumber}&paginate=${paginate}&page=${i}`;
+      pageLink.textContent = i;
+      paginationElement.appendChild(pageLink);
+    }
+  });
+
 </script>
 
 </body>
