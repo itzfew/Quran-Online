@@ -43,9 +43,9 @@
         }
         .hadith .arabic-text {
             font-size: 18px;
-            font-family: 'Amiri', serif; /* A good Arabic font */
+            font-family: 'Amiri', serif;
             text-align: center;
-            direction: rtl; /* Right-to-left for Arabic text */
+            direction: rtl;
         }
         .hadith .english-text {
             font-size: 16px;
@@ -86,25 +86,37 @@
     <div id="hadithResult"></div>
 
     <script>
-        let chaptersData = []; // To store chapter data
+        const books = [
+            { slug: 'bukhari', name: 'Sahih al-Bukhari' },
+            { slug: 'muslim', name: 'Sahih Muslim' },
+            { slug: 'tirmidhi', name: 'Jami` at-Tirmidhi' },
+            { slug: 'nasa', name: 'Sunan al-Nasa\'i' },
+            { slug: 'ibnmajah', name: 'Sunan Ibn Majah' },
+            { slug: 'abudawud', name: 'Sunan Abu Dawud' },
+            { slug: 'malik', name: 'Muwatta Malik' },
+            { slug: 'ahmed', name: 'Musnad Ahmad ibn Hanbal' },
+            { slug: 'darimi', name: 'Sunan al-Darimi' }
+        ];
 
-        // Function to fetch the chapters data from the remote JSON
-        function fetchChaptersData() {
-            const chaptersUrl = "https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/bukhari/chapters.json";
+        let chaptersData = [];
+
+        // Function to fetch chapters data from remote JSON
+        function fetchChaptersData(bookSlug) {
+            const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
             fetch(chaptersUrl)
                 .then(response => response.json())
                 .then(data => {
-                    chaptersData = data.collection.books; // Storing the books data
-                    initializeViewer();
+                    chaptersData = data.collection.books;
+                    initializeViewer(bookSlug);
                 })
                 .catch(error => {
                     console.error('Error fetching chapters data:', error);
-                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load the chapters data. Please try again later.</p>';
+                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load chapters data for this book. Please try again later.</p>';
                     document.getElementById('loading').style.display = 'none';
                 });
         }
 
-        // Function to get the book and chapter from URL parameters
+        // Get book and chapter from URL parameters
         function getURLParams() {
             const urlParams = new URLSearchParams(window.location.search);
             const book = urlParams.get('book');
@@ -112,7 +124,7 @@
             return { book, chapter };
         }
 
-        // Function to fetch and display the hadiths from the given book and chapter
+        // Fetch and display Hadiths from a given book and chapter
         function fetchHadiths(bookSlug, chapterNumber) {
             const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/${chapterNumber}.json`;
             fetch(url)
@@ -122,31 +134,20 @@
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
-                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load the hadiths. Please try again later.</p>';
+                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load Hadiths for this chapter. Please try again later.</p>';
                     document.getElementById('loading').style.display = 'none';
                 });
         }
 
-        // Function to display the hadiths on the page
+        // Display Hadiths on the page
         function displayHadiths(data, bookSlug) {
             const hadithResult = document.getElementById('hadithResult');
             const loading = document.getElementById('loading');
-
-            // Hide loading spinner
             loading.style.display = 'none';
 
-            // Add mapping for book slugs to full names
-            const bookSlugToName = {
-                bukhari: "Sahih al-Bukhari",
-                muslim: "Sahih Muslim",
-                tirmidhi: "Jami` at-Tirmidhi",
-                // Add other mappings here
-            };
+            // Mapping of book slug to book names
+            const bookName = books.find(b => b.slug === bookSlug)?.name || 'Unknown Book';
 
-            // Find the book name based on the book slug
-            const bookName = bookSlugToName[bookSlug.toLowerCase()] || 'Unknown Book';
-
-            // Check if the data contains hadiths
             if (data.hadiths && data.hadiths.length > 0) {
                 let htmlContent = `
                     <div class="header-meta">
@@ -156,7 +157,6 @@
                     </div>
                 `;
                 
-                // Loop through and display each hadith
                 data.hadiths.forEach(hadith => {
                     htmlContent += `
                         <div class="hadith">
@@ -173,8 +173,8 @@
             }
         }
 
-        // Initialize the viewer by fetching chapters data and URL parameters
-        function initializeViewer() {
+        // Initialize the viewer by fetching chapter data and URL parameters
+        function initializeViewer(bookSlug) {
             const { book, chapter } = getURLParams();
             if (book && chapter) {
                 fetchHadiths(book, chapter);
@@ -184,8 +184,16 @@
             }
         }
 
-        // On page load, fetch the chapters data and initialize the viewer
-        window.onload = fetchChaptersData;
+        // On page load, fetch chapters data for the specified book
+        window.onload = function() {
+            const { book } = getURLParams();
+            if (book) {
+                fetchChaptersData(book);
+            } else {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify a valid book in the URL (e.g., ?book=bukhari).</p>';
+            }
+        };
     </script>
 </body>
-</html> 
+</html>
