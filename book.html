@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hadith Books List</title>
+    <title>Chapters of Hadith Book</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -48,24 +48,29 @@
 </head>
 <body>
     <div class="container">
-        <h1>Hadith Books</h1>
-        <ul id="bookList">
-            <!-- Books will be populated here dynamically -->
+        <h1 id="bookTitle">Chapters</h1>
+        <ul id="chapterList">
+            <!-- Chapters will be populated here dynamically -->
         </ul>
     </div>
 
     <script>
-        const apiUrl = 'https://www.hadithapi.com/api/books?apiKey=$2y$10$tRU6Mfq4SwT9N8lesjlLEzPLw9J6DN0yAxrM5hA4JEsHJytUve';
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookSlug = urlParams.get('slug');
+        const apiUrl = `https://www.hadithapi.com/api/${bookSlug}/chapters?apiKey=$2y$10$tRU6Mfq4SwT9N8lesjlLEzPLw9J6DN0yAxrM5hA4JEsHJytUve`;
 
         fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
-            const books = data.books;
-            const bookList = document.getElementById('bookList');
-            books.forEach(book => {
+            const chapters = data.chapters;
+            const bookTitle = document.getElementById('bookTitle');
+            const chapterList = document.getElementById('chapterList');
+            bookTitle.innerHTML = `Chapters of ${data.books[0].bookName}`;
+
+            chapters.forEach(chapter => {
                 const listItem = document.createElement('li');
-                listItem.innerHTML = `<a href="book.html?slug=${book.bookSlug}">${book.bookName}</a> - ${book.writerName}`;
-                bookList.appendChild(listItem);
+                listItem.innerHTML = `<a href="hadith.html?slug=${bookSlug}&chapterId=${chapter.id}">Chapter ${chapter.chapterNumber}: ${chapter.chapterEnglish}</a>`;
+                chapterList.appendChild(listItem);
             });
         })
         .catch(error => {
