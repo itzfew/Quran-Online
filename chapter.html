@@ -79,13 +79,31 @@
 
     <h1>Hadith Viewer</h1>
     <p style="text-align: center; font-size: 18px; color: #7f8c8d;">
-        Enter a book and chapter number in the URL to view the Hadiths (e.g., <code>?book=muslim&chapter=10</code>).
+        Enter a book and chapter number in the URL to view the Hadiths (e.g., <code>?book=bukhari&chapter=10</code>).
     </p>
 
     <div id="loading" class="loading">Loading...</div>
     <div id="hadithResult"></div>
 
     <script>
+        let chaptersData = []; // To store chapter data
+
+        // Function to fetch the chapters data from the remote JSON
+        function fetchChaptersData() {
+            const chaptersUrl = "https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/bukhari/chapters.json";
+            fetch(chaptersUrl)
+                .then(response => response.json())
+                .then(data => {
+                    chaptersData = data.collection.books; // Storing the books data
+                    initializeViewer();
+                })
+                .catch(error => {
+                    console.error('Error fetching chapters data:', error);
+                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load the chapters data. Please try again later.</p>';
+                    document.getElementById('loading').style.display = 'none';
+                });
+        }
+
         // Function to get the book and chapter from URL parameters
         function getURLParams() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -94,13 +112,13 @@
             return { book, chapter };
         }
 
-        // Function to fetch the hadiths from the JSON file based on book and chapter
-        function fetchHadiths(book, chapter) {
-            const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book}/${chapter}.json`;
+        // Function to fetch and display the hadiths from the given book and chapter
+        function fetchHadiths(bookSlug, chapterNumber) {
+            const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/${chapterNumber}.json`;
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    displayHadiths(data);
+                    displayHadiths(data, bookSlug);
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
@@ -110,18 +128,22 @@
         }
 
         // Function to display the hadiths on the page
-        function displayHadiths(data) {
+        function displayHadiths(data, bookSlug) {
             const hadithResult = document.getElementById('hadithResult');
             const loading = document.getElementById('loading');
 
             // Hide loading spinner
             loading.style.display = 'none';
 
+            // Find the book name based on the book slug
+            const book = chaptersData.find(b => b.book_name.toLowerCase().replace(/\s+/g, '').includes(bookSlug.toLowerCase()));
+            const bookName = book ? book.book_name : 'Unknown Book';
+
             // Check if the data contains hadiths
             if (data.hadiths && data.hadiths.length > 0) {
                 let htmlContent = `
                     <div class="header-meta">
-                        <h2>${data.metadata.english.title} <span style="font-size: 18px;">(Chapter: ${data.metadata.english.introduction})</span></h2>
+                        <h2>${bookName} <span style="font-size: 18px;">(Chapter: ${data.metadata.english.introduction})</span></h2>
                         <p><strong>Author:</strong> ${data.metadata.english.author}</p>
                         <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
                     </div>
@@ -144,16 +166,19 @@
             }
         }
 
-        // On page load, fetch the hadiths based on URL parameters
-        window.onload = () => {
+        // Initialize the viewer by fetching chapters data and URL parameters
+        function initializeViewer() {
             const { book, chapter } = getURLParams();
             if (book && chapter) {
                 fetchHadiths(book, chapter);
             } else {
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=muslim&chapter=10).</p>';
+                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=bukhari&chapter=10).</p>';
             }
-        };
+        }
+
+        // On page load, fetch the chapters data and initialize the viewer
+        window.onload = fetchChaptersData;
     </script>
 </body>
 </html>
