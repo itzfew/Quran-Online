@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hadith Viewer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Arial&family=Roboto:wght@400;700&family=Lora&family=Courier+Prime&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -11,6 +13,7 @@
             margin: 0;
             padding: 0;
             line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
         }
         h1, h2 {
             text-align: center;
@@ -40,12 +43,13 @@
             margin: 10px 0;
             font-size: 16px;
             color: #34495e;
+            transition: font-size 0.3s ease-in-out;
         }
         .hadith .arabic-text {
             font-size: 18px;
-            font-family: 'Amiri', serif; /* A good Arabic font */
+            font-family: 'Amiri', serif;
             text-align: center;
-            direction: rtl; /* Right-to-left for Arabic text */
+            direction: rtl;
         }
         .hadith .english-text {
             font-size: 16px;
@@ -72,8 +76,91 @@
         .header-meta strong {
             color: #2c3e50;
         }
+
+        /* Settings Button */
+        #settingsBtn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #settingsPanel {
+            position: fixed;
+            top: 50px;
+            right: 20px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            display: none;
+            width: 220px;
+        }
+
+        #settingsPanel input[type="range"] {
+            width: 100%;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #333;
+            color: #f4f4f4;
+        }
+        body.dark-mode .hadith {
+            background-color: #444;
+            color: #ccc;
+        }
+        body.dark-mode .hadith p {
+            color: #ccc;
+        }
+
+        .pagination {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .pagination a {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 20px;
+            margin: 0 10px;
+        }
+
+        .pagination a:hover {
+            text-decoration: underline;
+        }
+
+        /* Show "View All" Button */
+        .view-all {
+            color: #3498db;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            #settingsPanel {
+                right: 10px;
+                top: 80px;
+            }
+        }
+
+        .settings-label {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        .settings-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -85,7 +172,93 @@
     <div id="loading" class="loading">Loading...</div>
     <div id="hadithResult"></div>
 
+    <div class="pagination">
+        <a href="#" id="prevChapter"><i class="fas fa-arrow-left"></i> Previous Chapter</a>
+        <a href="#" id="nextChapter">Next Chapter <i class="fas fa-arrow-right"></i></a>
+    </div>
+
+    <!-- Settings Button -->
+    <div id="settingsBtn">
+        <i class="fas fa-cogs"></i>
+    </div>
+
+    <!-- Settings Panel -->
+    <div id="settingsPanel">
+        <div class="settings-title">Settings</div>
+        <div class="settings-label">Font Size:</div>
+        <input type="range" id="fontSize" min="14" max="24" value="16" step="1">
+        <br><br>
+        <div class="settings-label">Font:</div>
+        <select id="fontSelector">
+            <option value="Arial">Arial</option>
+            <option value="Amiri">Amiri (Arabic)</option>
+            <option value="Roboto">Roboto</option>
+            <option value="Lora">Lora</option>
+            <option value="Courier Prime">Courier Prime</option>
+        </select>
+        <br><br>
+        <div class="settings-label">Dark Mode:</div>
+        <input type="checkbox" id="darkMode">
+    </div>
+
     <script>
+        // Save user preferences to localStorage
+        function saveUserPreferences() {
+            const fontSize = document.getElementById('fontSize').value;
+            const font = document.getElementById('fontSelector').value;
+            const darkMode = document.getElementById('darkMode').checked;
+
+            localStorage.setItem('fontSize', fontSize);
+            localStorage.setItem('font', font);
+            localStorage.setItem('darkMode', darkMode);
+        }
+
+        // Load user preferences from localStorage
+        function loadUserPreferences() {
+            const fontSize = localStorage.getItem('fontSize');
+            const font = localStorage.getItem('font');
+            const darkMode = localStorage.getItem('darkMode');
+
+            if (fontSize) {
+                document.getElementById('fontSize').value = fontSize;
+                document.querySelectorAll('.hadith p').forEach(p => p.style.fontSize = fontSize + 'px');
+            }
+
+            if (font) {
+                document.getElementById('fontSelector').value = font;
+                document.querySelectorAll('.hadith p').forEach(p => p.style.fontFamily = font);
+            }
+
+            if (darkMode === 'true') {
+                document.getElementById('darkMode').checked = true;
+                document.body.classList.add('dark-mode');
+            }
+        }
+
+        // Initialize user preferences
+        window.onload = () => {
+            loadUserPreferences();
+
+            // Set up event listeners for saving preferences
+            document.getElementById('fontSize').addEventListener('input', saveUserPreferences);
+            document.getElementById('fontSelector').addEventListener('change', saveUserPreferences);
+            document.getElementById('darkMode').addEventListener('change', saveUserPreferences);
+
+            const { book, chapter } = getURLParams();
+            if (book && chapter) {
+                fetchHadiths(book, chapter);
+            } else {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=muslim&chapter=10).</p>';
+            }
+
+            // Settings button toggle
+            document.getElementById('settingsBtn').onclick = () => {
+                const settingsPanel = document.getElementById('settingsPanel');
+                settingsPanel.style.display = settingsPanel.style.display === 'block' ? 'none' : 'block';
+            };
+        };
+
         // Function to get the book and chapter from URL parameters
         function getURLParams() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -94,14 +267,12 @@
             return { book, chapter };
         }
 
-        // Function to fetch the hadiths from the JSON file based on book and chapter
+        // Fetch and display Hadiths
         function fetchHadiths(book, chapter) {
             const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book}/${chapter}.json`;
             fetch(url)
                 .then(response => response.json())
-                .then(data => {
-                    displayHadiths(data);
-                })
+                .then(data => displayHadiths(data, book, chapter))
                 .catch(error => {
                     console.error('Error fetching data:', error);
                     document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load the hadiths. Please try again later.</p>';
@@ -109,15 +280,12 @@
                 });
         }
 
-        // Function to display the hadiths on the page
-        function displayHadiths(data) {
+        // Display Hadiths on the page
+        function displayHadiths(data, book, chapter) {
             const hadithResult = document.getElementById('hadithResult');
             const loading = document.getElementById('loading');
-
-            // Hide loading spinner
             loading.style.display = 'none';
 
-            // Check if the data contains hadiths
             if (data.hadiths && data.hadiths.length > 0) {
                 let htmlContent = `
                     <div class="header-meta">
@@ -127,13 +295,20 @@
                     </div>
                 `;
                 
-                // Loop through and display each hadith
                 data.hadiths.forEach(hadith => {
+                    let arabicText = `<p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>`;
+                    let englishText = hadith.english.text.split('\n').slice(0, 6).join('\n');
+                    let showMoreButton = '';
+
+                    if (hadith.english.text.split('\n').length > 6) {
+                        englishText += '... <span class="view-all" onclick="viewFullHadith(event, ' + hadith.id + ')">View All</span>';
+                    }
+                    
                     htmlContent += `
                         <div class="hadith">
                             <h3>Hadith #${hadith.id}</h3>
-                            <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
-                            <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
+                            ${arabicText}
+                            <p class="english-text" id="hadith-${hadith.id}">${englishText}</p>
                         </div>
                     `;
                 });
@@ -142,18 +317,33 @@
             } else {
                 hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
             }
+
+            // Handle previous and next chapter navigation
+            document.getElementById('prevChapter').onclick = () => navigateChapter(book, chapter, 'prev');
+            document.getElementById('nextChapter').onclick = () => navigateChapter(book, chapter, 'next');
         }
 
-        // On page load, fetch the hadiths based on URL parameters
-        window.onload = () => {
-            const { book, chapter } = getURLParams();
-            if (book && chapter) {
-                fetchHadiths(book, chapter);
+        // Handle "View All" functionality
+        function viewFullHadith(event, id) {
+            const hadithText = document.getElementById('hadith-' + id);
+            hadithText.innerHTML = hadithText.innerHTML.split('...')[0] + ' <span class="view-all" onclick="collapseHadith(event, ' + id + ')">Collapse</span>';
+        }
+
+        function collapseHadith(event, id) {
+            const hadithText = document.getElementById('hadith-' + id);
+            hadithText.innerHTML = hadithText.getAttribute('data-full-text').split('\n').slice(0, 6).join('\n') + '... <span class="view-all" onclick="viewFullHadith(event, ' + id + ')">View All</span>';
+        }
+
+        // Navigate to the previous or next chapter
+        function navigateChapter(book, chapter, direction) {
+            let newChapter = parseInt(chapter);
+            if (direction === 'prev') {
+                newChapter--;
             } else {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=muslim&chapter=10).</p>';
+                newChapter++;
             }
-        };
+            window.location.href = `?book=${book}&chapter=${newChapter}`;
+        }
     </script>
 </body>
 </html>
