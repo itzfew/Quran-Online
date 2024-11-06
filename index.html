@@ -86,6 +86,66 @@
             left: 0;
         }
 
+        /* Install Button in Menu */
+        .install-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .install-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Prompt for Install */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 80%;
+            max-width: 500px;
+            z-index: 101;
+            font-size: 1.1em;
+        }
+
+        .install-prompt button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .install-prompt button:hover {
+            background-color: #45a049;
+        }
+
+        .install-prompt button.close {
+            background-color: #f44336;
+        }
+
+        .install-prompt button.close:hover {
+            background-color: #e53935;
+        }
+
         /* Surah List Styles */
         .surah-list {
             padding: 0 10%;
@@ -149,15 +209,7 @@
         <a href="prayer.html">Prayer</a>
         <a href="tasbih.html">Tasbih</a>
         <a href="99-names.html">100 Names</a>
-    </div>
-
-    <!-- Search and Sort Section -->
-    <div class="search-sort-container" style="padding: 20px;">
-        <input type="text" id="search-bar" class="search-bar" placeholder="Search by title or index...">
-        <select class="sort-select" id="sort-select">
-            <option value="index">Sort by Index</option>
-            <option value="title">Sort by Title (English)</option>
-        </select>
+        <button class="install-btn" id="install-menu-btn" style="display: none;">Install App</button>
     </div>
 
     <!-- Surah List -->
@@ -165,8 +217,14 @@
         <!-- Surah Items will be injected here -->
     </div>
 
-    <!-- Install Button -->
-    <button id="install-button" style="display: none;">Install App</button>
+    <!-- Install Prompt (Initial) -->
+    <div class="install-prompt" id="install-prompt" style="display: none;">
+        <span>Install the Quran Kareem app for a better experience!</span>
+        <div>
+            <button id="install-accept">Install</button>
+            <button id="install-close" class="close">Close</button>
+        </div>
+    </div>
 
     <script>
         // Toggle Sidebar Menu
@@ -175,7 +233,46 @@
             menu.classList.toggle('active');
         });
 
-        // Fetch Surah Data
+        // Install Prompt Logic
+        let deferredPrompt;
+        const installPrompt = document.getElementById('install-prompt');
+        const installMenuBtn = document.getElementById('install-menu-btn');
+        const installAcceptBtn = document.getElementById('install-accept');
+        const installCloseBtn = document.getElementById('install-close');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installPrompt.style.display = 'flex';
+        });
+
+        installAcceptBtn.addEventListener('click', () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the installation prompt');
+                    } else {
+                        console.log('User dismissed the installation prompt');
+                    }
+                    deferredPrompt = null;
+                });
+            }
+            installPrompt.style.display = 'none';
+            installMenuBtn.style.display = 'block'; // Show in menu
+        });
+
+        installCloseBtn.addEventListener('click', () => {
+            installPrompt.style.display = 'none';
+            localStorage.setItem('installPromptClosed', 'true');
+        });
+
+        // Show the Install Button in Menu only after closing prompt or accepting
+        if (localStorage.getItem('installPromptClosed') === 'true') {
+            installPrompt.style.display = 'none';
+        }
+
+        // Initialize Surah Data
         async function fetchSurahs() {
             try {
                 const response = await fetch('https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah.json');
@@ -205,86 +302,14 @@
                     <p>${language === 'en' ? surah.title : surah.titleAr}</p>
                     <p>${surah.type}</p>
                 `;
-
                 surahList.appendChild(surahItem);
             });
         }
 
-        // Sort Surahs
-        function sortSurahs(surahs, criteria) {
-            return surahs.sort((a, b) => {
-                if (criteria === 'index') {
-                    return a.index - b.index;
-                } else if (criteria === 'title') {
-                    return a.title.localeCompare(b.title);
-                }
-                return 0;
-            });
-        }
-
-        // Handle Search
-        document.getElementById('search-bar').addEventListener('input', async function() {
-            const searchQuery = this.value.toLowerCase();
-            const surahs = await fetchSurahs();
-            const filteredSurahs = surahs.filter(surah => {
-                return surah.title.toLowerCase().includes(searchQuery) || surah.index.includes(searchQuery);
-            });
-            const selectedLang = document.querySelector('.language-switch.selected').id === 'arabic-link' ? 'ar' : 'en';
-            renderSurahs(filteredSurahs, selectedLang);
+        // Initialize Surah Data
+        fetchSurahs().then(surahs => {
+            renderSurahs(surahs, 'en');
         });
-
-        // Handle Sort
-        document.getElementById('sort-select').addEventListener('change', async function() {
-            const sortCriteria = this.value;
-            const surahs = await fetchSurahs();
-            const sortedSurahs = sortSurahs(surahs, sortCriteria);
-            const selectedLang = document.querySelector('.language-switch.selected').id === 'arabic-link' ? 'ar' : 'en';
-            renderSurahs(sortedSurahs, selectedLang);
-        });
-
-        // Install PWA
-        let deferredPrompt;
-        const installButton = document.getElementById('install-button');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installButton.style.display = 'block';
-        });
-
-        installButton.addEventListener('click', () => {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the installation prompt');
-                    } else {
-                        console.log('User dismissed the installation prompt');
-                    }
-                    deferredPrompt = null;
-                });
-            }
-        });
-
-        // Initialize Surah Data and Language
-        let surahsData = [];
-        let currentLanguage = 'arabic';
-
-        fetchSurahs().then(data => {
-            surahsData = data;
-            renderSurahs(surahsData, currentLanguage);
-        });
-
-        // Register Service Worker for PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js').then((registration) => {
-                    console.log('Service Worker registered with scope:', registration.scope);
-                }).catch((error) => {
-                    console.log('Service Worker registration failed:', error);
-                });
-            });
-        }
     </script>
 
 </body>
