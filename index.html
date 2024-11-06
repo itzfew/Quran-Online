@@ -223,63 +223,90 @@
             }
         }
         /* Install Prompt */
-        .install-prompt {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            background-color: #4CAF50;
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 300px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-            z-index: 9999;
-            display: none;
-        }
+.install-prompt {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 320px; /* Adjust the width to make it more balanced */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 9999;
+    display: none;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px; /* Slightly smaller font size for better readability */
+}
 
-        .install-prompt button {
-            background-color: #fff;
-            color: #4CAF50;
-            padding: 5px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-        }
+/* Adjusting the text inside the prompt */
+.install-prompt span {
+    flex: 1;
+    text-align: left;
+    margin-right: 15px;
+}
 
-        .install-prompt button:hover {
-            background-color: #ddd;
-        }
+/* Button Group (Install and Close) */
+.install-prompt div {
+    display: flex;
+    gap: 10px;
+}
 
-        .close-prompt {
-            background-color: #ff4d4d;
-            color: white;
-            padding:4px;
-            border: none;
-        }
+/* Install Button */
+.install-prompt button {
+    background-color: #ffffff;
+    color: #4CAF50;
+    padding: 10px 20px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100px; /* Give the button a fixed width for better consistency */
+    text-align: center;
+}
 
-        /* Add styles for Install button in the menu */
-        .menu a.install-btn {
-            background-color: #4CAF50;
-            color: white;
-            text-align: center;
-            padding: 12px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
+/* Hover effect for Install Button */
+.install-prompt button:hover {
+    background-color: #ddd;
+    transform: translateY(-2px); /* Subtle hover effect */
+}
 
-        .menu a.install-btn:hover {
-            background-color: #45a049;
-        }
+/* Close Button */
+.close-prompt {
+    background-color: #ff4d4d;
+    color: white;
+    padding: 8px 15px; /* More padding for a better button size */
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100px; /* Same width as the install button */
+    text-align: center;
+}
 
-        /* Ensure the install prompt is shown correctly in the menu */
-        .install-prompt button.close-prompt {
-            background-color: #ff4d4d;
-            color: white;
-        }
+/* Hover effect for Close Button */
+.close-prompt:hover {
+    background-color: #e14d4d;
+    transform: translateY(-2px); /* Subtle hover effect */
+}
+
+/* Add a little extra spacing between buttons */
+.install-prompt div button {
+    margin-top: 0; /* Ensure buttons are aligned perfectly */
+}
+
+/* Ensure the prompt has rounded edges */
+.install-prompt {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+
     </style>
 </head>
 <body>
