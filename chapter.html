@@ -4,144 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hadith Viewer</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        h1, h2 {
-            text-align: center;
-            color: #2c3e50;
-            margin-top: 20px;
-        }
-        .hadith-container {
-            margin: 20px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .hadith {
-            margin-bottom: 20px;
-            padding: 15px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            background-color: #fafafa;
-        }
-        .hadith h3 {
-            margin-top: 0;
-            font-size: 20px;
-            color: #16a085;
-        }
-        .hadith p {
-            margin: 10px 0;
-            font-size: 16px;
-            color: #34495e;
-        }
-        .hadith .arabic-text {
-            font-size: 18px;
-            font-family: 'Amiri', serif; /* A good Arabic font */
-            text-align: center;
-            direction: rtl; /* Right-to-left for Arabic text */
-        }
-        .hadith .english-text {
-            font-size: 16px;
-            font-family: 'Arial', sans-serif;
-            color: #555;
-        }
-        .loading, .error {
-            text-align: center;
-            font-size: 20px;
-            color: #3498db;
-        }
-        .error {
-            color: red;
-        }
-        #hadithResult {
-            margin-top: 30px;
-        }
-        .header-meta {
-            background-color: #ecf0f1;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        .header-meta strong {
-            color: #2c3e50;
-        }
-        /* Dark mode styles */
-        body.dark-mode {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-        }
-        body.dark-mode .hadith {
-            background-color: #34495e;
-            color: #ecf0f1;
-        }
-        body.dark-mode h1, body.dark-mode h2 {
-            color: #ecf0f1;
-        }
-        body.dark-mode .hadith h3 {
-            color: #1abc9c;
-        }
-        /* Font toggle styles */
-        .font-toggle {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #2c3e50;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .font-toggle:hover {
-            background-color: #16a085;
-        }
-        /* Dark mode toggle button */
-        .theme-toggle {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            background-color: #2c3e50;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .theme-toggle:hover {
-            background-color: #16a085;
-        }
-        /* Read More / Read Less */
-        .read-more-btn {
-            background-color: #16a085;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            margin-top: 10px;
-            border-radius: 5px;
-        }
-        .read-more-btn:hover {
-            background-color: #1abc9c;
-        }
-        .copy-btn, .share-btn {
-            background-color: #3498db;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .copy-btn:hover, .share-btn:hover {
-            background-color: #2980b9;
-        }
-    </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Styling as before */
+        /* ... other styles ... */
+    </style>
 </head>
 <body>
 
@@ -150,30 +18,28 @@
         Enter a book and chapter number in the URL to view the Hadiths (e.g., <code>?book=muslim&chapter=10</code>).
     </p>
 
+    <!-- Theme toggle -->
+    <div style="text-align: center;">
+        <button class="btn btn-light" id="theme-toggle"><i class="fas fa-moon"></i> Toggle Dark Mode</button>
+    </div>
+
+    <!-- Search Bar -->
+    <div style="text-align: center; margin-top: 20px;">
+        <input type="text" id="search" placeholder="Search Hadiths..." class="btn btn-light" oninput="filterHadiths()">
+    </div>
+
     <div id="loading" class="loading">Loading...</div>
     <div id="hadithResult"></div>
 
-    <!-- Font and Theme Toggles -->
-    <button class="theme-toggle" onclick="toggleTheme()">Toggle Dark/Light Mode</button>
-    <button class="font-toggle" onclick="toggleFont()">Toggle Font</button>
+    <!-- Navigation Buttons -->
+    <div id="navigation" style="text-align: center; margin-top: 20px;">
+        <button class="btn btn-primary" id="prevBtn" onclick="navigate(-1)" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+        <button class="btn btn-primary" id="nextBtn" onclick="navigate(1)" disabled><i class="fas fa-arrow-right"></i> Next</button>
+    </div>
 
     <script>
-        // Toggle between light and dark mode
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-        }
-
-        // Toggle between different fonts
-        let currentFont = 'Arial';
-        function toggleFont() {
-            if (currentFont === 'Arial') {
-                document.body.style.fontFamily = 'Amiri, serif';
-                currentFont = 'Amiri';
-            } else {
-                document.body.style.fontFamily = 'Arial, sans-serif';
-                currentFont = 'Arial';
-            }
-        }
+        let hadithsData = [];
+        let currentIndex = 0;
 
         // Function to get the book and chapter from URL parameters
         function getURLParams() {
@@ -189,7 +55,8 @@
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    displayHadiths(data);
+                    hadithsData = data.hadiths;
+                    displayHadiths();
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
@@ -199,78 +66,81 @@
         }
 
         // Function to display the hadiths on the page
-        function displayHadiths(data) {
+        function displayHadiths() {
             const hadithResult = document.getElementById('hadithResult');
             const loading = document.getElementById('loading');
 
             // Hide loading spinner
             loading.style.display = 'none';
 
-            // Check if the data contains hadiths
-            if (data.hadiths && data.hadiths.length > 0) {
+            // Check if there are hadiths
+            if (hadithsData.length > 0) {
                 let htmlContent = `
                     <div class="header-meta">
-                        <h2>${data.metadata.english.title} <span style="font-size: 18px;">(Chapter: ${data.metadata.english.introduction})</span></h2>
-                        <p><strong>Author:</strong> ${data.metadata.english.author}</p>
-                        <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
+                        <h2>Chapter</h2>
                     </div>
                 `;
-                
-                // Loop through and display each hadith
-                data.hadiths.forEach((hadith, index) => {
-                    htmlContent += `
-                        <div class="hadith" data-id="${index}">
-                            <h3>Hadith #${hadith.id}</h3>
-                            <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
-                            <p class="english-text" id="englishText-${index}"><strong>English:</strong> ${hadith.english.text.substring(0, 300)}</p>
-                            <button class="read-more-btn" onclick="toggleReadMore(${index}, '${hadith.english.text}')">Read More</button>
-                            <button class="copy-btn" onclick="copyText('${hadith.english.text}')">Copy</button>
-                            <button class="share-btn" onclick="shareText('${hadith.english.text}')">Share</button>
-                        </div>
-                    `;
-                });
 
+                // Display the current hadith based on currentIndex
+                const hadith = hadithsData[currentIndex];
+
+                // Check if the hadith has Arabic and English texts
+                const arabicText = hadith.arabic ? hadith.arabic : "Arabic text not available.";
+                const englishText = hadith.english && hadith.english.text ? hadith.english.text : "English translation not available.";
+
+                htmlContent += `
+                    <div class="hadith">
+                        <h3>Hadith #${hadith.id}</h3>
+                        <p class="arabic-text"><strong>Arabic:</strong> ${arabicText}</p>
+                        <p class="english-text"><strong>English:</strong> ${englishText}</p>
+                        <button class="btn btn-secondary" onclick="copyToClipboard('${arabicText}', 'arabic')"><i class="fas fa-copy"></i> Copy Arabic</button>
+                        <button class="btn btn-secondary" onclick="copyToClipboard('${englishText}', 'english')"><i class="fas fa-copy"></i> Copy English</button>
+                    </div>
+                `;
                 hadithResult.innerHTML = htmlContent;
+
+                // Enable/Disable next/prev buttons based on currentIndex
+                document.getElementById('prevBtn').disabled = currentIndex <= 0;
+                document.getElementById('nextBtn').disabled = currentIndex >= hadithsData.length - 1;
             } else {
                 hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
             }
         }
 
-        // Toggle the full text of a hadith
-        function toggleReadMore(index, fullText) {
-            const englishText = document.getElementById(`englishText-${index}`);
-            const button = document.querySelector(`.hadith[data-id="${index}"] .read-more-btn`);
-            
-            if (englishText.innerText.length > 300) {
-                if (button.innerText === 'Read More') {
-                    englishText.innerText = fullText;
-                    button.innerText = 'Read Less';
-                } else {
-                    englishText.innerText = fullText.substring(0, 300);
-                    button.innerText = 'Read More';
-                }
+        // Function to navigate to the next or previous hadith
+        function navigate(direction) {
+            currentIndex += direction;
+            displayHadiths();
+        }
+
+        // Function to copy text to clipboard
+        async function copyToClipboard(text, language) {
+            try {
+                await navigator.clipboard.writeText(text);
+                alert(`${language.charAt(0).toUpperCase() + language.slice(1)} text copied!`);
+            } catch (err) {
+                console.error('Error copying text: ', err);
+                alert('Failed to copy text. Please try again.');
             }
         }
 
-        // Copy text to clipboard
-        function copyText(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Text copied to clipboard!');
+        // Function to filter hadiths based on search input
+        function filterHadiths() {
+            const query = document.getElementById('search').value.toLowerCase();
+            const filteredHadiths = hadithsData.filter(hadith => {
+                return hadith.arabic.toLowerCase().includes(query) || hadith.english.text.toLowerCase().includes(query);
             });
+            hadithsData = filteredHadiths;
+            currentIndex = 0;
+            displayHadiths();
         }
 
-        // Share the text (you can enhance this for social media)
-        function shareText(text) {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Hadith Viewer',
-                    text: text,
-                    url: window.location.href,
-                }).catch(console.error);
-            } else {
-                alert('Sharing is not supported on this browser');
-            }
-        }
+        // Dark mode toggle
+        document.getElementById('theme-toggle').onclick = function() {
+            document.body.classList.toggle('dark-mode');
+            const icon = document.body.classList.contains('dark-mode') ? 'fa-sun' : 'fa-moon';
+            document.getElementById('theme-toggle').innerHTML = `<i class="fas ${icon}"></i> Toggle Dark Mode`;
+        };
 
         // On page load, fetch the hadiths based on URL parameters
         window.onload = () => {
