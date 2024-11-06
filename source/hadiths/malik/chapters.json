@@ -1,0 +1,253 @@
+{
+  "collection": {
+    "name": "Muwatta Malik",
+    "compiled_by": "Imam Malik ibn Anas",
+    "description": "Muwatta Malik is one of the earliest and most influential compilations of hadith, authored by Imam Malik ibn Anas (rahimahullah). It contains both hadiths and the sayings of the companions of the Prophet (ﷺ) and his own legal opinions. It is considered one of the most authoritative texts in Islamic jurisprudence, especially in the Maliki school of thought.",
+    "books": [
+      {
+        "book_number": 1,
+        "book_name": "The Times of Prayer (كتاب وقوت الصلاة)"
+      },
+      {
+        "book_number": 2,
+        "book_name": "Purity (كتاب الطهارة)"
+      },
+      {
+        "book_number": 3,
+        "book_name": "Prayer (كتاب الصلاة)"
+      },
+      {
+        "book_number": 4,
+        "book_name": "Forgetfulness in Prayer (كتاب السهو)"
+      },
+      {
+        "book_number": 5,
+        "book_name": "Jumu'a (كتاب الجمعة)"
+      },
+      {
+        "book_number": 6,
+        "book_name": "Prayer in Ramadan (كتاب الصلاة فى رمضان)"
+      },
+      {
+        "book_number": 7,
+        "book_name": "Tahajjud (كتاب صلاة الليل)"
+      },
+      {
+        "book_number": 8,
+        "book_name": "Prayer in Congregation (كتاب صلاة الجماعة)"
+      },
+      {
+        "book_number": 9,
+        "book_name": "Shortening the Prayer (كتاب قصر الصلاة فى السفر)"
+      },
+      {
+        "book_number": 10,
+        "book_name": "The Two 'Ids (كتاب العيدين)"
+      },
+      {
+        "book_number": 11,
+        "book_name": "The Fear Prayer (كتاب صلاة الخوف)"
+      },
+      {
+        "book_number": 12,
+        "book_name": "The Eclipse Prayer (كتاب صلاة الكسوف)"
+      },
+      {
+        "book_number": 13,
+        "book_name": "Asking for Rain (كتاب الاستسقاء)"
+      },
+      {
+        "book_number": 14,
+        "book_name": "The Qibla (كتاب القبلة)"
+      },
+      {
+        "book_number": 15,
+        "book_name": "The Qur'an (كتاب القرآن)"
+      },
+      {
+        "book_number": 16,
+        "book_name": "Burials (كتاب الجنائز)"
+      },
+      {
+        "book_number": 17,
+        "book_name": "Zakat (كتاب الزكاة)"
+      },
+      {
+        "book_number": 18,
+        "book_name": "Fasting (كتاب الصيام)"
+      },
+      {
+        "book_number": 19,
+        "book_name": "I'tikaf in Ramadan (كتاب الاعتكاف)"
+      },
+      {
+        "book_number": 20,
+        "book_name": "Hajj (كتاب الحج)"
+      },
+      {
+        "book_number": 21,
+        "book_name": "Jihad (كتاب الجهاد)"
+      },
+      {
+        "book_number": 22,
+        "book_name": "Vows and Oaths (كتاب النذور والأيمان)"
+      },
+      {
+        "book_number": 23,
+        "book_name": "Sacrificial Animals (كتاب الضحايا)"
+      },
+      {
+        "book_number": 24,
+        "book_name": "Slaughtering Animals (كتاب الذبائح)"
+      },
+      {
+        "book_number": 25,
+        "book_name": "Game (كتاب الصيد)"
+      },
+      {
+        "book_number": 26,
+        "book_name": "The 'Aqiqa (كتاب العقيقة)"
+      },
+      {
+        "book_number": 27,
+        "book_name": "Fara'id (كتاب الفرائض)"
+      },
+      {
+        "book_number": 28,
+        "book_name": "Marriage (كتاب النكاح)"
+      },
+      {
+        "book_number": 29,
+        "book_name": "Divorce (كتاب الطلاق)"
+      },
+      {
+        "book_number": 30,
+        "book_name": "Suckling (كتاب الرضاع)"
+      },
+      {
+        "book_number": 31,
+        "book_name": "Business Transactions (كتاب البيوع)"
+      },
+      {
+        "book_number": 32,
+        "book_name": "Qirad (كتاب القراض)"
+      },
+      {
+        "book_number": 33,
+        "book_name": "Sharecropping (كتاب المساقاة)"
+      },
+      {
+        "book_number": 34,
+        "book_name": "Renting Land (كتاب كراء الأرض)"
+      },
+      {
+        "book_number": 35,
+        "book_name": "Pre-emption in Property (كتاب الشفعة)"
+      },
+      {
+        "book_number": 36,
+        "book_name": "Judgements (كتاب الأقضية)"
+      },
+      {
+        "book_number": 37,
+        "book_name": "Wills and Testaments (كتاب الوصية)"
+      },
+      {
+        "book_number": 38,
+        "book_name": "Setting Free and Wala' (كتاب العتق والولاء)"
+      },
+      {
+        "book_number": 39,
+        "book_name": "The Mukatab (كتاب المكاتب)"
+      },
+      {
+        "book_number": 40,
+        "book_name": "The Mudabbar (كتاب المدبر)"
+      },
+      {
+        "book_number": 41,
+        "book_name": "Hudud (كتاب الحدود)"
+      },
+      {
+        "book_number": 42,
+        "book_name": "Drinks (كتاب الأشربة)"
+      },
+      {
+        "book_number": 43,
+        "book_name": "Blood-Money (كتاب العقول)"
+      },
+      {
+        "book_number": 44,
+        "book_name": "The Oath of Qasama (كتاب القسامة)"
+      },
+      {
+        "book_number": 45,
+        "book_name": "Madina (كتاب الْمَدِينَةِ)"
+      },
+      {
+        "book_number": 46,
+        "book_name": "The Decree (كتاب القدر)"
+      },
+      {
+        "book_number": 47,
+        "book_name": "Good Character (كتاب حسن الخلق)"
+      },
+      {
+        "book_number": 48,
+        "book_name": "Dress (كتاب اللباس)"
+      },
+      {
+        "book_number": 49,
+        "book_name": "The Description of the Prophet, may Allah Bless Him and Grant Him Peace (كتاب صفة النبى صلى الله عليه وسلم)"
+      },
+      {
+        "book_number": 50,
+        "book_name": "The Evil Eye (كتاب العين)"
+      },
+      {
+        "book_number": 51,
+        "book_name": "Hair (كتاب الشعر)"
+      },
+      {
+        "book_number": 52,
+        "book_name": "Visions (كتاب الرؤيا)"
+      },
+      {
+        "book_number": 53,
+        "book_name": "Greetings (كتاب السلام)"
+      },
+      {
+        "book_number": 54,
+        "book_name": "General Subjects (كتاب الاستئذان)"
+      },
+      {
+        "book_number": 55,
+        "book_name": "The Oath of Allegiance (كتاب البيعة)"
+      },
+      {
+        "book_number": 56,
+        "book_name": "Speech (كتاب الكلام)"
+      },
+      {
+        "book_number": 57,
+        "book_name": "Jahannam (كتاب جهنم)"
+      },
+      {
+        "book_number": 58,
+        "book_name": "Sadaqa (كتاب الصدقة)"
+      },
+      {
+        "book_number": 59,
+        "book_name": "Knowledge (كتاب العلم)"
+      },
+      {
+        "book_number": 60,
+        "book_name": "The Supplication of the Unjustly Wronged (كتاب دعوة المظلوم)"
+      },
+      {
+        "book_number": 61,
+        "book_name": "The Names of the Prophet, may Allah Bless Him and Grant Him Peace (كتاب أسماء النبى صلى الله عليه وسلم)"
+      }
+    ]
+  }
+}
