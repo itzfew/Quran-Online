@@ -11,6 +11,7 @@
             margin: 0;
             padding: 0;
             line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
         }
         h1, h2 {
             text-align: center;
@@ -32,6 +33,7 @@
             border: 1px solid #e1e1e1;
             border-radius: 10px;
             background-color: #fafafa;
+            position: relative;
         }
         .hadith h3 {
             margin-top: 0;
@@ -77,23 +79,6 @@
         .header-meta strong {
             color: #2c3e50;
         }
-        /* Islamic style footer */
-        footer {
-            background-color: #16a085;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            font-size: 16px;
-            border-top: 5px solid #2c3e50;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-        footer a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
         .back-to-top {
             position: fixed;
             right: 15px;
@@ -106,6 +91,39 @@
             font-size: 18px;
         }
         .back-to-top:hover {
+            background-color: #1abc9c;
+        }
+        /* Dark mode styles */
+        body.dark-mode {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+        body.dark-mode .hadith {
+            background-color: #34495e;
+            border-color: #1abc9c;
+        }
+        body.dark-mode .hadith h3 {
+            color: #1abc9c;
+        }
+        body.dark-mode .header-meta {
+            background-color: #2c3e50;
+        }
+        body.dark-mode .loading,
+        body.dark-mode .error {
+            color: #1abc9c;
+        }
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #16a085;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        .theme-toggle:hover {
             background-color: #1abc9c;
         }
     </style>
@@ -123,6 +141,8 @@
 
     <script>
         let chaptersData = []; // To store chapter data
+        let currentPage = 1; // Current page for pagination
+        const itemsPerPage = 5; // Hadiths per page
 
         // Function to fetch the chapters data from the remote JSON
         function fetchChaptersData() {
@@ -163,7 +183,7 @@
                 });
         }
 
-        // Function to display the hadiths on the page
+        // Function to display the hadiths on the page with pagination
         function displayHadiths(data, bookSlug) {
             const hadithResult = document.getElementById('hadithResult');
             const loading = document.getElementById('loading');
@@ -192,8 +212,13 @@
                     </div>
                 `;
                 
-                // Loop through and display each hadith
-                data.hadiths.forEach(hadith => {
+                // Calculate pagination range
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = Math.min(startIndex + itemsPerPage, data.hadiths.length);
+                
+                // Loop through and display each hadith for the current page
+                for (let i = startIndex; i < endIndex; i++) {
+                    const hadith = data.hadiths[i];
                     htmlContent += `
                         <div class="hadith">
                             <h3>Hadith #${hadith.id}</h3>
@@ -201,12 +226,31 @@
                             <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
                         </div>
                     `;
-                });
+                }
 
                 hadithResult.innerHTML = htmlContent;
+
+                // Add pagination
+                const totalPages = Math.ceil(data.hadiths.length / itemsPerPage);
+                if (totalPages > 1) {
+                    hadithResult.innerHTML += `
+                        <div class="pagination">
+                            <button onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>Prev</button>
+                            <span>Page ${currentPage} of ${totalPages}</span>
+                            <button onclick="changePage(1)" ${currentPage === totalPages ? 'disabled' : ''}>Next</button>
+                        </div>
+                    `;
+                }
             } else {
                 hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
             }
+        }
+
+        // Change page for pagination
+        function changePage(direction) {
+            currentPage += direction;
+            const { book, chapter } = getURLParams();
+            fetchHadiths(book, chapter);
         }
 
         // Initialize the viewer by fetching chapters data and URL parameters
@@ -225,15 +269,16 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // Toggle between dark and light mode
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+        }
+
         // On page load, fetch the chapters data and initialize the viewer
         window.onload = fetchChaptersData;
-
     </script>
 
-    <footer>
-        <p>&copy; 2024 Hadith Viewer | <a href="https://www.example.com">Learn More</a></p>
-    </footer>
-
+    <div class="theme-toggle" onclick="toggleTheme()">🌙</div>
     <div class="back-to-top" onclick="scrollToTop()">↑</div>
 
 </body>
