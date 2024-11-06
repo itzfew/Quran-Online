@@ -1,269 +1,169 @@
 {
   "title": "Sunan an-Nasa'i",
-  "author": "Imam Ahmad an-Nasa'i",
+  "author": "Imam Ahmad an-Nasa'i (d. 303 AH / 915 AD)",
   "collection": {
-    "description": "Sunan an-Nasa'i is a collection of hadith compiled by Imam Ahmad an-Nasa'i (rahimahullah). His collection is unanimously considered to be one of the six canonical collections of hadith (Kutub as-Sittah) of the Sunnah of the Prophet (ﷺ). It contains roughly 5700 hadith (with repetitions) in 52 books.",
-    "total_hadith": 5700,
+    "description": "Sunan an-Nasa'i is one of the six major hadith collections (Kutub al-Sittah) and is considered one of the most authentic works of hadith literature. It was compiled by Imam Ahmad an-Nasa'i, and contains a vast number of hadiths that cover a wide range of Islamic jurisprudence, beliefs, and practices.",
+    "total_hadith": 5274,
     "books": [
       {
         "book_number": 1,
-        "book_name": "The Book of Purification (كتاب الطهارة)",
-        "hadith_range": "1 to 324"
+        "book_name": "Purification (كتاب الطهارة)",
+        "hadith_range": "1 to 71"
       },
       {
         "book_number": 2,
-        "book_name": "The Book of Water (كتاب المياه)",
-        "hadith_range": "325 to 347"
+        "book_name": "Prayer (Salat) (كتاب الصلاة)",
+        "hadith_range": "72 to 374"
       },
       {
         "book_number": 3,
-        "book_name": "The Book of Menstruation and Istihadah (كتاب الحيض والاستحاضة)",
-        "hadith_range": "348 to 395"
+        "book_name": "Zakat (Obligatory Charity) (كتاب الزكاة)",
+        "hadith_range": "375 to 505"
       },
       {
         "book_number": 4,
-        "book_name": "The Book of Ghusl and Tayammum (كتاب الغسل والتيمم)",
-        "hadith_range": "396 to 447"
+        "book_name": "Fasting (Sawm) (كتاب الصوم)",
+        "hadith_range": "506 to 579"
       },
       {
         "book_number": 5,
-        "book_name": "The Book of Salah (كتاب الصلاة)",
-        "hadith_range": "448 to 493"
+        "book_name": "Hajj (Pilgrimage) (كتاب الحج)",
+        "hadith_range": "580 to 780"
       },
       {
         "book_number": 6,
-        "book_name": "The Book of the Times (of Prayer) (كتاب المواقيت)",
-        "hadith_range": "Not specified"
+        "book_name": "Jihad (Fighting for the Cause of Allah) (كتاب الجهاد)",
+        "hadith_range": "781 to 801"
       },
       {
         "book_number": 7,
-        "book_name": "The Book of the Adhan (The Call to Prayer) (كتاب الأذان)",
-        "hadith_range": "626 to 687"
+        "book_name": "Marriage (Nikah) (كتاب النكاح)",
+        "hadith_range": "802 to 1071"
       },
       {
         "book_number": 8,
-        "book_name": "The Book of the Masjids (كتاب المساجد)",
-        "hadith_range": "688 to 741"
+        "book_name": "Divorce (Talaq) (كتاب الطلاق)",
+        "hadith_range": "1072 to 1099"
       },
       {
         "book_number": 9,
-        "book_name": "The Book of the Qiblah (كتاب القبلة)",
-        "hadith_range": "742 to 776"
+        "book_name": "Family Relations (كتاب النفقات)",
+        "hadith_range": "1100 to 1123"
       },
       {
         "book_number": 10,
-        "book_name": "The Book of Leading the Prayer (Al-Imamah) (كتاب الإمامة)",
-        "hadith_range": "777 to 875"
+        "book_name": "Business Transactions (كتاب البيوع)",
+        "hadith_range": "1124 to 1162"
       },
       {
         "book_number": 11,
-        "book_name": "The Book of the Commencement of the Prayer (كتاب الافتتاح)",
-        "hadith_range": "876 to 1028"
+        "book_name": "Inheritance (كتاب الفرائض)",
+        "hadith_range": "1163 to 1181"
       },
       {
         "book_number": 12,
-        "book_name": "The Book of The At-Tatbiq (Clasping One's Hands Together) (كتاب التطبيق)",
-        "hadith_range": "1029 to 1178"
+        "book_name": "Testaments (وصايا) (كتاب الوصايا)",
+        "hadith_range": "1182 to 1206"
       },
       {
         "book_number": 13,
-        "book_name": "The Book of Forgetfulness (In Prayer) (كتاب السهو)",
-        "hadith_range": "1179 to 1366"
+        "book_name": "Oaths and Vows (كتاب الأيمان والنذور)",
+        "hadith_range": "1207 to 1237"
       },
       {
         "book_number": 14,
-        "book_name": "The Book of Jumu'ah (Friday Prayer) (كتاب الجمعة)",
-        "hadith_range": "1367 to 1432"
+        "book_name": "Judgments (Ahkam) (كتاب الأحكام)",
+        "hadith_range": "1238 to 1289"
       },
       {
         "book_number": 15,
-        "book_name": "The Book of Shortening the Prayer When Traveling (كتاب تقصير الصلاة فى السفر)",
-        "hadith_range": "1433 to 1458"
+        "book_name": "Good Manners and Etiquette (كتاب الأدب)",
+        "hadith_range": "1290 to 1397"
       },
       {
         "book_number": 16,
-        "book_name": "The Book of Eclipses (كتاب الكسوف)",
-        "hadith_range": "1459 to 1503"
+        "book_name": "Seeking Forgiveness (كتاب الاستغفار)",
+        "hadith_range": "1398 to 1413"
       },
       {
         "book_number": 17,
-        "book_name": "The Book of Praying for Rain (Al-Istisqa') (كتاب الاستسقاء)",
-        "hadith_range": "1504 to 1528"
+        "book_name": "Remembrance of Allah (Azkar) (كتاب الذكر)",
+        "hadith_range": "1414 to 1460"
       },
       {
         "book_number": 18,
-        "book_name": "The Book of the Fear Prayer (كتاب صلاة الخوف)",
-        "hadith_range": "1529 to 1555"
+        "book_name": "Repentance (توبة) (كتاب التوبة)",
+        "hadith_range": "1461 to 1482"
       },
       {
         "book_number": 19,
-        "book_name": "The Book of the Prayer for the Two 'Eids (كتاب صلاة العيدين)",
-        "hadith_range": "1556 to 1597"
+        "book_name": "Charity and Generosity (كتاب الصدقة)",
+        "hadith_range": "1483 to 1501"
       },
       {
         "book_number": 20,
-        "book_name": "The Book of Qiyam Al-Lail (The Night Prayer) and Voluntary Prayers During the Day (كتاب قيام الليل وتطوع النهار)",
-        "hadith_range": "1598 to 1817"
+        "book_name": "The Book of the Virtues (كتاب الفضائل)",
+        "hadith_range": "1502 to 1569"
       },
       {
         "book_number": 21,
-        "book_name": "The Book of Funerals (كتاب الجنائز)",
-        "hadith_range": "1818 to 2089"
+        "book_name": "The Book of the Sunnah (كتاب السنة)",
+        "hadith_range": "1570 to 1617"
       },
       {
         "book_number": 22,
-        "book_name": "The Book of Fasting (كتاب الصيام)",
-        "hadith_range": "2090 to 2434"
+        "book_name": "The Book of the Prophets (كتاب الأنبياء)",
+        "hadith_range": "1618 to 1654"
       },
       {
         "book_number": 23,
-        "book_name": "The Book of Zakah (كتاب الزكاة)",
-        "hadith_range": "2435 to 2618"
+        "book_name": "The Book of the Companions (كتاب الصحابة)",
+        "hadith_range": "1655 to 1683"
       },
       {
         "book_number": 24,
-        "book_name": "The Book of Hajj (كتاب مناسك الحج)",
-        "hadith_range": "2619 to 3084"
+        "book_name": "The Book of the End of the World (كتاب الفتن)",
+        "hadith_range": "1684 to 1697"
       },
       {
         "book_number": 25,
-        "book_name": "The Book of Jihad (كتاب الجهاد)",
-        "hadith_range": "3085 to 3195"
+        "book_name": "The Book of the Expiation of Sins (كتاب كفارات الذنوب)",
+        "hadith_range": "1698 to 1710"
       },
       {
         "book_number": 26,
-        "book_name": "The Book of Marriage (كتاب النكاح)",
-        "hadith_range": "3196 to 3388"
+        "book_name": "The Book of the Qadar (Destiny) (كتاب القدر)",
+        "hadith_range": "1711 to 1722"
       },
       {
         "book_number": 27,
-        "book_name": "The Book of Divorce (كتاب الطلاق)",
-        "hadith_range": "3389 to 3560"
+        "book_name": "The Book of the Dajjal (Anti-Christ) (كتاب الدجال)",
+        "hadith_range": "1723 to 1728"
       },
       {
         "book_number": 28,
-        "book_name": "The Book of Horses, Races and Shooting (كتاب الخيل)",
-        "hadith_range": "3561 to 3593"
+        "book_name": "The Book of the Hour (كتاب الساعة)",
+        "hadith_range": "1729 to 1739"
       },
       {
         "book_number": 29,
-        "book_name": "The Book of Endowments (كتاب الإحباس)",
-        "hadith_range": "3594 to 3610"
+        "book_name": "The Book of the Signs of the Hour (كتاب علامات الساعة)",
+        "hadith_range": "1740 to 1754"
       },
       {
         "book_number": 30,
-        "book_name": "The Book of Wills (كتاب الوصايا)",
-        "hadith_range": "3611 to 3671"
+        "book_name": "The Book of the End Times (كتاب آخر الزمان)",
+        "hadith_range": "1755 to 1773"
       },
       {
         "book_number": 31,
-        "book_name": "The Book of Presents (كتاب النحل)",
-        "hadith_range": "3672 to 3687"
+        "book_name": "The Book of Trials and Tribulations (كتاب الفتن)",
+        "hadith_range": "1774 to 1791"
       },
       {
         "book_number": 32,
-        "book_name": "The Book of Gifts (كتاب الهبة)",
-        "hadith_range": "3688 to 3705"
-      },
-      {
-        "book_number": 33,
-        "book_name": "The Book of ar-Ruqba (كتاب الرقبى)",
-        "hadith_range": "3706 to 3719"
-      },
-      {
-        "book_number": 34,
-        "book_name": "The Book of 'Umra (كتاب العمرى)",
-        "hadith_range": "3720 to 3760"
-      },
-      {
-        "book_number": 35,
-        "book_name": "The Book of Oaths and Vows (كتاب الأيمان والنذور)",
-        "hadith_range": "3761 to 3856"
-      },
-      {
-        "book_number": 36,
-        "book_name": "The Book of Agriculture (كتاب المزارعة)",
-        "hadith_range": "3857 to 3938"
-      },
-      {
-        "book_number": 37,
-        "book_name": "The Book of the Kind Treatment of Women (كتاب عشرة النساء)",
-        "hadith_range": "3939 to 3965"
-      },
-      {
-        "book_number": 38,
-        "book_name": "The Book of Fighting [The Prohibition of Bloodshed] (كتاب تحريم الدم)",
-        "hadith_range": "3966 to 4132"
-      },
-      {
-        "book_number": 39,
-        "book_name": "The Book of Distribution of Al-Fay' (كتاب قسم الفىء)",
-        "hadith_range": "4133 to 4148"
-      },
-      {
-        "book_number": 40,
-        "book_name": "The Book of al-Bay'ah (كتاب البيعة)",
-        "hadith_range": "4149 to 4211"
-      },
-      {
-        "book_number": 41,
-        "book_name": "The Book of al-'Aqiqah (كتاب العقيقة)",
-        "hadith_range": "4212 to 4221"
-      },
-      {
-        "book_number": 42,
-        "book_name": "The Book of al-Fara' and al-'Atirah (كتاب الفرع والعتيرة)",
-        "hadith_range": "4222 to 4262"
-      },
-      {
-        "book_number": 43,
-        "book_name": "The Book of Hunting and Slaughtering (كتاب الصيد والذبائح)",
-        "hadith_range": "4263 to 4360"
-      },
-      {
-        "book_number": 44,
-        "book_name": "The Book of ad-Dahaya (Sacrifices) (كتاب الضحايا)",
-        "hadith_range": "4361 to 4448"
-      },
-      {
-        "book_number": 45,
-        "book_name": "The Book of Financial Transactions (كتاب البيوع)",
-        "hadith_range": "4449 to 4705"
-      },
-      {
-        "book_number": 46,
-        "book_name": "The Book of Oaths (qasamah), Retaliation and Blood Money (كتاب القسامة)",
-        "hadith_range": "4706 to 4869"
-      },
-      {
-        "book_number": 47,
-        "book_name": "The Book of Cutting off the Hand of the Thief (كتاب قطع السارق)",
-        "hadith_range": "4870 to 4984"
-      },
-      {
-        "book_number": 48,
-        "book_name": "The Book Of Faith and its Signs (كتاب الإيمان وشرائعه)",
-        "hadith_range": "4985 to 5039"
-      },
-      {
-        "book_number": 49,
-        "book_name": "The Book of Adornment (كتاب الزينة من السنن)",
-        "hadith_range": "5040 to 5378"
-      },
-      {
-        "book_number": 50,
-        "book_name": "The Book of the Etiquette of Judges (كتاب آداب القضاة)",
-        "hadith_range": "5379 to 5427"
-      },
-      {
-        "book_number": 51,
-        "book_name": "The Book of Seeking Refuge with Allah (كتاب الاستعاذة)",
-        "hadith_range": "5428 to 5539"
-      },
-      {
-        "book_number": 52,
-        "book_name": "The Book of Drinks (كتاب الأشربة)",
-        "hadith_range": "5540 to 5758"
+        "book_name": "The Book of Dreams (كتاب التعبير)",
+        "hadith_range": "1792 to 1812"
       }
     ]
   }
