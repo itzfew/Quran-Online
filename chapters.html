@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadith Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .hadith-list {
+            padding: 0;
+        }
+        .hadith-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            margin: 10px 0;
+            padding: 20px;
+        }
+        .hadith-item h3 {
+            color: #16a085;
+        }
+        .hadith-item p {
+            color: #555;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hadith Details</h1>
+        <div class="hadith-list">
+            <!-- Dynamically populate hadiths -->
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookBase = urlParams.get('book');
+        const chapter = urlParams.get('chapter');
+
+        // Example hadiths for the demo
+        const hadiths = {
+            bukhari: {
+                1: [
+                    { hadithNumber: 1, text: "Hadith text for Chapter 1 of Sahih al-Bukhari..." },
+                    { hadithNumber: 2, text: "Hadith text for Chapter 2 of Sahih al-Bukhari..." },
+                    // More hadiths for this chapter
+                ],
+                // Other chapters...
+            },
+            muslim: {
+                "introduction": [
+                    { hadithNumber: 1, text: "Hadith text for the introduction of Sahih Muslim..." },
+                    // More hadiths
+                ],
+                // Other chapters...
+            },
+            // More books...
+        };
+
+        const hadithListElement = document.querySelector('.hadith-list');
+
+        if (hadiths[bookBase] && hadiths[bookBase][chapter]) {
+            const selectedHadiths = hadiths[bookBase][chapter];
+            selectedHadiths.forEach(hadith => {
+                const hadithElement = document.createElement('div');
+                hadithElement.classList.add('hadith-item');
+                hadithElement.innerHTML = `
+                    <h3>Hadith #${hadith.hadithNumber}</h3>
+                    <p>${hadith.text}</p>
+                `;
+                hadithListElement.appendChild(hadithElement);
+            });
+        } else {
+            hadithListElement.innerHTML = "<p>No hadiths found for this chapter.</p>";
+        }
+    </script>
+</body>
+</html>
