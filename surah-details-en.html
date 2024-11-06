@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quran Kareem(En)</title>
+    <title>Quran Kareem(Ar)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -336,53 +336,54 @@
     }
 
     function displaySurah(data) {
-        const surahHeading = document.getElementById('surah-heading');
-        const firstVerse = document.getElementById('first-verse');
-        const content = document.getElementById('content');
-        const count = data.count;
-        const verses = data.verse;
+    const surahHeading = document.getElementById('surah-heading');
+    const firstVerse = document.getElementById('first-verse');
+    const content = document.getElementById('content');
+    const count = data.count;
+    const verses = data.verse;
 
-        surahHeading.style.display = 'block';
-        firstVerse.style.display = 'block';
-        content.innerHTML = ''; // Clear content
+    surahHeading.style.display = 'block';
+    firstVerse.style.display = 'block';
+    content.innerHTML = ''; // Clear content
 
-        surahHeading.innerText = data.name;
-        firstVerse.innerText = verses['verse_0'];
+    surahHeading.innerText = data.name;
+    firstVerse.innerText = verses['verse_0'];  // Display verse_0 separately and centrally
 
-        // Loop through verses
-        for (let i = 0; i <= count; i++) {
-            const verseKey = `verse_${i}`;
-            const verseText = verses[verseKey];
+    // Loop through verses starting from verse_1
+    for (let i = 1; i <= count; i++) {  // Start the loop from 1 to avoid duplicating verse_0
+        const verseKey = `verse_${i}`;
+        const verseText = verses[verseKey];
 
-            const verseDiv = document.createElement('div');
-            verseDiv.classList.add('verse');
-            verseDiv.setAttribute('id', `verse-${i}`);
-            verseDiv.innerHTML = `
-                <div class="arabic-text">${verseText}
-                    <span class="verse-number">${i + 1}</span>
-                </div>
-            `;
+        const verseDiv = document.createElement('div');
+        verseDiv.classList.add('verse');
+        verseDiv.setAttribute('id', `verse-${i}`);
+        verseDiv.innerHTML = `
+            <div class="arabic-text">${verseText}
+                <span class="verse-number">${i + 1}</span>
+            </div>
+        `;
 
-            // Check if verse is bookmarked
-            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-            const isBookmarked = bookmarks.includes(i);
-            const bookmarkIcon = isBookmarked ? 'fas fa-bookmark' : 'far fa-bookmark';
+        // Check if verse is bookmarked
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+        const isBookmarked = bookmarks.includes(i);
+        const bookmarkIcon = isBookmarked ? 'fas fa-bookmark' : 'far fa-bookmark';
 
-            // Add bookmark button with icon
-            const bookmarkButton = document.createElement('button');
-            bookmarkButton.classList.add('bookmark-button');
-            bookmarkButton.innerHTML = `<i class="${bookmarkIcon}"></i>`;
-            bookmarkButton.onclick = () => toggleBookmark(i, verseDiv);
-            verseDiv.appendChild(bookmarkButton);
+        // Add bookmark button with icon
+        const bookmarkButton = document.createElement('button');
+        bookmarkButton.classList.add('bookmark-button');
+        bookmarkButton.innerHTML = `<i class="${bookmarkIcon}"></i>`;
+        bookmarkButton.onclick = () => toggleBookmark(i, verseDiv);
+        verseDiv.appendChild(bookmarkButton);
 
-            // Add event listener to highlight verse
-            verseDiv.onclick = () => toggleHighlight(i);
+        // Add event listener to highlight verse
+        verseDiv.onclick = () => toggleHighlight(i);
 
-            content.appendChild(verseDiv);
-        }
-
-        loadBookmarkedVerses();
+        content.appendChild(verseDiv);
     }
+
+    loadBookmarkedVerses();
+}
+
 
     function toggleBookmark(verseId, verseElement) {
         const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
