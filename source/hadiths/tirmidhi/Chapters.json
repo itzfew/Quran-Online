@@ -1,0 +1,239 @@
+{
+  "collection": {
+    "name": "Jami` at-Tirmidhi",
+    "compiled_by": "Imam Abu `Isa Muhammad at-Tirmidhi",
+    "description": "Jami` at-Tirmidhi is a collection of hadith compiled by Imam Abu `Isa Muhammad at-Tirmidhi (rahimahullah). His collection is unanimously considered to be one of the six canonical collections of hadith (Kutub as-Sittah) of the Sunnah of the Prophet (ﷺ). It contains roughly 4400 hadith (with repetitions) in 46 books.",
+    "books": [
+      {
+        "book_number": 1,
+        "book_name": "The Book on Purification (كتاب الطهارة عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1 to 148"
+      },
+      {
+        "book_number": 2,
+        "book_name": "The Book on Salat (Prayer) (كتاب الصلاة)",
+        "hadith_range": "149 to 451"
+      },
+      {
+        "book_number": 3,
+        "book_name": "The Book on Al-Witr (أَبْوَابُ الْوِتْر)",
+        "hadith_range": "452 to 487"
+      },
+      {
+        "book_number": 4,
+        "book_name": "The Book on the Day of Friday (كِتَاب الْجُمُعَةِ عَنْ رَسُولِ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ)",
+        "hadith_range": "488 to 529"
+      },
+      {
+        "book_number": 5,
+        "book_name": "The Book on the Two Eids (أَبْوَابُ الْعِيدَيْنِ عَنْ رَسُولِ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ)",
+        "hadith_range": "530 to 543"
+      },
+      {
+        "book_number": 6,
+        "book_name": "The Book on Traveling (أَبْوَابُ السَّفَرِ)",
+        "hadith_range": "544 to 616"
+      },
+      {
+        "book_number": 7,
+        "book_name": "The Book on Zakat (كتاب الزكاة عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "617 to 681"
+      },
+      {
+        "book_number": 8,
+        "book_name": "The Book on Fasting (كتاب الصوم عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "682 to 808"
+      },
+      {
+        "book_number": 9,
+        "book_name": "The Book on Hajj (كتاب الحج عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "809 to 964"
+      },
+      {
+        "book_number": 10,
+        "book_name": "The Book on Jana''iz (Funerals) (كتاب الجنائز عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "965 to 1079"
+      },
+      {
+        "book_number": 11,
+        "book_name": "The Book on Marriage (كتاب النكاح عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1080 to 1145"
+      },
+      {
+        "book_number": 12,
+        "book_name": "The Book on Suckling (كتاب الرضاع)",
+        "hadith_range": "1146 to 1174"
+      },
+      {
+        "book_number": 13,
+        "book_name": "The Book on Divorce and Li'an (كتاب الطلاق واللعان عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1175 to 1204"
+      },
+      {
+        "book_number": 14,
+        "book_name": "The Book on Business (كتاب البيوع عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1205 to 1321"
+      },
+      {
+        "book_number": 15,
+        "book_name": "The Chapters On Judgements From The Messenger of Allah (كتاب الأحكام عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1322 to 1385"
+      },
+      {
+        "book_number": 16,
+        "book_name": "The Book on Blood Money (كتاب الديات عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1386 to 1422"
+      },
+      {
+        "book_number": 17,
+        "book_name": "The Book on Legal Punishments (Al-Hudud) (كتاب الحدود عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1423 to 1463"
+      },
+      {
+        "book_number": 18,
+        "book_name": "The Book on Hunting (كتاب الصيد والذبائح عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1464 to 1492"
+      },
+      {
+        "book_number": 19,
+        "book_name": "The Book on Sacrifices (كتاب الأضاحى عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1493 to 1523"
+      },
+      {
+        "book_number": 20,
+        "book_name": "The Book on Vows and Oaths (كتاب النذور والأيمان عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1524 to 1547"
+      },
+      {
+        "book_number": 21,
+        "book_name": "The Book on Military Expeditions (كتاب السير عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1548 to 1618"
+      },
+      {
+        "book_number": 22,
+        "book_name": "The Book on Virtues of Jihad (كتاب فضائل الجهاد عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1619 to 1669"
+      },
+      {
+        "book_number": 23,
+        "book_name": "The Book on Jihad (كتاب الجهاد عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1670 to 1719"
+      },
+      {
+        "book_number": 24,
+        "book_name": "The Book on Clothing (كتاب اللباس)",
+        "hadith_range": "1720 to 1787"
+      },
+      {
+        "book_number": 25,
+        "book_name": "The Book on Food (كتاب الأطعمة عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1788 to 1860"
+      },
+      {
+        "book_number": 26,
+        "book_name": "The Book on Drinks (كتاب الأشربة عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1861 to 1896"
+      },
+      {
+        "book_number": 27,
+        "book_name": "Chapters on Righteousness And Maintaining Good Relations With Relatives (كتاب البر والصلة عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "1897 to 2035"
+      },
+      {
+        "book_number": 28,
+        "book_name": "Chapters on Medicine (كتاب الطب عن رسول اللَّهِ صلى الله عليه وسلم)",
+        "hadith_range": "2036 to 2088"
+      },
+      {
+        "book_number": 29,
+        "book_name": "Chapters On Inheritance (كتاب الفرائض عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2090 to 2115"
+      },
+      {
+        "book_number": 30,
+        "book_name": "Chapters On Wasaya (Wills and Testament) (كتاب الوصايا عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2116 to 2124"
+      },
+      {
+        "book_number": 31,
+        "book_name": "Chapters On Wala' And Gifts (كتاب الولاء والهبة عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2125 to 2132"
+      },
+      {
+        "book_number": 32,
+        "book_name": "Chapters On Al-Qadar (كتاب القدر عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2133 to 2157"
+      },
+      {
+        "book_number": 33,
+        "book_name": "Chapters On Al-Fitan (كتاب الفتن عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2158 to 2269"
+      },
+      {
+        "book_number": 34,
+        "book_name": "Chapters On Dreams (كتاب الرؤيا عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2270 to 2294"
+      },
+      {
+        "book_number": 35,
+        "book_name": "Chapters On Witnesses (كتاب الشهادات عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2295 to 2303"
+      },
+      {
+        "book_number": 36,
+        "book_name": "Chapters On Zuhd (كتاب الزهد عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2304 to 2414"
+      },
+      {
+        "book_number": 37,
+        "book_name": "Chapters on the description of the Day of Judgement, Ar-Riqaq, and Al-Wara' (كتاب صفة القيامة والرقائق والورع عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2415 to 2522"
+      },
+      {
+        "book_number": 38,
+        "book_name": "Chapters on the description of Paradise (كتاب صفة الجنة عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2523 to 2735"
+      },
+      {
+        "book_number": 39,
+        "book_name": "The Book on the Description of Hellfire (كتاب صفة جهنم عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2573 to 2605"
+      },
+      {
+        "book_number": 40,
+        "book_name": "The Book on Faith (كتاب الإيمان عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2606 to 2644"
+      },
+      {
+        "book_number": 41,
+        "book_name": "Chapters on Knowledge (كتاب العلم عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2645 to 2687"
+      },
+      {
+        "book_number": 42,
+        "book_name": "Chapters on Seeking Permission (كتاب الاستئذان والآداب عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2688 to 2735"
+      },
+      {
+        "book_number": 43,
+        "book_name": "Chapters on Manners (كتاب الأدب عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2736 to 3093"
+      },
+      {
+        "book_number": 44,
+        "book_name": "Chapters on Parables (كتاب الأمثال عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2859 to 2874"
+      },
+      {
+        "book_number": 45,
+        "book_name": "Chapters on The Virtues of the Qur'an (كتاب ثواب القرآن عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2875 to 2926"
+      },
+      {
+        "book_number": 46,
+        "book_name": "Chapters on Recitation (كتاب القراءات عن رسول الله صلى الله عليه وسلم)",
+        "hadith_range": "2927 to 2949"
+      }
+    ]
+  }
+}
