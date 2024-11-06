@@ -46,7 +46,6 @@
             font-family: 'Amiri', serif;
             text-align: center;
             direction: rtl;
-            padding: 10px;
         }
         .hadith .english-text {
             font-size: 16px;
@@ -73,41 +72,55 @@
         .header-meta strong {
             color: #2c3e50;
         }
-        .search-box {
-            text-align: center;
-            margin: 20px;
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
         }
-        .search-box input {
-            padding: 8px;
-            font-size: 16px;
-            width: 80%;
-            max-width: 400px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-        .search-box button {
-            padding: 8px 15px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #3498db;
+        .button-group button {
+            padding: 10px 15px;
+            background-color: #16a085;
             color: white;
             border: none;
             border-radius: 5px;
+            cursor: pointer;
+        }
+        .button-group button:hover {
+            background-color: #1abc9c;
+        }
+        .copy-btn {
+            background-color: #3498db;
+        }
+        .copy-btn:hover {
+            background-color: #2980b9;
+        }
+        .share-btn {
+            background-color: #f39c12;
+        }
+        .share-btn:hover {
+            background-color: #e67e22;
+        }
+        .collapse-btn {
+            background-color: #9b59b6;
+        }
+        .collapse-btn:hover {
+            background-color: #8e44ad;
         }
         .pagination {
             text-align: center;
-            margin: 20px 0;
+            margin-top: 20px;
         }
         .pagination button {
-            padding: 10px 20px;
-            background-color: #3498db;
+            padding: 5px 10px;
+            margin: 0 5px;
+            background-color: #16a085;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
-        .pagination button:disabled {
-            background-color: #bdc3c7;
+        .pagination button:hover {
+            background-color: #1abc9c;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
@@ -119,15 +132,14 @@
         Enter a book and chapter number in the URL to view the Hadiths (e.g., <code>?book=muslim&chapter=10</code>).
     </p>
 
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search for a specific Hadith..." onkeyup="searchHadith()">
-        <button onclick="searchHadith()">Search</button>
-    </div>
-
     <div id="loading" class="loading">Loading...</div>
     <div id="hadithResult"></div>
 
     <script>
+        let currentHadiths = [];
+        let currentPage = 1;
+        let itemsPerPage = 5;
+
         // Function to get the book and chapter from URL parameters
         function getURLParams() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -136,19 +148,13 @@
             return { book, chapter };
         }
 
-        let allHadiths = [];
-        let currentPage = 1;
-        let totalPages = 1;
-
         // Function to fetch the hadiths from the JSON file based on book and chapter
         function fetchHadiths(book, chapter) {
             const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book}/${chapter}.json`;
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    allHadiths = data.hadiths;
-                    totalPages = Math.ceil(allHadiths.length / 5); // 5 Hadiths per page
-                    displayHadiths();
+                    displayHadiths(data);
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
@@ -157,84 +163,106 @@
                 });
         }
 
-        // Function to display the hadiths
-        function displayHadiths() {
+        // Function to display the hadiths on the page
+        function displayHadiths(data) {
             const hadithResult = document.getElementById('hadithResult');
             const loading = document.getElementById('loading');
 
+            // Hide loading spinner
             loading.style.display = 'none';
 
-            // Check if there are Hadiths
-            if (allHadiths.length > 0) {
+            // Check if the data contains hadiths
+            if (data.hadiths && data.hadiths.length > 0) {
+                currentHadiths = data.hadiths;
+                paginateHadiths();
+
                 let htmlContent = `
                     <div class="header-meta">
-                        <h2>${allHadiths[0].metadata.english.title} <span style="font-size: 18px;">(Chapter: ${allHadiths[0].metadata.english.introduction})</span></h2>
-                        <p><strong>Author:</strong> ${allHadiths[0].metadata.english.author}</p>
+                        <h2>${data.metadata.english.title} <span style="font-size: 18px;">(Chapter: ${data.metadata.english.introduction})</span></h2>
+                        <p><strong>Author:</strong> ${data.metadata.english.author}</p>
+                        <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
+                    </div>
+                `;
+                
+                // Add buttons for Copy, Share, and Collapse
+                htmlContent += `
+                    <div class="button-group">
+                        <button class="copy-btn" onclick="copyText()">Copy Text</button>
+                        <button class="share-btn" onclick="shareLink()">Share Link</button>
+                        <button class="collapse-btn" onclick="toggleCollapse()">View All</button>
                     </div>
                 `;
 
-                const start = (currentPage - 1) * 5;
-                const end = currentPage * 5;
-                const currentHadiths = allHadiths.slice(start, end);
-
-                currentHadiths.forEach(hadith => {
-                    htmlContent += `
-                        <div class="hadith">
-                            <h3>Hadith #${hadith.id}</h3>
-                            <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic} 
-                            <button class="copy-button" onclick="copyArabicText('${hadith.arabic}')">Copy Arabic</button></p>
-                            <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
-                        </div>
-                    `;
-                });
-
                 hadithResult.innerHTML = htmlContent;
-                displayPagination();
             } else {
                 hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
             }
         }
 
-        // Function to display pagination
-        function displayPagination() {
-            const pagination = document.createElement('div');
-            pagination.classList.add('pagination');
-            pagination.innerHTML = `
-                <button ${currentPage === 1 ? 'disabled' : ''} onclick="navigatePage(-1)">Previous</button>
-                <button ${currentPage === totalPages ? 'disabled' : ''} onclick="navigatePage(1)">Next</button>
-            `;
-            document.getElementById('hadithResult').appendChild(pagination);
-        }
-
-        // Function to navigate between pages
-        function navigatePage(direction) {
-            currentPage += direction;
-            displayHadiths();
-        }
-
-        // Function to copy Arabic text
-        function copyArabicText(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                alert('Arabic text copied to clipboard!');
+        // Function to copy text to clipboard
+        function copyText() {
+            const textToCopy = document.querySelector('.arabic-text').textContent || document.querySelector('.english-text').textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert('Text copied to clipboard!');
             });
         }
 
-        // Function to search for a specific hadith
-        function searchHadith() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filteredHadiths = allHadiths.filter(hadith =>
-                hadith.english.text.toLowerCase().includes(query) || 
-                hadith.arabic.toLowerCase().includes(query)
-            );
+        // Function to share the current page link
+        function shareLink() {
+            const currentUrl = window.location.href;
+            navigator.clipboard.writeText(currentUrl).then(() => {
+                alert('Link copied to clipboard! Share it with others.');
+            });
+        }
 
-            if (filteredHadiths.length > 0) {
-                allHadiths = filteredHadiths;
-                totalPages = Math.ceil(filteredHadiths.length / 5);
-                currentPage = 1;
-                displayHadiths();
-            } else {
-                document.getElementById('hadithResult').innerHTML = '<p class="error">No matching Hadiths found.</p>';
+        // Function to toggle collapse and expand of Hadiths
+        function toggleCollapse() {
+            const hadiths = document.querySelectorAll('.hadith');
+            hadiths.forEach(hadith => {
+                hadith.style.display = hadith.style.display === 'none' ? 'block' : 'none';
+            });
+        }
+
+        // Function to handle pagination
+        function paginateHadiths() {
+            const hadithResult = document.getElementById('hadithResult');
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageHadiths = currentHadiths.slice(startIndex, endIndex);
+
+            let htmlContent = '';
+            pageHadiths.forEach(hadith => {
+                htmlContent += `
+                    <div class="hadith">
+                        <h3>Hadith #${hadith.id}</h3>
+                        <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
+                        <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
+                    </div>
+                `;
+            });
+
+            hadithResult.innerHTML += htmlContent;
+            addPagination();
+        }
+
+        // Function to add pagination buttons
+        function addPagination() {
+            const hadithResult = document.getElementById('hadithResult');
+            const totalPages = Math.ceil(currentHadiths.length / itemsPerPage);
+            let paginationHTML = '<div class="pagination">';
+
+            for (let i = 1; i <= totalPages; i++) {
+                paginationHTML += `<button onclick="goToPage(${i})">${i}</button>`;
             }
+
+            paginationHTML += '</div>';
+            hadithResult.innerHTML += paginationHTML;
+        }
+
+        // Function to go to a specific page
+        function goToPage(page) {
+            currentPage = page;
+            paginateHadiths();
         }
 
         // On page load, fetch the hadiths based on URL parameters
