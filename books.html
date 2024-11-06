@@ -129,13 +129,25 @@
             document.getElementById("bookTitle").textContent = book.english.title;
             document.getElementById("bookAuthor").textContent = book.english.author;
 
+            // Debug log: Confirm the bookSlug and book details
+            console.log(`Book found: ${book.english.title}, ${book.english.author}`);
+
             // Fetch chapters JSON for this book
             const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
+            console.log(`Fetching chapters from: ${chaptersUrl}`);  // Log the URL to check
 
             fetch(chaptersUrl)
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Chapters data:', data);  // Log the raw data for debugging
+
                     const chapterList = document.getElementById("chapterList");
+
+                    if (!data || !data.collection || !data.collection.books) {
+                        console.error("Invalid chapter data:", data);
+                        chapterList.innerHTML = "<p>No valid chapter data found.</p>";
+                        return;
+                    }
 
                     // Loop through each chapter and add it to the chapter list
                     data.collection.books.forEach(chapter => {
@@ -167,6 +179,7 @@
                     document.getElementById("chapterList").innerHTML = "<p>Could not load chapters at this time.</p>";
                 });
         } else {
+            console.error("Book not found for slug:", bookSlug);
             document.getElementById("chapterList").innerHTML = "<p>No chapters found for this book.</p>";
         }
     </script>
