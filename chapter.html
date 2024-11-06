@@ -43,9 +43,9 @@
         }
         .hadith .arabic-text {
             font-size: 18px;
-            font-family: 'Amiri', serif; /* A good Arabic font */
+            font-family: 'Amiri', serif; 
             text-align: center;
-            direction: rtl; /* Right-to-left for Arabic text */
+            direction: rtl; 
         }
         .hadith .english-text {
             font-size: 16px;
@@ -72,22 +72,28 @@
         .header-meta strong {
             color: #2c3e50;
         }
-        .view-all-btn {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 8px 15px;
-            background-color: #3498db;
-            color: #fff;
-            text-align: center;
-            border-radius: 5px;
+        /* View More Button */
+        .view-more {
+            color: #3498db;
             cursor: pointer;
-            text-decoration: none;
+            text-decoration: underline;
         }
-        .view-all-btn:hover {
+        /* Pagination */
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .pagination button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .pagination button:hover {
             background-color: #2980b9;
-        }
-        .hidden-text {
-            display: none;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
@@ -99,8 +105,15 @@
         Enter a book and chapter number in the URL to view the Hadiths (e.g., <code>?book=muslim&chapter=10</code>).
     </p>
 
-    <div id="loading" class="loading">Loading...</div>
+    <!-- Loading Spinner -->
+    <div id="loading" class="loading">
+        <div class="spinner"></div> Loading...
+    </div>
+
+    <!-- Hadith Results -->
     <div id="hadithResult"></div>
+
+    <div id="pagination" class="pagination"></div>
 
     <script>
         // Function to get the book and chapter from URL parameters
@@ -127,15 +140,21 @@
         }
 
         // Function to display the hadiths on the page
+        let currentHadithIndex = 0;
+        let currentHadiths = [];
+
         function displayHadiths(data) {
             const hadithResult = document.getElementById('hadithResult');
             const loading = document.getElementById('loading');
+            const pagination = document.getElementById('pagination');
 
             // Hide loading spinner
             loading.style.display = 'none';
 
             // Check if the data contains hadiths
             if (data.hadiths && data.hadiths.length > 0) {
+                currentHadiths = data.hadiths;
+
                 let htmlContent = `
                     <div class="header-meta">
                         <h2>${data.metadata.english.title} <span style="font-size: 18px;">(Chapter: ${data.metadata.english.introduction})</span></h2>
@@ -143,32 +162,17 @@
                         <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
                     </div>
                 `;
-                
-                // Loop through and display each hadith
-                data.hadiths.forEach(hadith => {
-                    let englishText = hadith.english.text;
-                    let arabicText = hadith.arabic;
 
-                    // Check if Hadith has more than 6 lines
-                    let showFullText = false;
-                    let isLongHadith = englishText.split('\n').length > 6;
+                // Display first Hadith
+                displayHadith(currentHadithIndex);
 
-                    htmlContent += `
-                        <div class="hadith">
-                            <h3>Hadith #${hadith.id}</h3>
-                            <p class="arabic-text"><strong>Arabic:</strong> ${arabicText}</p>
-                            <div class="english-text">
-                                <strong>English:</strong>
-                                <p>${englishText.split('\n').slice(0, 6).join('<br>')}</p>
-                                
-                                ${isLongHadith ? `
-                                    <p class="hidden-text">${englishText.split('\n').slice(6).join('<br>')}</p>
-                                    <a href="javascript:void(0);" class="view-all-btn" onclick="toggleHadithText(this)">View All</a>
-                                ` : ''}
-                            </div>
-                        </div>
-                    `;
-                });
+                // Add pagination buttons
+                htmlContent += `
+                    <div class="pagination">
+                        <button onclick="changeHadith(-1)">Previous</button>
+                        <button onclick="changeHadith(1)">Next</button>
+                    </div>
+                `;
 
                 hadithResult.innerHTML = htmlContent;
             } else {
@@ -176,17 +180,43 @@
             }
         }
 
-        // Function to toggle the visibility of long hadith text
-        function toggleHadithText(button) {
-            const hiddenText = button.previousElementSibling;
-            const isHidden = hiddenText.classList.contains('hidden-text');
-            if (isHidden) {
-                hiddenText.classList.remove('hidden-text');
-                button.innerText = 'View Less';
-            } else {
-                hiddenText.classList.add('hidden-text');
-                button.innerText = 'View All';
+        // Function to display a specific hadith
+        function displayHadith(index) {
+            const hadith = currentHadiths[index];
+            const hadithResult = document.getElementById('hadithResult');
+            let html = `
+                <div class="hadith">
+                    <h3>Hadith #${hadith.id}</h3>
+                    <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
+                    <p class="english-text"><strong>English:</strong> ${hadith.english.text.substring(0, 500)}...</p>
+                    <p><span class="view-more" onclick="viewFullHadith(${index})">View Full Hadith</span></p>
+                </div>
+            `;
+            hadithResult.innerHTML = html;
+        }
+
+        // Function to show the full text of the Hadith
+        function viewFullHadith(index) {
+            const hadith = currentHadiths[index];
+            let html = `
+                <div class="hadith">
+                    <h3>Hadith #${hadith.id}</h3>
+                    <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
+                    <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
+                </div>
+            `;
+            document.getElementById('hadithResult').innerHTML = html;
+        }
+
+        // Function to change Hadiths (pagination)
+        function changeHadith(direction) {
+            currentHadithIndex += direction;
+            if (currentHadithIndex < 0) {
+                currentHadithIndex = 0;
+            } else if (currentHadithIndex >= currentHadiths.length) {
+                currentHadithIndex = currentHadiths.length - 1;
             }
+            displayHadith(currentHadithIndex);
         }
 
         // On page load, fetch the hadiths based on URL parameters
