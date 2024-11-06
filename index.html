@@ -1,10 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore the Quran Kareem: Surah list, search by title, index, and more.">
+    <meta name="keywords" content="Quran, Surah, Quran Kareem, Arabic Quran, English translation, Islamic">
+    <meta property="og:title" content="Quran Kareem">
+    <meta property="og:description" content="Explore the Quran Kareem: Surah list, search by title, index, and more.">
+    <meta property="og:image" content="source/pic.png">
+    <meta property="og:url" content="http://yourwebsite.com">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Quran Kareem">
+    <meta name="twitter:description" content="Explore the Quran Kareem: Surah list, search by title, index, and more.">
+    <meta name="twitter:image" content="source/pic.png">
     <title>Quran Kareem</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="source/pic.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Reset and base styles */
@@ -19,7 +31,7 @@
             background-color: #f5f5f5;
             color: #333;
             line-height: 1.6;
-            padding-top: 60px; /* To avoid navbar overlap */
+            padding-top: 70px; /* To avoid navbar overlap */
             transition: background-color 0.3s, color 0.3s;
         }
 
@@ -49,9 +61,18 @@
         .navbar .logo {
             font-size: 1.8em;
             font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
         }
 
-        /* Menu Toggle Button */
+        .navbar .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
         .menu-toggle {
             font-size: 1.5em;
             cursor: pointer;
@@ -222,11 +243,15 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Navbar -->
     <div class="navbar">
-        <div class="logo">Quran Kareem</div>
+        <div class="logo">
+            <img src="source/pic.png" alt="Quran Kareem Logo">
+            Quran Kareem
+        </div>
         <div class="menu-toggle" id="menu-toggle">
             <i class="fas fa-bars"></i>
         </div>
@@ -251,7 +276,7 @@
 
     <!-- Language Switch -->
     <div class="language-switch-container">
-        <a href="javascript:void(0)" class="language-switch selected" id="arabic-link">Arabic</a> | 
+        <a href="javascript:void(0)" class="language-switch selected" id="arabic-link">Arabic</a> |
         <a href="javascript:void(0)" class="language-switch" id="english-link">English</a>
     </div>
 
@@ -315,7 +340,7 @@
         }
 
         // Handle Search
-        document.getElementById('search-bar').addEventListener('input', async function() {
+        document.getElementById('search-bar').addEventListener('input', async function () {
             const searchQuery = this.value.toLowerCase();
             const surahs = await fetchSurahs();
             const filteredSurahs = surahs.filter(surah => {
@@ -326,7 +351,7 @@
         });
 
         // Handle Sort
-        document.getElementById('sort-select').addEventListener('change', async function() {
+        document.getElementById('sort-select').addEventListener('change', async function () {
             const sortCriteria = this.value;
             const surahs = await fetchSurahs();
             const sortedSurahs = sortSurahs(surahs, sortCriteria);
@@ -335,13 +360,13 @@
         });
 
         // Toggle between Arabic and English
-        document.getElementById('english-link').addEventListener('click', async function() {
+        document.getElementById('english-link').addEventListener('click', async function () {
             const surahs = await fetchSurahs();
             renderSurahs(surahs, 'en');
             updateLanguageSelection('en');
         });
 
-        document.getElementById('arabic-link').addEventListener('click', async function() {
+        document.getElementById('arabic-link').addEventListener('click', async function () {
             const surahs = await fetchSurahs();
             renderSurahs(surahs, 'ar');
             updateLanguageSelection('ar');
@@ -359,7 +384,7 @@
         }
 
         // Initial render (default language Arabic)
-        window.onload = async function() {
+        window.onload = async function () {
             const surahs = await fetchSurahs();
             renderSurahs(surahs, 'ar');
             updateLanguageSelection('ar');
@@ -367,4 +392,5 @@
     </script>
 
 </body>
+
 </html>
