@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadiths of Chapter</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1 id="chapterTitle">Hadiths</h1>
+        <ul id="hadithList">
+            <!-- Hadiths will be populated here dynamically -->
+        </ul>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookSlug = urlParams.get('slug');
+        const chapterId = urlParams.get('chapterId');
+        const apiUrl = `https://www.hadithapi.com/api/hadiths?apiKey=$2y$10$tRU6Mfq4SwT9N8lesjlLEzPLw9J6DN0yAxrM5hA4JEsHJytUve&bookSlug=${bookSlug}&chapterId=${chapterId}`;
+
+        fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const hadiths = data.hadiths.data;
+            const chapterTitle = document.getElementById('chapterTitle');
+            const hadithList = document.getElementById('hadithList');
+            chapterTitle.innerHTML = `Hadiths from Chapter: ${data.hadiths[0].chapter.chapterEnglish}`;
+
+            hadiths.forEach(hadith => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <h3>Hadith ${hadith.hadithNumber}</h3>
+                    <p><strong>English Narrator:</strong> ${hadith.englishNarrator}</p>
+                    <p><strong>Hadith (English):</strong> ${hadith.hadithEnglish}</p>
+                    <p><strong>Hadith (Urdu):</strong> ${hadith.hadithUrdu}</p>
+                    <p><strong>Arabic:</strong> ${hadith.hadithArabic}</p>
+                `;
+                hadithList.appendChild(listItem);
+            });
+        })
+        .catch(error => {
+            console.log('Error:', error);
+        });
+    </script>
+</body>
+</html>
