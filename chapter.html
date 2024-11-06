@@ -89,6 +89,39 @@
         .share-buttons button:hover {
             background-color: #27ae60;
         }
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 </head>
@@ -102,8 +135,23 @@
     <div id="loading" class="loading">Loading...</div>
     <div id="hadithResult"></div>
 
+    <!-- Modal -->
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Share Hadith</h2>
+            <p id="shareText"></p>
+            <div class="share-buttons">
+                <button onclick="shareOnTwitter()">Share on Twitter</button>
+                <button onclick="shareOnFacebook()">Share on Facebook</button>
+                <button onclick="shareOnWhatsApp()">Share on WhatsApp</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         let chaptersData = []; // To store chapter data
+        let currentShareContent = ""; // Store the current share content
 
         // Function to fetch the chapters data from the remote JSON
         function fetchChaptersData() {
@@ -157,13 +205,10 @@
                 bukhari: "Sahih al-Bukhari",
                 muslim: "Sahih Muslim",
                 tirmidhi: "Jami` at-Tirmidhi",
-                // Add other mappings here
             };
 
-            // Find the book name based on the book slug
             const bookName = bookSlugToName[bookSlug.toLowerCase()] || 'Unknown Book';
 
-            // Check if the data contains hadiths
             if (data.hadiths && data.hadiths.length > 0) {
                 let htmlContent = `
                     <div class="header-meta">
@@ -172,24 +217,15 @@
                         <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
                     </div>
                 `;
-                
+
                 // Loop through and display each hadith
                 data.hadiths.forEach(hadith => {
-                    const shareLink = encodeURIComponent(window.location.href); // Current page link
-                    const arabicText = encodeURIComponent(hadith.arabic);
-                    const englishText = encodeURIComponent(hadith.english.text);
-                    const shareContent = `Arabic: ${hadith.arabic} \n\nEnglish: ${hadith.english.text} \n\nSee Hadith: ${shareLink}`;
-
                     htmlContent += `
                         <div class="hadith">
                             <h3>Hadith #${hadith.id}</h3>
                             <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
                             <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
-                            <div class="share-buttons">
-                                <button onclick="shareOnTwitter('${shareContent}')">Share on Twitter</button>
-                                <button onclick="shareOnFacebook('${shareContent}')">Share on Facebook</button>
-                                <button onclick="shareOnWhatsApp('${shareContent}')">Share on WhatsApp</button>
-                            </div>
+                            <button onclick="openShareModal('${hadith.arabic}', '${hadith.english.text}', '${window.location.href}')">Share this Hadith</button>
                         </div>
                     `;
                 });
@@ -200,22 +236,43 @@
             }
         }
 
+        // Open the modal for sharing
+        function openShareModal(arabicText, englishText, link) {
+            currentShareContent = {
+                arabic: arabicText,
+                english: englishText,
+                link: link
+            };
+
+            document.getElementById("shareText").innerHTML = `
+                <strong>Arabic:</strong> ${arabicText} <br><br>
+                <strong>English:</strong> ${englishText} <br><br>
+                <strong>Link:</strong> ${link}
+            `;
+            document.getElementById("shareModal").style.display = "block";
+        }
+
+        // Close the modal
+        function closeShareModal() {
+            document.getElementById("shareModal").style.display = "none";
+        }
+
         // Share on Twitter
-        function shareOnTwitter(content) {
-            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(content)}`;
-            window.open(twitterUrl, '_blank');
+        function shareOnTwitter() {
+            const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(currentShareContent.english)}%0A%0A${encodeURIComponent(currentShareContent.arabic)}%0A%0A${encodeURIComponent(currentShareContent.link)}`;
+            window.open(url, '_blank');
         }
 
         // Share on Facebook
-        function shareOnFacebook(content) {
-            const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(content)}`;
-            window.open(facebookUrl, '_blank');
+        function shareOnFacebook() {
+            const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentShareContent.link)}`;
+            window.open(url, '_blank');
         }
 
         // Share on WhatsApp
-        function shareOnWhatsApp(content) {
-            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(content)}`;
-            window.open(whatsappUrl, '_blank');
+        function shareOnWhatsApp() {
+            const url = `https://wa.me/?text=${encodeURIComponent(currentShareContent.english)}%0A%0A${encodeURIComponent(currentShareContent.arabic)}%0A%0A${encodeURIComponent(currentShareContent.link)}`;
+            window.open(url, '_blank');
         }
 
         // Initialize the viewer by fetching chapters data and URL parameters
@@ -231,6 +288,10 @@
 
         // On page load, fetch the chapters data and initialize the viewer
         window.onload = fetchChaptersData;
+
+        // Close the modal when the user clicks on <span> (x)
+        document.querySelector('.close').addEventListener('click', closeShareModal);
     </script>
+
 </body>
 </html>
