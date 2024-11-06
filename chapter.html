@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hadith Viewer</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Arial&family=Roboto:wght@400;700&family=Lora&family=Courier+Prime&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
@@ -100,6 +100,7 @@
             box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             display: none;
+            width: 220px;
         }
 
         #settingsPanel input[type="range"] {
@@ -149,6 +150,16 @@
                 top: 80px;
             }
         }
+
+        .settings-label {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        .settings-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
@@ -173,21 +184,75 @@
 
     <!-- Settings Panel -->
     <div id="settingsPanel">
-        <h3>Settings</h3>
-        <label for="fontSize">Font Size:</label>
+        <div class="settings-title">Settings</div>
+        <div class="settings-label">Font Size:</div>
         <input type="range" id="fontSize" min="14" max="24" value="16" step="1">
-        <br>
-        <label for="fontSelector">Font:</label>
+        <br><br>
+        <div class="settings-label">Font:</div>
         <select id="fontSelector">
             <option value="Arial">Arial</option>
             <option value="Amiri">Amiri (Arabic)</option>
+            <option value="Roboto">Roboto</option>
+            <option value="Lora">Lora</option>
+            <option value="Courier Prime">Courier Prime</option>
         </select>
-        <br>
-        <label for="darkMode">Dark Mode:</label>
+        <br><br>
+        <div class="settings-label">Dark Mode:</div>
         <input type="checkbox" id="darkMode">
     </div>
 
     <script>
+        // Save user preferences to localStorage
+        function saveUserPreferences() {
+            const fontSize = document.getElementById('fontSize').value;
+            const font = document.getElementById('fontSelector').value;
+            const darkMode = document.getElementById('darkMode').checked;
+
+            localStorage.setItem('fontSize', fontSize);
+            localStorage.setItem('font', font);
+            localStorage.setItem('darkMode', darkMode);
+        }
+
+        // Load user preferences from localStorage
+        function loadUserPreferences() {
+            const fontSize = localStorage.getItem('fontSize');
+            const font = localStorage.getItem('font');
+            const darkMode = localStorage.getItem('darkMode');
+
+            if (fontSize) {
+                document.getElementById('fontSize').value = fontSize;
+                document.querySelectorAll('.hadith p').forEach(p => p.style.fontSize = fontSize + 'px');
+            }
+
+            if (font) {
+                document.getElementById('fontSelector').value = font;
+                document.querySelectorAll('.hadith p').forEach(p => p.style.fontFamily = font);
+            }
+
+            if (darkMode === 'true') {
+                document.getElementById('darkMode').checked = true;
+                document.body.classList.add('dark-mode');
+            }
+        }
+
+        // Initialize user preferences
+        window.onload = () => {
+            loadUserPreferences();
+
+            // Set up event listeners for saving preferences
+            document.getElementById('fontSize').addEventListener('input', saveUserPreferences);
+            document.getElementById('fontSelector').addEventListener('change', saveUserPreferences);
+            document.getElementById('darkMode').addEventListener('change', saveUserPreferences);
+
+            const { book, chapter } = getURLParams();
+            if (book && chapter) {
+                fetchHadiths(book, chapter);
+            } else {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=muslim&chapter=10).</p>';
+            }
+        };
+
         // Function to get the book and chapter from URL parameters
         function getURLParams() {
             const urlParams = new URLSearchParams(window.location.search);
@@ -215,11 +280,8 @@
         function displayHadiths(data) {
             const hadithResult = document.getElementById('hadithResult');
             const loading = document.getElementById('loading');
-
-            // Hide loading spinner
             loading.style.display = 'none';
 
-            // Check if the data contains hadiths
             if (data.hadiths && data.hadiths.length > 0) {
                 let htmlContent = `
                     <div class="header-meta">
@@ -229,15 +291,11 @@
                     </div>
                 `;
                 
-                // Loop through and display each hadith
                 data.hadiths.forEach(hadith => {
                     let arabicText = `<p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>`;
-                    let englishText = `<p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>`;
-                    
-                    // If the hadith is too long, show only part of it initially
-                    if (hadith.english.text.length > 200) {
-                        englishText = `<p class="english-text" id="hadith${hadith.id}">${hadith.english.text.slice(0, 200)}... <span class="view-all" onclick="viewFullHadith(${hadith.id})">View All</span></p>`;
-                    }
+                    let englishText = hadith.english.text.length > 200 ? 
+                        `<p class="english-text" id="hadith${hadith.id}">${hadith.english.text.slice(0, 200)}... <span class="view-all" onclick="viewFullHadith(${hadith.id})">View All</span></p>` : 
+                        `<p class="english-text">${hadith.english.text}</p>`;
                     
                     htmlContent += `
                         <div class="hadith">
@@ -257,64 +315,33 @@
         // Function to view the full hadith
         function viewFullHadith(id) {
             const hadith = document.getElementById(`hadith${id}`);
-            const fullText = hadith.innerHTML.split('...')[0]; // Get full text without '...'
+            const fullText = hadith.innerHTML.split('...')[0];
             hadith.innerHTML = `${fullText} <span class="view-all" onclick="collapseHadith(${id})">Collapse</span>`;
         }
 
         // Function to collapse the hadith back to short version
         function collapseHadith(id) {
             const hadith = document.getElementById(`hadith${id}`);
-            const shortText = hadith.innerHTML.split('...')[0]; // Get shortened text
+            const shortText = hadith.innerHTML.split('...')[0];
             hadith.innerHTML = `${shortText}... <span class="view-all" onclick="viewFullHadith(${id})">View All</span>`;
         }
 
-        // On page load, fetch the hadiths based on URL parameters
-        window.onload = () => {
-            const { book, chapter } = getURLParams();
-            if (book && chapter) {
-                fetchHadiths(book, chapter);
-            } else {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=muslim&chapter=10).</p>';
-            }
-        };
-
-        // Dark mode toggle
-        document.getElementById('darkMode').addEventListener('change', function() {
-            document.body.classList.toggle('dark-mode', this.checked);
-        });
-
-        // Font size and font settings
-        document.getElementById('fontSize').addEventListener('input', function() {
-            document.querySelectorAll('.hadith p').forEach(p => {
-                p.style.fontSize = this.value + 'px';
-            });
-        });
-
-        document.getElementById('fontSelector').addEventListener('change', function() {
-            const selectedFont = this.value;
-            document.querySelectorAll('.hadith p').forEach(p => {
-                p.style.fontFamily = selectedFont;
-            });
-        });
-
-        // Toggle settings panel visibility
+        // Event listener for settings button
         document.getElementById('settingsBtn').addEventListener('click', () => {
             const panel = document.getElementById('settingsPanel');
             panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
         });
 
-        // Pagination logic for next/previous chapters
+        // Pagination logic
         document.getElementById('prevChapter').addEventListener('click', () => {
-            // Handle previous chapter navigation logic here
+            // Handle previous chapter logic
             alert('Go to previous chapter');
         });
 
         document.getElementById('nextChapter').addEventListener('click', () => {
-            // Handle next chapter navigation logic here
+            // Handle next chapter logic
             alert('Go to next chapter');
         });
     </script>
-
 </body>
 </html>
