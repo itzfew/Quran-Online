@@ -131,31 +131,28 @@
             document.getElementById("bookTitle").textContent = book.english.title;
             document.getElementById("bookAuthor").textContent = book.english.author;
 
-            // Fetch chapter names dynamically from the JSON file
-            fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`)
+            // Fetch the chapters JSON file dynamically based on the bookSlug
+            const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
+            fetch(chaptersUrl)
                 .then(response => response.json())
                 .then(data => {
-                    // Dynamically generate chapters list
                     const chapterList = document.getElementById("chapterList");
 
-                    // Ensure data exists for chapters
-                    if (data && Array.isArray(data.chapters)) {
-                        data.chapters.forEach((chapter, index) => {
-                            const chapterElement = document.createElement('div');
-                            chapterElement.classList.add('chapter-item');
-                            chapterElement.innerHTML = `
-                                <h3>${chapter.name || `Chapter ${index + 1}`}</h3>
-                                <a href="chapter.html?book=${bookSlug}&chapter=${index + 1}">View Hadiths</a>
-                            `;
-                            chapterList.appendChild(chapterElement);
-                        });
-                    } else {
-                        chapterList.innerHTML = "<p>No chapters found for this book.</p>";
-                    }
+                    // Iterate over the chapters from the fetched JSON and display them
+                    data.chapters.forEach(chapter => {
+                        const chapterElement = document.createElement('div');
+                        chapterElement.classList.add('chapter-item');
+                        chapterElement.innerHTML = `
+                            <h3>${chapter.number}</h3>
+                            <p>${chapter.name}</p>
+                            <a href="chapter.html?book=${bookSlug}&chapter=${chapter.number}">View Hadiths</a>
+                        `;
+                        chapterList.appendChild(chapterElement);
+                    });
                 })
                 .catch(error => {
-                    console.error("Error fetching chapters:", error);
-                    document.getElementById("chapterList").innerHTML = "<p>Failed to load chapters.</p>";
+                    console.error('Error fetching chapter data:', error);
+                    document.getElementById("chapterList").innerHTML = "<p>Could not load chapters at this time.</p>";
                 });
         } else {
             document.getElementById("chapterList").innerHTML = "<p>No chapters found for this book.</p>";
