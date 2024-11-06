@@ -31,6 +31,9 @@
       font-size: 1.2em;
       margin-bottom: 10px;
     }
+    .hadith-content {
+      margin-bottom: 15px;
+    }
   </style>
 </head>
 <body>
@@ -62,16 +65,25 @@
           hadithItem.classList.add('hadith-item');
           hadithItem.innerHTML = `
             <p class="hadith-title">Hadith #${hadith.hadithNumber}</p>
-            <p><strong>English:</strong> ${hadith.hadithEnglish}</p>
-            <p><strong>Urdu:</strong> ${hadith.hadithUrdu}</p>
-            <p><strong>Arabic:</strong> ${hadith.hadithArabic}</p>
+            <div class="hadith-content">
+              <strong>English:</strong> ${hadith.hadithEnglish}
+            </div>
+            <div class="hadith-content">
+              <strong>Urdu:</strong> ${hadith.hadithUrdu}
+            </div>
+            <div class="hadith-content">
+              <strong>Arabic:</strong> ${hadith.hadithArabic}
+            </div>
           `;
           hadithListElement.appendChild(hadithItem);
         });
+      } else {
+        alert("Error fetching hadiths.");
       }
     })
     .catch(error => {
-      console.log(error);
+      console.error(error);
+      alert("Failed to fetch hadith data.");
     });
 </script>
 
