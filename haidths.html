@@ -30,7 +30,7 @@
             margin: 15px;
             padding: 20px;
             text-align: center;
-            width: 200px;
+            width: 250px;
             transition: transform 0.2s ease;
         }
         .book-item:hover {
@@ -45,37 +45,91 @@
         .book-item a:hover {
             color: #2980b9;
         }
+        .book-item h3 {
+            margin: 0;
+            color: #16a085;
+            font-size: 20px;
+        }
+        .book-item p {
+            color: #7f8c8d;
+        }
     </style>
 </head>
 <body>
 
-    <h1>Hadith Books List</h1>
-
-    <div class="book-list">
-        <!-- Dynamically populated list of books -->
-    </div>
+    <h1>Hadith Books</h1>
+    <div class="book-list" id="bookList"></div>
 
     <script>
+        // Book data as per your provided JavaScript structure
         const books = [
-            { id: 1, name: "Sahih Bukhari", slug: "bukhari" },
-            { id: 2, name: "Sahih Muslim", slug: "muslim" },
-            { id: 3, name: "Sunan Abu Dawood", slug: "abudawood" },
-            { id: 4, name: "Jami` at-Tirmidhi", slug: "tirmidhi" },
-            { id: 5, name: "Sunan an-Nasa'i", slug: "nasai" },
-            { id: 6, name: "Sunan Ibn Majah", slug: "ibnmajah" }
-            // Add more books as needed
+            {
+                id: 1,
+                arabic: { title: "صحيح البخاري", author: "الإمام محمد بن إسماعيل البخاري" },
+                english: { title: "Sahih al-Bukhari", author: "Imam Muhammad ibn Ismail al-Bukhari" },
+                route: { base: "bukhari", chapters: Array.from({ length: 97 }, (_, i) => (i + 1).toString()) }
+            },
+            {
+                id: 2,
+                arabic: { title: "صحيح مسلم", author: "الإمام مسلم بن الحجاج القشيري النيسابوري" },
+                english: { title: "Sahih Muslim", author: "Imam Muslim ibn al-Hajjaj al-Naysaburi" },
+                route: { base: "muslim", chapters: ["introduction", ...Array.from({ length: 56 }, (_, i) => (i + 1).toString())] }
+            },
+            {
+                id: 3,
+                arabic: { title: "سنن النسائي", author: "الإمام أبو عبد الرحمن أحمد بن شعيب النسائي" },
+                english: { title: "Sunan al-Nasa'i", author: "Imam Ahmad ibn Shu'ayb al-Nasa'i" },
+                route: { base: "nasai", chapters: [...Array.from({ length: 51 }, (_, i) => (i + 1).toString()), "35b"] }
+            },
+            {
+                id: 4,
+                arabic: { title: "سنن أبي داود", author: "الإمام سليمان بن الأشعث أبو داود السجستاني" },
+                english: { title: "Sunan Abi Dawud", author: "Imam Sulayman ibn al-Ash'ath Abu Dawud al-Sijistani" },
+                route: { base: "abudawud", chapters: Array.from({ length: 43 }, (_, i) => (i + 1).toString()) }
+            },
+            {
+                id: 5,
+                arabic: { title: "جامع الترمذي", author: "الإمام أبو عيسى محمد بن عيسى الترمذي" },
+                english: { title: "Jami' al-Tirmidhi", author: "Imam Abu Isa Muhammad ibn Isa al-Tirmidhi" },
+                route: { base: "tirmidhi", chapters: Array.from({ length: 49 }, (_, i) => (i + 1).toString()) }
+            },
+            {
+                id: 6,
+                arabic: { title: "سنن ابن ماجه", author: "الإمام محمد بن يزيد بن ماجه القزويني" },
+                english: { title: "Sunan Ibn Majah", author: "Imam Muhammad ibn Yazid Ibn Majah al-Qazwini" },
+                route: { base: "ibnmajah", chapters: ["introduction", ...Array.from({ length: 37 }, (_, i) => (i + 1).toString())] }
+            },
+            {
+                id: 7,
+                arabic: { title: "موطأ مالك", author: "الإمام مالك بن أنس" },
+                english: { title: "Muwatta Malik", author: "Imam Malik ibn Anas" },
+                route: { base: "malik", chapters: Array.from({ length: 61 }, (_, i) => (i + 1).toString()) }
+            },
+            {
+                id: 8,
+                arabic: { title: "مسند الإمام أحمد بن حنبل", author: "الإمام أحمد بن حنبل" },
+                english: { title: "Musnad Ahmad ibn Hanbal", author: "Imam Ahmad ibn Hanbal" },
+                route: { base: "ahmad", chapters: [...Array.from({ length: 7 }, (_, i) => (i + 1).toString()), "31"] }
+            },
+            {
+                id: 9,
+                arabic: { title: "سنن الدارمي", author: "الإمام أبو محمد عبد الرحمن بن عبد الله بن الدارمي" },
+                english: { title: "Sunan al-Darimi", author: "Imam Abu Muhammad Abd al-Rahman ibn Abd Allah ibn al-Darimi" },
+                route: { base: "darimi", chapters: ["introduction", ...Array.from({ length: 23 }, (_, i) => (i + 1).toString())] }
+            }
         ];
 
-        const bookListElement = document.querySelector('.book-list');
-
+        // Dynamically generate book list
+        const bookList = document.getElementById('bookList');
         books.forEach(book => {
             const bookElement = document.createElement('div');
             bookElement.classList.add('book-item');
             bookElement.innerHTML = `
-                <h3>${book.name}</h3>
-                <a href="chapters.html?book=${book.slug}">View Chapters</a>
+                <h3>${book.english.title}</h3>
+                <p><strong>Author:</strong> ${book.english.author}</p>
+                <a href="chapters.html?book=${book.route.base}">View Chapters</a>
             `;
-            bookListElement.appendChild(bookElement);
+            bookList.appendChild(bookElement);
         });
     </script>
 </body>
