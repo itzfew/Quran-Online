@@ -176,20 +176,16 @@
             const savedFont = localStorage.getItem('font');
             const savedFontSize = localStorage.getItem('fontSize');
 
-            // Apply saved theme
             if (savedTheme) {
                 document.body.classList.toggle('dark-mode', savedTheme === 'dark');
             }
-
-            // Apply saved font and size if they exist
             if (savedFont) {
                 document.getElementById('fontSelect').value = savedFont;
-                changeArabicFont(); // Update font immediately
+                changeArabicFont();
             }
-
             if (savedFontSize) {
                 document.getElementById('fontSizeRange').value = savedFontSize;
-                resizeArabicText({ target: { value: savedFontSize } }); // Update size immediately
+                resizeArabicText({ target: { value: savedFontSize } });
             }
         }
 
@@ -265,17 +261,6 @@
             }
         }
 
-        // Initialize the viewer by fetching chapter data and URL parameters
-        function initializeViewer(bookSlug) {
-            const { book, chapter } = getURLParams();
-            if (book && chapter) {
-                fetchHadiths(book, chapter);
-            } else {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=bukhari&chapter=10).</p>';
-            }
-        }
-
         // Toggle light/dark theme
         function toggleTheme() {
             const isDark = document.body.classList.toggle('dark-mode');
@@ -302,7 +287,7 @@
 
         // On page load, fetch chapters data for the specified book
         window.onload = function() {
-            loadUserPreferences();
+            loadUserPreferences(); // Load preferences on page load
             const { book } = getURLParams();
             if (book) {
                 fetchChaptersData(book);
@@ -311,6 +296,8 @@
                 document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify a valid book in the URL (e.g., ?book=bukhari).</p>';
             }
         };
+
     </script>
+
 </body>
 </html>
