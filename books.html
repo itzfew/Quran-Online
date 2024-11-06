@@ -5,49 +5,133 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapters List</title>
     <style>
+        /* Resetting margins and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f4;
+            line-height: 1.6;
             margin: 0;
             padding: 0;
-            line-height: 1.6;
         }
+
         h1 {
             text-align: center;
             color: #2c3e50;
-            margin-top: 20px;
+            margin: 20px 0;
+            font-size: 2rem;
         }
+
         .book-details {
             text-align: center;
-            margin-top: 20px;
+            margin: 20px;
+            padding: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
+
+        .book-details h2 {
+            color: #3498db;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .book-details p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        /* List style for chapters */
         .chapter-list {
+            width: 100%;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0;
+            list-style-type: none;
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 30px;
+            flex-direction: column;
+            gap: 10px;
         }
+
         .chapter-item {
             background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin: 15px;
-            padding: 20px;
-            text-align: center;
-            width: 150px;
-            transition: transform 0.2s ease;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.3s ease;
         }
+
         .chapter-item:hover {
             transform: translateY(-5px);
         }
+
+        .chapter-item h3 {
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .chapter-item p {
+            font-size: 1rem;
+            color: #777;
+            margin: 10px 0;
+        }
+
         .chapter-item a {
+            font-size: 1.1rem;
+            font-weight: bold;
             text-decoration: none;
             color: #3498db;
-            font-weight: bold;
-            font-size: 18px;
+            margin-top: 10px;
         }
+
         .chapter-item a:hover {
             color: #2980b9;
+        }
+
+        /* Responsive Design for Small Screens */
+        @media (max-width: 768px) {
+            .chapter-list {
+                padding: 10px;
+            }
+
+            .chapter-item {
+                padding: 10px;
+            }
+
+            .book-details h2 {
+                font-size: 1.3rem;
+            }
+
+            .book-details p {
+                font-size: 0.9rem;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chapter-item h3 {
+                font-size: 1rem;
+            }
+
+            .chapter-item p {
+                font-size: 0.9rem;
+            }
+
+            .chapter-item a {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -60,7 +144,7 @@
         <p><strong>Author:</strong> <span id="bookAuthor"></span></p>
     </div>
 
-    <div class="chapter-list" id="chapterList"></div>
+    <ul class="chapter-list" id="chapterList"></ul>
 
     <script>
         // Book data as per your provided JavaScript structure
@@ -140,7 +224,7 @@
 
                     // Iterate over the chapters from the fetched JSON and display them
                     data.collection.books.forEach(chapter => {
-                        const chapterElement = document.createElement('div');
+                        const chapterElement = document.createElement('li');
                         chapterElement.classList.add('chapter-item');
                         chapterElement.innerHTML = `
                             <h3>Chapter ${chapter.book_number}</h3>
