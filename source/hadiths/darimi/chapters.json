@@ -1,0 +1,101 @@
+{
+  "collection": {
+    "name": "Sunan ad-Darimi",
+    "compiled_by": "Imam Abdullah ibn Abd ar-Rahman ad-Darimi",
+    "description": "Sunan ad-Darimi is one of the important collections of hadith compiled by Imam Abdullah ibn Abd ar-Rahman ad-Darimi (rahimahullah). It is widely considered to be a significant work in the Islamic tradition, included among the 'Nine Books' of hadith collections. The book contains around 3,400 hadith organized by topic (as in the Sunan format). Unfortunately, this collection has not been fully translated into English yet.",
+    "books": [
+      {
+        "book_number": 1,
+        "book_name": "Kitab at-Taharah - كتاب الطهارة"
+      },
+      {
+        "book_number": 2,
+        "book_name": "Kitab as-Salat - كتاب الصلاة"
+      },
+      {
+        "book_number": 3,
+        "book_name": "Kitab az-Zakat - من كتاب الزكاة"
+      },
+      {
+        "book_number": 4,
+        "book_name": "Kitab as-Sawm - من كتاب الصوم"
+      },
+      {
+        "book_number": 5,
+        "book_name": "Kitab al-Manasik - من كتاب المناسك"
+      },
+      {
+        "book_number": 6,
+        "book_name": "Kitab al-Adhahi - من كتاب الأضاحي"
+      },
+      {
+        "book_number": 7,
+        "book_name": "Kitab as-Said - من كتاب الصيد"
+      },
+      {
+        "book_number": 8,
+        "book_name": "Kitab al-At'imah - من كتاب الأطعمة"
+      },
+      {
+        "book_number": 9,
+        "book_name": "Kitab al-Ashribah - من كتاب الأشربة"
+      },
+      {
+        "book_number": 10,
+        "book_name": "Kitab ar-Ru'ya - من كتاب الرؤيا"
+      },
+      {
+        "book_number": 11,
+        "book_name": "Kitab an-Nikah - من كتاب النكاح"
+      },
+      {
+        "book_number": 12,
+        "book_name": "Kitab at-Talaq - من كتاب الطلاق"
+      },
+      {
+        "book_number": 13,
+        "book_name": "Kitab al-Hudud - من كتاب الحدود"
+      },
+      {
+        "book_number": 14,
+        "book_name": "Kitab an-Nudhur wa al-Ayman - من كتاب النذور والأيمان"
+      },
+      {
+        "book_number": 15,
+        "book_name": "Kitab ad-Diyat - من كتاب الديات"
+      },
+      {
+        "book_number": 16,
+        "book_name": "Kitab al-Jihad - كتاب الجهاد"
+      },
+      {
+        "book_number": 17,
+        "book_name": "Kitab as-Siyar - من كتاب السير"
+      },
+      {
+        "book_number": 18,
+        "book_name": "Kitab al-Buyu' - من كتاب البيوع"
+      },
+      {
+        "book_number": 19,
+        "book_name": "Kitab al-Istian - من كتاب الاستئذان"
+      },
+      {
+        "book_number": 20,
+        "book_name": "Kitab ar-Riqaq - من كتاب الرقاق"
+      },
+      {
+        "book_number": 21,
+        "book_name": "Kitab al-Fara'id - من كتاب الفرائض"
+      },
+      {
+        "book_number": 22,
+        "book_name": "Kitab al-Wasaya - من كتاب الوصايا"
+      },
+      {
+        "book_number": 23,
+        "book_name": "Kitab Fada'il al-Qur'an - من كتاب فضائل القرآن"
+      }
+    ]
+  }
+}
