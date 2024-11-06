@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadith Books</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Hadith Books</h1>
+        <ul id="book-list"></ul>
+    </div>
+
+    <script>
+        // Fetch books from the provided JSON file
+        fetch('https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadith/books.json')
+            .then(response => response.json())
+            .then(data => {
+                const books = data.books;
+                const bookList = document.getElementById('book-list');
+                
+                books.forEach(book => {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('book-item');
+                    listItem.innerHTML = `
+                        <a href="chapters.html?bookSlug=${book.bookSlug}">
+                            ${book.bookName} by ${book.writerName}
+                        </a>
+                    `;
+                    bookList.appendChild(listItem);
+                });
+            });
+    </script>
+</body>
+</html>
