@@ -1,0 +1,199 @@
+{
+  "collection": {
+    "name": "Sunan Ibn Majah",
+    "compiled_by": "Imam Muhammad bin Yazid Ibn Majah al-Qazvini",
+    "description": "Sunan Ibn Majah is a collection of hadith compiled by Imam Muhammad bin Yazid Ibn Majah al-Qazvini (rahimahullah). It is widely considered to be the sixth of the six canonical collections of hadith (Kutub as-Sittah) of the Sunnah of the Prophet (ﷺ). It consists of 4341 ahadith in 37 books.",
+    "books": [
+      {
+        "book_number": 0,
+        "book_name": "The Book of the Sunnah (كتاب المقدمة)",
+        "hadith_range": "1 to 266"
+      },
+      {
+        "book_number": 1,
+        "book_name": "The Book of Purification and its Sunnah (كتاب الطهارة وسننها)",
+        "hadith_range": "267 to 666"
+      },
+      {
+        "book_number": 2,
+        "book_name": "The Book of the Prayer (كتاب الصلاة)",
+        "hadith_range": "667 to 705"
+      },
+      {
+        "book_number": 3,
+        "book_name": "The Book of the Adhan and the Sunnah Regarding It (كتاب الأذان والسنة فيها)",
+        "hadith_range": "706 to 734"
+      },
+      {
+        "book_number": 4,
+        "book_name": "The Book On The Mosques And The Congregations (كتاب المساجد والجماعات)",
+        "hadith_range": "735 to 802"
+      },
+      {
+        "book_number": 5,
+        "book_name": "Establishing the Prayer and the Sunnah Regarding Them (كتاب إقامة الصلاة والسنة فيها)",
+        "hadith_range": "803 to 1432"
+      },
+      {
+        "book_number": 6,
+        "book_name": "Chapters Regarding Funerals (كتاب الجنائز)",
+        "hadith_range": "1433 to 1637"
+      },
+      {
+        "book_number": 7,
+        "book_name": "Fasting (كتاب الصيام)",
+        "hadith_range": "1638 to 1782"
+      },
+      {
+        "book_number": 8,
+        "book_name": "The Chapters Regarding Zakat (كتاب الزكاة)",
+        "hadith_range": "1783 to 1844"
+      },
+      {
+        "book_number": 9,
+        "book_name": "The Chapters on Marriage (كتاب النكاح)",
+        "hadith_range": "1845 to 2015"
+      },
+      {
+        "book_number": 10,
+        "book_name": "The Chapters on Divorce (كتاب الطلاق)",
+        "hadith_range": "2016 to 2477"
+      },
+      {
+        "book_number": 11,
+        "book_name": "The Chapters on Expiation (كتاب الكفارات)",
+        "hadith_range": "2090 to 2136"
+      },
+      {
+        "book_number": 12,
+        "book_name": "The Chapters on Business Transactions (كتاب التجارات)",
+        "hadith_range": "2137 to 2307"
+      },
+      {
+        "book_number": 13,
+        "book_name": "The Chapters on Rulings (كتاب الأحكام)",
+        "hadith_range": "2308 to 2374"
+      },
+      {
+        "book_number": 14,
+        "book_name": "The Chapters on Gifts (كتاب الهبات)",
+        "hadith_range": "2375 to 2389"
+      },
+      {
+        "book_number": 15,
+        "book_name": "The Chapters on Charity (كتاب الصدقات)",
+        "hadith_range": "2390 to 2528"
+      },
+      {
+        "book_number": 16,
+        "book_name": "The Chapters on Pawning (كتاب الرهون)",
+        "hadith_range": "2436 to 2491"
+      },
+      {
+        "book_number": 17,
+        "book_name": "The Chapters on Pre-emption (كتاب الشفعة)",
+        "hadith_range": "2492 to 2501"
+      },
+      {
+        "book_number": 18,
+        "book_name": "The Chapters on Lost Property (كتاب اللقطة)",
+        "hadith_range": "2502 to 2511"
+      },
+      {
+        "book_number": 19,
+        "book_name": "The Chapters on Manumission (of Slaves) (كتاب العتق)",
+        "hadith_range": "2512 to 2532"
+      },
+      {
+        "book_number": 20,
+        "book_name": "The Chapters on Legal Punishments (كتاب الحدود)",
+        "hadith_range": "2533 to 2614"
+      },
+      {
+        "book_number": 21,
+        "book_name": "The Chapters on Blood Money (كتاب الديات)",
+        "hadith_range": "2615 to 2694"
+      },
+      {
+        "book_number": 22,
+        "book_name": "The Chapters on Wills (كتاب الوصايا)",
+        "hadith_range": "2695 to 2718"
+      },
+      {
+        "book_number": 23,
+        "book_name": "Chapters on Shares of Inheritance (كتاب الفرائض)",
+        "hadith_range": "2719 to 2752"
+      },
+      {
+        "book_number": 24,
+        "book_name": "The Chapters on Jihad (كتاب الجهاد)",
+        "hadith_range": "2753 to 2881"
+      },
+      {
+        "book_number": 25,
+        "book_name": "Chapters on Hajj Rituals (كتاب المناسك)",
+        "hadith_range": "2882 to 3119"
+      },
+      {
+        "book_number": 26,
+        "book_name": "Chapters on Sacrifices (كتاب الأضاحي)",
+        "hadith_range": "3120 to 3161"
+      },
+      {
+        "book_number": 27,
+        "book_name": "Chapters on Slaughtering (كتاب الذبائح)",
+        "hadith_range": "3162 to 3199"
+      },
+      {
+        "book_number": 28,
+        "book_name": "Chapters on Hunting (كتاب الصيد)",
+        "hadith_range": "3200 to 3250"
+      },
+      {
+        "book_number": 29,
+        "book_name": "Chapters on Food (كتاب الأطعمة)",
+        "hadith_range": "3251 to 3370"
+      },
+      {
+        "book_number": 30,
+        "book_name": "Chapters on Drinks (كتاب الأشربة)",
+        "hadith_range": "3371 to 3435"
+      },
+      {
+        "book_number": 31,
+        "book_name": "Chapters on Medicine (كتاب الطب)",
+        "hadith_range": "3436 to 3549"
+      },
+      {
+        "book_number": 32,
+        "book_name": "Chapters on Dress (كتاب اللباس)",
+        "hadith_range": "3550 to 3656"
+      },
+      {
+        "book_number": 33,
+        "book_name": "Etiquette (كتاب الأدب)",
+        "hadith_range": "3657 to 3826"
+      },
+      {
+        "book_number": 34,
+        "book_name": "Supplication (كتاب الدعاء)",
+        "hadith_range": "3827 to 3892"
+      },
+      {
+        "book_number": 35,
+        "book_name": "Interpretation of Dreams (كتاب تعبير الرؤيا)",
+        "hadith_range": "3893 to 3926"
+      },
+      {
+        "book_number": 36,
+        "book_name": "Tribulations (كتاب الفتن)",
+        "hadith_range": "3927 to 4099"
+      },
+      {
+        "book_number": 37,
+        "book_name": "Zuhd (كتاب الزهد)",
+        "hadith_range": "4100 to 4341"
+      }
+    ]
+  }
+}
