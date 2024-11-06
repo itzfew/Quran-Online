@@ -216,9 +216,12 @@
         // Extract book slug from URL
         const urlParams = new URLSearchParams(window.location.search);
         const bookSlug = urlParams.get('book');
+        console.log('Book Slug from URL:', bookSlug);  // Debug log
+
         const book = books.find(b => b.route.base === bookSlug);
 
         if (book) {
+            console.log('Book found:', book);  // Debug log
             // Set book details
             document.getElementById("bookTitle").textContent = book.english.title;
             document.getElementById("bookAuthor").textContent = book.english.author;
@@ -247,6 +250,7 @@
                     document.getElementById("chapterList").innerHTML = "<p>Could not load chapters at this time.</p>";
                 });
         } else {
+            console.log('Book not found!');  // Debug log
             document.getElementById("chapterList").innerHTML = "<p>No chapters found for this book.</p>";
         }
     </script>
