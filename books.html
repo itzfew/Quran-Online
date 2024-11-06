@@ -131,17 +131,28 @@
             document.getElementById("bookTitle").textContent = book.english.title;
             document.getElementById("bookAuthor").textContent = book.english.author;
 
-            // Dynamically generate chapters list
-            const chapterList = document.getElementById("chapterList");
-            book.route.chapters.forEach(chapter => {
-                const chapterElement = document.createElement('div');
-                chapterElement.classList.add('chapter-item');
-                chapterElement.innerHTML = `
-                    <h3>${chapter}</h3>
-                    <a href="chapter.html?book=${bookSlug}&chapter=${chapter}">View Hadiths</a>
-                `;
-                chapterList.appendChild(chapterElement);
-            });
+            // Fetch the chapters JSON file dynamically based on the bookSlug
+            const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
+            fetch(chaptersUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const chapterList = document.getElementById("chapterList");
+
+                    // Iterate over the chapters from the fetched JSON and display them
+                    data.chapters.forEach(chapter => {
+                        const chapterElement = document.createElement('div');
+                        chapterElement.classList.add('chapter-item');
+                        chapterElement.innerHTML = `
+                            <h3>${chapter.name}</h3>
+                            <a href="chapter.html?book=${bookSlug}&chapter=${chapter.number}">View Hadiths</a>
+                        `;
+                        chapterList.appendChild(chapterElement);
+                    });
+                })
+                .catch(error => {
+                    document.getElementById("chapterList").innerHTML = "<p>Unable to load chapters at this time.</p>";
+                    console.error('Error fetching chapter data:', error);
+                });
         } else {
             document.getElementById("chapterList").innerHTML = "<p>No chapters found for this book.</p>";
         }
