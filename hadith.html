@@ -52,6 +52,12 @@
   const bookSlug = urlParams.get('book');
   const chapterNumber = urlParams.get('chapter');
 
+  // If bookSlug or chapterNumber is not provided, handle it (show a message or redirect)
+  if (!bookSlug || !chapterNumber) {
+    document.getElementById('hadith-list').innerHTML = '<p>Please provide both the book and chapter parameters in the URL.</p>';
+    throw new Error('Missing book or chapter parameter.');
+  }
+
   // API URL to fetch Hadiths based on book and chapter
   const apiUrl = `https://www.hadithapi.com/api/hadiths?apiKey=$2y$10$tRU6Mfq4SwT9N8lesjlLEzPLw9J6DN0yAxrM5hA4JEsHJytUve&bookSlug=${bookSlug}&chapterId=${chapterNumber}`;
 
@@ -68,9 +74,9 @@
           return hadith.bookSlug === bookSlug && hadith.chapterId === chapterNumber;
         });
 
-        // Check if filtered Hadiths exist for the given chapter and book
+        // If no Hadiths are found for the given book and chapter, show a message
         if (filteredHadiths.length === 0) {
-          hadithListElement.innerHTML = `<p>No hadiths found for this chapter in ${bookSlug}.</p>`;
+          hadithListElement.innerHTML = `<p>No hadiths found for Chapter ${chapterNumber} in the ${bookSlug} book.</p>`;
           return;
         }
 
@@ -94,12 +100,12 @@
           hadithListElement.appendChild(hadithItem);
         });
       } else {
-        alert("Error fetching hadiths.");
+        document.getElementById('hadith-list').innerHTML = `<p>No Hadiths found for the given parameters.</p>`;
       }
     })
     .catch(error => {
       console.error(error);
-      alert("Failed to fetch hadith data.");
+      document.getElementById('hadith-list').innerHTML = '<p>Failed to load Hadith data.</p>';
     });
 </script>
 
