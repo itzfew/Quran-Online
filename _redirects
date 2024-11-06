@@ -5,5 +5,5 @@
 /trailing /trailing/ 301
 /notrailing/ /nottrailing 301
 /page/ /page2/#fragment 301
-/blog/* quran-hadith.pages.dev/index.html
+/index.html/* https://quran-hadith.pages.dev
 /products/:code/:name /products?code=:code&name=:name
