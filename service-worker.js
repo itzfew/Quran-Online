@@ -4,8 +4,14 @@ const urlsToCache = [
     '/index.html',
     '/manifest.json',
     '/source/pic.png',  // Adjust path if necessary
-    '/css/styles.css',  // If any external or internal CSS
-    '/js/app.js',  // If any external or internal JS
+    '/tasbih.html',  // If any external or internal CSS
+    '/surah-details-en.html', 
+    '/surah-details-ar.html', 
+    '/prayer.html',
+   '/hadith.html',
+    '/chapter.html',
+   '/books.html',
+    '/99-names.html', // If any external or internal JS
     'https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css',
     // Additional files that need to be cached for offline use
