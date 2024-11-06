@@ -135,7 +135,7 @@
     <div id="loading" class="loading">Loading...</div>
     <div id="hadithResult"></div>
 
-    <!-- Modal -->
+    <!-- Modal for sharing -->
     <div id="shareModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
@@ -151,7 +151,7 @@
 
     <script>
         let chaptersData = []; // To store chapter data
-        let currentShareContent = ""; // Store the current share content
+        let currentShareContent = {}; // Store the current content for sharing
 
         // Function to fetch the chapters data from the remote JSON
         function fetchChaptersData() {
