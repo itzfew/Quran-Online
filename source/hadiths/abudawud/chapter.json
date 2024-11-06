@@ -1,0 +1,224 @@
+{
+  "collection": {
+    "name": "Sunan Abi Dawud",
+    "compiled_by": "Imam Abu Dawud Sulayman ibn al-Ash'ath as-Sijistani",
+    "description": "Sunan Abi Dawud is a collection of hadith compiled by Imam Abu Dawud Sulayman ibn al-Ash'ath as-Sijistani (rahimahullah). It is widely considered to be among the six canonical collections of hadith (Kutub as-Sittah) of the Sunnah of the Prophet (ﷺ). It consists of 5274 ahadith in 43 books.",
+    "books": [
+      {
+        "book_number": 1,
+        "book_name": "Purification (Kitab Al-Taharah) (كتاب الطهارة)",
+        "hadith_range": "1 to 390"
+      },
+      {
+        "book_number": 2,
+        "book_name": "Prayer (Kitab Al-Salat) (كتاب الصلاة)",
+        "hadith_range": "391 to 1160"
+      },
+      {
+        "book_number": 3,
+        "book_name": "The Book Of The Prayer For Rain (Kitab al-Istisqa') (كتاب الاستسقاء)",
+        "hadith_range": "1161 to 1197"
+      },
+      {
+        "book_number": 4,
+        "book_name": "Prayer: Detailed Rules of Law about the Prayer during Journey (Kitab Salah: صلاة السفر)",
+        "hadith_range": "1198 to 1249"
+      },
+      {
+        "book_number": 5,
+        "book_name": "Prayer: Voluntary Prayers (Kitab Al-Salat: التطوع)",
+        "hadith_range": "1250 to 1370"
+      },
+      {
+        "book_number": 6,
+        "book_name": "Prayer: Detailed Injunctions about Ramadan (Kitab Al-Salat: شهر رمضان)",
+        "hadith_range": "1371 to 1400"
+      },
+      {
+        "book_number": 7,
+        "book_name": "Prayer: Prostration while reciting the Qur'an (Kitab Al-Salat: سجود القرآن)",
+        "hadith_range": "1401 to 1415"
+      },
+      {
+        "book_number": 8,
+        "book_name": "Prayer: Detailed Injunctions about Witr (Kitab Al-Salat: الوتر)",
+        "hadith_range": "1416 to 1555"
+      },
+      {
+        "book_number": 9,
+        "book_name": "Zakat (Kitab Al-Zakat) (كتاب الزكاة)",
+        "hadith_range": "1556 to 1700"
+      },
+      {
+        "book_number": 10,
+        "book_name": "The Book of Lost and Found Items (كتاب اللقطة)",
+        "hadith_range": "1701 to 1720"
+      },
+      {
+        "book_number": 11,
+        "book_name": "The Rites of Hajj (Kitab Al-Manasik Wa'l-Hajj) (كتاب المناسك)",
+        "hadith_range": "1721 to 2045"
+      },
+      {
+        "book_number": 12,
+        "book_name": "Marriage (Kitab Al-Nikah) (كتاب النكاح)",
+        "hadith_range": "2046 to 2174"
+      },
+      {
+        "book_number": 13,
+        "book_name": "Divorce (Kitab Al-Talaq) (كتاب الطلاق)",
+        "hadith_range": "2175 to 2312"
+      },
+      {
+        "book_number": 14,
+        "book_name": "Fasting (Kitab Al-Siyam) (كتاب الصوم)",
+        "hadith_range": "2313 to 2476"
+      },
+      {
+        "book_number": 15,
+        "book_name": "Jihad (Kitab Al-Jihad) (كتاب الجهاد)",
+        "hadith_range": "2477 to 2787"
+      },
+      {
+        "book_number": 16,
+        "book_name": "Sacrifice (Kitab Al-Dahaya) (كتاب الضحايا)",
+        "hadith_range": "2788 to 2843"
+      },
+      {
+        "book_number": 17,
+        "book_name": "Game (Kitab Al-Said) (كتاب الصيد)",
+        "hadith_range": "2844 to 2861"
+      },
+      {
+        "book_number": 18,
+        "book_name": "Wills (Kitab Al-Wasaya) (كتاب الوصايا)",
+        "hadith_range": "2862 to 2884"
+      },
+      {
+        "book_number": 19,
+        "book_name": "Shares of Inheritance (Kitab Al-Fara'id) (كتاب الفرائض)",
+        "hadith_range": "2885 to 2927"
+      },
+      {
+        "book_number": 20,
+        "book_name": "Tribute, Spoils, and Rulership (Kitab Al-Kharaj, Wal-Fai' Wal-Imarah) (كتاب الخراج والإمارة والفىء)",
+        "hadith_range": "2928 to 3088"
+      },
+      {
+        "book_number": 21,
+        "book_name": "Funerals (Kitab Al-Jana'iz) (كتاب الجنائز)",
+        "hadith_range": "3089 to 3241"
+      },
+      {
+        "book_number": 22,
+        "book_name": "Oaths and Vows (Kitab Al-Aiman Wa Al-Nudhur) (كتاب الأيمان والنذور)",
+        "hadith_range": "3242 to 3325"
+      },
+      {
+        "book_number": 23,
+        "book_name": "Commercial Transactions (Kitab Al-Buyu) (كتاب البيوع)",
+        "hadith_range": "3326 to 3415"
+      },
+      {
+        "book_number": 24,
+        "book_name": "Wages (Kitab Al-Ijarah) (كتاب الإجارة)",
+        "hadith_range": "3416 to 3570"
+      },
+      {
+        "book_number": 25,
+        "book_name": "The Office of the Judge (Kitab Al-Aqdiyah) (كتاب الأقضية)",
+        "hadith_range": "3571 to 3640"
+      },
+      {
+        "book_number": 26,
+        "book_name": "Knowledge (Kitab Al-Ilm) (كتاب العلم)",
+        "hadith_range": "3641 to 3668"
+      },
+      {
+        "book_number": 27,
+        "book_name": "Drinks (Kitab Al-Ashribah) (كتاب الأشربة)",
+        "hadith_range": "3669 to 3735"
+      },
+      {
+        "book_number": 28,
+        "book_name": "Foods (Kitab Al-At'imah) (كتاب الأطعمة)",
+        "hadith_range": "3736 to 3854"
+      },
+      {
+        "book_number": 29,
+        "book_name": "Medicine (Kitab Al-Tibb) (كتاب الطب)",
+        "hadith_range": "3855 to 3903"
+      },
+      {
+        "book_number": 30,
+        "book_name": "Divination and Omens (Kitab Al-Kahanah Wa Al-Tatayyur) (كتاب الكهانة و التطير)",
+        "hadith_range": "3904 to 3925"
+      },
+      {
+        "book_number": 31,
+        "book_name": "The Book of Manumission of Slaves (كتاب العتق)",
+        "hadith_range": "3926 to 3968"
+      },
+      {
+        "book_number": 32,
+        "book_name": "Dialects and Readings of the Qur'an (Kitab Al-Huruf Wa Al-Qira'at) (كتاب الحروف والقراءات)",
+        "hadith_range": "3969 to 4008"
+      },
+      {
+        "book_number": 33,
+        "book_name": "Hot Baths (Kitab Al-Hammam) (كتاب الحمَّام)",
+        "hadith_range": "4009 to 4019"
+      },
+      {
+        "book_number": 34,
+        "book_name": "Clothing (Kitab Al-Libas) (كتاب اللباس)",
+        "hadith_range": "4020 to 4158"
+      },
+      {
+        "book_number": 35,
+        "book_name": "Combing the Hair (Kitab Al-Tarajjul) (كتاب الترجل)",
+        "hadith_range": "4159 to 4213"
+      },
+      {
+        "book_number": 36,
+        "book_name": "Signet-Rings (Kitab Al-Khatam) (كتاب الخاتم)",
+        "hadith_range": "4214 to 4239"
+      },
+      {
+        "book_number": 37,
+        "book_name": "Trials and Fierce Battles (Kitab Al-Fitan Wa Al-Malahim) (كتاب الفتن والملاحم)",
+        "hadith_range": "4240 to 4278"
+      },
+      {
+        "book_number": 38,
+        "book_name": "The Promised Deliverer (Kitab Al-Mahdi) (كتاب المهدى)",
+        "hadith_range": "4279 to 4290"
+      },
+      {
+        "book_number": 39,
+        "book_name": "Battles (Kitab Al-Malahim) (كتاب الملاحم)",
+        "hadith_range": "4291 to 4350"
+      },
+      {
+        "book_number": 40,
+        "book_name": "Prescribed Punishments (Kitab Al-Hudud) (كتاب الحدود)",
+        "hadith_range": "4351 to 4493"
+      },
+      {
+        "book_number": 41,
+        "book_name": "Types of Blood-Wit (Kitab Al-Diyat) (كتاب الديات)",
+        "hadith_range": "4494 to 4595"
+      },
+      {
+        "book_number": 42,
+        "book_name": "Model Behavior of the Prophet (Kitab Al-Sunnah) (كتاب السنة)",
+        "hadith_range": "4596 to 4772"
+      },
+      {
+        "book_number": 43,
+        "book_name": "General Behavior (Kitab Al-Adab) (كتاب الأدب)",
+        "hadith_range": "4773 to 5274"
+      }
+    ]
+  }
+}
