@@ -43,9 +43,9 @@
         }
         .hadith .arabic-text {
             font-size: 18px;
-            font-family: 'Amiri', serif; /* A good Arabic font */
+            font-family: 'Amiri', serif;
             text-align: center;
-            direction: rtl; /* Right-to-left for Arabic text */
+            direction: rtl;
         }
         .hadith .english-text {
             font-size: 16px;
@@ -71,6 +71,23 @@
         }
         .header-meta strong {
             color: #2c3e50;
+        }
+        .share-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        .share-buttons button {
+            padding: 8px 16px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .share-buttons button:hover {
+            background-color: #27ae60;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
@@ -158,11 +175,21 @@
                 
                 // Loop through and display each hadith
                 data.hadiths.forEach(hadith => {
+                    const shareLink = encodeURIComponent(window.location.href); // Current page link
+                    const arabicText = encodeURIComponent(hadith.arabic);
+                    const englishText = encodeURIComponent(hadith.english.text);
+                    const shareContent = `Arabic: ${hadith.arabic} \n\nEnglish: ${hadith.english.text} \n\nSee Hadith: ${shareLink}`;
+
                     htmlContent += `
                         <div class="hadith">
                             <h3>Hadith #${hadith.id}</h3>
                             <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
                             <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
+                            <div class="share-buttons">
+                                <button onclick="shareOnTwitter('${shareContent}')">Share on Twitter</button>
+                                <button onclick="shareOnFacebook('${shareContent}')">Share on Facebook</button>
+                                <button onclick="shareOnWhatsApp('${shareContent}')">Share on WhatsApp</button>
+                            </div>
                         </div>
                     `;
                 });
@@ -171,6 +198,24 @@
             } else {
                 hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
             }
+        }
+
+        // Share on Twitter
+        function shareOnTwitter(content) {
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(content)}`;
+            window.open(twitterUrl, '_blank');
+        }
+
+        // Share on Facebook
+        function shareOnFacebook(content) {
+            const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}&quote=${encodeURIComponent(content)}`;
+            window.open(facebookUrl, '_blank');
+        }
+
+        // Share on WhatsApp
+        function shareOnWhatsApp(content) {
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(content)}`;
+            window.open(whatsappUrl, '_blank');
         }
 
         // Initialize the viewer by fetching chapters data and URL parameters
