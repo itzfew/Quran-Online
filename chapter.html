@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hadith Viewer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -11,6 +13,7 @@
             margin: 0;
             padding: 0;
             line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
         }
         h1, h2 {
             text-align: center;
@@ -40,12 +43,13 @@
             margin: 10px 0;
             font-size: 16px;
             color: #34495e;
+            transition: font-size 0.3s ease-in-out;
         }
         .hadith .arabic-text {
             font-size: 18px;
-            font-family: 'Amiri', serif; /* A good Arabic font */
+            font-family: 'Amiri', serif;
             text-align: center;
-            direction: rtl; /* Right-to-left for Arabic text */
+            direction: rtl;
         }
         .hadith .english-text {
             font-size: 16px;
@@ -72,8 +76,80 @@
         .header-meta strong {
             color: #2c3e50;
         }
+
+        /* Settings Button */
+        #settingsBtn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        #settingsPanel {
+            position: fixed;
+            top: 50px;
+            right: 20px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            display: none;
+        }
+
+        #settingsPanel input[type="range"] {
+            width: 100%;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #333;
+            color: #f4f4f4;
+        }
+        body.dark-mode .hadith {
+            background-color: #444;
+            color: #ccc;
+        }
+        body.dark-mode .hadith p {
+            color: #ccc;
+        }
+
+        .pagination {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .pagination a {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 20px;
+            margin: 0 10px;
+        }
+
+        .pagination a:hover {
+            text-decoration: underline;
+        }
+
+        /* Show "View All" Button */
+        .view-all {
+            color: #3498db;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            #settingsPanel {
+                right: 10px;
+                top: 80px;
+            }
+        }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -84,6 +160,32 @@
 
     <div id="loading" class="loading">Loading...</div>
     <div id="hadithResult"></div>
+
+    <div class="pagination">
+        <a href="#" id="prevChapter"><i class="fas fa-arrow-left"></i> Previous Chapter</a>
+        <a href="#" id="nextChapter">Next Chapter <i class="fas fa-arrow-right"></i></a>
+    </div>
+
+    <!-- Settings Button -->
+    <div id="settingsBtn">
+        <i class="fas fa-cogs"></i>
+    </div>
+
+    <!-- Settings Panel -->
+    <div id="settingsPanel">
+        <h3>Settings</h3>
+        <label for="fontSize">Font Size:</label>
+        <input type="range" id="fontSize" min="14" max="24" value="16" step="1">
+        <br>
+        <label for="fontSelector">Font:</label>
+        <select id="fontSelector">
+            <option value="Arial">Arial</option>
+            <option value="Amiri">Amiri (Arabic)</option>
+        </select>
+        <br>
+        <label for="darkMode">Dark Mode:</label>
+        <input type="checkbox" id="darkMode">
+    </div>
 
     <script>
         // Function to get the book and chapter from URL parameters
@@ -129,11 +231,19 @@
                 
                 // Loop through and display each hadith
                 data.hadiths.forEach(hadith => {
+                    let arabicText = `<p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>`;
+                    let englishText = `<p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>`;
+                    
+                    // If the hadith is too long, show only part of it initially
+                    if (hadith.english.text.length > 200) {
+                        englishText = `<p class="english-text" id="hadith${hadith.id}">${hadith.english.text.slice(0, 200)}... <span class="view-all" onclick="viewFullHadith(${hadith.id})">View All</span></p>`;
+                    }
+                    
                     htmlContent += `
                         <div class="hadith">
                             <h3>Hadith #${hadith.id}</h3>
-                            <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
-                            <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
+                            ${arabicText}
+                            ${englishText}
                         </div>
                     `;
                 });
@@ -142,6 +252,20 @@
             } else {
                 hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
             }
+        }
+
+        // Function to view the full hadith
+        function viewFullHadith(id) {
+            const hadith = document.getElementById(`hadith${id}`);
+            const fullText = hadith.innerHTML.split('...')[0]; // Get full text without '...'
+            hadith.innerHTML = `${fullText} <span class="view-all" onclick="collapseHadith(${id})">Collapse</span>`;
+        }
+
+        // Function to collapse the hadith back to short version
+        function collapseHadith(id) {
+            const hadith = document.getElementById(`hadith${id}`);
+            const shortText = hadith.innerHTML.split('...')[0]; // Get shortened text
+            hadith.innerHTML = `${shortText}... <span class="view-all" onclick="viewFullHadith(${id})">View All</span>`;
         }
 
         // On page load, fetch the hadiths based on URL parameters
@@ -154,6 +278,43 @@
                 document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=muslim&chapter=10).</p>';
             }
         };
+
+        // Dark mode toggle
+        document.getElementById('darkMode').addEventListener('change', function() {
+            document.body.classList.toggle('dark-mode', this.checked);
+        });
+
+        // Font size and font settings
+        document.getElementById('fontSize').addEventListener('input', function() {
+            document.querySelectorAll('.hadith p').forEach(p => {
+                p.style.fontSize = this.value + 'px';
+            });
+        });
+
+        document.getElementById('fontSelector').addEventListener('change', function() {
+            const selectedFont = this.value;
+            document.querySelectorAll('.hadith p').forEach(p => {
+                p.style.fontFamily = selectedFont;
+            });
+        });
+
+        // Toggle settings panel visibility
+        document.getElementById('settingsBtn').addEventListener('click', () => {
+            const panel = document.getElementById('settingsPanel');
+            panel.style.display = (panel.style.display === 'block') ? 'none' : 'block';
+        });
+
+        // Pagination logic for next/previous chapters
+        document.getElementById('prevChapter').addEventListener('click', () => {
+            // Handle previous chapter navigation logic here
+            alert('Go to previous chapter');
+        });
+
+        document.getElementById('nextChapter').addEventListener('click', () => {
+            // Handle next chapter navigation logic here
+            alert('Go to next chapter');
+        });
     </script>
+
 </body>
 </html>
