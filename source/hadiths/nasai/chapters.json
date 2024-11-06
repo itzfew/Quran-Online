@@ -1,11 +1,10 @@
- {
+{
   "title": "Sunan an-Nasa'i",
   "author": "Imam Ahmad an-Nasa'i",
   "collection": {
     "description": "Sunan an-Nasa'i is a collection of hadith compiled by Imam Ahmad an-Nasa'i (rahimahullah). His collection is unanimously considered to be one of the six canonical collections of hadith (Kutub as-Sittah) of the Sunnah of the Prophet (ﷺ). It contains roughly 5700 hadith (with repetitions) in 52 books.",
-    "total_hadith": 51,
-    "books": [    
-      
+    "total_hadith": 5700,
+    "books": [
       {
         "book_number": 1,
         "book_name": "The Book of Purification (كتاب الطهارة)",
@@ -182,87 +181,87 @@
         "hadith_range": "3761 to 3856"
       },
       {
-        "book_number": 35b,
+        "book_number": 36,
         "book_name": "The Book of Agriculture (كتاب المزارعة)",
         "hadith_range": "3857 to 3938"
       },
       {
-        "book_number": 36,
+        "book_number": 37,
         "book_name": "The Book of the Kind Treatment of Women (كتاب عشرة النساء)",
         "hadith_range": "3939 to 3965"
       },
       {
-        "book_number": 37,
+        "book_number": 38,
         "book_name": "The Book of Fighting [The Prohibition of Bloodshed] (كتاب تحريم الدم)",
         "hadith_range": "3966 to 4132"
       },
       {
-        "book_number": 38,
+        "book_number": 39,
         "book_name": "The Book of Distribution of Al-Fay' (كتاب قسم الفىء)",
         "hadith_range": "4133 to 4148"
       },
       {
-        "book_number": 39,
+        "book_number": 40,
         "book_name": "The Book of al-Bay'ah (كتاب البيعة)",
         "hadith_range": "4149 to 4211"
       },
       {
-        "book_number": 40,
+        "book_number": 41,
         "book_name": "The Book of al-'Aqiqah (كتاب العقيقة)",
         "hadith_range": "4212 to 4221"
       },
       {
-        "book_number": 41,
+        "book_number": 42,
         "book_name": "The Book of al-Fara' and al-'Atirah (كتاب الفرع والعتيرة)",
         "hadith_range": "4222 to 4262"
       },
       {
-        "book_number": 42,
+        "book_number": 43,
         "book_name": "The Book of Hunting and Slaughtering (كتاب الصيد والذبائح)",
         "hadith_range": "4263 to 4360"
       },
       {
-        "book_number": 43,
+        "book_number": 44,
         "book_name": "The Book of ad-Dahaya (Sacrifices) (كتاب الضحايا)",
         "hadith_range": "4361 to 4448"
       },
       {
-        "book_number": 44,
+        "book_number": 45,
         "book_name": "The Book of Financial Transactions (كتاب البيوع)",
         "hadith_range": "4449 to 4705"
       },
       {
-        "book_number": 45,
+        "book_number": 46,
         "book_name": "The Book of Oaths (qasamah), Retaliation and Blood Money (كتاب القسامة)",
         "hadith_range": "4706 to 4869"
       },
       {
-        "book_number": 46,
+        "book_number": 47,
         "book_name": "The Book of Cutting off the Hand of the Thief (كتاب قطع السارق)",
         "hadith_range": "4870 to 4984"
       },
       {
-        "book_number": 47,
+        "book_number": 48,
         "book_name": "The Book Of Faith and its Signs (كتاب الإيمان وشرائعه)",
         "hadith_range": "4985 to 5039"
       },
       {
-        "book_number": 48,
+        "book_number": 49,
         "book_name": "The Book of Adornment (كتاب الزينة من السنن)",
         "hadith_range": "5040 to 5378"
       },
       {
-        "book_number": 49,
+        "book_number": 50,
         "book_name": "The Book of the Etiquette of Judges (كتاب آداب القضاة)",
         "hadith_range": "5379 to 5427"
       },
       {
-        "book_number": 50,
+        "book_number": 51,
         "book_name": "The Book of Seeking Refuge with Allah (كتاب الاستعاذة)",
         "hadith_range": "5428 to 5539"
       },
       {
-        "book_number": 51,
+        "book_number": 52,
         "book_name": "The Book of Drinks (كتاب الأشربة)",
         "hadith_range": "5540 to 5758"
       }
