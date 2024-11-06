@@ -1,117 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hadiths of Chapter</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        li {
-            background-color: #fff;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-        }
-
-        a {
-            text-decoration: none;
-            color: #007bff;
-        }
-
-        a:hover {
-            text-decoration: underline;
-        }
-
-        h3 {
-            color: #333;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hadiths of Chapter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #333;
+      color: white;
+      padding: 15px;
+      text-align: center;
+    }
+    .hadith-list {
+      padding: 20px;
+    }
+    .hadith-item {
+      background: white;
+      padding: 20px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .hadith-title {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1 id="chapterTitle">Loading...</h1>
-        <ul id="hadithList">
-            <!-- Hadiths will be populated here dynamically -->
-        </ul>
-    </div>
 
-    <script>
-        // Extract 'slug' and 'chapterId' from URL query parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const bookSlug = urlParams.get('slug');
-        const chapterId = urlParams.get('chapterId');
-        
-        if (!bookSlug || !chapterId) {
-            document.getElementById('chapterTitle').innerHTML = 'Invalid parameters';
-            return;
-        }
+<header>
+  <h1>Hadiths of Chapter</h1>
+</header>
 
-        // Construct the API URL to fetch Hadiths based on bookSlug and chapterId
-        const apiUrl = `https://www.hadithapi.com/api/hadiths?apiKey=$2y$10$tRU6Mfq4SwT9N8lesjlLEzPLw9J6DN0yAxrM5hA4JEsHJytUve&bookSlug=${bookSlug}&chapterId=${chapterId}`;
+<div class="hadith-list" id="hadith-list">
+  <!-- Hadith items will be injected here by JavaScript -->
+</div>
 
-        console.log("Fetching Hadiths from API:", apiUrl); // Debug log
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const bookSlug = urlParams.get('book');
+  const chapterNumber = urlParams.get('chapter');
 
-        // Fetch the Hadiths for the selected chapter
-        fetch(apiUrl)
-        .then(response => {
-            console.log("API Response Status:", response.status); // Log status
-            return response.json();
-        })
-        .then(data => {
-            console.log("API Response Data:", data); // Debug log for data
+  const apiUrl = `https://www.hadithapi.com/api/hadiths?apiKey=$2y$10$tRU6Mfq4SwT9N8lesjlLEzPLw9J6DN0yAxrM5hA4JEsHJytUve&bookSlug=${bookSlug}&chapterId=${chapterNumber}`;
 
-            // Check if the response is valid
-            if (data.status === 200 && data.hadiths) {
-                const hadiths = data.hadiths.data;
-                const chapterTitle = document.getElementById('chapterTitle');
-                const hadithList = document.getElementById('hadithList');
+  fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === 200) {
+        const hadiths = data.hadiths.data;
+        const hadithListElement = document.getElementById('hadith-list');
 
-                // Update the title of the page with the chapter name
-                chapterTitle.innerHTML = `Hadiths from Chapter: ${data.hadiths[0].chapter.chapterEnglish}`;
-
-                // Populate the Hadiths
-                hadiths.forEach(hadith => {
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `
-                        <h3>Hadith ${hadith.hadithNumber}</h3>
-                        <p><strong>English Narrator:</strong> ${hadith.englishNarrator}</p>
-                        <p><strong>Hadith (English):</strong> ${hadith.hadithEnglish}</p>
-                        <p><strong>Hadith (Urdu):</strong> ${hadith.hadithUrdu}</p>
-                        <p><strong>Arabic:</strong> ${hadith.hadithArabic}</p>
-                    `;
-                    hadithList.appendChild(listItem);
-                });
-            } else {
-                document.getElementById('chapterTitle').innerHTML = 'No Hadiths found for this chapter.';
-            }
-        })
-        .catch(error => {
-            console.log('Error:', error);
-            document.getElementById('chapterTitle').innerHTML = 'Error fetching Hadiths.';
+        hadiths.forEach(hadith => {
+          const hadithItem = document.createElement('div');
+          hadithItem.classList.add('hadith-item');
+          hadithItem.innerHTML = `
+            <p class="hadith-title">Hadith #${hadith.hadithNumber}</p>
+            <p><strong>English:</strong> ${hadith.hadithEnglish}</p>
+            <p><strong>Urdu:</strong> ${hadith.hadithUrdu}</p>
+            <p><strong>Arabic:</strong> ${hadith.hadithArabic}</p>
+          `;
+          hadithListElement.appendChild(hadithItem);
         });
-    </script>
+      }
+    })
+    .catch(error => {
+      console.log(error);
+    });
+</script>
+
 </body>
 </html>
