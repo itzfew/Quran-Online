@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapters List</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2rem;
+            margin-top: 40px;
+            padding: 0 10px;
+        }
+
+        .book-details {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: none;  /* Removed shadow */
+        }
+
+        .book-details h2 {
+            color: #3498db;
+            font-size: 1.5rem;
+        }
+
+        .book-details p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        /* List for Chapters */
+        .chapter-list {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        .chapter-item {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;  /* Simple accent line */
+            border-radius: 8px;
+            transition: background-color 0.3s ease; /* Smooth color transition */
+        }
+
+        .chapter-item:hover {
+            background-color: #f1f1f1; /* Light background on hover */
+        }
+
+        .chapter-item h3 {
+            font-size: 1.3rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .chapter-item p {
+            font-size: 1rem;
+            color: #777;
+            margin: 5px 0;
+        }
+
+        .chapter-item a {
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-decoration: none;
+            color: #3498db;
+            margin-top: 10px;
+            display: inline-block;
+            transition: color 0.3s ease;
+        }
+
+        .chapter-item a:hover {
+            color: #2980b9;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .chapter-list {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+                padding: 0 20px;
+            }
+
+            .book-details h2 {
+                font-size: 1.3rem;
+            }
+
+            .book-details p {
+                font-size: 0.9rem;
+            }
+
+            .chapter-item {
+                padding: 15px;
+            }
+
+            .chapter-item h3 {
+                font-size: 1.1rem;
+            }
+
+            .chapter-item p {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .chapter-item h3 {
+                font-size: 1rem;
+            }
+
+            .chapter-item p {
+                font-size: 0.9rem;
+            }
+
+            .chapter-item a {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Chapters List</h1>
+
+    <div class="book-details">
+        <h2 id="bookTitle"></h2>
+        <p><strong>Author:</strong> <span id="bookAuthor"></span></p>
+    </div>
+
+    <ul class="chapter-list" id="chapterList"></ul>
+
+    <script>
+        // Book data as per your provided JavaScript structure
+        const books = [
+            {
+                id: 1,
+                arabic: { title: "صحيح البخاري", author: "الإمام محمد بن إسماعيل البخاري" },
+                english: { title: "Sahih al-Bukhari", author: "Imam Muhammad ibn Ismail al-Bukhari" },
+                route: { base: "bukhari" }
+            },
+            {
+                id: 2,
+                arabic: { title: "صحيح مسلم", author: "الإمام مسلم بن الحجاج القشيري النيسابوري" },
+                english: { title: "Sahih Muslim", author: "Imam Muslim ibn al-Hajjaj al-Naysaburi" },
+                route: { base: "muslim" }
+            },
+            {
+                id: 3,
+                arabic: { title: "سنن أبي داود", author: "الإمام سليمان بن الأشعث أبو داود السجستاني" },
+                english: { title: "Sunan Abi Dawud", author: "Imam Sulayman ibn al-Ash'ath Abu Dawud al-Sijistani" },
+                route: { base: "abudawud" }
+            },
+            {
+                id: 4,
+                arabic: { title: "جامع الترمذي", author: "الإمام أبو عيسى محمد بن عيسى الترمذي" },
+                english: { title: "Jami' al-Tirmidhi", author: "Imam Abu Isa Muhammad ibn Isa al-Tirmidhi" },
+                route: { base: "tirmidhi" }
+            },
+            {
+                id: 5,
+                arabic: { title: "سنن النسائي", author: "الإمام أبو عبد الرحمن أحمد بن شعيب النسائي" },
+                english: { title: "Sunan al-Nasa'i", author: "Imam Ahmad ibn Shu'ayb al-Nasa'i" },
+                route: { base: "nasai" }
+            },
+            {
+                id: 6,
+                arabic: { title: "سنن ابن ماجه", author: "الإمام محمد بن يزيد بن ماجه القزويني" },
+                english: { title: "Sunan Ibn Majah", author: "Imam Muhammad ibn Yazid Ibn Majah al-Qazwini" },
+                route: { base: "ibnmajah" }
+            },
+            {
+                id: 7,
+                arabic: { title: "موطأ مالك", author: "الإمام مالك بن أنس" },
+                english: { title: "Muwatta Malik", author: "Imam Malik ibn Anas" },
+                route: { base: "malik" }
+            },
+            {
+                id: 8,
+                arabic: { title: "مسند الإمام أحمد بن حنبل", author: "الإمام أحمد بن حنبل" },
+                english: { title: "Musnad Ahmad ibn Hanbal", author: "Imam Ahmad ibn Hanbal" },
+                route: { base: "ahmed" }
+            },
+            {
+                id: 9,
+                arabic: { title: "سنن الدارمي", author: "الإمام أبو محمد عبد الرحمن بن عبد الله بن الدارمي" },
+                english: { title: "Sunan al-Darimi", author: "Imam Abu Muhammad Abd al-Rahman ibn Abd Allah ibn al-Darimi" },
+                route: { base: "darimi" }
+            }
+        ];
+
+        // Extract book slug from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookSlug = urlParams.get('book');
+        const book = books.find(b => b.route.base === bookSlug);
+
+        if (book) {
+            // Set book details
+            document.getElementById("bookTitle").textContent = book.english.title;
+            document.getElementById("bookAuthor").textContent = book.english.author;
+
+            // Fetch the chapters JSON file dynamically based on the bookSlug
+            const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
+            fetch(chaptersUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const chapterList = document.getElementById("chapterList");
+
+                    // Iterate over the chapters from the fetched JSON and display them
+                    data.collection.books.forEach(chapter => {
+                        const chapterElement = document.createElement('li');
+                        chapterElement.classList.add('chapter-item');
+                        chapterElement.innerHTML = `
+                            <h3>Chapter ${chapter.book_number}</h3>
+                            <p>${chapter.book_name}</p>
+                            <a href="chapter.html?book=${bookSlug}&chapter=${chapter.book_number}">View Hadiths</a>
+                        `;
+                        chapterList.appendChild(chapterElement);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching chapter data:', error);
+                    document.getElementById("chapterList").innerHTML = "<p>Could not load chapters at this time.</p>";
+                });
+        } else {
+            document.getElementById("chapterList").innerHTML = "<p>No chapters found for this book.</p>";
+        }
+    </script>
+</body>
+</html>
