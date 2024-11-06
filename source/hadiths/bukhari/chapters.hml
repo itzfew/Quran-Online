@@ -1,0 +1,495 @@
+{
+  "title": "Sahih al-Bukhari",
+  "author": "Imam Muhammad al-Bukhari (d. 256 AH / 870 AD)",
+  "collection": {
+    "description": "Sahih al-Bukhari is a collection of hadith compiled by Imam Muhammad al-Bukhari (rahimahullah). His collection is recognized by the overwhelming majority of the Muslim world to be the most authentic collection of reports of the Sunnah of the Prophet Muhammad (ﷺ).",
+    "total_hadith": 7500,
+    "books": [
+      {
+        "book_number": 1,
+        "book_name": "Revelation (كتاب بدء الوحى)",
+        "hadith_range": "1 to 7"
+      },
+      {
+        "book_number": 2,
+        "book_name": "Belief (كتاب الإيمان)",
+        "hadith_range": "8 to 58"
+      },
+      {
+        "book_number": 3,
+        "book_name": "Knowledge (كتاب العلم)",
+        "hadith_range": "59 to 134"
+      },
+      {
+        "book_number": 4,
+        "book_name": "Ablutions (Wudu') (كتاب الوضوء)",
+        "hadith_range": "135 to 247"
+      },
+      {
+        "book_number": 5,
+        "book_name": "Bathing (Ghusl) (كتاب الغسل)",
+        "hadith_range": "248 to 293"
+      },
+      {
+        "book_number": 6,
+        "book_name": "Menstrual Periods (كتاب الحيض)",
+        "hadith_range": "294 to 333"
+      },
+      {
+        "book_number": 7,
+        "book_name": "Rubbing Hands and Feet with Dust (Tayammum) (كتاب التيمم)",
+        "hadith_range": "334 to 348"
+      },
+      {
+        "book_number": 8,
+        "book_name": "Prayers (Salat) (كتاب الصلاة)",
+        "hadith_range": "349 to 520"
+      },
+      {
+        "book_number": 9,
+        "book_name": "Times of the Prayers (كتاب مواقيت الصلاة)",
+        "hadith_range": "521 to 602"
+      },
+      {
+        "book_number": 10,
+        "book_name": "Call to Prayers (Adhaan) (كتاب الأذان)",
+        "hadith_range": "603 to 875"
+      },
+      {
+        "book_number": 11,
+        "book_name": "Friday Prayer (كتاب الجمعة)",
+        "hadith_range": "876 to 941"
+      },
+      {
+        "book_number": 12,
+        "book_name": "Fear Prayer (كتاب صلاة الخوف)",
+        "hadith_range": "942 to 947"
+      },
+      {
+        "book_number": 13,
+        "book_name": "The Two Festivals (Eids) (كتاب العيدين)",
+        "hadith_range": "948 to 989"
+      },
+      {
+        "book_number": 14,
+        "book_name": "Witr Prayer (كتاب الوتر)",
+        "hadith_range": "990 to 1004"
+      },
+      {
+        "book_number": 15,
+        "book_name": "Invoking Allah for Rain (Istisqaa) (كتاب الاستسقاء)",
+        "hadith_range": "1005 to 1039"
+      },
+      {
+        "book_number": 16,
+        "book_name": "Eclipses (كتاب الكسوف)",
+        "hadith_range": "1040 to 1065"
+      },
+      {
+        "book_number": 17,
+        "book_name": "Prostration During Recital of Qur'an (كتاب سجود القرآن)",
+        "hadith_range": "1067 to 1079"
+      },
+      {
+        "book_number": 18,
+        "book_name": "Shortening the Prayers (At-Taqseer) (كتاب التقصير)",
+        "hadith_range": "1080 to 1119"
+      },
+      {
+        "book_number": 19,
+        "book_name": "Prayer at Night (Tahajjud) (كتاب التهجد)",
+        "hadith_range": "1120 to 1187"
+      },
+      {
+        "book_number": 20,
+        "book_name": "Virtues of Prayer at Masjid Makkah and Madinah (كتاب فضل الصلاة فى مسجد مكة والمدينة)",
+        "hadith_range": "1188 to 1197"
+      },
+      {
+        "book_number": 21,
+        "book_name": "Actions while Praying (كتاب العمل فى الصلاة)",
+        "hadith_range": "1198 to 1223"
+      },
+      {
+        "book_number": 22,
+        "book_name": "Forgetfulness in Prayer (كتاب السهو)",
+        "hadith_range": "1224 to 1236"
+      },
+      {
+        "book_number": 23,
+        "book_name": "Funerals (Al-Janaa'iz) (كتاب الجنائز)",
+        "hadith_range": "1237 to 1394"
+      },
+      {
+        "book_number": 24,
+        "book_name": "Obligatory Charity Tax (Zakat) (كتاب الزكاة)",
+        "hadith_range": "1395 to 1512"
+      },
+      {
+        "book_number": 25,
+        "book_name": "Hajj (Pilgrimage) (كتاب الحج)",
+        "hadith_range": "1513 to 1771"
+      },
+      {
+        "book_number": 26,
+        "book_name": "`Umrah (Minor pilgrimage) (كتاب العمرة)",
+        "hadith_range": "1773 to 1805"
+      },
+      {
+        "book_number": 27,
+        "book_name": "Pilgrims Prevented from Completing the Pilgrimage (كتاب المحصر)",
+        "hadith_range": "1806 to 1820"
+      },
+      {
+        "book_number": 28,
+        "book_name": "Penalty of Hunting while on Pilgrimage (كتاب جزاء الصيد)",
+        "hadith_range": "1821 to 1866"
+      },
+      {
+        "book_number": 29,
+        "book_name": "Virtues of Madinah (كتاب فضائل المدينة)",
+        "hadith_range": "1867 to 1890"
+      },
+      {
+        "book_number": 30,
+        "book_name": "Fasting (كتاب الصوم)",
+        "hadith_range": "1891 to 2007"
+      },
+      {
+        "book_number": 31,
+        "book_name": "Praying at Night in Ramadaan (Taraweeh) (كتاب صلاة التراويح)",
+        "hadith_range": "2008 to 2013"
+      },
+      {
+        "book_number": 32,
+        "book_name": "Virtues of the Night of Qadr (كتاب فضل ليلة القدر)",
+        "hadith_range": "2014 to 2024"
+      },
+      {
+        "book_number": 33,
+        "book_name": "Retiring to a Mosque for Remembrance of Allah (I'tikaf) (كتاب الاعتكاف)",
+        "hadith_range": "2025 to 2046"
+      },
+      {
+        "book_number": 34,
+        "book_name": "Sales and Trade (كتاب البيوع)",
+        "hadith_range": "2047 to 2238"
+      },
+      {
+        "book_number": 35,
+        "book_name": "Sales in which a Price is Paid for Goods to be Delivered Later (As-Salam) (كتاب السلم)",
+        "hadith_range": "2239 to 2256"
+      },
+      {
+        "book_number": 36,
+        "book_name": "Shuf'a (كتاب الشفعة)",
+        "hadith_range": "2257 to 2259"
+      },
+      {
+        "book_number": 37,
+        "book_name": "Hiring (كتاب الإجارة)",
+        "hadith_range": "2260 to 2285"
+      },
+      {
+        "book_number": 38,
+        "book_name": "Transferance of a Debt from One Person to Another (Al-Hawaala) (كتاب الحوالات)",
+        "hadith_range": "2287 to 2289"
+      },
+      {
+        "book_number": 39,
+        "book_name": "Kafalah (كتاب الكفالة)",
+        "hadith_range": "2290 to 2298"
+      },
+      {
+        "book_number": 40,
+        "book_name": "Representation, Authorization, Business by Proxy (كتاب الوكالة)",
+        "hadith_range": "2299 to 2319"
+      },
+      {
+        "book_number": 41,
+        "book_name": "Agriculture (كتاب المزارعة)",
+        "hadith_range": "2320 to 2350"
+      },
+      {
+        "book_number": 42,
+        "book_name": "Distribution of Water (كتاب المساقاة)",
+        "hadith_range": "2351 to 2383"
+      },
+      {
+        "book_number": 43,
+        "book_name": "Loans, Payment of Loans, Freezing of Property, Bankruptcy (كتاب فى الاستقراض)",
+        "hadith_range": "2385 to 2409"
+      },
+      {
+        "book_number": 44,
+        "book_name": "Khusoomaat (كتاب الخصومات)",
+        "hadith_range": "2410 to 2425"
+      },
+      {
+        "book_number": 45,
+        "book_name": "Lost Things Picked up by Someone (Luqatah) (كتاب فى اللقطة)",
+        "hadith_range": "2426 to 2439"
+      },
+      {
+        "book_number": 46,
+        "book_name": "Oppressions (كتاب المظالم)",
+        "hadith_range": "2440 to 2482"
+      },
+      {
+        "book_number": 47,
+        "book_name": "Partnership (كتاب الشركة)",
+        "hadith_range": "2483 to 2507"
+      },
+      {
+        "book_number": 48,
+        "book_name": "Mortgaging (كتاب الرهن)",
+        "hadith_range": "2508 to 2515"
+      },
+      {
+        "book_number": 49,
+        "book_name": "Manumission of Slaves (كتاب العتق)",
+        "hadith_range": "2517 to 2559"
+      },
+      {
+        "book_number": 50,
+        "book_name": "Makaatib (كتاب المكاتب)",
+        "hadith_range": "2560 to 2565"
+      },
+      {
+        "book_number": 51,
+        "book_name": "Gifts (كتاب الهبة وفضلها والتحريض عليها)",
+        "hadith_range": "2566 to 2636"
+      },
+      {
+        "book_number": 52,
+        "book_name": "Witnesses (كتاب الشهادات)",
+        "hadith_range": "2637 to 2689"
+      },
+      {
+        "book_number": 53,
+        "book_name": "Peacemaking (كتاب الصلح)",
+        "hadith_range": "2690 to 2710"
+      },
+      {
+        "book_number": 54,
+        "book_name": "Conditions (كتاب الشروط)",
+        "hadith_range": "2711 to 2737"
+      },
+      {
+        "book_number": 55,
+        "book_name": "Wills and Testaments (Wasaayaa) (كتاب الوصايا)",
+        "hadith_range": "2738 to 2781"
+      },
+      {
+        "book_number": 56,
+        "book_name": "Fighting for the Cause of Allah (Jihaad) (كتاب الجهاد والسير)",
+        "hadith_range": "2782 to 3090"
+      },
+      {
+        "book_number": 57,
+        "book_name": "One-fifth of Booty to the Cause of Allah (Khumus) (كتاب فرض الخمس)",
+        "hadith_range": "3091 to 3155"
+      },
+      {
+        "book_number": 58,
+        "book_name": "Jizyah and Mawaada'ah (كتاب الجزية والموادعة)",
+        "hadith_range": "3156 to 3189"
+      },
+      {
+        "book_number": 59,
+        "book_name": "Beginning of Creation (كتاب بدء الخلق)",
+        "hadith_range": "3190 to 3325"
+      },
+      {
+        "book_number": 60,
+        "book_name": "Prophets (كتاب أحاديث الأنبياء)",
+        "hadith_range": "3326 to 3488"
+      },
+      {
+        "book_number": 61,
+        "book_name": "Virtues and Merits of the Prophet (pbuh) and his Companions (كتاب المناقب)",
+        "hadith_range": "3489 to 3648"
+      },
+      {
+        "book_number": 62,
+        "book_name": "Companions of the Prophet (كتاب فضائل أصحاب النبى صلى الله عليه وسلم)",
+        "hadith_range": "3649 to 3775"
+      },
+      {
+        "book_number": 63,
+        "book_name": "Merits of the Helpers in Madinah (Ansaar) (كتاب مناقب الأنصار)",
+        "hadith_range": "3776 to 3948"
+      },
+      {
+        "book_number": 64,
+        "book_name": "Military Expeditions led by the Prophet (pbuh) (Al-Maghaazi) (كتاب المغازى)",
+        "hadith_range": "3949 to 4473"
+      },
+      {
+        "book_number": 65,
+        "book_name": "Prophetic Commentary on the Qur'an (Tafseer of the Prophet (pbuh)) (كتاب التفسير)",
+        "hadith_range": "4474 to 4977"
+      },
+      {
+        "book_number": 66,
+        "book_name": "Virtues of the Qur'an (كتاب فضائل القرآن)",
+        "hadith_range": "4978 to 5062"
+      },
+      {
+        "book_number": 67,
+        "book_name": "Wedlock, Marriage (Nikaah) (كتاب النكاح)",
+        "hadith_range": "5063 to 5250"
+      },
+      {
+        "book_number": 68,
+        "book_name": "Divorce (كتاب الطلاق)",
+        "hadith_range": "5251 to 5350"
+      },
+      {
+        "book_number": 69,
+        "book_name": "Supporting the Family (كتاب النفقات)",
+        "hadith_range": "5351 to 5372"
+      },
+      {
+        "book_number": 70,
+        "book_name": "Food, Meals (كتاب الأطعمة)",
+        "hadith_range": "5373 to 5466"
+      },
+      {
+        "book_number": 71,
+        "book_name": "Sacrifice on Occasion of Birth (`Aqiqa) (كتاب العقيقة)",
+        "hadith_range": "5467 to 5474"
+      },
+      {
+        "book_number": 72,
+        "book_name": "Hunting, Slaughtering (كتاب الذبائح والصيد)",
+        "hadith_range": "5475 to 5544"
+      },
+      {
+        "book_number": 73,
+        "book_name": "Al-Adha Festival Sacrifice (Adaahi) (كتاب الأضاحي)",
+        "hadith_range": "5545 to 5574"
+      },
+      {
+        "book_number": 74,
+        "book_name": "Drinks (كتاب الأشربة)",
+        "hadith_range": "5575 to 5639"
+      },
+      {
+        "book_number": 75,
+        "book_name": "Patients (كتاب المرضى)",
+        "hadith_range": "5640 to 5677"
+      },
+      {
+        "book_number": 76,
+        "book_name": "Medicine (كتاب الطب)",
+        "hadith_range": "5678 to 5782"
+      },
+      {
+        "book_number": 77,
+        "book_name": "Dress (كتاب اللباس)",
+        "hadith_range": "5783 to 5969"
+      },
+      {
+        "book_number": 78,
+        "book_name": "Good Manners and Form (Al-Adab) (كتاب الأدب)",
+        "hadith_range": "5970 to 6226"
+      },
+      {
+        "book_number": 79,
+        "book_name": "Asking Permission (كتاب الاستئذان)",
+        "hadith_range": "6227 to 6303"
+      },
+      {
+        "book_number": 80,
+        "book_name": "Invocations (كتاب الدعوات)",
+        "hadith_range": "6304 to 6411"
+      },
+      {
+        "book_number": 81,
+        "book_name": "To make the Heart Tender (Ar-Riqaq) (كتاب الرقاق)",
+        "hadith_range": "6412 to 6593"
+      },
+      {
+        "book_number": 82,
+        "book_name": "Divine Will (Al-Qadar) (كتاب القدر)",
+        "hadith_range": "6594 to 6620"
+      },
+      {
+        "book_number": 83,
+        "book_name": "Oaths and Vows (كتاب الأيمان والنذور)",
+        "hadith_range": "6621 to 6707"
+      },
+      {
+        "book_number": 84,
+        "book_name": "Expiation for Unfulfilled Oaths (كتاب كفارات الأيمان)",
+        "hadith_range": "6708 to 6722"
+      },
+      {
+        "book_number": 85,
+        "book_name": "Laws of Inheritance (Al-Faraa'id) (كتاب الفرائض)",
+        "hadith_range": "6723 to 6771"
+      },
+      {
+        "book_number": 86,
+        "book_name": "Limits and Punishments set by Allah (Hudood) (كتاب الحدود)",
+        "hadith_range": "6772 to 6859"
+      },
+      {
+        "book_number": 87,
+        "book_name": "Blood Money (Ad-Diyat) (كتاب الديات)",
+        "hadith_range": "6861 to 6917"
+      },
+      {
+        "book_number": 88,
+        "book_name": "Apostates (كتاب استتابة المرتدين والمعاندين وقتالهم)",
+        "hadith_range": "6918 to 6939"
+      },
+      {
+        "book_number": 89,
+        "book_name": "(Statements made under) Coercion (كتاب الإكراه)",
+        "hadith_range": "6940 to 6952"
+      },
+      {
+        "book_number": 90,
+        "book_name": "Tricks (كتاب الحيل)",
+        "hadith_range": "6953 to 6981"
+      },
+      {
+        "book_number": 91,
+        "book_name": "Interpretation of Dreams (كتاب التعبير)",
+        "hadith_range": "6982 to 7047"
+      },
+      {
+        "book_number": 92,
+        "book_name": "Afflictions and the End of the World (كتاب الفتن)",
+        "hadith_range": "7048 to 7136"
+      },
+      {
+        "book_number": 93,
+        "book_name": "Judgments (Ahkaam) (كتاب الأحكام)",
+        "hadith_range": "7137 to 7225"
+      },
+      {
+        "book_number": 94,
+        "book_name": "Wishes (كتاب التمنى)",
+        "hadith_range": "7226 to 7245"
+      },
+      {
+        "book_number": 95,
+        "book_name": "Accepting Information Given by a Truthful Person (كتاب أخبار الآحاد)",
+        "hadith_range": "7246 to 7267"
+      },
+      {
+        "book_number": 96,
+        "book_name": "Holding Fast to the Qur'an and Sunnah (كتاب الاعتصام بالكتاب والسنة)",
+        "hadith_range": "7268 to 7370"
+      },
+      {
+        "book_number": 97,
+        "book_name": "Oneness, Uniqueness of Allah (Tawheed) (كتاب التوحيد)",
+        "hadith_range": "7371 to 7563"
+      }
+    ]
+  }
+}
