@@ -230,22 +230,8 @@
                 .then(data => {
                     const chapterList = document.getElementById("chapterList");
 
-                    // Sort chapters numerically and alphabetically, accounting for numeric and alphanumeric types
-                    const sortedChapters = data.collection.books.sort((a, b) => {
-                        const numA = a.book_number.replace(/[^\d.-]/g, '');  // Extract numeric part
-                        const numB = b.book_number.replace(/[^\d.-]/g, '');  // Extract numeric part
-                        const alphaA = a.book_number.replace(/[\d.-]/g, '');  // Extract alphabetic part
-                        const alphaB = b.book_number.replace(/[\d.-]/g, '');  // Extract alphabetic part
-                        
-                        // First compare the numeric part
-                        if (numA !== numB) return parseFloat(numA) - parseFloat(numB);
-                        
-                        // If numeric part is the same, compare alphabetic part
-                        return alphaA.localeCompare(alphaB);
-                    });
-
-                    // Iterate over the sorted chapters and display them
-                    sortedChapters.forEach(chapter => {
+                    // Iterate over the chapters from the fetched JSON and display them
+                    data.collection.books.forEach(chapter => {
                         const chapterElement = document.createElement('li');
                         chapterElement.classList.add('chapter-item');
                         chapterElement.innerHTML = `
@@ -264,6 +250,5 @@
             document.getElementById("chapterList").innerHTML = "<p>No chapters found for this book.</p>";
         }
     </script>
-
 </body>
 </html>
