@@ -1,0 +1,193 @@
+export const books: ScrapedBook[] = [
+	//* Al-Bukhari
+	{
+		id: 1,
+		arabic: {
+			title: "صحيح البخاري",
+			author: "الإمام محمد بن إسماعيل البخاري",
+		},
+		english: {
+			title: "Sahih al-Bukhari",
+			author: "Imam Muhammad ibn Ismail al-Bukhari",
+		},
+		path: ["the_9_books", "bukhari"],
+		route: {
+			base: "bukhari",
+			chapters: Array.from({ length: 97 }, (_, i) => (i + 1).toString()), // Automatically generates chapters 1 to 97
+		},
+		length: 7563,
+	},
+
+	//* Sahih Muslim
+	{
+		id: 2,
+		arabic: {
+			title: "صحيح مسلم",
+			author: "الإمام مسلم بن الحجاج القشيري النيسابوري",
+		},
+		english: {
+			title: "Sahih Muslim",
+			author: "Imam Muslim ibn al-Hajjaj al-Naysaburi",
+		},
+		path: ["the_9_books", "muslim"],
+		route: {
+			base: "muslim",
+			chapters: [
+				"introduction", // Special case for the introduction chapter
+				...Array.from({ length: 56 }, (_, i) => (i + 1).toString()) // Chapters 1 to 56
+			],
+		},
+		length: 3033,
+	},
+
+	//* Sunan al-Nasa'i
+	{
+		id: 3,
+		arabic: {
+			title: "سنن النسائي",
+			author: "الإمام أبو عبد الرحمن أحمد بن شعيب النسائي",
+		},
+		english: {
+			title: "Sunan al-Nasa'i",
+			author: "Imam Ahmad ibn Shu'ayb al-Nasa'i",
+		},
+		path: ["the_9_books", "nasai"],
+		route: {
+			base: "nasai",
+			chapters: [
+				...Array.from({ length: 51 }, (_, i) => (i + 1).toString()), // Chapters 1 to 51
+				"35b", // Special chapter 35b
+			],
+		},
+		length: 5758,
+	},
+
+	//* Sunan Abi Dawud
+	{
+		id: 4,
+		arabic: {
+			title: "سنن أبي داود",
+			author: "الإمام سليمان بن الأشعث أبو داود السجستاني",
+		},
+		english: {
+			title: "Sunan Abi Dawud",
+			author: "Imam Sulayman ibn al-Ash'ath Abu Dawud al-Sijistani",
+		},
+		path: ["the_9_books", "abudawud"],
+		route: {
+			base: "abudawud",
+			chapters: [
+				...Array.from({ length: 43 }, (_, i) => (i + 1).toString()) // Chapters 1 to 43
+			],
+		},
+		length: 5274,
+	},
+
+	//* Jami' al-Tirmidhi
+	{
+		id: 5,
+		arabic: {
+			title: "جامع الترمذي",
+			author: "الإمام أبو عيسى محمد بن عيسى الترمذي",
+		},
+		english: {
+			title: "Jami' al-Tirmidhi",
+			author: "Imam Abu Isa Muhammad ibn Isa al-Tirmidhi",
+		},
+		path: ["the_9_books", "tirmidhi"],
+		route: {
+			base: "tirmidhi",
+			chapters: [
+				...Array.from({ length: 49 }, (_, i) => (i + 1).toString()) // Chapters 1 to 49
+			],
+		},
+		length: 3956,
+	},
+
+	//* Sunan Ibn Majah
+	{
+		id: 6,
+		arabic: {
+			title: "سنن ابن ماجه",
+			author: "الإمام محمد بن يزيد بن ماجه القزويني",
+		},
+		english: {
+			title: "Sunan Ibn Majah",
+			author: "Imam Muhammad ibn Yazid Ibn Majah al-Qazwini",
+		},
+		path: ["the_9_books", "ibnmajah"],
+		route: {
+			base: "ibnmajah",
+			chapters: [
+				"introduction", // Special case for the introduction chapter
+				...Array.from({ length: 37 }, (_, i) => (i + 1).toString()) // Chapters 1 to 37
+			],
+		},
+		length: 4341,
+	},
+
+	//* Muwatta Malik
+	{
+		id: 7,
+		arabic: {
+			title: "موطأ مالك",
+			author: "الإمام مالك بن أنس",
+		},
+		english: {
+			title: "Muwatta Malik",
+			author: "Imam Malik ibn Anas",
+		},
+		path: ["the_9_books", "malik"],
+		route: {
+			base: "malik",
+			chapters: [
+				...Array.from({ length: 61 }, (_, i) => (i + 1).toString()) // Chapters 1 to 61
+			],
+		},
+		length: 1862,
+	},
+
+	//* Musnad Ahmad ibn Hanbal
+	{
+		id: 8,
+		arabic: {
+			title: "مسند الإمام أحمد بن حنبل",
+			author: "الإمام أحمد بن حنبل",
+		},
+		english: {
+			title: "Musnad Ahmad ibn Hanbal",
+			author: "Imam Ahmad ibn Hanbal",
+		},
+		path: ["the_9_books", "ahmed"],
+		route: {
+			base: "ahmad",
+			chapters: [
+				...Array.from({ length: 7 }, (_, i) => (i + 1).toString()), // Chapters 1 to 7
+				"31", // Special chapter 31
+			],
+		},
+		length: 1438,
+	},
+
+	//* Sunan al-Darimi
+	{
+		id: 9,
+		arabic: {
+			title: "سنن الدارمي",
+			author: "الإمام أبو محمد عبد الرحمن بن عبد الله بن الدارمي",
+		},
+		english: {
+			title: "Sunan al-Darimi",
+			author: "Imam Abu Muhammad Abd al-Rahman ibn Abd Allah ibn al-Darimi",
+		},
+		path: ["the_9_books", "darimi"],
+		route: {
+			base: "darimi",
+			chapters: [
+				"introduction", // Special case for the introduction chapter
+				...Array.from({ length: 23 }, (_, i) => (i + 1).toString()) // Chapters 1 to 23
+			],
+		},
+		length: 3406,
+	},
+];
