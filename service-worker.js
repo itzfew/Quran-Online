@@ -1,4 +1,4 @@
-const CACHE_NAME = 'edu-hub-cache-v1';
+const CACHE_NAME = 'Quran-Online-cache-v1';
 const URLS_TO_CACHE = [
     '/',
     '/index.html',
