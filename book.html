@@ -69,14 +69,17 @@
             <p>${chapter.chapterUrdu}</p>
           `;
           chapterItem.onclick = () => {
-            window.location.href = `hadith.html?book=${bookSlug}&chapter=${chapter.chapterNumber}`;
+            window.location.href = `/hadith.html?book=${bookSlug}&chapter=${chapter.chapterNumber}`;
           };
           chapterListElement.appendChild(chapterItem);
         });
+      } else {
+        alert("Error fetching chapters.");
       }
     })
     .catch(error => {
-      console.log(error);
+      console.error(error);
+      alert("Failed to fetch chapter data.");
     });
 </script>
 
