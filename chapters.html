@@ -1,201 +1,148 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hadith Viewer</title>
     <style>
-        /* Global Styles */
         body {
             font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
         }
-
-        /* Light, Dark, and Sepia Themes */
-        body.light-mode {
-            background-color: #f4f4f4;
-            color: #333;
-        }
-
-        body.dark-mode {
-            background-color: #2c3e50;
-            color: #ecf0f1;
-        }
-
-        body.sepia-mode {
-            background-color: #f4ecd8;
-            color: #5c3d1a;
-        }
-
-        /* Control Panel */
-        .control-panel {
-            display: flex;
-            justify-content: space-between;
-            padding: 15px 30px;
-            background-color: #3498db;
-            color: white;
-            font-size: 14px;
-            align-items: center;
-            border-bottom: 2px solid #2980b9;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .control-panel button,
-        .control-panel select {
-            background-color: #2c3e50;
-            border: 1px solid #2980b9;
-            color: white;
-            padding: 5px 15px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.3s ease;
-        }
-
-        .control-panel button:hover,
-        .control-panel select:hover {
-            background-color: #2980b9;
-        }
-
-        .control-panel select {
-            width: 160px;
-        }
-
-        /* Search Box */
-        .search-box {
-            margin: 20px auto;
-            text-align: center;
-        }
-
-        .search-box input {
-            padding: 8px 20px;
-            font-size: 16px;
-            width: 80%;
-            max-width: 500px;
-            margin-right: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .search-box button {
-            padding: 8px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-        }
-
-        .search-box button:hover {
-            background-color: #2980b9;
-        }
-
-        /* Header */
-        h1,
-        h2 {
+        h1, h2 {
             text-align: center;
             color: #2c3e50;
             margin-top: 20px;
         }
-
         .hadith-container {
-            margin: 30px auto;
+            margin: 20px;
             padding: 20px;
             background-color: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            width: 90%;
-            max-width: 900px;
-        }
-
-        .hadith {
-            margin-bottom: 25px;
-            padding: 20px;
-            border: 1px solid #eee;
             border-radius: 10px;
-            background-color: #fafafa;
-            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
-
+        .hadith {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
         .hadith h3 {
             margin-top: 0;
-            font-size: 22px;
+            font-size: 20px;
             color: #16a085;
         }
-
         .hadith p {
+            margin: 10px 0;
             font-size: 16px;
             color: #34495e;
-            margin: 10px 0;
         }
-
         .hadith .arabic-text {
             font-size: 18px;
             font-family: 'Amiri', serif;
             text-align: center;
             direction: rtl;
-            transition: font-size 0.3s ease;
         }
-
         .hadith .english-text {
             font-size: 16px;
             font-family: 'Arial', sans-serif;
             color: #555;
         }
-
-        .loading,
-        .error {
+        .loading, .error {
             text-align: center;
-            font-size: 18px;
+            font-size: 20px;
             color: #3498db;
         }
-
         .error {
             color: red;
         }
+        #hadithResult {
+            margin-top: 30px;
+        }
+        .header-meta {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .header-meta strong {
+            color: #2c3e50;
+        }
 
-        /* Footer */
-        footer {
+        /* Light/Dark Mode Styling */
+        body.dark-mode {
             background-color: #2c3e50;
             color: white;
-            padding: 10px 20px;
-            text-align: center;
+        }
+        body.dark-mode .hadith {
+            background-color: #34495e;
+            border-color: #1abc9c;
+        }
+        body.dark-mode .hadith h3 {
+            color: #1abc9c;
+        }
+        body.dark-mode .header-meta {
+            background-color: #34495e;
         }
 
-        footer p {
-            margin: 0;
+        /* Toolbar Styling */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: #16a085;
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
         }
+        .toolbar label {
+            margin-right: 10px;
+        }
+        .toolbar select, .toolbar input, .toolbar button {
+            background-color: #1abc9c;
+            border: none;
+            border-radius: 5px;
+            padding: 5px;
+            color: white;
+        }
+        .toolbar button {
+            cursor: pointer;
+        }
+        .toolbar button:hover {
+            background-color: #16a085;
+        }
+
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade+New&family=Cairo&family=Lalezar&display=swap" rel="stylesheet">
 </head>
+<body>
 
-<body class="light-mode">
-
-    <!-- Control Panel -->
-    <div class="control-panel">
+    <!-- Toolbar with options at the top -->
+    <div class="toolbar">
         <div>
-            <button id="themeToggle">Toggle Dark/Light Mode</button>
-        </div>
-        <div>
-            <select id="fontSelect">
+            <label for="fontSelect">Arabic Font:</label>
+            <select id="fontSelect" onchange="changeArabicFont()">
                 <option value="Amiri">Amiri</option>
-                <option value="Scheherazade">Scheherazade</option>
+                <option value="Scheherazade New">Scheherazade</option>
                 <option value="Cairo">Cairo</option>
+                <option value="Lalezar">Lalezar</option>
             </select>
         </div>
         <div>
-            <select id="fontSizeSelect">
-                <option value="18">Normal</option>
-                <option value="20">Large</option>
-                <option value="22">Very Large</option>
-            </select>
+            <label for="fontSizeRange">Arabic Text Size:</label>
+            <input type="range" id="fontSizeRange" min="14" max="30" value="18" oninput="resizeArabicText(event)" />
         </div>
         <div>
-            <button id="languageToggle">Toggle English/Arabic</button>
+            <button onclick="toggleTheme()">🌙 / 🌞</button>
         </div>
     </div>
 
@@ -204,22 +151,11 @@
         Enter a book and chapter number in the URL to view the Hadiths (e.g., <code>?book=bukhari&chapter=10</code>).
     </p>
 
-    <!-- Search Box -->
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Search for a Hadith..." />
-        <button onclick="searchHadith()">Search</button>
-    </div>
-
     <div id="loading" class="loading">Loading...</div>
     <div id="hadithResult"></div>
 
-    <!-- Footer -->
-    <footer>
-        <p>Hadith Viewer © 2024</p>
-    </footer>
-
     <script>
-        // Books Data
+        // List of available books
         const books = [
             { slug: 'bukhari', name: 'Sahih al-Bukhari' },
             { slug: 'muslim', name: 'Sahih Muslim' },
@@ -233,9 +169,27 @@
         ];
 
         let chaptersData = [];
-        let allHadiths = [];
 
-        // Fetch chapters data for the specified book
+        // Load user preferences from localStorage and apply them
+        function loadUserPreferences() {
+            const savedTheme = localStorage.getItem('theme');
+            const savedFont = localStorage.getItem('font');
+            const savedFontSize = localStorage.getItem('fontSize');
+
+            if (savedTheme) {
+                document.body.classList.toggle('dark-mode', savedTheme === 'dark');
+            }
+            if (savedFont) {
+                document.getElementById('fontSelect').value = savedFont;
+                changeArabicFont();
+            }
+            if (savedFontSize) {
+                document.getElementById('fontSizeRange').value = savedFontSize;
+                resizeArabicText({ target: { value: savedFontSize } });
+            }
+        }
+
+        // Function to fetch chapters data from remote JSON
         function fetchChaptersData(bookSlug) {
             const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
             fetch(chaptersUrl)
@@ -269,7 +223,7 @@
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
-                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load Hadiths. Please try again later.</p>';
+                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load Hadiths for this chapter. Please try again later.</p>';
                     document.getElementById('loading').style.display = 'none';
                 });
         }
@@ -280,162 +234,79 @@
             const loading = document.getElementById('loading');
             loading.style.display = 'none';
 
-            const bookName = books.find(book => book.slug === bookSlug).name;
-            let htmlContent = `
-                <div class="header-meta">
-                    <h2>${bookName} <span style="font-size: 18px;">(Chapter: ${data.metadata.english.introduction})</span></h2>
-                    <p><strong>Author:</strong> ${data.metadata.english.author}</p>
-                    <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
-                </div>
-            `;
+            const bookName = books.find(b => b.slug === bookSlug)?.name || 'Unknown Book';
 
-            allHadiths = data.hadiths;
-
-            let hadithContent = '';
-            data.hadiths.forEach(hadith => {
-                hadithContent += `
-                    <div class="hadith">
-                        <h3>Hadith #${hadith.id}</h3>
-                        <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
-                        <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
+            if (data.hadiths && data.hadiths.length > 0) {
+                let htmlContent = `
+                    <div class="header-meta">
+                        <h2>${bookName} <span style="font-size: 18px;">(Chapter: ${data.metadata.english.introduction})</span></h2>
+                        <p><strong>Author:</strong> ${data.metadata.english.author}</p>
+                        <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
                     </div>
                 `;
-            });
+                
+                data.hadiths.forEach(hadith => {
+                    htmlContent += `
+                        <div class="hadith">
+                            <h3>Hadith #${hadith.id}</h3>
+                            <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
+                            <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
+                        </div>
+                    `;
+                });
 
-            hadithResult.innerHTML = htmlContent + hadithContent;
-        }
-
-        // Search for a Hadith by text
-        function searchHadith() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const results = allHadiths.filter(hadith =>
-                hadith.arabic.toLowerCase().includes(query) || hadith.english.text.toLowerCase().includes(query)
-            );
-
-            if (results.length > 0) {
-                let searchResultsContent = results.map(hadith => `
-                    <div class="hadith">
-                        <h3>Hadith #${hadith.id}</h3>
-                        <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
-                        <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
-                    </div>
-                `).join('');
-                document.getElementById('hadithResult').innerHTML = searchResultsContent;
+                hadithResult.innerHTML = htmlContent;
             } else {
-                document.getElementById('hadithResult').innerHTML = '<p class="error">No results found for this search.</p>';
+                hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
             }
         }
 
-        // Initialize the viewer based on URL parameters
+        // Initialize the viewer by fetching chapter data and URL parameters
         function initializeViewer(bookSlug) {
-            const { chapter } = getURLParams();
-            if (chapter) {
-                fetchHadiths(bookSlug, chapter);
+            const { book, chapter } = getURLParams();
+            if (book && chapter) {
+                fetchHadiths(book, chapter);
             } else {
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify a chapter number in the URL (e.g., ?book=bukhari&chapter=10).</p>';
+                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=bukhari&chapter=10).</p>';
             }
         }
 
-        // On page load, initialize the viewer based on the book in the URL
-        window.onload = () => {
+        // Toggle light/dark theme
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        // Resize Arabic text based on slider value
+        function resizeArabicText(event) {
+            const arabicFontSize = event.target.value;
+            document.querySelectorAll('.arabic-text').forEach((element) => {
+                element.style.fontSize = arabicFontSize + 'px';
+            });
+            localStorage.setItem('fontSize', arabicFontSize);
+        }
+
+        // Change Arabic font based on user selection
+        function changeArabicFont() {
+            const arabicFont = document.getElementById('fontSelect').value;
+            document.querySelectorAll('.arabic-text').forEach((element) => {
+                element.style.fontFamily = arabicFont;
+            });
+            localStorage.setItem('font', arabicFont);
+        }
+
+        // On page load, fetch chapters data for the specified book
+        window.onload = function() {
+            loadUserPreferences();
             const { book } = getURLParams();
             if (book) {
                 fetchChaptersData(book);
             } else {
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify a book in the URL (e.g., ?book=bukhari&chapter=10).</p>';
+                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify a valid book in the URL (e.g., ?book=bukhari).</p>';
             }
-
-            // Load saved preferences
-            loadPreferences();
         };
-
-        // Load saved user preferences from localStorage
-        function loadPreferences() {
-            const theme = localStorage.getItem('theme');
-            const font = localStorage.getItem('font');
-            const fontSize = localStorage.getItem('fontSize');
-
-            if (theme) {
-                document.body.classList.remove('light-mode', 'dark-mode', 'sepia-mode');
-                document.body.classList.add(theme);
-            }
-            if (font) {
-                document.getElementById('fontSelect').value = font;
-                document.querySelectorAll('.arabic-text').forEach(text => {
-                    text.style.fontFamily = font;
-                });
-            }
-            if (fontSize) {
-                document.getElementById('fontSizeSelect').value = fontSize;
-                document.querySelectorAll('.arabic-text').forEach(text => {
-                    text.style.fontSize = `${fontSize}px`;
-                });
-            }
-        }
-
-        // Save user preferences to localStorage
-        document.getElementById('themeToggle').addEventListener('click', () => {
-            const currentMode = document.body.classList.contains('light-mode') ? 'light' :
-                document.body.classList.contains('dark-mode') ? 'dark' : 'sepia';
-            let newMode;
-            if (currentMode === 'light') {
-                newMode = 'dark';
-                document.body.classList.remove('light-mode');
-                document.body.classList.add('dark-mode');
-            } else if (currentMode === 'dark') {
-                newMode = 'sepia';
-                document.body.classList.remove('dark-mode');
-                document.body.classList.add('sepia-mode');
-            } else {
-                newMode = 'light';
-                document.body.classList.remove('sepia-mode');
-                document.body.classList.add('light-mode');
-            }
-            localStorage.setItem('theme', newMode);
-        });
-
-        // Change font
-        document.getElementById('fontSelect').addEventListener('change', (event) => {
-            const font = event.target.value;
-            document.querySelectorAll('.arabic-text').forEach(text => {
-                text.style.fontFamily = font;
-            });
-            localStorage.setItem('font', font);
-        });
-
-        // Change font size
-        document.getElementById('fontSizeSelect').addEventListener('change', (event) => {
-            const fontSize = event.target.value;
-            document.querySelectorAll('.arabic-text').forEach(text => {
-                text.style.fontSize = `${fontSize}px`;
-            });
-            localStorage.setItem('fontSize', fontSize);
-        });
-
-        // Toggle Arabic/English language
-        document.getElementById('languageToggle').addEventListener('click', () => {
-            const arabicTexts = document.querySelectorAll('.english-text');
-            const englishTexts = document.querySelectorAll('.arabic-text');
-            if (englishTexts[0].style.display === 'none') {
-                englishTexts.forEach(text => {
-                    text.style.display = 'block';
-                });
-                arabicTexts.forEach(text => {
-                    text.style.display = 'none';
-                });
-            } else {
-                englishTexts.forEach(text => {
-                    text.style.display = 'none';
-                });
-                arabicTexts.forEach(text => {
-                    text.style.display = 'block';
-                });
-            }
-        });
-
     </script>
 </body>
-
 </html>
