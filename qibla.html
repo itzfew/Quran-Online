@@ -87,7 +87,7 @@
         const qiblaDirectionText = document.getElementById("qibla-direction");
         const errorMessage = document.getElementById("error-message");
 
-        // Function to fetch Qibla direction using API
+        // Function to fetch Qibla direction using the Aladhan API
         function getQiblaDirection(latitude, longitude) {
             const url = `http://api.aladhan.com/v1/qibla/${latitude}/${longitude}`;
             fetch(url)
@@ -113,8 +113,8 @@
                 navigator.geolocation.getCurrentPosition(function (position) {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
-                    errorMessage.textContent = '';
-                    getQiblaDirection(latitude, longitude);
+                    errorMessage.textContent = ''; // Clear previous errors
+                    getQiblaDirection(latitude, longitude); // Call to get Qibla direction
                 }, function (error) {
                     console.error(error);
                     errorMessage.textContent = "Unable to retrieve your location.";
