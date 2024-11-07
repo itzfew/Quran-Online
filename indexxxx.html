@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadith & Quranic Verse with Prayer Times</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-direction: column;
+            padding-top: 80px; /* Adjusted for fixed navbar */
+        }
+
+        /* Navbar Styles */
+        nav {
+            width: 100%;
+            background-color: #3498db;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        nav .logo img {
+            width: 40px;
+            height: 40px;
+        }
+
+        nav .hamburger {
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        /* Sliding Menu Styles */
+        .menu {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #2980b9;
+            overflow-x: hidden;
+            transition: 0.3s;
+            padding-top: 60px;
+            z-index: 20;
+        }
+
+        .menu a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 1.6rem;
+            color: white;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .menu a:hover {
+            background-color: #1abc9c;
+        }
+
+        .menu .close-btn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            color: white;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Section Styles */
+        .section {
+            width: 100%;
+            max-width: 900px;
+            background: #ffffff;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            box-sizing: border-box;
+            transition: transform 0.3s ease-in-out;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .section:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Copy Button */
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background-color: #3498db;
+            border: 1px solid #3498db;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background-color: #1abc9c;
+        }
+
+        /* Verse and Hadith */
+        .verse, .hadith {
+            font-size: 1rem;
+            color: #333;
+            padding: 15px;
+            border-radius: 8px;
+            background: #fafafa;
+            text-align: left;
+            overflow-y: auto;
+            max-height: 300px;
+            box-sizing: border-box;
+            margin-top: 15px;
+        }
+
+        .verse p, .hadith p {
+            margin: 12px 0;
+            line-height: 1.6;
+        }
+
+        .verse-header, .hadith-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            color: #3498db;
+        }
+
+        /* Prayer Times */
+        .prayer-times {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .prayer-times h2 {
+            font-size: 1.2rem;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+
+        .prayer-times ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .prayer-times li {
+            padding: 8px 0;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .loading {
+            font-size: 1rem;
+            color: #333;
+            text-align: center;
+            font-weight: 500;
+            margin: 20px 0;
+        }
+
+        .loading::before {
+            content: "";
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 4px solid #3498db;
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            .section {
+                padding: 15px;
+                width: 90%;
+            }
+
+            .verse, .hadith {
+                font-size: 0.9rem;
+                padding: 12px;
+            }
+
+            nav .hamburger {
+                display: block;
+            }
+
+            nav .logo img {
+                width: 35px;
+                height: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <img src="source/pic.png" alt="Logo">
+        </div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <!-- Side Menu (Slides In) -->
+    <div id="myMenu" class="menu">
+        <button class="close-btn" onclick="closeMenu()">×</button>
+        <a href="hadith.html">Hadith</a>
+        <a href="prayer.html">Prayer</a>
+        <a href="tasbih.html">Tasbih</a>
+        <a href="99-names.html">100 Names</a>
+    </div>
+
+    <!-- Quranic Verse Section -->
+    <div class="section">
+        <div class="verse-header">
+            <h2>Quranic Verse of the Day</h2>
+            <button class="copy-btn" id="copy-verse-btn"><i class="fas fa-copy"></i></button>
+        </div>
+        <div id="verse" class="verse">
+            <div class="loading">Loading Quranic Verse...</div>
+        </div>
+    </div>
+
+    <!-- Hadith Section -->
+    <div class="section">
+        <div class="hadith-header">
+            <h2>Hadith of the Day</h2>
+            <button class="copy-btn" id="copy-hadith-btn"><i class="fas fa-copy"></i></button>
+        </div>
+        <div id="hadith" class="hadith">
+            <div class="loading">Loading Hadith...</div>
+        </div>
+    </div>
+
+    <!-- Prayer Times Section -->
+    <div class="section prayer-times">
+        <h2>Prayer Times</h2>
+        <ul id="prayer-list">
+            <li>Loading prayer times...</li>
+        </ul>
+    </div>
+
+    <script>
+        // Toggle the sliding menu (open and close)
+        function toggleMenu() {
+            document.getElementById("myMenu").style.width = "250px"; // Open menu
+        }
+
+        function closeMenu() {
+            document.getElementById("myMenu").style.width = "0"; // Close menu
+        }
+
+        // Function to fetch prayer times
+        function fetchPrayerTimes(latitude, longitude) {
+            const apiUrl = `https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=2`;
+            
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const timings = data.data.timings;
+                    const prayerList = document.getElementById("prayer-list");
+                    prayerList.innerHTML = `
+                        <li>Fajr: ${timings.Fajr}</li>
+                        <li>Dhuhr: ${timings.Dhuhr}</li>
+                        <li>Asr: ${timings.Asr}</li>
+                        <li>Maghrib: ${timings.Maghrib}</li>
+                        <li>Isha: ${timings.Isha}</li>
+                     `;
+                })
+                .catch(error => {
+                    console.error("Error fetching prayer times:", error);
+                    document.getElementById("prayer-list").innerHTML = "<li>Error fetching prayer times. Please try again later.</li>";
+                });
+        }
+
+        // Function to fetch the user's location
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    fetchPrayerTimes(latitude, longitude);
+                }, error => {
+                    console.error("Error getting location:", error);
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        // Function to fetch random Quranic verse
+        function fetchRandomVerse() {
+            const surahNumber = Math.floor(Math.random() * 114) + 1;
+            const surahURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${surahNumber}.json`;
+            const translationURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahNumber}.json`;
+
+            Promise.all([fetch(surahURL), fetch(translationURL)])
+                .then(responses => Promise.all(responses.map(response => response.json())))
+                .then(data => {
+                    const arabicData = data[0];
+                    const englishData = data[1];
+
+                    const verses = Object.keys(arabicData.verse).filter(verseKey => verseKey !== "verse_0");
+                    const randomVerseKey = verses[Math.floor(Math.random() * verses.length)];
+
+                    const arabicVerse = arabicData.verse[randomVerseKey];
+                    const englishVerse = englishData.verse[randomVerseKey];
+                    const verseNumber = randomVerseKey.split('_')[1]; 
+
+                    const surahLink = `https://itzfew.github.io/Quran-Online/surah-details-ar.html?index=${surahNumber}`;
+                    document.getElementById('verse').innerHTML = `
+                        <div class="surah-info">
+                            <strong>Surah ${surahNumber}: ${arabicData.name}</strong>
+                        </div>
+                        <strong>Verse ${verseNumber}:</strong><br>
+                        <strong>Arabic:</strong><br>
+                        <p>${arabicVerse}</p>
+                        <br>
+                        <strong>English:</strong><br>
+                        <p>${englishVerse}</p>
+                        <br><br>
+                        <strong>Reference Link:</strong> <a href="${surahLink}" target="_blank">${surahLink}</a>
+                    `;
+                    
+                    document.getElementById('copy-verse-btn').onclick = () => {
+                        const reference = `Quran, Surah ${surahNumber}: ${arabicData.name} - Verse ${verseNumber}`;
+                        const copyText = `${arabicVerse}\n\n${englishVerse}\n\nReference: ${reference}\nLink: ${surahLink}`;
+                        copyToClipboard(copyText);
+                    };
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    document.getElementById('verse').innerHTML = "Error fetching data. Please try again later.";
+                });
+        }
+
+        // Function to fetch random Hadith
+        function fetchRandomHadith() {
+            const books = [
+                { slug: "bukhari", title: "Sahih al-Bukhari" },
+                { slug: "muslim", title: "Sahih Muslim" },
+                { slug: "nasai", title: "Sunan al-Nasa'i" },
+                { slug: "abudawud", title: "Sunan Abi Dawud" },
+                { slug: "tirmidhi", title: "Jami' al-Tirmidhi" },
+                { slug: "ibnmajah", title: "Sunan Ibn Majah" },
+                { slug: "malik", title: "Muwatta Malik" },
+                { slug: "ahmed", title: "Musnad Ahmad ibn Hanbal" },
+                { slug: "darimi", title: "Sunan al-Darimi" }
+            ];
+
+            const selectedBook = books[Math.floor(Math.random() * books.length)];
+            const hadithURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${selectedBook.slug}/chapters.json`;
+
+            fetch(hadithURL)
+                .then(response => response.json())
+                .then(data => {
+                    const randomChapter = data.collection.books[Math.floor(Math.random() * data.collection.books.length)];
+                    const chapterURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${selectedBook.slug}/${randomChapter.book_number}.json`;
+
+                    fetch(chapterURL)
+                        .then(response => response.json())
+                        .then(hadithData => {
+                            const randomHadith = hadithData.hadiths[Math.floor(Math.random() * hadithData.hadiths.length)];
+                            const hadithLink = `https://itzfew.github.io/Quran-Online/chapter.html?book=${selectedBook.slug}&chapter=${randomChapter.book_number}`;
+
+                            document.getElementById('hadith').innerHTML = `
+                                <div class="hadith-info">
+                                    <strong>${selectedBook.title} - Chapter: ${randomChapter.book_name}</strong><br>
+                                    <strong>Hadith Number:</strong> ${randomHadith.id}<br><br>
+                                    <strong>Arabic:</strong><br>
+                                    <p>${randomHadith.arabic}</p><br>
+                                    <strong>English:</strong><br>
+                                    <p>${randomHadith.english.text}</p><br><br>
+                                    <strong>Reference Link:</strong> <a href="${hadithLink}" target="_blank">${hadithLink}</a>
+                                </div>
+                            `;
+
+                            document.getElementById('copy-hadith-btn').onclick = () => {
+                                const reference = `${selectedBook.title} - Chapter: ${randomChapter.book_name} - Hadith ${randomHadith.id}`;
+                                const copyText = `${randomHadith.arabic}\n\n${randomHadith.english.text}\n\nReference: ${reference}\nLink: ${hadithLink}`;
+                                copyToClipboard(copyText);
+                            };
+                        })
+                        .catch(error => {
+                            console.error("Error fetching hadith data:", error);
+                            document.getElementById('hadith').innerHTML = "Error fetching data. Please try again later.";
+                        });
+                })
+                .catch(error => {
+                    console.error("Error fetching chapter names:", error);
+                    document.getElementById('hadith').innerHTML = "Error fetching chapter names. Please try again later.";
+                });
+        }
+
+        // Function to copy text to clipboard
+        function copyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+        }
+
+        // Initialize the page
+        getLocation();
+        fetchRandomVerse();
+        fetchRandomHadith();
+    </script>
+
+</body>
+</html>
