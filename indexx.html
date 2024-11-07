@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadith & Quranic Verse of the Day</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        .cotainer {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 800px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        h2 {
+            font-size: 1.5rem;
+            color: #444;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .loading {
+            font-size: 1.2rem;
+            color: #333;
+            margin-top: 20px;
+            font-weight: 500;
+        }
+        .verse, .hadith {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            color: #555;
+            padding: 20px;
+            border-radius: 8px;
+            background: #fafafa;
+            text-align: left;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+        .verse strong, .hadith strong {
+            font-weight: bold;
+            color: #2d3e50;
+        }
+        .verse p, .hadith p {
+            margin: 10px 0;
+        }
+        .section h2:hover {
+            color: #007BFF;
+            cursor: pointer;
+        }
+        #surah-info {
+            font-size: 1.1rem;
+            color: #333;
+            margin-top: 10px;
+        }
+        .date {
+            font-size: 1rem;
+            color: #888;
+            margin-top: 10px;
+        }
+        /* Styling for the scrollbars */
+        .verse::-webkit-scrollbar, .hadith::-webkit-scrollbar {
+            width: 8px;
+        }
+        .verse::-webkit-scrollbar-thumb, .hadith::-webkit-scrollbar-thumb {
+            background: #007BFF;
+            border-radius: 5px;
+        }
+        .verse::-webkit-scrollbar-track, .hadith::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+                width: 100%;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            h2 {
+                font-size: 1.2rem;
+            }
+            .verse, .hadith {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Hadith & Quranic Verse of the Day</h1>
+        <div class="date" id="current-date"></div>
+
+        <!-- Quranic Verse Section -->
+        <div class="section">
+            <h2>Quranic Verse of the Day</h2>
+            <div id="surah-info"></div>
+            <div id="verse" class="verse">
+                <div class="loading">Loading Quranic Verse...</div>
+            </div>
+        </div>
+
+        <!-- Hadith Section -->
+        <div class="section">
+            <h2>Hadith of the Day</h2>
+            <div id="hadith" class="hadith">
+                <div class="loading">Loading Hadith...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Function to get the current date
+        function getCurrentDate() {
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            return today.toLocaleDateString('en-US', options);
+        }
+
+        // Function to fetch a random verse from any surah
+        function fetchRandomVerse() {
+            const surahNumber = Math.floor(Math.random() * 114) + 1;
+            const surahURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${surahNumber}.json`;
+            const translationURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahNumber}.json`;
+
+            Promise.all([fetch(surahURL), fetch(translationURL)])
+                .then(responses => Promise.all(responses.map(response => response.json())))
+                .then(data => {
+                    const arabicData = data[0];
+                    const englishData = data[1];
+
+                    const verses = Object.keys(arabicData.verse).filter(verseKey => verseKey !== "verse_0");
+                    const randomVerseKey = verses[Math.floor(Math.random() * verses.length)];
+
+                    const arabicVerse = arabicData.verse[randomVerseKey];
+                    const englishVerse = englishData.verse[randomVerseKey];
+
+                    document.getElementById('surah-info').innerText = `Surah ${surahNumber}: ${arabicData.name} (Verses ${arabicData.count})`;
+                    document.getElementById('verse').innerHTML = `
+                        <strong>Arabic:</strong><br>
+                        <p>${arabicVerse}</p>
+                        <br>
+                        <strong>English:</strong><br>
+                        <p>${englishVerse}</p>
+                    `;
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    document.getElementById('verse').innerHTML = "Error fetching data. Please try again later.";
+                });
+        }
+
+        // Function to fetch a random Hadith
+        function fetchRandomHadith() {
+            const books = [
+                {
+                    id: 1,
+                    arabic: { title: "صحيح البخاري", author: "الإمام محمد بن إسماعيل البخاري" },
+                    english: { title: "Sahih al-Bukhari", author: "Imam Muhammad ibn Ismail al-Bukhari" },
+                    route: { base: "bukhari", chapters: [
+                        { id: "1", name: "Revelation (كتاب بدء الوحى)" },
+                        { id: "2", name: "Belief (كتاب الإيمان)" },
+                        { id: "3", name: "Knowledge (كتاب العلم)" },
+                        { id: "4", name: "Ablutions (Wudu') (كتاب الوضوء)" },
+                    ]}
+                },
+                {
+                    id: 2,
+                    arabic: { title: "صحيح مسلم", author: "الإمام مسلم بن الحجاج القشيري النيسابوري" },
+                    english: { title: "Sahih Muslim", author: "Imam Muslim ibn al-Hajjaj al-Naysaburi" },
+                    route: { base: "muslim", chapters: [
+                        { id: "introduction", name: "Introduction" },
+                        { id: "1", name: "Book of Faith (كتاب الإيمان)" },
+                        { id: "2", name: "Book of Purification (كتاب الطهارة)" },
+                        { id: "3", name: "Book of Prayer (كتاب الصلاة)" },
+                    ]}
+                },
+            ];
+
+            const selectedBook = books[Math.floor(Math.random() * books.length)];
+            const selectedChapter = selectedBook.route.chapters[Math.floor(Math.random() * selectedBook.route.chapters.length)];
+            const hadithURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${selectedBook.route.base}/${selectedChapter.id}.json`;
+
+            fetch(hadithURL)
+                .then(response => response.json())
+                .then(data => {
+                    const randomHadith = data.hadiths[Math.floor(Math.random() * data.hadiths.length)];
+
+                    document.getElementById('hadith').innerHTML = `
+                        <strong>${selectedBook.english.title} - Chapter: ${selectedChapter.name}</strong><br>
+                        <strong>Hadith Number:</strong> ${randomHadith.id}<br><br>
+                        <strong>Arabic:</strong><br>
+                        <p>${randomHadith.arabic}</p><br>
+                        <strong>English:</strong><br>
+                        <p>${randomHadith.english.text}</p>
+                    `;
+                })
+                .catch(error => {
+                    console.error("Error fetching hadith data:", error);
+                    document.getElementById('hadith').innerHTML = "Error fetching data. Please try again later.";
+                });
+        }
+
+        // Initialize the page
+        window.onload = () => {
+            document.getElementById('current-date').innerText = getCurrentDate();
+            fetchRandomVerse();
+            fetchRandomHadith();
+        };
+    </script>
+</body>
+</html> 
