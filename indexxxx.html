@@ -15,11 +15,9 @@
             justify-content: center;
             align-items: flex-start;
             flex-direction: column;
-            
-            padding-top: 60px; /* Add space for fixed navbar */
+            padding-top: 60px;
         }
 
-        /* Navbar Styles */
         nav {
             width: 100%;
             background-color: #007BFF;
@@ -37,7 +35,7 @@
         }
 
         nav .logo img {
-            width: 40px; /* Logo size */
+            width: 40px;
             height: 40px;
             vertical-align: middle;
         }
@@ -72,7 +70,6 @@
             background-color: #003f7f;
         }
 
-        /* Section Styles */
         .section {
             width: 100%;
             max-width: 900px;
@@ -141,12 +138,6 @@
             margin-bottom: 15px;
         }
 
-        .verse-header .surah-info, .hadith-header .hadith-info {
-            color: #777;
-            font-size: 1rem;
-            font-weight: normal;
-        }
-
         .loading {
             font-size: 1.2rem;
             color: #333;
@@ -155,7 +146,6 @@
             margin: 20px 0;
         }
 
-        /* Spinner for loading */
         .loading::before {
             content: "";
             display: inline-block;
@@ -173,19 +163,19 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Styling for the scrollbars */
         .verse::-webkit-scrollbar, .hadith::-webkit-scrollbar {
             width: 8px;
         }
+
         .verse::-webkit-scrollbar-thumb, .hadith::-webkit-scrollbar-thumb {
             background: #007BFF;
             border-radius: 5px;
         }
+
         .verse::-webkit-scrollbar-track, .hadith::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .section {
                 padding: 20px;
@@ -216,10 +206,9 @@
 </head>
 <body>
 
-    <!-- Top Navigation Bar -->
     <nav>
         <div class="logo">
-            <img src="source/pic.png" alt="Logo"> <!-- Your logo image -->
+            <img src="source/pic.png" alt="Logo">
         </div>
         <ul>
             <li><a href="hadith.html">Hadith</a></li>
@@ -229,7 +218,6 @@
         </ul>
     </nav>
 
-    <!-- Quranic Verse Section -->
     <div class="section">
         <div class="verse-header">
             <h2>Quranic Verse of the Day</h2>
@@ -240,7 +228,6 @@
         </div>
     </div>
 
-    <!-- Hadith Section -->
     <div class="section">
         <div class="hadith-header">
             <h2>Hadith of the Day</h2>
@@ -252,7 +239,17 @@
     </div>
 
     <script>
-        // Function to copy text to clipboard
+        document.addEventListener("DOMContentLoaded", function() {
+            // Highlight active link
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('nav ul li a');
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPage) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
         function copyToClipboard(text) {
             const textArea = document.createElement("textarea");
             textArea.value = text;
@@ -262,7 +259,6 @@
             document.body.removeChild(textArea);
         }
 
-        // Function to fetch a random Quranic verse
         function fetchRandomVerse() {
             const surahNumber = Math.floor(Math.random() * 114) + 1;
             const surahURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${surahNumber}.json`;
@@ -279,7 +275,7 @@
 
                     const arabicVerse = arabicData.verse[randomVerseKey];
                     const englishVerse = englishData.verse[randomVerseKey];
-                    const verseNumber = randomVerseKey.split('_')[1]; // Extract verse number from key like "verse_1"
+                    const verseNumber = randomVerseKey.split('_')[1];
 
                     const surahLink = `https://itzfew.github.io/Quran-Online/surah-details-ar.html?index=${surahNumber}`;
                     document.getElementById('verse').innerHTML = `
@@ -304,11 +300,10 @@
                 })
                 .catch(error => {
                     console.error("Error fetching data:", error);
-                    document.getElementById('verse').innerHTML = "Error fetching data. Please try again later.";
+                    document.getElementById('verse').innerHTML = "Sorry, we couldn't load the Quranic Verse at this time. Please try again later.";
                 });
         }
 
-        // Function to fetch random Hadith
         function fetchRandomHadith() {
             const books = [
                 { slug: "bukhari", title: "Sahih al-Bukhari" },
@@ -357,12 +352,12 @@
                         })
                         .catch(error => {
                             console.error("Error fetching hadith data:", error);
-                            document.getElementById('hadith').innerHTML = "Error fetching data. Please try again later.";
+                            document.getElementById('hadith').innerHTML = "Sorry, we couldn't load the Hadith at this time. Please try again later.";
                         });
                 })
                 .catch(error => {
                     console.error("Error fetching chapter names:", error);
-                    document.getElementById('hadith').innerHTML = "Error fetching chapter names. Please try again later.";
+                    document.getElementById('hadith').innerHTML = "Sorry, we couldn't load the Hadith at this time. Please try again later.";
                 });
         }
 
