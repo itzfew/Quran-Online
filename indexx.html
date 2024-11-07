@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hadith & Quranic Verse</title>
-    <!-- Add Font Awesome CDN for icons -->
+    <!-- Add Google Font and Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         /* General Body Styling */
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f9;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7fc;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             height: 100vh;
             flex-direction: column;
         }
@@ -27,11 +29,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 20px;
+            padding: 15px 25px;
             position: fixed;
             top: 0;
             width: 100%;
             z-index: 9999;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .navbar .logo {
@@ -40,17 +43,18 @@
         }
 
         .navbar .logo img {
-            height: 30px;
-            margin-right: 10px;
+            height: 35px;
+            margin-right: 12px;
         }
 
         .navbar .logo h1 {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .menu-btn {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             cursor: pointer;
             display: none;
         }
@@ -67,16 +71,16 @@
             transition: all 0.3s ease;
             z-index: 999;
             padding-top: 60px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
         }
 
         .sidebar a {
-            padding: 15px;
+            padding: 18px;
             text-decoration: none;
             font-size: 1.2rem;
             color: white;
             display: block;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s ease;
         }
 
         .sidebar a:hover {
@@ -94,21 +98,29 @@
 
         /* Content Styling */
         .content {
-            margin-top: 100px;
+            margin-top: 120px;
             padding: 20px;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .section {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             background: #ffffff;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 30px;
-            padding: 20px;
+            padding: 25px;
             box-sizing: border-box;
             position: relative;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
         }
 
         .copy-btn {
@@ -118,10 +130,10 @@
             background-color: transparent;
             border: 1px solid #007BFF;
             color: #007BFF;
-            padding: 8px;
+            padding: 8px 12px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             transition: all 0.3s;
         }
 
@@ -131,17 +143,17 @@
         }
 
         .verse, .hadith {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #555;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 15px;
+            border-radius: 8px;
             background: #fafafa;
             text-align: left;
             border: 1px solid #ddd;
-            overflow-y: auto;
-            max-height: 250px;
-            box-sizing: border-box;
             margin-top: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            box-sizing: border-box;
         }
 
         .verse-header, .hadith-header {
@@ -149,7 +161,7 @@
             justify-content: space-between;
             align-items: center;
             font-size: 1.1rem;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
         }
 
         .loading {
@@ -174,16 +186,8 @@
         }
 
         /* Responsive Design */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .section {
-                padding: 15px;
-                width: 100%;
-            }
-            h2 {
-                font-size: 1.2rem;
-            }
-            .verse, .hadith {
-                font-size: 1rem;
                 padding: 15px;
             }
 
@@ -192,15 +196,22 @@
             }
 
             .navbar .logo h1 {
-                font-size: 1.2rem;
+                font-size: 1.5rem;
             }
 
             .sidebar {
-                width: 200px;
+                width: 220px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar .logo h1 {
+                font-size: 1.2rem;
             }
         }
     </style>
 </head>
+
 <body>
 
     <!-- Navbar with Logo and Menu Button -->
@@ -388,4 +399,5 @@
     </script>
 
 </body>
+
 </html>
