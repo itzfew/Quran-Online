@@ -55,6 +55,22 @@
             border-radius: 5px;
         }
 
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            color: #fff;
+        }
+
+        .navbar .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        .navbar .logo span {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
         /* Menu toggle button for mobile */
         .menu-toggle {
             display: none;
@@ -82,7 +98,7 @@
             box-sizing: border-box;
             position: relative;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
+            margin-top: 80px; /* Adjusted for navbar */
         }
 
         .copy-btn {
@@ -202,6 +218,10 @@
 
     <!-- Navigation Bar -->
     <div class="navbar">
+        <div class="logo">
+            <img src="pic.png" alt="Logo"> <!-- Add your logo image here -->
+            <span>Quran Kareem</span>
+        </div>
         <div class="menu-toggle" id="menu-toggle">
             <i class="fas fa-bars"></i>
         </div>
