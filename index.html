@@ -336,36 +336,44 @@ nav .hamburger {
         function closeMenu() {
             document.getElementById("myMenu").style.width = "0"; // Close menu
         }
+// Function to fetch prayer times
+function fetchPrayerTimes(latitude, longitude) {
+    const apiUrl = `https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=2`;
 
-        // Function to fetch prayer times
-        function fetchPrayerTimes(latitude, longitude) {
-            const apiUrl = `https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=2`;
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            const timings = data.data.timings;
+            const currentPrayer = getCurrentPrayer(timings);
 
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const timings = data.data.timings;
-                    const currentPrayer = getCurrentPrayer(timings);
+            // Convert and display prayer times in 12-hour format
+            document.getElementById("fajr-time").textContent = convertTo12HourFormat(timings.Fajr);
+            document.getElementById("dhuhr-time").textContent = convertTo12HourFormat(timings.Dhuhr);
+            document.getElementById("asr-time").textContent = convertTo12HourFormat(timings.Asr);
+            document.getElementById("maghrib-time").textContent = convertTo12HourFormat(timings.Maghrib);
+            document.getElementById("isha-time").textContent = convertTo12HourFormat(timings.Isha);
 
-                    // Highlight the current prayer
-                    document.getElementById("fajr-time").textContent = timings.Fajr;
-                    document.getElementById("dhuhr-time").textContent = timings.Dhuhr;
-                    document.getElementById("asr-time").textContent = timings.Asr;
-                    document.getElementById("maghrib-time").textContent = timings.Maghrib;
-                    document.getElementById("isha-time").textContent = timings.Isha;
+            // Remove any existing active class
+            const prayerCards = document.querySelectorAll('.prayer-time-card');
+            prayerCards.forEach(card => card.classList.remove('active'));
 
-                    // Remove any existing active class
-                    const prayerCards = document.querySelectorAll('.prayer-time-card');
-                    prayerCards.forEach(card => card.classList.remove('active'));
+            // Add active class to the current prayer card
+            document.getElementById(`${currentPrayer}-card`).classList.add('active');
+        })
+        .catch(error => {
+            console.error("Error fetching prayer times:", error);
+            document.getElementById("prayer-times-cards").innerHTML = "<div class='loading'>Error fetching prayer times. Please try again later.</div>";
+        });
+}
 
-                    // Add active class to the current prayer card
-                    document.getElementById(`${currentPrayer}-card`).classList.add('active');
-                })
-                .catch(error => {
-                    console.error("Error fetching prayer times:", error);
-                    document.getElementById("prayer-times-cards").innerHTML = "<div class='loading'>Error fetching prayer times. Please try again later.</div>";
-                });
-        }
+// Helper function to convert 24-hour time to 12-hour format (AM/PM)
+function convertTo12HourFormat(timeStr) {
+    const [hour, minute] = timeStr.split(':').map(Number);
+    const period = hour >= 12 ? 'PM' : 'AM';
+    const hour12 = hour % 12 || 12; // Convert hour 0 to 12
+    const minuteStr = minute < 10 ? `0${minute}` : minute; // Ensure two digits for minutes
+    return `${hour12}:${minuteStr} ${period}`;
+}
 
         // Function to determine the current prayer
         function getCurrentPrayer(timings) {
