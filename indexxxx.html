@@ -206,7 +206,16 @@
     </div>
 
     <script>
+                });
+        
         // Function to copy text to clipboard
+        function copyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);// Function to copy text to clipboard
         function copyToClipboard(text) {
             const textArea = document.createElement("textarea");
             textArea.value = text;
@@ -233,8 +242,9 @@
 
                     const arabicVerse = arabicData.verse[randomVerseKey];
                     const englishVerse = englishData.verse[randomVerseKey];
-                    const verseNumber = randomVerseKey.split('_')[1];
+                    const verseNumber = randomVerseKey.split('_')[1]; // Extract verse number from key like "verse_1"
 
+                    // Provide full Surah reference and Verse text
                     const surahLink = `https://itzfew.github.io/Quran-Online/surah-details-ar.html?index=${surahNumber}`;
                     document.getElementById('verse').innerHTML = `
                         <div class="surah-info">
@@ -250,6 +260,7 @@
                         <strong>Reference Link:</strong> <a href="${surahLink}" target="_blank">${surahLink}</a>
                     `;
                     
+                    // Add copy functionality with references
                     document.getElementById('copy-verse-btn').onclick = () => {
                         const reference = `Quran, Surah ${surahNumber}: ${arabicData.name} - Verse ${verseNumber}`;
                         const copyText = `${arabicVerse}\n\n${englishVerse}\n\nReference: ${reference}\nLink: ${surahLink}`;
@@ -260,6 +271,14 @@
                     console.error("Error fetching data:", error);
                     document.getElementById('verse').innerHTML = "Error fetching data. Please try again later.";
                 });
+        }
+
+        // Function to fetch chapter names for Hadith
+        function fetchHadithChapters(bookSlug) {
+            const chaptersURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
+            return fetch(chaptersURL)
+                .then(response => response.json())
+                .then(data => data.collection.books);
         }
 
         // Function to fetch a random Hadith
@@ -277,8 +296,7 @@
             ];
 
             const selectedBook = books[Math.floor(Math.random() * books.length)];
-            fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${selectedBook.slug}/chapters.json`)
-                .then(response => response.json())
+            fetchHadithChapters(selectedBook.slug)
                 .then(chapters => {
                     const randomChapter = chapters[Math.floor(Math.random() * chapters.length)];
                     const hadithURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${selectedBook.slug}/${randomChapter.book_number}.json`;
@@ -287,8 +305,9 @@
                         .then(response => response.json())
                         .then(data => {
                             const randomHadith = data.hadiths[Math.floor(Math.random() * data.hadiths.length)];
-                            const hadithLink = `https://itzfew.github.io/Quran-Online/chapter.html?book=${selectedBook.slug}&chapter=${randomChapter.book_number}`;
 
+                            // Provide full Hadith text without truncating
+                            const hadithLink = `https://itzfew.github.io/Quran-Online/chapter.html?book=${selectedBook.slug}&chapter=${randomChapter.book_number}`;
                             document.getElementById('hadith').innerHTML = `
                                 <div class="hadith-info">
                                     <strong>${selectedBook.title} - Chapter: ${randomChapter.book_name}</strong><br>
@@ -301,6 +320,125 @@
                                 </div>
                             `;
 
+                            // Add copy functionality with references
+                            document.getElementById('copy-hadith-btn').onclick = () => {
+                                const reference = `${selectedBook.title} - Chapter: ${randomChapter.book_name} - Hadith ${randomHadith.id}`;
+                                const copyText = `${randomHadith.arabic}\n\n${randomHadith.english.text}\n\nReference: ${reference}\nLink: ${hadithLink}`;
+                                copyToClipboard(copyText);
+                            };
+                        })
+                        .catch(error => {
+                            console.error("Error fetching hadith data:", error);
+                            document.getElementById('hadith').innerHTML = "Error fetching data. Please try again later.";
+                        });
+                })
+                .catch(error => {
+                    console.error("Error fetching chapter names:", error);
+                    document.getElementById('hadith').innerHTML = "Error fetching chapter names. Please try again later.";
+                });
+        }
+
+        // Initialize the page
+        fetchRandomVerse();
+        fetchRandomHadith();
+        }
+
+        // Function to fetch a random Quranic verse
+        function fetchRandomVerse() {
+            const surahNumber = Math.floor(Math.random() * 114) + 1;
+            const surahURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${surahNumber}.json`;
+            const translationURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahNumber}.json`;
+
+            Promise.all([fetch(surahURL), fetch(translationURL)])
+                .then(responses => Promise.all(responses.map(response => response.json())))
+                .then(data => {
+                    const arabicData = data[0];
+                    const englishData = data[1];
+
+                    const verses = Object.keys(arabicData.verse).filter(verseKey => verseKey !== "verse_0");
+                    const randomVerseKey = verses[Math.floor(Math.random() * verses.length)];
+
+                    const arabicVerse = arabicData.verse[randomVerseKey];
+                    const englishVerse = englishData.verse[randomVerseKey];
+                    const verseNumber = randomVerseKey.split('_')[1]; // Extract verse number from key like "verse_1"
+
+                    // Provide full Surah reference and Verse text
+                    const surahLink = `https://itzfew.github.io/Quran-Online/surah-details-ar.html?index=${surahNumber}`;
+                    document.getElementById('verse').innerHTML = `
+                        <div class="surah-info">
+                            <strong>Surah ${surahNumber}: ${arabicData.name}</strong>
+                        </div>
+                        <strong>Verse ${verseNumber}:</strong><br>
+                        <strong>Arabic:</strong><br>
+                        <p>${arabicVerse}</p>
+                        <br>
+                        <strong>English:</strong><br>
+                        <p>${englishVerse}</p>
+                        <br><br>
+                        <strong>Reference Link:</strong> <a href="${surahLink}" target="_blank">${surahLink}</a>
+                    `;
+                    
+                    // Add copy functionality with references
+                    document.getElementById('copy-verse-btn').onclick = () => {
+                        const reference = `Quran, Surah ${surahNumber}: ${arabicData.name} - Verse ${verseNumber}`;
+                        const copyText = `${arabicVerse}\n\n${englishVerse}\n\nReference: ${reference}\nLink: ${surahLink}`;
+                        copyToClipboard(copyText);
+                    };
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    document.getElementById('verse').innerHTML = "Error fetching data. Please try again later.";
+                });
+        }
+
+        // Function to fetch chapter names for Hadith
+        function fetchHadithChapters(bookSlug) {
+            const chaptersURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
+            return fetch(chaptersURL)
+                .then(response => response.json())
+                .then(data => data.collection.books);
+        }
+
+        // Function to fetch a random Hadith
+        function fetchRandomHadith() {
+            const books = [
+                { slug: "bukhari", title: "Sahih al-Bukhari" },
+                { slug: "muslim", title: "Sahih Muslim" },
+                { slug: "nasai", title: "Sunan al-Nasa'i" },
+                { slug: "abudawud", title: "Sunan Abi Dawud" },
+                { slug: "tirmidhi", title: "Jami' al-Tirmidhi" },
+                { slug: "ibnmajah", title: "Sunan Ibn Majah" },
+                { slug: "malik", title: "Muwatta Malik" },
+                { slug: "ahmed", title: "Musnad Ahmad ibn Hanbal" },
+                { slug: "darimi", title: "Sunan al-Darimi" }
+            ];
+
+            const selectedBook = books[Math.floor(Math.random() * books.length)];
+            fetchHadithChapters(selectedBook.slug)
+                .then(chapters => {
+                    const randomChapter = chapters[Math.floor(Math.random() * chapters.length)];
+                    const hadithURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${selectedBook.slug}/${randomChapter.book_number}.json`;
+
+                    fetch(hadithURL)
+                        .then(response => response.json())
+                        .then(data => {
+                            const randomHadith = data.hadiths[Math.floor(Math.random() * data.hadiths.length)];
+
+                            // Provide full Hadith text without truncating
+                            const hadithLink = `https://itzfew.github.io/Quran-Online/chapter.html?book=${selectedBook.slug}&chapter=${randomChapter.book_number}`;
+                            document.getElementById('hadith').innerHTML = `
+                                <div class="hadith-info">
+                                    <strong>${selectedBook.title} - Chapter: ${randomChapter.book_name}</strong><br>
+                                    <strong>Hadith Number:</strong> ${randomHadith.id}<br><br>
+                                    <strong>Arabic:</strong><br>
+                                    <p>${randomHadith.arabic}</p><br>
+                                    <strong>English:</strong><br>
+                                    <p>${randomHadith.english.text}</p><br><br>
+                                    <strong>Reference Link:</strong> <a href="${hadithLink}" target="_blank">${hadithLink}</a>
+                                </div>
+                            `;
+
+                            // Add copy functionality with references
                             document.getElementById('copy-hadith-btn').onclick = () => {
                                 const reference = `${selectedBook.title} - Chapter: ${randomChapter.book_name} - Hadith ${randomHadith.id}`;
                                 const copyText = `${randomHadith.arabic}\n\n${randomHadith.english.text}\n\nReference: ${reference}\nLink: ${hadithLink}`;
