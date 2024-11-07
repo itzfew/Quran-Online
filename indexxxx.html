@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,16 +8,56 @@
     <!-- Add Font Awesome CDN for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+        /* General body and layout styling */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f9;
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Top menu bar styling */
+        nav {
+            background-color: #007BFF;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 20px;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main content area */
+        .content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .section {
+            width: 100%;
+            max-width: 800px;
+            background: #ffffff;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
 
         h2 {
@@ -26,19 +67,7 @@
             font-weight: 600;
         }
 
-        .section {
-            width: 100%;
-            max-width: 800px;
-            background: #ffffff;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            padding: 20px;
-            box-sizing: border-box;
-            position: relative;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 30px;
-        }
-
+        /* Copy button styling */
         .copy-btn {
             position: absolute;
             top: 15px;
@@ -58,13 +87,14 @@
             color: #fff;
         }
 
-        .verse, .hadith {
-            font-size: 1.2rem;
+        /* Verse and Hadith box styling */
+        .verse,
+        .hadith {
+            font-size: 1.1rem;
             color: #555;
             padding: 10px;
             border-radius: 5px;
             background: #fafafa;
-            text-align: left;
             border: 1px solid #ddd;
             overflow-y: auto;
             max-height: 250px;
@@ -72,16 +102,13 @@
             margin-top: 5px;
         }
 
-        .verse p, .hadith p {
+        .verse p,
+        .hadith p {
             margin: 10px 0;
         }
 
-        .verse strong, .hadith strong {
-            color: #333;
-            font-weight: bold;
-        }
-
-        .verse-header, .hadith-header {
+        .verse-header,
+        .hadith-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -89,29 +116,36 @@
             margin-bottom: 10px;
         }
 
-        .verse-header .surah-info, .hadith-header .hadith-info {
+        .verse-header .surah-info,
+        .hadith-header .hadith-info {
             color: #555;
             font-size: 1rem;
             font-weight: normal;
         }
 
+        /* Styling for the scrollbars */
+        .verse::-webkit-scrollbar,
+        .hadith::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .verse::-webkit-scrollbar-thumb,
+        .hadith::-webkit-scrollbar-thumb {
+            background: #007BFF;
+            border-radius: 5px;
+        }
+
+        .verse::-webkit-scrollbar-track,
+        .hadith::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        /* Loading text styling */
         .loading {
             font-size: 1.2rem;
             color: #333;
             text-align: center;
             font-weight: 500;
-        }
-
-        /* Styling for the scrollbars */
-        .verse::-webkit-scrollbar, .hadith::-webkit-scrollbar {
-            width: 8px;
-        }
-        .verse::-webkit-scrollbar-thumb, .hadith::-webkit-scrollbar-thumb {
-            background: #007BFF;
-            border-radius: 5px;
-        }
-        .verse::-webkit-scrollbar-track, .hadith::-webkit-scrollbar-track {
-            background: #f1f1f1;
         }
 
         /* Responsive Design */
@@ -120,38 +154,55 @@
                 padding: 15px;
                 width: 100%;
             }
+
             h2 {
-                font-size: 1.2rem;
+                font-size: 1.3rem;
             }
-            .verse, .hadith {
+
+            .verse,
+            .hadith {
                 font-size: 1rem;
                 padding: 15px;
             }
         }
     </style>
 </head>
+
 <body>
 
-    <!-- Quranic Verse Section -->
-    <div class="section">
-        <div class="verse-header">
-            <h2>Quranic Verse of the Day</h2>
-            <button class="copy-btn" id="copy-verse-btn"><i class="fas fa-copy"></i></button>
-        </div>
-        <div id="verse" class="verse">
-            <div class="loading">Loading Quranic Verse...</div>
-        </div>
-    </div>
+    <!-- Top navigation bar -->
+    <nav>
+        <a href="hadith.html">Hadith</a>
+        <a href="prayer.html">Prayer</a>
+        <a href="tasbih.html">Tasbih</a>
+        <a href="99-names.html">100 Names</a>
+    </nav>
 
-    <!-- Hadith Section -->
-    <div class="section">
-        <div class="hadith-header">
-            <h2>Hadith of the Day</h2>
-            <button class="copy-btn" id="copy-hadith-btn"><i class="fas fa-copy"></i></button>
+    <!-- Main content section -->
+    <div class="content">
+
+        <!-- Quranic Verse Section -->
+        <div class="section">
+            <div class="verse-header">
+                <h2>Quranic Verse of the Day</h2>
+                <button class="copy-btn" id="copy-verse-btn"><i class="fas fa-copy"></i></button>
+            </div>
+            <div id="verse" class="verse">
+                <div class="loading">Loading Quranic Verse...</div>
+            </div>
         </div>
-        <div id="hadith" class="hadith">
-            <div class="loading">Loading Hadith...</div>
+
+        <!-- Hadith Section -->
+        <div class="section">
+            <div class="hadith-header">
+                <h2>Hadith of the Day</h2>
+                <button class="copy-btn" id="copy-hadith-btn"><i class="fas fa-copy"></i></button>
+            </div>
+            <div id="hadith" class="hadith">
+                <div class="loading">Loading Hadith...</div>
+            </div>
         </div>
+
     </div>
 
     <script>
@@ -182,9 +233,8 @@
 
                     const arabicVerse = arabicData.verse[randomVerseKey];
                     const englishVerse = englishData.verse[randomVerseKey];
-                    const verseNumber = randomVerseKey.split('_')[1]; // Extract verse number from key like "verse_1"
+                    const verseNumber = randomVerseKey.split('_')[1];
 
-                    // Provide full Surah reference and Verse text
                     const surahLink = `https://itzfew.github.io/Quran-Online/surah-details-ar.html?index=${surahNumber}`;
                     document.getElementById('verse').innerHTML = `
                         <div class="surah-info">
@@ -200,7 +250,6 @@
                         <strong>Reference Link:</strong> <a href="${surahLink}" target="_blank">${surahLink}</a>
                     `;
                     
-                    // Add copy functionality with references
                     document.getElementById('copy-verse-btn').onclick = () => {
                         const reference = `Quran, Surah ${surahNumber}: ${arabicData.name} - Verse ${verseNumber}`;
                         const copyText = `${arabicVerse}\n\n${englishVerse}\n\nReference: ${reference}\nLink: ${surahLink}`;
@@ -211,14 +260,6 @@
                     console.error("Error fetching data:", error);
                     document.getElementById('verse').innerHTML = "Error fetching data. Please try again later.";
                 });
-        }
-
-        // Function to fetch chapter names for Hadith
-        function fetchHadithChapters(bookSlug) {
-            const chaptersURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
-            return fetch(chaptersURL)
-                .then(response => response.json())
-                .then(data => data.collection.books);
         }
 
         // Function to fetch a random Hadith
@@ -236,7 +277,8 @@
             ];
 
             const selectedBook = books[Math.floor(Math.random() * books.length)];
-            fetchHadithChapters(selectedBook.slug)
+            fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${selectedBook.slug}/chapters.json`)
+                .then(response => response.json())
                 .then(chapters => {
                     const randomChapter = chapters[Math.floor(Math.random() * chapters.length)];
                     const hadithURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${selectedBook.slug}/${randomChapter.book_number}.json`;
@@ -245,9 +287,8 @@
                         .then(response => response.json())
                         .then(data => {
                             const randomHadith = data.hadiths[Math.floor(Math.random() * data.hadiths.length)];
-
-                            // Provide full Hadith text without truncating
                             const hadithLink = `https://itzfew.github.io/Quran-Online/chapter.html?book=${selectedBook.slug}&chapter=${randomChapter.book_number}`;
+
                             document.getElementById('hadith').innerHTML = `
                                 <div class="hadith-info">
                                     <strong>${selectedBook.title} - Chapter: ${randomChapter.book_name}</strong><br>
@@ -260,7 +301,6 @@
                                 </div>
                             `;
 
-                            // Add copy functionality with references
                             document.getElementById('copy-hadith-btn').onclick = () => {
                                 const reference = `${selectedBook.title} - Chapter: ${randomChapter.book_name} - Hadith ${randomHadith.id}`;
                                 const copyText = `${randomHadith.arabic}\n\n${randomHadith.english.text}\n\nReference: ${reference}\nLink: ${hadithLink}`;
@@ -284,4 +324,5 @@
     </script>
 
 </body>
+
 </html>
