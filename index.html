@@ -139,52 +139,91 @@ nav .hamburger {
     color: #3498db;
 }
 
+/* Prayer Times Cards */
+        .prayer-times-cards {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            overflow-x: auto;
+            padding-bottom: 20px;
+        }
+
+        .prayer-time-card {
+            background: #fff;
+            padding: 15px;
+            margin-right: 10px;
+            width: 150px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .prayer-time-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .prayer-time-card.active {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        .prayer-time-card h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: inherit;
+        }
+
+        .prayer-time-card p {
+            font-size: 1.1rem;
+            color: inherit;
+            margin-top: 10px;
+        }
 /* Prayer Times */
-.prayer-times {
-    background: #fff;
-    padding: 20px;
-    border-radius: 12px;
-    margin-top: 15px;
-    /* Removed shadow */
-}
+        .prayer-times {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
 
-.prayer-times h2 {
-    font-size: 1.2rem;
-    color: #3498db;
-    margin-bottom: 15px;
-}
+        .prayer-times h2 {
+            font-size: 1.2rem;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
 
-.prayer-times ul {
-    list-style-type: none;
-    padding: 0;
-}
+        .prayer-times ul {
+            list-style-type: none;
+            padding: 0;
+        }
 
-.prayer-times li {
-    padding: 8px 0;
-    font-size: 1rem;
-    color: #333;
-}
+        .prayer-times li {
+            padding: 8px 0;
+            font-size: 1rem;
+            color: #333;
+        }
 
-.loading {
-    font-size: 1rem;
-    color: #333;
-    text-align: center;
-    font-weight: 500;
-    margin: 20px 0;
-}
+        .loading {
+            font-size: 1rem;
+            color: #333;
+            text-align: center;
+            font-weight: 500;
+            margin: 20px 0;
+        }
 
-.loading::before {
-    content: "";
-    display: inline-block;
-    width: 30px;
-    height: 30px;
-    border: 4px solid #3498db;
-    border-top: 4px solid transparent;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-right: 10px;
-}
-
+        .loading::before {
+            content: "";
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            border: 4px solid #3498db;
+            border-top: 4px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
@@ -239,6 +278,33 @@ nav .hamburger {
         <a href="99-names.html">100 Names</a>
     </div>
 
+    <!-- Prayer Times Section -->
+    <div class="section">
+        <h2>Prayer Times</h2>
+        <div id="prayer-times-cards" class="prayer-times-cards">
+            <div class="prayer-time-card" id="fajr-card">
+                <h3>Fajr</h3>
+                <p id="fajr-time">Loading...</p>
+            </div>
+            <div class="prayer-time-card" id="dhuhr-card">
+                <h3>Dhuhr</h3>
+                <p id="dhuhr-time">Loading...</p>
+            </div>
+            <div class="prayer-time-card" id="asr-card">
+                <h3>Asr</h3>
+                <p id="asr-time">Loading...</p>
+            </div>
+            <div class="prayer-time-card" id="maghrib-card">
+                <h3>Maghrib</h3>
+                <p id="maghrib-time">Loading...</p>
+            </div>
+            <div class="prayer-time-card" id="isha-card">
+                <h3>Isha</h3>
+                <p id="isha-time">Loading...</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Quranic Verse Section -->
     <div class="section">
         <div class="verse-header">
@@ -261,14 +327,6 @@ nav .hamburger {
         </div>
     </div>
 
-    <!-- Prayer Times Section -->
-    <div class="section prayer-times">
-        <h2>Prayer Times</h2>
-        <ul id="prayer-list">
-            <li>Loading prayer times...</li>
-        </ul>
-    </div>
-
     <script>
         // Toggle the sliding menu (open and close)
         function toggleMenu() {
@@ -282,39 +340,66 @@ nav .hamburger {
         // Function to fetch prayer times
         function fetchPrayerTimes(latitude, longitude) {
             const apiUrl = `https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=2`;
-            
+
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
                     const timings = data.data.timings;
-                    const prayerList = document.getElementById("prayer-list");
-                    prayerList.innerHTML = `
-                        <li>Fajr: ${timings.Fajr}</li>
-                        <li>Dhuhr: ${timings.Dhuhr}</li>
-                        <li>Asr: ${timings.Asr}</li>
-                        <li>Maghrib: ${timings.Maghrib}</li>
-                        <li>Isha: ${timings.Isha}</li>
-                     `;
+                    const currentPrayer = getCurrentPrayer(timings);
+
+                    // Highlight the current prayer
+                    document.getElementById("fajr-time").textContent = timings.Fajr;
+                    document.getElementById("dhuhr-time").textContent = timings.Dhuhr;
+                    document.getElementById("asr-time").textContent = timings.Asr;
+                    document.getElementById("maghrib-time").textContent = timings.Maghrib;
+                    document.getElementById("isha-time").textContent = timings.Isha;
+
+                    // Remove any existing active class
+                    const prayerCards = document.querySelectorAll('.prayer-time-card');
+                    prayerCards.forEach(card => card.classList.remove('active'));
+
+                    // Add active class to the current prayer card
+                    document.getElementById(`${currentPrayer}-card`).classList.add('active');
                 })
                 .catch(error => {
                     console.error("Error fetching prayer times:", error);
-                    document.getElementById("prayer-list").innerHTML = "<li>Error fetching prayer times. Please try again later.</li>";
+                    document.getElementById("prayer-times-cards").innerHTML = "<div class='loading'>Error fetching prayer times. Please try again later.</div>";
                 });
         }
 
-        // Function to fetch the user's location
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(position => {
-                    const latitude = position.coords.latitude;
-                    const longitude = position.coords.longitude;
-                    fetchPrayerTimes(latitude, longitude);
-                }, error => {
-                    console.error("Error getting location:", error);
-                });
-            } else {
-                alert("Geolocation is not supported by this browser.");
+        // Function to determine the current prayer
+        function getCurrentPrayer(timings) {
+            const now = new Date();
+            const currentTime = now.getHours() * 60 + now.getMinutes();
+            const prayers = [
+                { name: "Fajr", time: timeToMinutes(timings.Fajr) },
+                { name: "Dhuhr", time: timeToMinutes(timings.Dhuhr) },
+                { name: "Asr", time: timeToMinutes(timings.Asr) },
+                { name: "Maghrib", time: timeToMinutes(timings.Maghrib) },
+                { name: "Isha", time: timeToMinutes(timings.Isha) }
+            ];
+
+            for (let i = 0; i < prayers.length; i++) {
+                if (currentTime < prayers[i].time) {
+                    return prayers[i].name.toLowerCase();
+                }
             }
+            return "isha"; // Default to Isha if none are found
+        }
+
+        // Convert time in HH:MM format to minutes
+        function timeToMinutes(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        // Initialize the page
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                fetchPrayerTimes(latitude, longitude);
+            });
         }
 
         // Function to fetch random Quranic verse
@@ -432,7 +517,6 @@ nav .hamburger {
         }
 
         // Initialize the page
-        getLocation();
         fetchRandomVerse();
         fetchRandomHadith();
     </script>
