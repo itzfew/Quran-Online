@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hadith & Quranic Verse</title>
-    <!-- Add Font Awesome CDN -->
+    <!-- Add Font Awesome CDN for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
@@ -14,10 +14,9 @@
             padding: 0;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
             height: 100vh;
             flex-direction: column;
-            overflow: auto;
         }
 
         h2 {
@@ -28,7 +27,7 @@
         }
 
         .section {
-            width: 90%;
+            width: 100%;
             max-width: 800px;
             background: #ffffff;
             border-radius: 8px;
@@ -36,6 +35,8 @@
             padding: 20px;
             box-sizing: border-box;
             position: relative;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
         }
 
         .copy-btn {
@@ -183,24 +184,27 @@
                     const englishVerse = englishData.verse[randomVerseKey];
                     const verseNumber = randomVerseKey.split('_')[1]; // Extract verse number from key like "verse_1"
 
-                    // Update the Verse of the Day section
+                    // Shorten the Surah reference and Verse text for 10 words
+                    const surahLink = `https://itzfew.github.io/Quran-Online/surah-details-ar.html?index=${surahNumber}`;
                     document.getElementById('verse').innerHTML = `
                         <div class="surah-info">
-                            <strong>Surah ${surahNumber}: ${arabicData.name}</strong><br>
-                            (Verses 1 to ${arabicData.count})
+                            <strong>Surah ${surahNumber}: ${arabicData.name}</strong>
                         </div>
                         <strong>Verse ${verseNumber}:</strong><br>
                         <strong>Arabic:</strong><br>
-                        <p>${arabicVerse}</p>
+                        <p>${arabicVerse.split(' ').slice(0, 10).join(' ')}</p>
                         <br>
                         <strong>English:</strong><br>
-                        <p>${englishVerse}</p>
+                        <p>${englishVerse.split(' ').slice(0, 10).join(' ')}</p>
+                        <br><br>
+                        <strong>Reference Link:</strong> <a href="${surahLink}" target="_blank">${surahLink}</a>
                     `;
                     
                     // Add copy functionality with references
                     document.getElementById('copy-verse-btn').onclick = () => {
                         const reference = `Quran, Surah ${surahNumber}: ${arabicData.name} - Verse ${verseNumber}`;
-                        copyToClipboard(`${arabicVerse}\n\n${englishVerse}\n\nReference: ${reference}`);
+                        const copyText = `${arabicVerse}\n\n${englishVerse}\n\nReference: ${reference}\nLink: ${surahLink}`;
+                        copyToClipboard(copyText);
                     };
                 })
                 .catch(error => {
@@ -242,22 +246,25 @@
                         .then(data => {
                             const randomHadith = data.hadiths[Math.floor(Math.random() * data.hadiths.length)];
 
-                            // Update the Hadith of the Day section
+                            // Shorten the Hadith for 10 words in both Arabic and English
+                            const hadithLink = `https://itzfew.github.io/Quran-Online/chapter.html?book=${selectedBook.slug}&chapter=${randomChapter.book_number}`;
                             document.getElementById('hadith').innerHTML = `
                                 <div class="hadith-info">
                                     <strong>${selectedBook.title} - Chapter: ${randomChapter.book_name}</strong><br>
                                     <strong>Hadith Number:</strong> ${randomHadith.id}<br><br>
                                     <strong>Arabic:</strong><br>
-                                    <p>${randomHadith.arabic}</p><br>
+                                    <p>${randomHadith.arabic.split(' ').slice(0, 10).join(' ')}</p><br>
                                     <strong>English:</strong><br>
-                                    <p>${randomHadith.english.text}</p>
+                                    <p>${randomHadith.english.text.split(' ').slice(0, 10).join(' ')}</p><br><br>
+                                    <strong>Reference Link:</strong> <a href="${hadithLink}" target="_blank">${hadithLink}</a>
                                 </div>
                             `;
 
                             // Add copy functionality with references
                             document.getElementById('copy-hadith-btn').onclick = () => {
                                 const reference = `${selectedBook.title} - Chapter: ${randomChapter.book_name} - Hadith ${randomHadith.id}`;
-                                copyToClipboard(`${randomHadith.arabic}\n\n${randomHadith.english.text}\n\nReference: ${reference}`);
+                                const copyText = `${randomHadith.arabic}\n\n${randomHadith.english.text}\n\nReference: ${reference}\nLink: ${hadithLink}`;
+                                copyToClipboard(copyText);
                             };
                         })
                         .catch(error => {
