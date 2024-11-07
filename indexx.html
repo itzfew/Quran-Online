@@ -6,42 +6,50 @@
     <title>Hadith & Quranic Verse</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+        /* Global Styles */
         body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f7fc;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             flex-direction: column;
-            padding-top: 60px; /* Add space for fixed navbar */
+            padding-top: 80px; /* Adjusted for fixed navbar */
         }
 
         /* Navbar Styles */
         nav {
             width: 100%;
-            background-color: #007BFF;
-            padding: 10px 20px;
+            background-color: #3498db;
+            padding: 15px 20px;
             position: fixed;
             top: 0;
             left: 0;
             z-index: 10;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-radius: 0 0 12px 12px;
         }
 
         nav .logo {
             display: inline-block;
-            margin-right: 20px;
         }
 
         nav .logo img {
             width: 40px;
             height: 40px;
             vertical-align: middle;
+        }
+
+        nav .hamburger {
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            display: block;
         }
 
         /* Sliding Menu Styles */
@@ -51,24 +59,24 @@
             position: fixed;
             top: 0;
             left: 0;
-            background-color: #007BFF;
+            background-color: #2980b9;
             overflow-x: hidden;
             transition: 0.3s;
-            padding-top: 60px; /* Add space for the top navbar */
+            padding-top: 60px;
             z-index: 20;
         }
 
         .menu a {
-            padding: 8px 8px 8px 32px;
+            padding: 15px 25px;
             text-decoration: none;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             color: white;
             display: block;
             transition: 0.3s;
         }
 
         .menu a:hover {
-            background-color: #0056b3;
+            background-color: #1abc9c;
         }
 
         .menu .close-btn {
@@ -82,88 +90,73 @@
             cursor: pointer;
         }
 
-        /* Hamburger Icon (for mobile) */
-        nav .hamburger {
-            display: block;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
-            float: right;
-        }
-
         /* Section Styles */
         .section {
             width: 100%;
             max-width: 900px;
             background: #ffffff;
-            border-radius: 1px;
-            margin-bottom: 5px;
-            padding: 1px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            padding: 20px;
             box-sizing: border-box;
             position: relative;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-            margin-top: 10px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
             transition: transform 0.3s ease-in-out;
+            border: 1px solid #ddd;
         }
 
         .section:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
         }
 
+        /* Copy Button */
         .copy-btn {
             position: absolute;
-            top: 15px;
+            top: 10px;
             right: 15px;
-            background-color: #007BFF;
-            border: 1px solid #007BFF;
+            background-color: #3498db;
+            border: 1px solid #3498db;
             color: white;
-            padding: 8px;
+            padding: 10px;
             border-radius: 50%;
             cursor: pointer;
-            font-size: 1.2rem;
-            transition: background-color 0.3s;
+            font-size: 1.5rem;
+            transition: background-color 0.3s ease;
         }
 
         .copy-btn:hover {
-            background-color: #0056b3;
+            background-color: #1abc9c;
         }
 
+        /* Verse and Hadith */
         .verse, .hadith {
-            font-size: 1.1rem;
-            color: #555;
-            padding: 15px;
+            font-size: 1.2rem;
+            color: #333;
+            padding: 20px;
             border-radius: 8px;
             background: #fafafa;
             text-align: left;
             border: 1px solid #ddd;
             overflow-y: auto;
-            max-height: 300px;
+            max-height: 350px;
             box-sizing: border-box;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         .verse p, .hadith p {
-            margin: 10px 0;
-            line-height: 1.6;
-        }
-
-        .verse strong, .hadith strong {
-            color: #333;
-            font-weight: bold;
+            margin: 12px 0;
+            line-height: 1.7;
         }
 
         .verse-header, .hadith-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-        }
-
-        .verse-header .surah-info, .hadith-header .hadith-info {
-            color: #777;
-            font-size: 1rem;
-            font-weight: normal;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #3498db;
         }
 
         .loading {
@@ -174,13 +167,12 @@
             margin: 20px 0;
         }
 
-        /* Spinner for loading */
         .loading::before {
             content: "";
             display: inline-block;
             width: 30px;
             height: 30px;
-            border: 4px solid #007BFF;
+            border: 4px solid #3498db;
             border-top: 4px solid transparent;
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -199,13 +191,9 @@
                 width: 100%;
             }
 
-            h2 {
-                font-size: 1.4rem;
-            }
-
             .verse, .hadith {
                 font-size: 1rem;
-                padding: 12px;
+                padding: 15px;
             }
 
             nav ul {
@@ -287,7 +275,7 @@
             alert("Text copied to clipboard!");
         }
 
-        // Function to fetch a random Quranic verse
+        // Function to fetch random Quranic verse
         function fetchRandomVerse() {
             const surahNumber = Math.floor(Math.random() * 114) + 1;
             const surahURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${surahNumber}.json`;
