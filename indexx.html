@@ -7,6 +7,7 @@
     <!-- Add Font Awesome CDN for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
+        /* General Body Styling */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f9;
@@ -19,11 +20,82 @@
             flex-direction: column;
         }
 
-        h2 {
-            color: #333;
+        /* Navbar and Menu */
+        .navbar {
+            background-color: #007BFF;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 9999;
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .logo img {
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .navbar .logo h1 {
             font-size: 1.5rem;
-            margin-bottom: 10px;
             font-weight: 600;
+        }
+
+        .menu-btn {
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: none;
+        }
+
+        /* Sidebar Menu */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            height: 100%;
+            width: 250px;
+            background-color: #333;
+            color: white;
+            transition: all 0.3s ease;
+            z-index: 999;
+            padding-top: 60px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.2);
+        }
+
+        .sidebar a {
+            padding: 15px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            color: white;
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #575757;
+        }
+
+        .sidebar .close-btn {
+            font-size: 2rem;
+            color: white;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        /* Content Styling */
+        .content {
+            margin-top: 100px;
+            padding: 20px;
         }
 
         .section {
@@ -72,27 +144,12 @@
             margin-top: 5px;
         }
 
-        .verse p, .hadith p {
-            margin: 10px 0;
-        }
-
-        .verse strong, .hadith strong {
-            color: #333;
-            font-weight: bold;
-        }
-
         .verse-header, .hadith-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 1.1rem;
             margin-bottom: 10px;
-        }
-
-        .verse-header .surah-info, .hadith-header .hadith-info {
-            color: #555;
-            font-size: 1rem;
-            font-weight: normal;
         }
 
         .loading {
@@ -106,10 +163,12 @@
         .verse::-webkit-scrollbar, .hadith::-webkit-scrollbar {
             width: 8px;
         }
+
         .verse::-webkit-scrollbar-thumb, .hadith::-webkit-scrollbar-thumb {
             background: #007BFF;
             border-radius: 5px;
         }
+
         .verse::-webkit-scrollbar-track, .hadith::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
@@ -127,30 +186,66 @@
                 font-size: 1rem;
                 padding: 15px;
             }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .navbar .logo h1 {
+                font-size: 1.2rem;
+            }
+
+            .sidebar {
+                width: 200px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Quranic Verse Section -->
-    <div class="section">
-        <div class="verse-header">
-            <h2>Quranic Verse of the Day</h2>
-            <button class="copy-btn" id="copy-verse-btn"><i class="fas fa-copy"></i></button>
+    <!-- Navbar with Logo and Menu Button -->
+    <div class="navbar">
+        <div class="logo">
+            <img src="source/pic.png" alt="Logo">
+            <h1>Quran Kareem</h1>
         </div>
-        <div id="verse" class="verse">
-            <div class="loading">Loading Quranic Verse...</div>
+        <div class="menu-btn" id="menu-btn">
+            <i class="fas fa-bars"></i>
         </div>
     </div>
 
-    <!-- Hadith Section -->
-    <div class="section">
-        <div class="hadith-header">
-            <h2>Hadith of the Day</h2>
-            <button class="copy-btn" id="copy-hadith-btn"><i class="fas fa-copy"></i></button>
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <span class="close-btn" id="close-btn">&times;</span>
+        <a href="#verse-section">Quranic Verse</a>
+        <a href="#hadith-section">Hadith</a>
+        <a href="prayer.html">Prayer</a>
+        <a href="tasbih.html">Tasbih</a>
+        <a href="99-names.html">100 Names</a>
+    </div>
+
+    <!-- Content Section -->
+    <div class="content">
+        <!-- Quranic Verse Section -->
+        <div class="section" id="verse-section">
+            <div class="verse-header">
+                <h2>Quranic Verse of the Day</h2>
+                <button class="copy-btn" id="copy-verse-btn"><i class="fas fa-copy"></i></button>
+            </div>
+            <div id="verse" class="verse">
+                <div class="loading">Loading Quranic Verse...</div>
+            </div>
         </div>
-        <div id="hadith" class="hadith">
-            <div class="loading">Loading Hadith...</div>
+
+        <!-- Hadith Section -->
+        <div class="section" id="hadith-section">
+            <div class="hadith-header">
+                <h2>Hadith of the Day</h2>
+                <button class="copy-btn" id="copy-hadith-btn"><i class="fas fa-copy"></i></button>
+            </div>
+            <div id="hadith" class="hadith">
+                <div class="loading">Loading Hadith...</div>
+            </div>
         </div>
     </div>
 
@@ -281,6 +376,15 @@
         // Initialize the page
         fetchRandomVerse();
         fetchRandomHadith();
+
+        // Sidebar toggle functionality
+        document.getElementById('menu-btn').onclick = function() {
+            document.getElementById('sidebar').style.left = "0";
+        };
+
+        document.getElementById('close-btn').onclick = function() {
+            document.getElementById('sidebar').style.left = "-250px";
+        };
     </script>
 
 </body>
