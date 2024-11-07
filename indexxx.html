@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +15,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            height: 100vh;
             flex-direction: column;
         }
 
@@ -26,79 +26,17 @@
             font-weight: 600;
         }
 
-        /* Navigation Bar */
-        .navbar {
-            width: 100%;
-            background-color: #007BFF;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 9999;
-            padding: 10px 0;
-            text-align: center;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-        }
-
-        .navbar a {
-            color: #fff;
-            text-decoration: none;
-            padding: 10px 15px;
-            font-size: 1.2rem;
-            display: inline-block;
-        }
-
-        .navbar a:hover {
-            background-color: #0056b3;
-            border-radius: 5px;
-        }
-
-        .navbar .logo {
-            display: flex;
-            align-items: center;
-            color: #fff;
-        }
-
-        .navbar .logo img {
-            height: 40px;
-            margin-right: 10px;
-        }
-
-        .navbar .logo span {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        /* Menu toggle button for mobile */
-        .menu-toggle {
-            display: none;
-            font-size: 1.5rem;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        .menu {
-            display: flex;
-        }
-
-        .menu li {
-            list-style: none;
-            margin: 0 15px;
-        }
-
         .section {
             width: 100%;
             max-width: 800px;
             background: #ffffff;
             border-radius: 8px;
-            margin-bottom: 5px;
-            padding: 10px;
+            margin-bottom: 30px;
+            padding: 20px;
             box-sizing: border-box;
             position: relative;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 10px; /* Adjusted for navbar */
+            margin-top: 30px;
         }
 
         .copy-btn {
@@ -178,34 +116,13 @@
 
         /* Responsive Design */
         @media (max-width: 600px) {
-            .navbar {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .menu {
-                display: none;
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .menu li {
-                margin: 10px 0;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
-
             .section {
                 padding: 15px;
                 width: 100%;
             }
-
             h2 {
                 font-size: 1.2rem;
             }
-
             .verse, .hadith {
                 font-size: 1rem;
                 padding: 15px;
@@ -213,25 +130,7 @@
         }
     </style>
 </head>
-
 <body>
-
-    <!-- Navigation Bar -->
-    <div class="navbar">
-        <div class="logo">
-            <img src="source/pic.png" alt="Logo"> <!-- Add your logo image here -->
-            <span>Quran Kareem</span>
-        </div>
-        <div class="menu-toggle" id="menu-toggle">
-            <i class="fas fa-bars"></i>
-        </div>
-        <ul class="menu" id="menu">
-            <li><a href="hadith.html">Hadith</a></li>
-      <li><a href="prayer.html">Prayer</a></li>
-        <li><a href="tasbih.html">Tasbih</a></li>
-       <li> <a href="99-names.html">100 Names</a></li>
-        </ul>
-    </div>
 
     <!-- Quranic Verse Section -->
     <div class="section">
@@ -256,12 +155,6 @@
     </div>
 
     <script>
-        // Toggle the mobile menu
-        document.getElementById('menu-toggle').addEventListener('click', function () {
-            const menu = document.getElementById('menu');
-            menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
-        });
-
         // Function to copy text to clipboard
         function copyToClipboard(text) {
             const textArea = document.createElement("textarea");
@@ -391,5 +284,4 @@
     </script>
 
 </body>
-
 </html>
