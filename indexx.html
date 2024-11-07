@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hadith & Quranic Verse</title>
+    <title>Hadith & Quranic Verse with Prayer Times</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         /* Global Styles */
@@ -97,7 +97,7 @@
             background: #ffffff;
             border-radius: 12px;
             margin-bottom: 15px;
-            padding: 15px 20px; /* Reduced padding */
+            padding: 15px 20px;
             box-sizing: border-box;
             position: relative;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
@@ -132,7 +132,7 @@
 
         /* Verse and Hadith */
         .verse, .hadith {
-            font-size: 1rem; /* Reduced font size */
+            font-size: 1rem;
             color: #333;
             padding: 15px;
             border-radius: 8px;
@@ -140,7 +140,7 @@
             text-align: left;
             border: 1px solid #ddd;
             overflow-y: auto;
-            max-height: 300px; /* Reduced height */
+            max-height: 300px;
             box-sizing: border-box;
             margin-top: 15px;
         }
@@ -154,9 +154,35 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.1rem; /* Reduced header font size */
+            font-size: 1.1rem;
             margin-bottom: 15px;
             color: #3498db;
+        }
+
+        /* Prayer Times */
+        .prayer-times {
+            background: #fff;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            margin-top: 15px;
+        }
+
+        .prayer-times h2 {
+            font-size: 1.2rem;
+            color: #3498db;
+            margin-bottom: 15px;
+        }
+
+        .prayer-times ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .prayer-times li {
+            padding: 8px 0;
+            font-size: 1rem;
+            color: #333;
         }
 
         .loading {
@@ -192,7 +218,7 @@
             }
 
             .verse, .hadith {
-                font-size: 0.9rem; /* Adjust font size for mobile */
+                font-size: 0.9rem;
                 padding: 12px;
             }
 
@@ -254,6 +280,14 @@
         </div>
     </div>
 
+    <!-- Prayer Times Section -->
+    <div class="section prayer-times">
+        <h2>Prayer Times</h2>
+        <ul id="prayer-list">
+            <li>Loading prayer times...</li>
+        </ul>
+    </div>
+
     <script>
         // Toggle the sliding menu (open and close)
         function toggleMenu() {
@@ -264,15 +298,42 @@
             document.getElementById("myMenu").style.width = "0"; // Close menu
         }
 
-        // Function to copy text to clipboard
-        function copyToClipboard(text) {
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand("copy");
-            document.body.removeChild(textArea);
-            alert("Text copied to clipboard!");
+        // Function to fetch prayer times
+        function fetchPrayerTimes(latitude, longitude) {
+            const apiUrl = `https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=2`;
+            
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const timings = data.data.timings;
+                    const prayerList = document.getElementById("prayer-list");
+                    prayerList.innerHTML = `
+                        <li>Fajr: ${timings.Fajr}</li>
+                        <li>Dhuhr: ${timings.Dhuhr}</li>
+                        <li>Asr: ${timings.Asr}</li>
+                        <li>Maghrib: ${timings.Maghrib}</li>
+                        <li>Isha: ${timings.Isha}</li>
+                     `;
+                })
+                .catch(error => {
+                    console.error("Error fetching prayer times:", error);
+                    document.getElementById("prayer-list").innerHTML = "<li>Error fetching prayer times. Please try again later.</li>";
+                });
+        }
+
+        // Function to fetch the user's location
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+                    fetchPrayerTimes(latitude, longitude);
+                }, error => {
+                    console.error("Error getting location:", error);
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
         }
 
         // Function to fetch random Quranic verse
@@ -380,6 +441,7 @@
         }
 
         // Initialize the page
+        getLocation();
         fetchRandomVerse();
         fetchRandomHadith();
     </script>
