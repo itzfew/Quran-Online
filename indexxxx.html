@@ -39,44 +39,52 @@
         }
 
         nav .logo img {
-            width: 40px; /* Logo size */
+            width: 40px;
             height: 40px;
             vertical-align: middle;
         }
 
-        nav ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            display: inline-block;
-            float: right;
+        /* Sliding Menu Styles */
+        .menu {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #007BFF;
+            overflow-x: hidden;
+            transition: 0.3s;
+            padding-top: 60px; /* Add space for the top navbar */
+            z-index: 20;
         }
 
-        nav ul li {
-            display: inline;
-            margin-left: 20px;
-        }
-
-        nav ul li a {
+        .menu a {
+            padding: 8px 8px 8px 32px;
             text-decoration: none;
+            font-size: 1.5rem;
             color: white;
-            font-size: 1.1rem;
-            padding: 8px 12px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
+            display: block;
+            transition: 0.3s;
         }
 
-        nav ul li a:hover {
+        .menu a:hover {
             background-color: #0056b3;
         }
 
-        nav ul li a.active {
-            background-color: #003f7f;
+        .menu .close-btn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            color: white;
+            background: transparent;
+            border: none;
+            cursor: pointer;
         }
 
         /* Hamburger Icon (for mobile) */
         nav .hamburger {
-            display: none;
+            display: block;
             color: white;
             font-size: 30px;
             cursor: pointer;
@@ -184,37 +192,8 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Styling for the scrollbars */
-        .verse::-webkit-scrollbar, .hadith::-webkit-scrollbar {
-            width: 8px;
-        }
-        .verse::-webkit-scrollbar-thumb, .hadith::-webkit-scrollbar-thumb {
-            background: #007BFF;
-            border-radius: 5px;
-        }
-        .verse::-webkit-scrollbar-track, .hadith::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
-            nav ul {
-                display: none;
-                flex-direction: column;
-                align-items: center;
-                width: 100%;
-                margin-top: 10px;
-            }
-
-            nav ul li {
-                margin: 10px 0;
-                text-align: center;
-            }
-
-            nav .hamburger {
-                display: block;
-            }
-
             .section {
                 padding: 20px;
                 width: 100%;
@@ -229,10 +208,19 @@
                 padding: 12px;
             }
 
-            nav ul.active {
-                display: flex;
+            nav ul {
+                display: none;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .hamburger {
+                display: block;
             }
         }
+
     </style>
 </head>
 <body>
@@ -240,18 +228,21 @@
     <!-- Top Navigation Bar -->
     <nav>
         <div class="logo">
-            <img src="source/pic.png" alt="Logo"> <!-- Your logo image -->
+            <img src="source/pic.png" alt="Logo">
         </div>
-        <ul>
-            <li><a href="hadith.html">Hadith</a></li>
-            <li><a href="prayer.html">Prayer</a></li>
-            <li><a href="tasbih.html">Tasbih</a></li>
-            <li><a href="99-names.html">100 Names</a></li>
-        </ul>
         <div class="hamburger" onclick="toggleMenu()">
             <i class="fas fa-bars"></i>
         </div>
     </nav>
+
+    <!-- Side Menu (Slides In) -->
+    <div id="myMenu" class="menu">
+        <button class="close-btn" onclick="closeMenu()">×</button>
+        <a href="hadith.html">Hadith</a>
+        <a href="prayer.html">Prayer</a>
+        <a href="tasbih.html">Tasbih</a>
+        <a href="99-names.html">100 Names</a>
+    </div>
 
     <!-- Quranic Verse Section -->
     <div class="section">
@@ -276,10 +267,13 @@
     </div>
 
     <script>
-        // Function to toggle the hamburger menu
+        // Toggle the sliding menu (open and close)
         function toggleMenu() {
-            const menu = document.querySelector('nav ul');
-            menu.classList.toggle('active');
+            document.getElementById("myMenu").style.width = "250px"; // Open menu
+        }
+
+        function closeMenu() {
+            document.getElementById("myMenu").style.width = "0"; // Close menu
         }
 
         // Function to copy text to clipboard
@@ -310,7 +304,7 @@
 
                     const arabicVerse = arabicData.verse[randomVerseKey];
                     const englishVerse = englishData.verse[randomVerseKey];
-                    const verseNumber = randomVerseKey.split('_')[1]; // Extract verse number from key like "verse_1"
+                    const verseNumber = randomVerseKey.split('_')[1]; // Extract verse number
 
                     const surahLink = `https://itzfew.github.io/Quran-Online/surah-details-ar.html?index=${surahNumber}`;
                     document.getElementById('verse').innerHTML = `
