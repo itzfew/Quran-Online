@@ -15,7 +15,7 @@
             margin: 0;
             flex-direction: column;
         }
-        .cotainer {
+        .container {
             background: #ffffff;
             padding: 30px;
             border-radius: 12px;
@@ -142,7 +142,7 @@
             return today.toLocaleDateString('en-US', options);
         }
 
-        // Function to fetch a random verse from any surah
+        // Function to fetch a random Quranic verse
         function fetchRandomVerse() {
             const surahNumber = Math.floor(Math.random() * 114) + 1;
             const surahURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${surahNumber}.json`;
@@ -175,63 +175,62 @@
                 });
         }
 
+        // Function to fetch chapter names for Hadith
+        function fetchHadithChapters(bookSlug) {
+            const chaptersURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
+            return fetch(chaptersURL)
+                .then(response => response.json())
+                .then(data => data.collection.books);
+        }
+
         // Function to fetch a random Hadith
         function fetchRandomHadith() {
             const books = [
-                {
-                    id: 1,
-                    arabic: { title: "صحيح البخاري", author: "الإمام محمد بن إسماعيل البخاري" },
-                    english: { title: "Sahih al-Bukhari", author: "Imam Muhammad ibn Ismail al-Bukhari" },
-                    route: { base: "bukhari", chapters: [
-                        { id: "1", name: "Revelation (كتاب بدء الوحى)" },
-                        { id: "2", name: "Belief (كتاب الإيمان)" },
-                        { id: "3", name: "Knowledge (كتاب العلم)" },
-                        { id: "4", name: "Ablutions (Wudu') (كتاب الوضوء)" },
-                    ]}
-                },
-                {
-                    id: 2,
-                    arabic: { title: "صحيح مسلم", author: "الإمام مسلم بن الحجاج القشيري النيسابوري" },
-                    english: { title: "Sahih Muslim", author: "Imam Muslim ibn al-Hajjaj al-Naysaburi" },
-                    route: { base: "muslim", chapters: [
-                        { id: "introduction", name: "Introduction" },
-                        { id: "1", name: "Book of Faith (كتاب الإيمان)" },
-                        { id: "2", name: "Book of Purification (كتاب الطهارة)" },
-                        { id: "3", name: "Book of Prayer (كتاب الصلاة)" },
-                    ]}
-                },
+                { slug: "bukhari", title: "Sahih al-Bukhari" },
+                { slug: "muslim", title: "Sahih Muslim" },
+                { slug: "nasai", title: "Sunan al-Nasa'i" },
+                { slug: "abudawud", title: "Sunan Abi Dawud" },
+                { slug: "tirmidhi", title: "Jami' al-Tirmidhi" },
+                { slug: "ibnmajah", title: "Sunan Ibn Majah" },
+                { slug: "malik", title: "Muwatta Malik" },
+                { slug: "ahmed", title: "Musnad Ahmad ibn Hanbal" },
+                { slug: "darimi", title: "Sunan al-Darimi" }
             ];
 
             const selectedBook = books[Math.floor(Math.random() * books.length)];
-            const selectedChapter = selectedBook.route.chapters[Math.floor(Math.random() * selectedBook.route.chapters.length)];
-            const hadithURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${selectedBook.route.base}/${selectedChapter.id}.json`;
+            fetchHadithChapters(selectedBook.slug)
+                .then(chapters => {
+                    const randomChapter = chapters[Math.floor(Math.random() * chapters.length)];
+                    const hadithURL = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${selectedBook.slug}/${randomChapter.book_number}.json`;
 
-            fetch(hadithURL)
-                .then(response => response.json())
-                .then(data => {
-                    const randomHadith = data.hadiths[Math.floor(Math.random() * data.hadiths.length)];
-
-                    document.getElementById('hadith').innerHTML = `
-                        <strong>${selectedBook.english.title} - Chapter: ${selectedChapter.name}</strong><br>
-                        <strong>Hadith Number:</strong> ${randomHadith.id}<br><br>
-                        <strong>Arabic:</strong><br>
-                        <p>${randomHadith.arabic}</p><br>
-                        <strong>English:</strong><br>
-                        <p>${randomHadith.english.text}</p>
-                    `;
+                    fetch(hadithURL)
+                        .then(response => response.json())
+                        .then(data => {
+                            const randomHadith = data.hadiths[Math.floor(Math.random() * data.hadiths.length)];
+                            document.getElementById('hadith').innerHTML = `
+                                <strong>${selectedBook.title} - Chapter: ${randomChapter.book_name}</strong><br>
+                                <strong>Hadith Number:</strong> ${randomHadith.id}<br><br>
+                                <strong>Arabic:</strong><br>
+                                <p>${randomHadith.arabic}</p><br>
+                                <strong>English:</strong><br>
+                                <p>${randomHadith.english.text}</p>
+                            `;
+                        })
+                        .catch(error => {
+                            console.error("Error fetching hadith data:", error);
+                            document.getElementById('hadith').innerHTML = "Error fetching data. Please try again later.";
+                        });
                 })
                 .catch(error => {
-                    console.error("Error fetching hadith data:", error);
-                    document.getElementById('hadith').innerHTML = "Error fetching data. Please try again later.";
+                    console.error("Error fetching chapter names:", error);
+                    document.getElementById('hadith').innerHTML = "Error fetching chapter names. Please try again later.";
                 });
         }
 
         // Initialize the page
-        window.onload = () => {
-            document.getElementById('current-date').innerText = getCurrentDate();
-            fetchRandomVerse();
-            fetchRandomHadith();
-        };
+        document.getElementById('current-date').innerText = getCurrentDate();
+        fetchRandomVerse();
+        fetchRandomHadith();
     </script>
 </body>
 </html> 
