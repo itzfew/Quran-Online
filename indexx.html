@@ -97,7 +97,7 @@
             background: #ffffff;
             border-radius: 12px;
             margin-bottom: 15px;
-            padding: 20px;
+            padding: 15px 20px; /* Reduced padding */
             box-sizing: border-box;
             position: relative;
             box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
@@ -132,35 +132,35 @@
 
         /* Verse and Hadith */
         .verse, .hadith {
-            font-size: 1.2rem;
+            font-size: 1rem; /* Reduced font size */
             color: #333;
-            padding: 20px;
+            padding: 15px;
             border-radius: 8px;
             background: #fafafa;
             text-align: left;
             border: 1px solid #ddd;
             overflow-y: auto;
-            max-height: 350px;
+            max-height: 300px; /* Reduced height */
             box-sizing: border-box;
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         .verse p, .hadith p {
             margin: 12px 0;
-            line-height: 1.7;
+            line-height: 1.6;
         }
 
         .verse-header, .hadith-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.3rem;
-            margin-bottom: 20px;
+            font-size: 1.1rem; /* Reduced header font size */
+            margin-bottom: 15px;
             color: #3498db;
         }
 
         .loading {
-            font-size: 1.2rem;
+            font-size: 1rem;
             color: #333;
             text-align: center;
             font-weight: 500;
@@ -187,13 +187,13 @@
         /* Responsive Design */
         @media (max-width: 768px) {
             .section {
-                padding: 20px;
+                padding: 10px;
                 width: 100%;
             }
 
             .verse, .hadith {
-                font-size: 1rem;
-                padding: 15px;
+                font-size: 0.9rem; /* Adjust font size for mobile */
+                padding: 12px;
             }
 
             nav ul {
