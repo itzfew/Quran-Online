@@ -74,18 +74,18 @@
 <body>
 
     <h1>Qibla Direction Finder</h1>
-    <p class="qibla-info">Getting your location...</p>
+    <p class="qibla-info" id="location-status">Fetching your location...</p>
     <div id="compass">
         <div id="needle"></div>
     </div>
     <p class="error" id="error-message"></p>
     <p class="qibla-info" id="qibla-direction">Qibla Direction: ---°</p>
-    <button onclick="getLocation()">Get My Qibla Direction</button>
 
     <script>
         const needle = document.getElementById("needle");
         const qiblaDirectionText = document.getElementById("qibla-direction");
         const errorMessage = document.getElementById("error-message");
+        const locationStatus = document.getElementById("location-status");
 
         // Function to fetch Qibla direction using the Aladhan API
         function getQiblaDirection(latitude, longitude) {
@@ -113,20 +113,27 @@
                 navigator.geolocation.getCurrentPosition(function (position) {
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
-                    errorMessage.textContent = ''; // Clear previous errors
+                    locationStatus.textContent = "Location found, fetching Qibla direction..."; // Update location status
                     getQiblaDirection(latitude, longitude); // Call to get Qibla direction
                 }, function (error) {
                     console.error(error);
                     errorMessage.textContent = "Unable to retrieve your location.";
+                    locationStatus.textContent = "Location not found.";
                 });
             } else {
                 errorMessage.textContent = "Geolocation is not supported by your browser.";
+                locationStatus.textContent = "Geolocation is not supported.";
             }
         }
 
         // Function to rotate the needle in the compass
         function rotateNeedle(direction) {
             needle.style.transform = `translateX(-50%) translateY(-100%) rotate(${direction}deg)`;
+        }
+
+        // Call the function to get the user's location as soon as the page loads
+        window.onload = function() {
+            getLocation();
         }
     </script>
 
