@@ -1,108 +1,295 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hadith & Quranic Verse</title>
+    <meta name="description" content="สำรวจคัมภีร์อัลกุรอาน: รายชื่อซูเราะห์, ค้นหาด้วยชื่อ, ดัชนี และอื่นๆ">
+    <meta name="keywords" content="อัลกุรอาน, ซูเราะห์, คัมภีร์อัลกุรอาน, คัมภีร์อัลกุรอานภาษาอาหรับ, การแปลเป็นภาษาอังกฤษ, อิสลาม">
+    <meta property="og:title" content="คัมภีร์อัลกุรอาน">
+    <meta property="og:description" content="สำรวจคัมภีร์อัลกุรอาน: รายชื่อซูเราะห์, ค้นหาด้วยชื่อ, ดัชนี และอื่นๆ">
+    <meta property="og:image" content="source/pic.png">
+    <meta property="og:url" content="http://yourwebsite.com">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="คัมภีร์อัลกุรอาน">
+    <meta name="twitter:description" content="สำรวจคัมภีร์อัลกุรอาน: รายชื่อซูเราะห์, ค้นหาด้วยชื่อ, ดัชนี และอื่นๆ">
+    <meta name="twitter:image" content="source/pic.png">
+    <title>คัมภีร์อัลกุรอาน</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="source/pic.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <title>ฮะดีษ & อายะห์ของคัมภีร์อัลกุรอาน</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             height: 100vh;
-            margin: 0;
             flex-direction: column;
+            overflow: auto;
         }
 
-        .verse, .hadith {
+        h2 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .navbar .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .menu-toggle {
+            font-size: 1.5em;
+            cursor: pointer;
+            display: none;
+            color: white;
+        }
+
+        /* Sidebar Menu */
+        .menu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: #333;
+            color: white;
+            transition: left 0.3s ease;
+            padding-top: 60px;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.2em;
+            border-bottom: 1px solid #444;
+            transition: background 0.3s ease;
+        }
+
+        .menu a:hover {
+            background-color: #4CAF50;
+        }
+
+        .menu.active {
+            left: 0;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            /* Hide the menu in small screens */
+            .menu.active {
+                left: 0;
+            }
+        }
+        .section {
+            width: 90%;
+            max-width: 800px;
+            background: #ffffff;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background-color: transparent;
+            border: 1px solid #007BFF;
+            color: #007BFF;
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
             font-size: 1.2rem;
-            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: #007BFF;
+            color: #fff;
+        }
+
+        .verse,
+        .hadith {
+            font-size: 1.2rem;
             color: #555;
             padding: 20px;
             border-radius: 8px;
             background: #fafafa;
             text-align: left;
-            max-height: 350px;
-            overflow-y: auto;
             border: 1px solid #ddd;
-            width: 90%;
-            max-width: 800px;
+            overflow-y: auto;
+            max-height: 350px;
             box-sizing: border-box;
+            margin-top: 10px;
         }
 
-        .verse strong, .hadith strong {
-            font-weight: bold;
-            color: #2d3e50;
-        }
-
-        .verse p, .hadith p {
+        .verse p,
+        .hadith p {
             margin: 10px 0;
+        }
+
+        .verse strong,
+        .hadith strong {
+            color: #333;
+            font-weight: bold;
+        }
+
+        .verse-header,
+        .hadith-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .verse-header .surah-info,
+        .hadith-header .hadith-info {
+            color: #555;
+            font-size: 1rem;
+            font-weight: normal;
         }
 
         .loading {
             font-size: 1.2rem;
             color: #333;
-            margin-top: 20px;
+            text-align: center;
             font-weight: 500;
         }
 
-        .section h2:hover {
-            color: #007BFF;
-            cursor: pointer;
-        }
-
         /* Styling for the scrollbars */
-        .verse::-webkit-scrollbar, .hadith::-webkit-scrollbar {
+        .verse::-webkit-scrollbar,
+        .hadith::-webkit-scrollbar {
             width: 8px;
         }
-        .verse::-webkit-scrollbar-thumb, .hadith::-webkit-scrollbar-thumb {
+
+        .verse::-webkit-scrollbar-thumb,
+        .hadith::-webkit-scrollbar-thumb {
             background: #007BFF;
             border-radius: 5px;
         }
-        .verse::-webkit-scrollbar-track, .hadith::-webkit-scrollbar-track {
+
+        .verse::-webkit-scrollbar-track,
+        .hadith::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
 
         /* Responsive Design */
         @media (max-width: 600px) {
-            .verse, .hadith {
-                font-size: 1rem;
+            .section {
+                padding: 15px;
                 width: 100%;
+            }
+
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            .verse,
+            .hadith {
+                font-size: 1rem;
                 padding: 15px;
             }
         }
-
-        /* Additional styling for consistent spacing */
-        .section {
-            margin-bottom: 20px;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
     </style>
 </head>
+
 <body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            <img src="source/pic.png" alt="โลโก้คัมภีร์อัลกุรอาน">
+            คัมภีร์อัลกุรอาน
+        </div>
+        <div class="menu-toggle" id="menu-toggle">
+            <i class="fas fa-bars"></i>
+        </div>
+    </div>
+
+    <!-- Sidebar Menu -->
+    <div class="menu" id="menu">
+        <a href="hadith.html">ฮะดีษ</a>
+        <a href="prayer.html">การละหมาด</a>
+        <a href="tasbih.html">ทัสบิฮ์</a>
+        <a href="99-names.html">99 ชื่อของพระอัลลอฮ์</a>
+    </div>
 
     <!-- Quranic Verse Section -->
     <div class="section">
-        <h2>Quranic Verse of the Day</h2>
+        <div class="verse-header">
+            <h2>อายะห์แห่งวัน</h2>
+            <button class="copy-btn" id="copy-verse-btn"><i class="fas fa-copy"></i></button>
+        </div>
         <div id="verse" class="verse">
-            <div class="loading">Loading Quranic Verse...</div>
+            <div class="loading">กำลังโหลดอายะห์...</div>
         </div>
     </div>
 
     <!-- Hadith Section -->
     <div class="section">
-        <h2>Hadith of the Day</h2>
+        <div class="hadith-header">
+            <h2>ฮะดีษแห่งวัน</h2>
+            <button class="copy-btn" id="copy-hadith-btn"><i class="fas fa-copy"></i></button>
+        </div>
         <div id="hadith" class="hadith">
-            <div class="loading">Loading Hadith...</div>
+            <div class="loading">กำลังโหลดฮะดีษ...</div>
         </div>
     </div>
 
     <script>
+        // Function to copy text to clipboard
+        function copyToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+        }
+
         // Function to fetch a random Quranic verse
         function fetchRandomVerse() {
             const surahNumber = Math.floor(Math.random() * 114) + 1;
@@ -122,23 +309,29 @@
                     const englishVerse = englishData.verse[randomVerseKey];
                     const verseNumber = randomVerseKey.split('_')[1]; // Extract verse number from key like "verse_1"
 
-                    // Display Surah reference, verse number, and content together
+                    // Update the Verse of the Day section
                     document.getElementById('verse').innerHTML = `
-                        <div id="surah-info">
-                            <strong>Surah ${surahNumber}: ${arabicData.name}</strong><br>
-                            (Verses 1 to ${arabicData.count})
+                        <div class="surah-info">
+                            <strong>ซูเราะห์ ${surahNumber}: ${arabicData.name}</strong><br>
+                            (อายะห์ที่ 1 ถึง ${arabicData.count})
                         </div>
-                        <strong>Verse ${verseNumber}:</strong><br>
-                        <strong>Arabic:</strong><br>
+                        <strong>อายะห์ ${verseNumber}:</strong><br>
+                        <strong>อาหรับ:</strong><br>
                         <p>${arabicVerse}</p>
                         <br>
-                        <strong>English:</strong><br>
+                        <strong>ภาษาอังกฤษ:</strong><br>
                         <p>${englishVerse}</p>
                     `;
+                    
+                    // Add copy functionality with references
+                    document.getElementById('copy-verse-btn').onclick = () => {
+                        const reference = `คัมภีร์อัลกุรอาน, ซูเราะห์ ${surahNumber}: ${arabicData.name} - อายะห์ ${verseNumber}`;
+                        copyToClipboard(`${arabicVerse}\n\n${englishVerse}\n\nอ้างอิง: ${reference}`);
+                    };
                 })
                 .catch(error => {
-                    console.error("Error fetching data:", error);
-                    document.getElementById('verse').innerHTML = "Error fetching data. Please try again later.";
+                    console.error("เกิดข้อผิดพลาดในการดึงข้อมูล:", error);
+                    document.getElementById('verse').innerHTML = "เกิดข้อผิดพลาดในการดึงข้อมูล โปรดลองใหม่อีกครั้ง";
                 });
         }
 
@@ -153,15 +346,15 @@
         // Function to fetch a random Hadith
         function fetchRandomHadith() {
             const books = [
-                { slug: "bukhari", title: "Sahih al-Bukhari" },
-                { slug: "muslim", title: "Sahih Muslim" },
-                { slug: "nasai", title: "Sunan al-Nasa'i" },
-                { slug: "abudawud", title: "Sunan Abi Dawud" },
-                { slug: "tirmidhi", title: "Jami' al-Tirmidhi" },
-                { slug: "ibnmajah", title: "Sunan Ibn Majah" },
-                { slug: "malik", title: "Muwatta Malik" },
-                { slug: "ahmed", title: "Musnad Ahmad ibn Hanbal" },
-                { slug: "darimi", title: "Sunan al-Darimi" }
+                { slug: "bukhari", title: "ซาฮีฮ์อัลบุคอรี" },
+                { slug: "muslim", title: "ซาฮีฮ์มุสลิม" },
+                { slug: "nasai", title: "ซูนานอัลนาซาอี" },
+                { slug: "abudawud", title: "ซูนานอาบูดาวูด" },
+                { slug: "tirmidhi", title: "จามิอฺอัลติรมิซีย์" },
+                { slug: "ibnmajah", title: "ซูนานอิบนมาญะห์" },
+                { slug: "malik", title: "มุวัตตะอ์มาลิก" },
+                { slug: "ahmed", title: "มุสนัดอาเหม็ดอิบนฮันบาล" },
+                { slug: "darimi", title: "ซูนานอัลดาริมี" }
             ];
 
             const selectedBook = books[Math.floor(Math.random() * books.length)];
@@ -174,29 +367,41 @@
                         .then(response => response.json())
                         .then(data => {
                             const randomHadith = data.hadiths[Math.floor(Math.random() * data.hadiths.length)];
+
+                            // Update the Hadith of the Day section
                             document.getElementById('hadith').innerHTML = `
-                                <strong>${selectedBook.title} - Chapter: ${randomChapter.book_name}</strong><br>
-                                <strong>Hadith Number:</strong> ${randomHadith.id}<br><br>
-                                <strong>Arabic:</strong><br>
-                                <p>${randomHadith.arabic}</p><br>
-                                <strong>English:</strong><br>
-                                <p>${randomHadith.english.text}</p>
+                                <div class="hadith-info">
+                                    <strong>${selectedBook.title} - หมวด: ${randomChapter.book_name}</strong><br>
+                                    <strong>หมายเลขฮะดีษ:</strong> ${randomHadith.id}<br><br>
+                                    <strong>อาหรับ:</strong><br>
+                                    <p>${randomHadith.arabic}</p><br>
+                                    <strong>ภาษาอังกฤษ:</strong><br>
+                                    <p>${randomHadith.english.text}</p>
+                                </div>
                             `;
+
+                            // เพิ่มฟังก์ชั่นคัดลอกพร้อมอ้างอิง
+                            document.getElementById('copy-hadith-btn').onclick = () => {
+                                const reference = `${selectedBook.title} - หมวด: ${randomChapter.book_name} - ฮะดีษ ${randomHadith.id}`;
+                                copyToClipboard(`${randomHadith.arabic}\n\n${randomHadith.english.text}\n\nอ้างอิง: ${reference}`);
+                            };
                         })
                         .catch(error => {
-                            console.error("Error fetching hadith data:", error);
-                            document.getElementById('hadith').innerHTML = "Error fetching data. Please try again later.";
+                            console.error("เกิดข้อผิดพลาดในการดึงข้อมูลฮะดีษ:", error);
+                            document.getElementById('hadith').innerHTML = "เกิดข้อผิดพลาดในการดึงข้อมูลฮะดีษ โปรดลองใหม่อีกครั้ง";
                         });
                 })
                 .catch(error => {
-                    console.error("Error fetching chapter names:", error);
-                    document.getElementById('hadith').innerHTML = "Error fetching chapter names. Please try again later.";
+                    console.error("เกิดข้อผิดพลาดในการดึงชื่อหมวดหมู่:", error);
+                    document.getElementById('hadith').innerHTML = "เกิดข้อผิดพลาดในการดึงชื่อหมวดหมู่ โปรดลองใหม่อีกครั้ง";
                 });
         }
 
-        // Initialize the page
+        // เริ่มต้นการโหลด
         fetchRandomVerse();
         fetchRandomHadith();
     </script>
+
 </body>
-</html> 
+
+</html>
