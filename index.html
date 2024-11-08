@@ -7,83 +7,101 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         /* Global Styles */
-body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    padding-top: 80px; /* Adjusted for fixed navbar */
-}
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            padding-top: 0px; /* Adjusted for fixed navbar */
+        }
 
-/* Navbar Styles */
-nav {
-    width: 90%;
-    background-color: #3498db;
-    padding: 15px 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 10;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
+        /* Navbar Styles */
+        nav {
+            width: 95%;
+            background-color: #3498db;
+            padding: 15px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
 
-nav .logo img {
-    width: 40px;
-    height: 40px;
-    vertical-align: middle;
-}
+        /* Logo Styling */
+        nav .logo img {
+            width: 40px;
+            height: 40px;
+            vertical-align: middle;
+        }
 
-nav .hamburger {
-    color: white;
-    font-size: 30px;
-    cursor: pointer;
-}
+        /* Hamburger Menu Icon */
+        nav .hamburger {
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
 
-/* Sliding Menu Styles */
-.menu {
-    height: 100%;
-    width: 0;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-color: #2980b9;
-    overflow-x: hidden;
-    transition: 0.3s;
-    padding-top: 60px;
-    z-index: 20;
-}
+        /* Sliding Menu Styles */
+        .menu {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #2c3e50;
+            overflow-x: hidden;
+            transition: 0.3s;
+            padding-top: 60px;
+            z-index: 20;
+        }
 
-.menu a {
-    padding: 15px 25px;
-    text-decoration: none;
-    font-size: 1.6rem;
-    color: white;
-    display: block;
-    transition: 0.3s;
-}
+        /* Close Button in Menu */
+        .menu .close-btn {
+            position: absolute;
+            top: 0;
+            right: 25px;
+            font-size: 36px;
+            color: white;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+        }
 
-.menu a:hover {
-    background-color: #1abc9c;
-}
+        /* Menu Links */
+        .menu a {
+            padding: 15px 25px;
+            text-decoration: none;
+            font-size: 1.4rem;
+            color: white;
+            display: block;
+            transition: 0.3s;
+            border-bottom: 1px solid #34495e;
+        }
 
-.menu .close-btn {
-    position: absolute;
-    top: 0;
-    right: 25px;
-    font-size: 36px;
-    color: white;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-}
+        /* Menu Link Hover Effect */
+        .menu a:hover {
+            background-color: #3498db;
+            color: white;
+        }
 
-/* Section Styles */
+        /* Active Menu Link */
+        .menu a.active {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        /* Menu Links with Icons */
+        .menu a i {
+            margin-right: 10px;
+        }
+
+        /* Section Styles */
 .section {
     width: 100%;
     max-width: 900px;
@@ -139,7 +157,7 @@ nav .hamburger {
     color: #3498db;
 }
 
-/* Prayer Times Cards */
+        /* Prayer Times Cards */
         .prayer-times-cards {
             display: flex;
             justify-content: space-around;
@@ -180,31 +198,8 @@ nav .hamburger {
             color: inherit;
             margin-top: 10px;
         }
-/* Prayer Times */
-        .prayer-times {
-            background: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 15px;
-        }
 
-        .prayer-times h2 {
-            font-size: 1.2rem;
-            color: #3498db;
-            margin-bottom: 15px;
-        }
-
-        .prayer-times ul {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .prayer-times li {
-            padding: 8px 0;
-            font-size: 1rem;
-            color: #333;
-        }
-
+        /* Loading Indicator */
         .loading {
             font-size: 1rem;
             color: #333;
@@ -224,41 +219,41 @@ nav .hamburger {
             animation: spin 1s linear infinite;
             margin-right: 10px;
         }
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
 
-/* Responsive Design */
-@media (max-width: 768px) {
-    .section {
-        padding: 10px;
-        width: 100%;
-    }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
-    .verse, .hadith {
-        font-size: 0.9rem;
-        padding: 12px;
-    }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .section {
+                padding: 10px;
+                width: 100%;
+            }
 
-    nav ul {
-        display: none;
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        margin-top: 10px;
-    }
+            .verse, .hadith {
+                font-size: 0.9rem;
+                padding: 12px;
+            }
 
-    .hamburger {
-        display: block;
-    }
-}
+            nav ul {
+                display: none;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .hamburger {
+                display: block;
+            }
+        }
 
     </style>
 </head>
 <body>
-
-    <!-- Top Navigation Bar -->
+<!-- Top Navigation Bar -->
     <nav>
         <div class="logo">
             <img src="source/pic.png" alt="Logo">
@@ -271,13 +266,13 @@ nav .hamburger {
     <!-- Side Menu (Slides In) -->
     <div id="myMenu" class="menu">
         <button class="close-btn" onclick="closeMenu()">×</button>
-        <a href="quran.html">Quran Kareem</a>
-        <a href="verse.html">Quran(verse with Audio)</a>
-        <a href="hadith.html">Hadith</a>
-        <a href="prayer.html">Prayer</a>
-        <a href="tasbih.html">Tasbih</a>
-        <a href="99-names.html">100 Names</a>
-        <a href="https://apk.e-droid.net/apk/app3364616-cidhno.apk?v=3">Dawolaod Apk</a>
+        <a href="quran.html"><i class="fas fa-book"></i> Quran Kareem</a>
+        <a href="verse.html"><i class="fas fa-headphones"></i> Quran (verse with Audio)</a>
+        <a href="hadith.html"><i class="fas fa-book-open"></i> Hadith</a>
+        <a href="prayer.html"><i class="fas fa-pray"></i> Prayer</a>
+        <a href="tasbih.html"><i class="fas fa-spell-check"></i> Tasbih</a>
+        <a href="99-names.html"><i class="fas fa-users"></i> 99 Names</a>
+        <a href="apk/alquran1.apk"><i class="fas fa-download"></i> Download Apk</a>
     </div>
 
     <!-- Prayer Times Section -->
