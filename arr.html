@@ -17,9 +17,38 @@
             line-height: 1.6;
             font-size: 18px;
             word-wrap: break-word;
-            transition: background-color 0.5s, color 0.5s;
+            transition: background 0.3s, color 0.3s;
         }
 
+        /* Buttons for Changing Color Schemes */
+        .controls {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 999;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+        }
+
+        .controls button {
+            background-color: #2980b9;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .controls button:hover {
+            background-color: #3498db;
+        }
+
+        /* Text styling for Arabic */
         .arabic-text {
             font-family: 'Amiri', serif;
             font-size: 1.6em;
@@ -28,7 +57,6 @@
             padding: 5px;
             color: #2980b9;
             margin: 0;
-            transition: color 0.5s;
         }
 
         .verse {
@@ -120,44 +148,18 @@
             margin-bottom: 20px;
         }
 
-        /* Scroll control UI */
-        .scroll-control {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-            color: white;
-            border-radius: 5px;
-        }
-
-        .scroll-control button {
-            padding: 5px 10px;
-            margin: 5px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .scroll-control input {
-            width: 50px;
-            margin: 5px;
-        }
-
     </style>
 </head>
 <body>
 
-<!-- Scroll Control Panel -->
-<div class="scroll-control">
-    <button onclick="changeBackgroundColor()">Change Background Color</button>
-    <button onclick="changeTextColor()">Change Text Color</button>
-    <label for="scroll-speed">Scroll Speed (ms): </label>
-    <input type="number" id="scroll-speed" value="100" min="10" max="1000">
-    <button onclick="startAutoScroll()">Start Auto Scroll</button>
-    <button onclick="stopAutoScroll()">Stop Auto Scroll</button>
+<!-- Color and Scroll Controls -->
+<div class="controls">
+    <button onclick="changeColorScheme()">Change Color Scheme</button>
+    <button onclick="startAutoScroll()">Start Auto-Scroll</button>
+    <button onclick="stopAutoScroll()">Stop Auto-Scroll</button>
+    <button onclick="changeScrollSpeed('slow')">Slow Scroll</button>
+    <button onclick="changeScrollSpeed('medium')">Medium Scroll</button>
+    <button onclick="changeScrollSpeed('fast')">Fast Scroll</button>
 </div>
 
 <!-- Surah and Verses -->
@@ -174,6 +176,9 @@
 </div>
 
 <script>
+    let autoScrollInterval = null;
+    let scrollSpeed = 50; // Default speed (fast)
+
     document.addEventListener('DOMContentLoaded', () => {
         // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
@@ -233,7 +238,6 @@
         }
     }
 
-    // Open the modal and display both the Arabic and Translation
     function openModal(verseSpan) {
         const arabicText = verseSpan.getAttribute('data-arabic');
         const translatedText = verseSpan.getAttribute('data-translation');
@@ -251,7 +255,7 @@
             modal.style.display = 'none';
         });
 
-               // Close modal if clicked outside the modal content
+        // Close modal if clicked outside the modal content
         window.addEventListener('click', (event) => {
             if (event.target === modal) {
                 modal.style.display = 'none';
@@ -259,55 +263,53 @@
         });
     }
 
-    // Auto Scrolling functionality
-    let scrollInterval;
-    let scrollSpeed = 100; // Default scroll speed
+    // Change color scheme
+    function changeColorScheme() {
+        const currentBgColor = document.body.style.backgroundColor;
+        if (currentBgColor === 'rgb(244, 244, 244)') {
+            document.body.style.backgroundColor = '#2c3e50';  // Dark background
+            document.body.style.color = '#ecf0f1';  // Light text
+        } else {
+            document.body.style.backgroundColor = '#f4f4f4';  // Default background
+            document.body.style.color = '#333';  // Default text color
+        }
+    }
 
-    // Start auto-scrolling through the verses
+    // Start auto-scrolling
     function startAutoScroll() {
-        const verses = document.querySelectorAll('.verse');
-        let currentIndex = 0;
+        if (autoScrollInterval) clearInterval(autoScrollInterval);
 
-        scrollInterval = setInterval(() => {
-            if (currentIndex < verses.length) {
-                verses[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                currentIndex++;
+        let currentScrollPosition = 0;
+        const verses = document.querySelectorAll('.verse');
+        autoScrollInterval = setInterval(() => {
+            if (currentScrollPosition < verses.length) {
+                verses[currentScrollPosition].scrollIntoView({ behavior: 'smooth' });
+                currentScrollPosition++;
             } else {
-                currentIndex = 0; // Restart from the beginning
+                clearInterval(autoScrollInterval);
             }
         }, scrollSpeed);
     }
 
     // Stop auto-scrolling
     function stopAutoScroll() {
-        clearInterval(scrollInterval);
+        clearInterval(autoScrollInterval);
     }
 
-    // Change background color randomly
-    function changeBackgroundColor() {
-        const colors = ['#3498db', '#e74c3c', '#2ecc71', '#9b59b6', '#f39c12'];
-        const randomColor = colors[Math.floor(Math.random() * colors.length)];
-        document.body.style.backgroundColor = randomColor;
-    }
-
-    // Change text color randomly
-    function changeTextColor() {
-        const colors = ['#3498db', '#e74c3c', '#2ecc71', '#9b59b6', '#f39c12'];
-        const randomColor = colors[Math.floor(Math.random() * colors.length)];
-        const arabicTextElements = document.querySelectorAll('.arabic-text');
-        arabicTextElements.forEach(el => {
-            el.style.color = randomColor;
-        });
-    }
-
-    // Update the scroll speed based on user input
-    document.getElementById('scroll-speed').addEventListener('input', (e) => {
-        scrollSpeed = parseInt(e.target.value, 10);
-        if (scrollInterval) {
-            stopAutoScroll();
-            startAutoScroll();
+    // Change scroll speed
+    function changeScrollSpeed(speed) {
+        switch (speed) {
+            case 'slow':
+                scrollSpeed = 200;
+                break;
+            case 'medium':
+                scrollSpeed = 100;
+                break;
+            case 'fast':
+                scrollSpeed = 50;
+                break;
         }
-    });
+    }
 </script>
 
 </body>
