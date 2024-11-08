@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran Kareem</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             margin: 0;
@@ -17,6 +18,7 @@
             line-height: 1.6;
             font-size: 18px;
             word-wrap: break-word;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         /* Text styling for Arabic */
@@ -28,6 +30,14 @@
             padding: 5px;
             color: #2980b9;
             margin: 0;
+        }
+
+        /* Text styling for English Translation */
+        .translation-text {
+            font-family: 'Roboto', sans-serif;
+            font-size: 1.6em;
+            padding: 5px;
+            color: #2ecc71;
         }
 
         .verse {
@@ -119,9 +129,65 @@
             margin-bottom: 20px;
         }
 
+        /* Dropdown menu styles */
+        .dropdown {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 999;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown select {
+            padding: 5px 10px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+        }
+
+        .dropdown i {
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
+
+<!-- Dropdowns for User Settings -->
+<div class="dropdown">
+    <div>
+        <label for="scroll-speed" style="display: none;">Scroll Speed:</label>
+        <select id="scroll-speed">
+            <option value="slow"> <i class="fas fa-turtle"></i> </option>
+            <option value="normal" selected> <i class="fas fa-arrows-alt-h"></i> </option>
+            <option value="fast"> <i class="fas fa-bolt"></i> </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="text-color" style="display: none;">Text Color:</label>
+        <select id="text-color">
+            <option value="#2980b9" selected> <i class="fas fa-palette"></i> Blue </option>
+            <option value="#2ecc71"> <i class="fas fa-palette"></i> Green </option>
+            <option value="#e74c3c"> <i class="fas fa-palette"></i> Red </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="bg-color" style="display: none;">Background Color:</label>
+        <select id="bg-color">
+            <option value="#f4f4f4" selected> <i class="fas fa-paint-roller"></i> Light </option>
+            <option value="#34495e"> <i class="fas fa-paint-roller"></i> Dark </option>
+            <option value="#ecf0f1"> <i class="fas fa-paint-roller"></i> Soft Light </option>
+        </select>
+    </div>
+</div>
 
 <!-- Surah and Verses -->
 <div class="surah-heading" id="surah-heading" style="display: none;"></div>
@@ -141,6 +207,11 @@
         // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
+        
+        // Event listeners for dropdowns to update the settings
+        document.getElementById('scroll-speed').addEventListener('change', updateScrollSpeed);
+        document.getElementById('text-color').addEventListener('change', updateTextColor);
+        document.getElementById('bg-color').addEventListener('change', updateBackgroundColor);
     });
 
     function getQueryParam(param) {
@@ -220,6 +291,39 @@
                 modal.style.display = 'none';
             }
         });
+    }
+
+    // Update scroll speed
+    function updateScrollSpeed() {
+        const speed = document.getElementById('scroll-speed').value;
+        let scrollDuration = 0;
+
+        switch (speed) {
+            case 'slow':
+                scrollDuration = 3000; // Slow speed
+                break;
+            case 'normal':
+                scrollDuration = 1500; // Normal speed
+                break;
+            case 'fast':
+                scrollDuration = 800; // Fast speed
+                break;
+        }
+
+        document.body.style.transition = `scroll-behavior ${scrollDuration}ms ease-in-out`;
+    }
+
+    // Update text color
+    function updateTextColor() {
+        const color = document.getElementById('text-color').value;
+        document.querySelectorAll('.arabic-text').forEach(element => element.style.color = color);
+        document.querySelectorAll('.translation-text').forEach(element => element.style.color = color);
+    }
+
+    // Update background color
+    function updateBackgroundColor() {
+        const color = document.getElementById('bg-color').value;
+        document.body.style.backgroundColor = color;
     }
 </script>
 
