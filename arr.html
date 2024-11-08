@@ -6,67 +6,40 @@
     <title>Quran Kareem</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        /* General body styles */
         body {
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
-            background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png'), #f4f4f4;
-            background-size: cover;
+            background: #f4f4f4;
             background-attachment: fixed;
             color: #333;
             line-height: 1.6;
             font-size: 18px;
             word-wrap: break-word;
-            transition: background 0.3s, color 0.3s;
+            transition: background-color 0.5s, color 0.5s;
         }
 
-        /* Buttons for Changing Color Schemes */
-        .controls {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            z-index: 999;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-            border-radius: 5px;
-            color: white;
-            font-size: 16px;
-        }
-
-        .controls button {
-            background-color: #2980b9;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            margin: 5px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-
-        .controls button:hover {
-            background-color: #3498db;
-        }
-
-        /* Text styling for Arabic */
+        /* Arabic text style */
         .arabic-text {
             font-family: 'Amiri', serif;
-            font-size: 1.6em;
+            font-size: 1.8em;
             direction: rtl;
             line-height: 1.6;
-            padding: 5px;
             color: #2980b9;
             margin: 0;
+            transition: color 0.5s;
         }
 
         .verse {
-            display: inline;
-            margin: 5px 0;
-            padding: 5px;
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
             color: #2980b9;
             cursor: pointer;
-            border: 1px solid transparent;
-            transition: background-color 0.3s;
+            border-radius: 8px;
+            background-color: rgba(52, 152, 219, 0.1);
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .verse:hover {
@@ -84,15 +57,16 @@
             margin-left: 10px;
         }
 
+        /* Surah heading */
         .surah-heading {
             font-size: 2em;
             text-align: center;
             padding: 20px;
             color: #3498db;
             font-weight: bold;
-            margin-top: 20px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            margin-top: 20px;
         }
 
         .first-verse {
@@ -100,7 +74,7 @@
             color: #2980b9;
             text-align: center;
             font-weight: bold;
-            margin: 10px 0;
+            margin: 20px 0;
         }
 
         /* Modal styles */
@@ -148,25 +122,51 @@
             margin-bottom: 20px;
         }
 
+        /* Scroll control panel */
+        .scroll-control {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .scroll-control button, .scroll-control input {
+            margin: 5px;
+            padding: 8px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .scroll-control input {
+            width: 60px;
+        }
+
     </style>
 </head>
 <body>
 
-<!-- Color and Scroll Controls -->
-<div class="controls">
-    <button onclick="changeColorScheme()">Change Color Scheme</button>
-    <button onclick="startAutoScroll()">Start Auto-Scroll</button>
-    <button onclick="stopAutoScroll()">Stop Auto-Scroll</button>
-    <button onclick="changeScrollSpeed('slow')">Slow Scroll</button>
-    <button onclick="changeScrollSpeed('medium')">Medium Scroll</button>
-    <button onclick="changeScrollSpeed('fast')">Fast Scroll</button>
+<!-- Scroll Control Panel -->
+<div class="scroll-control">
+    <button onclick="changeBackgroundColor()">Change Background</button>
+    <button onclick="changeTextColor()">Change Text Color</button>
+    <label for="scroll-speed">Scroll Speed:</label>
+    <input type="number" id="scroll-speed" value="100" min="10" max="1000">
+    <button onclick="startAutoScroll()">Start Auto Scroll</button>
+    <button onclick="stopAutoScroll()">Stop Auto Scroll</button>
 </div>
 
 <!-- Surah and Verses -->
 <div class="surah-heading" id="surah-heading" style="display: none;"></div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 
-<!-- The Modal for Verse and Translation -->
+<!-- Modal for Verse and Translation -->
 <div id="verse-modal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -176,11 +176,7 @@
 </div>
 
 <script>
-    let autoScrollInterval = null;
-    let scrollSpeed = 50; // Default speed (fast)
-
     document.addEventListener('DOMContentLoaded', () => {
-        // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
     });
@@ -211,51 +207,42 @@
         firstVerse.style.display = 'block';
 
         surahHeading.innerText = arabicData.name;
-        firstVerse.innerText = translationVerses['verse_0'];  // Display translation of verse_0 separately
+        firstVerse.innerText = translationVerses['verse_0']; // Display verse_0 separately
 
-        // Loop through verses starting from verse_1
-        for (let i = 1; i < count; i++) {  // Start from verse_1, i.e., ignore verse_0
+        for (let i = 1; i < count; i++) {
             const arabicVerse = arabicVerses[`verse_${i}`];
             const translatedVerse = translationVerses[`verse_${i}`];
 
             const verseSpan = document.createElement('span');
             verseSpan.classList.add('verse');
-            verseSpan.setAttribute('data-arabic', arabicVerse);  // Store Arabic verse
-            verseSpan.setAttribute('data-translation', translatedVerse);  // Store Translation
+            verseSpan.setAttribute('data-arabic', arabicVerse);
+            verseSpan.setAttribute('data-translation', translatedVerse);
 
             verseSpan.innerHTML = `
                 <span class="arabic-text">${arabicVerse}</span>
                 <span class="verse-number">${i}</span>
             `;
 
-            // Add click event to open modal
-            verseSpan.addEventListener('click', () => {
-                openModal(verseSpan);
-            });
-
-            // Add the verse directly to the body
+            verseSpan.addEventListener('click', () => openModal(verseSpan));
             document.body.appendChild(verseSpan);
         }
     }
 
+    // Modal functionality to display Arabic and Translation
     function openModal(verseSpan) {
         const arabicText = verseSpan.getAttribute('data-arabic');
         const translatedText = verseSpan.getAttribute('data-translation');
-
-        // Populate the modal with Arabic and Translation
+        
         const modal = document.getElementById('verse-modal');
         modal.querySelector('.arabic-text').innerText = arabicText;
         modal.querySelector('.translation-text').innerText = translatedText;
 
-        // Display the modal
         modal.style.display = 'block';
-
-        // Close modal when clicked on the "X"
+        
         modal.querySelector('.close').addEventListener('click', () => {
             modal.style.display = 'none';
         });
 
-        // Close modal if clicked outside the modal content
         window.addEventListener('click', (event) => {
             if (event.target === modal) {
                 modal.style.display = 'none';
@@ -263,53 +250,51 @@
         });
     }
 
-    // Change color scheme
-    function changeColorScheme() {
-        const currentBgColor = document.body.style.backgroundColor;
-        if (currentBgColor === 'rgb(244, 244, 244)') {
-            document.body.style.backgroundColor = '#2c3e50';  // Dark background
-            document.body.style.color = '#ecf0f1';  // Light text
-        } else {
-            document.body.style.backgroundColor = '#f4f4f4';  // Default background
-            document.body.style.color = '#333';  // Default text color
-        }
-    }
+    // Auto-scroll functionality
+    let scrollInterval;
+    let scrollSpeed = 100; // Default speed
 
-    // Start auto-scrolling
     function startAutoScroll() {
-        if (autoScrollInterval) clearInterval(autoScrollInterval);
-
-        let currentScrollPosition = 0;
         const verses = document.querySelectorAll('.verse');
-        autoScrollInterval = setInterval(() => {
-            if (currentScrollPosition < verses.length) {
-                verses[currentScrollPosition].scrollIntoView({ behavior: 'smooth' });
-                currentScrollPosition++;
+        let currentIndex = 0;
+
+        scrollInterval = setInterval(() => {
+            if (currentIndex < verses.length) {
+                verses[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                currentIndex++;
             } else {
-                clearInterval(autoScrollInterval);
+                currentIndex = 0; // Restart scrolling
             }
         }, scrollSpeed);
     }
 
-    // Stop auto-scrolling
     function stopAutoScroll() {
-        clearInterval(autoScrollInterval);
+        clearInterval(scrollInterval);
     }
 
-    // Change scroll speed
-    function changeScrollSpeed(speed) {
-        switch (speed) {
-            case 'slow':
-                scrollSpeed = 200;
-                break;
-            case 'medium':
-                scrollSpeed = 100;
-                break;
-            case 'fast':
-                scrollSpeed = 50;
-                break;
-        }
+    // Change background color randomly
+    function changeBackgroundColor() {
+        const colors = ['#3498db', '#e74c3c', '#2ecc71', '#9b59b6', '#f39c12'];
+        document.body.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
     }
+
+    // Change text color randomly
+    function changeTextColor() {
+        const colors = ['#3498db', '#e74c3c', '#2ecc71', '#9b59b6', '#f39c12'];
+        const arabicTextElements = document.querySelectorAll('.arabic-text');
+        arabicTextElements.forEach(el => {
+            el.style.color = colors[Math.floor(Math.random() * colors.length)];
+        });
+    }
+
+    // Update scroll speed based on user input
+    document.getElementById('scroll-speed').addEventListener('input', (e) => {
+        scrollSpeed = parseInt(e.target.value, 10);
+        if (scrollInterval) {
+            stopAutoScroll();
+            startAutoScroll();
+        }
+    });
 </script>
 
 </body>
