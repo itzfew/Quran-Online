@@ -6,40 +6,35 @@
     <title>Quran Kareem</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        /* General body styles */
         body {
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
-            background: #f4f4f4;
-            background-attachment: fixed;
-            color: #333;
+            background: #f4f4f4; /* Default background color */
+            color: #333; /* Default text color */
             line-height: 1.6;
             font-size: 18px;
             word-wrap: break-word;
-            transition: background-color 0.5s, color 0.5s;
+            transition: background-color 0.3s, color 0.3s; /* Smooth transition */
         }
 
-        /* Arabic text style */
+        /* Text styling for Arabic */
         .arabic-text {
             font-family: 'Amiri', serif;
-            font-size: 1.8em;
+            font-size: 1.6em;
             direction: rtl;
             line-height: 1.6;
-            color: #2980b9;
+            padding: 5px;
             margin: 0;
-            transition: color 0.5s;
         }
 
         .verse {
-            display: inline-block;
-            margin: 10px;
-            padding: 10px;
-            color: #2980b9;
+            display: inline;
+            margin: 5px 0;
+            padding: 5px;
             cursor: pointer;
-            border-radius: 8px;
-            background-color: rgba(52, 152, 219, 0.1);
-            transition: background-color 0.3s, color 0.3s;
+            border: 1px solid transparent;
+            transition: background-color 0.3s;
         }
 
         .verse:hover {
@@ -57,16 +52,15 @@
             margin-left: 10px;
         }
 
-        /* Surah heading */
         .surah-heading {
             font-size: 2em;
             text-align: center;
             padding: 20px;
             color: #3498db;
             font-weight: bold;
+            margin-top: 20px;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-top: 20px;
         }
 
         .first-verse {
@@ -74,7 +68,7 @@
             color: #2980b9;
             text-align: center;
             font-weight: bold;
-            margin: 20px 0;
+            margin: 10px 0;
         }
 
         /* Modal styles */
@@ -89,6 +83,7 @@
             z-index: 1000;
             padding: 50px;
             box-sizing: border-box;
+            transition: background-color 0.3s; /* Smooth transition for modal background */
         }
 
         .modal-content {
@@ -98,6 +93,7 @@
             max-width: 800px;
             margin: auto;
             text-align: center;
+            transition: color 0.3s, background-color 0.3s; /* Smooth transition for content */
         }
 
         .close {
@@ -122,51 +118,49 @@
             margin-bottom: 20px;
         }
 
-        /* Scroll control panel */
-        .scroll-control {
+        /* Color Scheme Selector */
+        .color-scheme-selector {
             position: fixed;
             top: 10px;
             right: 10px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 15px;
-            color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .scroll-control button, .scroll-control input {
-            margin: 5px;
-            padding: 8px;
-            background-color: #3498db;
-            color: white;
-            border: none;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
             border-radius: 5px;
-            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .scroll-control input {
-            width: 60px;
+        .color-scheme-selector select {
+            padding: 5px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
 
     </style>
 </head>
 <body>
 
-<!-- Scroll Control Panel -->
-<div class="scroll-control">
-    <button onclick="changeBackgroundColor()">Change Background</button>
-    <button onclick="changeTextColor()">Change Text Color</button>
-    <label for="scroll-speed">Scroll Speed:</label>
-    <input type="number" id="scroll-speed" value="150" min="10" max="1000">
-    <button onclick="startAutoScroll()">Start Auto Scroll</button>
-    <button onclick="stopAutoScroll()">Stop Auto Scroll</button>
+<!-- Color Scheme Selector -->
+<div class="color-scheme-selector">
+    <label for="color-scheme">Choose a Color Scheme:</label>
+    <select id="color-scheme">
+        <option value="default">Default</option>
+        <option value="black-on-white">Black on White</option>
+        <option value="white-on-black">White on Black</option>
+        <option value="black-on-yellow">Black on Yellow</option>
+        <option value="yellow-on-black">Yellow on Black</option>
+        <option value="white-on-purple">White on Purple</option>
+        <option value="purple-on-white">Purple on White</option>
+        <option value="blue-on-orange">Blue on Orange</option>
+        <option value="orange-on-blue">Orange on Blue</option>
+    </select>
 </div>
 
 <!-- Surah and Verses -->
 <div class="surah-heading" id="surah-heading" style="display: none;"></div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 
-<!-- Modal for Verse and Translation -->
+<!-- The Modal for Verse and Translation -->
 <div id="verse-modal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
@@ -177,8 +171,23 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Get saved color scheme from localStorage, if exists
+        const savedScheme = localStorage.getItem('colorScheme') || 'default';
+        setColorScheme(savedScheme); // Apply the saved scheme
+
+        // Set up color scheme selector
+        document.getElementById('color-scheme').value = savedScheme;
+
+        // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
+
+        // Listen for color scheme change
+        document.getElementById('color-scheme').addEventListener('change', (e) => {
+            const selectedScheme = e.target.value;
+            setColorScheme(selectedScheme);
+            localStorage.setItem('colorScheme', selectedScheme); // Save user preference
+        });
     });
 
     function getQueryParam(param) {
@@ -207,42 +216,52 @@
         firstVerse.style.display = 'block';
 
         surahHeading.innerText = arabicData.name;
-        firstVerse.innerText = translationVerses['verse_0']; // Display verse_0 separately
+        firstVerse.innerText = translationVerses['verse_0'];  // Display translation of verse_0 separately
 
-        for (let i = 1; i < count; i++) {
+        // Loop through verses starting from verse_1
+        for (let i = 1; i < count; i++) {  // Start from verse_1, i.e., ignore verse_0
             const arabicVerse = arabicVerses[`verse_${i}`];
             const translatedVerse = translationVerses[`verse_${i}`];
 
             const verseSpan = document.createElement('span');
             verseSpan.classList.add('verse');
-            verseSpan.setAttribute('data-arabic', arabicVerse);
-            verseSpan.setAttribute('data-translation', translatedVerse);
+            verseSpan.setAttribute('data-arabic', arabicVerse);  // Store Arabic verse
+            verseSpan.setAttribute('data-translation', translatedVerse);  // Store Translation
 
             verseSpan.innerHTML = `
                 <span class="arabic-text">${arabicVerse}</span>
                 <span class="verse-number">${i}</span>
             `;
 
-            verseSpan.addEventListener('click', () => openModal(verseSpan));
+            // Add click event to open modal
+            verseSpan.addEventListener('click', () => {
+                openModal(verseSpan);
+            });
+
+            // Add the verse directly to the body
             document.body.appendChild(verseSpan);
         }
     }
 
-    // Modal functionality to display Arabic and Translation
+    // Open the modal and display both the Arabic and Translation
     function openModal(verseSpan) {
         const arabicText = verseSpan.getAttribute('data-arabic');
         const translatedText = verseSpan.getAttribute('data-translation');
-        
+
+        // Populate the modal with Arabic and Translation
         const modal = document.getElementById('verse-modal');
         modal.querySelector('.arabic-text').innerText = arabicText;
         modal.querySelector('.translation-text').innerText = translatedText;
 
+        // Display the modal
         modal.style.display = 'block';
-        
+
+        // Close modal when clicked on the "X"
         modal.querySelector('.close').addEventListener('click', () => {
             modal.style.display = 'none';
         });
 
+        // Close modal if clicked outside the modal content
         window.addEventListener('click', (event) => {
             if (event.target === modal) {
                 modal.style.display = 'none';
@@ -250,51 +269,88 @@
         });
     }
 
-    // Auto-scroll functionality for slow scrolling
-    let scrollInterval;
-    let scrollSpeed = 150; // Slow scroll speed by default
+    // Set the color scheme based on user selection
+    function setColorScheme(scheme) {
+        const body = document.body;
+        const modalContent = document.querySelector('.modal-content');
+        const arabicText = document.querySelectorAll('.arabic-text');
+        const translationText = document.querySelectorAll('.translation-text');
 
-    function startAutoScroll() {
-        const verses = document.querySelectorAll('.verse');
-        let currentIndex = 0;
-
-        scrollInterval = setInterval(() => {
-            if (currentIndex < verses.length) {
-                verses[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
-                currentIndex++;
-            } else {
-                currentIndex = 0; // Restart scrolling
-            }
-        }, scrollSpeed); // Adjust speed based on user input
-    }
-
-    function stopAutoScroll() {
-        clearInterval(scrollInterval);
-    }
-
-    // Change background color randomly
-    function changeBackgroundColor() {
-        const colors = ['#3498db', '#e74c3c', '#2ecc71', '#9b59b6', '#f39c12'];
-        document.body.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-    }
-
-    // Change text color randomly
-    function changeTextColor() {
-        const colors = ['#3498db', '#e74c3c', '#2ecc71', '#9b59b6', '#f39c12'];
-        const arabicTextElements = document.querySelectorAll('.arabic-text');
-        arabicTextElements.forEach(el => {
-            el.style.color = colors[Math.floor(Math.random() * colors.length)];
-        });
-    }
-
-    // Update scroll speed based on user input
-    document.getElementById('scroll-speed').addEventListener('input', (e) => {
-        scrollSpeed = parseInt(e.target.value, 10);
-        if (scrollInterval) {
-            stopAutoScroll();
-            startAutoScroll();
+        switch (scheme) {
+            case 'black-on-white':
+                body.style.backgroundColor = '#fff';
+                body.style.color = '#000';
+                modalContent.style.backgroundColor = '#fff';
+                modalContent.style.color = '#000';
+                arabicText.forEach((text) => text.style.color = '#000');
+                translationText.forEach((text) => text.style.color = '#000');
+                break;
+            case 'white-on-black':
+                body.style.backgroundColor = '#000';
+                body.style.color = '#fff';
+                modalContent.style.backgroundColor = '#000';
+                modalContent.style.color = '#fff';
+                arabicText.forEach((text) => text.style.color = '#fff');
+                translationText.forEach((text) => text.style.color = '#fff');
+                break;
+            case 'black-on-yellow':
+                body.style.backgroundColor = '#FFEB3B';
+                body.style.color = '#000';
+                modalContent.style.backgroundColor = '#FFEB3B';
+                modalContent.style.color = '#000';
+                arabicText.forEach((text) => text.style.color = '#000');
+                translationText.forEach((text) => text.style.color = '#000');
+                break;
+            case 'yellow-on-black':
+                body.style.backgroundColor = '#000';
+                body.style.color = '#FFEB3B';
+                modalContent.style.backgroundColor = '#000';
+                modalContent.style.color = '#FFEB3B';
+                arabicText.forEach((text) => text.style.color = '#FFEB3B');
+                translationText.forEach((text) => text.style.color = '#FFEB3B');
+                break;
+            case 'white-on-purple':
+                body.style.backgroundColor = '#800080';
+                body.style.color = '#fff';
+                modalContent.style.backgroundColor = '#800080';
+                modalContent.style.color = '#fff';
+                arabicText.forEach((text) => text.style.color = '#fff');
+                translationText.forEach((text) => text.style.color = '#fff');
+                break;
+            case 'purple-on-white':
+                body.style.backgroundColor = '#fff';
+                body.style.color = '#800080';
+                modalContent.style.backgroundColor = '#fff';
+                modalContent.style.color = '#800080';
+                arabicText.forEach((text) => text.style.color = '#800080');
+                translationText.forEach((text) => text.style.color = '#800080');
+                break;
+            case 'blue-on-orange':
+                body.style.backgroundColor = '#FFA500';
+                body.style.color = '#0000FF';
+                modalContent.style.backgroundColor = '#FFA500';
+                modalContent.style.color = '#0000FF';
+                arabicText.forEach((text) => text.style.color = '#0000FF');
+                translationText.forEach((text) => text.style.color = '#0000FF');
+                break;
+            case 'orange-on-blue':
+                body.style.backgroundColor = '#0000FF';
+                body.style.color = '#FFA500';
+                modalContent.style.backgroundColor = '#0000FF';
+                modalContent.style.color = '#FFA500';
+                arabicText.forEach((text) => text.style.color = '#FFA500');
+                translationText.forEach((text) => text.style.color = '#FFA500');
+                break;
+            default:
+                body.style.backgroundColor = '#f4f4f4';
+                body.style.color = '#333';
+                modalContent.style.backgroundColor = '#fff';
+                modalContent.style.color = '#333';
+                arabicText.forEach((text) => text.style.color = '#333');
+                translationText.forEach((text) => text.style.color = '#333');
+                break;
         }
-    });
+    }
 </script>
 
 </body>
