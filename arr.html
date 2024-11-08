@@ -5,46 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran Kareem</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        :root {
+            --background-color: #f4f4f4;
+            --text-color: #000000;
+            --verse-hover-bg: #3498db;
+            --verse-hover-text: #fff;
+            --modal-bg: white;
+            --modal-text: #000;
+            --button-bg: #3498db;
+            --button-text: #fff;
+            --line-height: 1.6;
+            --font-size: 1.6em; /* Default font size for Arabic and translation text */
+            --font-weight: 400; /* Default font weight for Arabic and translation */
+        }
+
+        /* Universal Styling */
         body {
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
-            background: #f4f4f4; /* Default background color */
-            color: #333; /* Default text color */
-            line-height: 1.6;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: var(--line-height);
             font-size: 18px;
-            word-wrap: break-word;
-            transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+            transition: background-color 0.3s, color 0.3s;
+            padding-top: 60px; /* Space for sticky header */
         }
 
-        /* Text styling for Arabic */
-        .arabic-text {
+        .arabic-text, .translation-text {
             font-family: 'Amiri', serif;
-            font-size: 1.6em;
+            font-size: var(--font-size);
+            font-weight: var(--font-weight);
             direction: rtl;
-            line-height: 1.6;
+            line-height: var(--line-height);
             padding: 5px;
             margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border-radius: 5px;
         }
 
         .verse {
             display: inline;
             margin: 5px 0;
             padding: 5px;
+            color: var(--text-color);
             cursor: pointer;
-            border: 1px solid transparent;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .verse:hover {
-            background-color: #3498db;
-            color: white;
+            background-color: var(--verse-hover-bg);
+            color: var(--verse-hover-text);
         }
 
         .verse-number {
-            background-color: #3498db;
-            color: white;
+            background-color: var(--verse-hover-bg);
+            color: var(--verse-hover-text);
             font-weight: bold;
             padding: 5px 10px;
             border-radius: 50%;
@@ -56,19 +75,47 @@
             font-size: 2em;
             text-align: center;
             padding: 20px;
-            color: #3498db;
+            color: var(--verse-hover-bg);
             font-weight: bold;
             margin-top: 20px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            position: sticky;
+            top: 0;
+            background-color: var(--background-color);
+            z-index: 999;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .first-verse {
             font-size: 1.6em;
-            color: #2980b9;
+            color: var(--text-color);
             text-align: center;
             font-weight: bold;
             margin: 10px 0;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .controls select, .controls button {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1.2em;
+            border-radius: 5px;
+            background-color: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .controls button:hover, .controls select:hover {
+            background-color: #2980b9;
         }
 
         /* Modal styles */
@@ -83,17 +130,18 @@
             z-index: 1000;
             padding: 50px;
             box-sizing: border-box;
-            transition: background-color 0.3s; /* Smooth transition for modal background */
         }
 
         .modal-content {
-            background-color: white;
+            background-color: var(--modal-bg);
+            color: var(--modal-text);
             padding: 20px;
             border-radius: 8px;
             max-width: 800px;
             margin: auto;
             text-align: center;
-            transition: color 0.3s, background-color 0.3s; /* Smooth transition for content */
+            border: 2px solid var(--verse-hover-bg);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
 
         .close {
@@ -117,42 +165,42 @@
             font-size: 1.5em;
             margin-bottom: 20px;
         }
-
-        /* Color Scheme Selector */
-        .color-scheme-selector {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .color-scheme-selector select {
-            padding: 5px;
-            font-size: 1em;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
     </style>
 </head>
 <body>
 
-<!-- Color Scheme Selector -->
-<div class="color-scheme-selector">
-    <label for="color-scheme">Choose a Color Scheme:</label>
-    <select id="color-scheme">
-        <option value="default">Default</option>
-        <option value="black-on-white">Black on White</option>
-        <option value="white-on-black">White on Black</option>
-        <option value="black-on-yellow">Black on Yellow</option>
-        <option value="yellow-on-black">Yellow on Black</option>
-        <option value="white-on-purple">White on Purple</option>
-        <option value="purple-on-white">Purple on White</option>
-        <option value="blue-on-orange">Blue on Orange</option>
-        <option value="orange-on-blue">Orange on Blue</option>
+<!-- Color, Line and Font Controls -->
+<div class="controls">
+    <select onchange="changeColorScheme(this.value)">
+        <option value="black-on-white"><i class="fas fa-sun"></i> Black on White</option>
+        <option value="white-on-black"><i class="fas fa-moon"></i> White on Black</option>
+        <option value="black-on-yellow"><i class="fas fa-star"></i> Black on Yellow</option>
+        <option value="yellow-on-black"><i class="fas fa-star-of-david"></i> Yellow on Black</option>
+        <option value="white-on-purple"><i class="fas fa-gem"></i> White on Purple</option>
+        <option value="purple-on-white"><i class="fas fa-cogs"></i> Purple on White</option>
+        <option value="blue-on-orange"><i class="fas fa-fire"></i> Blue on Orange</option>
+        <option value="orange-on-blue"><i class="fas fa-water"></i> Orange on Blue</option>
+        <option value="green-on-brown"><i class="fas fa-leaf"></i> Green on Brown</option>
+    </select>
+
+    <select id="line-spacing" onchange="changeLineSpacing(this.value)">
+        <option value="1.2">1.2x</option>
+        <option value="1.4">1.4x</option>
+        <option value="1.6" selected>1.6x</option>
+        <option value="1.8">1.8x</option>
+        <option value="2.0">2.0x</option>
+    </select>
+
+    <select id="font-size" onchange="changeFontSize(this.value)">
+        <option value="1.6em" selected>Default Font Size</option>
+        <option value="1.8em">Large Font</option>
+        <option value="2.0em">Extra Large Font</option>
+    </select>
+
+    <select id="font-weight" onchange="changeFontWeight(this.value)">
+        <option value="400" selected>Normal</option>
+        <option value="700">Bold</option>
+        <option value="900">Extra Bold</option>
     </select>
 </div>
 
@@ -171,23 +219,12 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Get saved color scheme from localStorage, if exists
-        const savedScheme = localStorage.getItem('colorScheme') || 'default';
-        setColorScheme(savedScheme); // Apply the saved scheme
-
-        // Set up color scheme selector
-        document.getElementById('color-scheme').value = savedScheme;
-
         // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
 
-        // Listen for color scheme change
-        document.getElementById('color-scheme').addEventListener('change', (e) => {
-            const selectedScheme = e.target.value;
-            setColorScheme(selectedScheme);
-            localStorage.setItem('colorScheme', selectedScheme); // Save user preference
-        });
+        // Load saved preferences
+        loadPreferences();
     });
 
     function getQueryParam(param) {
@@ -269,86 +306,101 @@
         });
     }
 
-    // Set the color scheme based on user selection
-    function setColorScheme(scheme) {
-        const body = document.body;
-        const modalContent = document.querySelector('.modal-content');
-        const arabicText = document.querySelectorAll('.arabic-text');
-        const translationText = document.querySelectorAll('.translation-text');
+    // Change color scheme based on the selected theme
+    function changeColorScheme(scheme) {
+        if (scheme === 'black-on-white') {
+            document.documentElement.style.setProperty('--background-color', '#ffffff');
+            document.documentElement.style.setProperty('--text-color', '#000000');
+            document.documentElement.style.setProperty('--modal-bg', '#fff');
+            document.documentElement.style.setProperty('--modal-text', '#000');
+        } else if (scheme === 'white-on-black') {
+            document.documentElement.style.setProperty('--background-color', '#000000');
+            document.documentElement.style.setProperty('--text-color', '#ffffff');
+            document.documentElement.style.setProperty('--modal-bg', '#333');
+            document.documentElement.style.setProperty('--modal-text', '#fff');
+        } else if (scheme === 'black-on-yellow') {
+            document.documentElement.style.setProperty('--background-color', '#f1c40f');
+            document.documentElement.style.setProperty('--text-color', '#000000');
+            document.documentElement.style.setProperty('--modal-bg', '#f39c12');
+            document.documentElement.style.setProperty('--modal-text', '#000');
+        } else if (scheme === 'yellow-on-black') {
+            document.documentElement.style.setProperty('--background-color', '#000000');
+            document.documentElement.style.setProperty('--text-color', '#f1c40f');
+            document.documentElement.style.setProperty('--modal-bg', '#f39c12');
+            document.documentElement.style.setProperty('--modal-text', '#000');
+        } else if (scheme === 'white-on-purple') {
+            document.documentElement.style.setProperty('--background-color', '#8e44ad');
+            document.documentElement.style.setProperty('--text-color', '#ffffff');
+            document.documentElement.style.setProperty('--modal-bg', '#9b59b6');
+            document.documentElement.style.setProperty('--modal-text', '#fff');
+        } else if (scheme === 'purple-on-white') {
+            document.documentElement.style.setProperty('--background-color', '#ffffff');
+            document.documentElement.style.setProperty('--text-color', '#8e44ad');
+            document.documentElement.style.setProperty('--modal-bg', '#9b59b6');
+            document.documentElement.style.setProperty('--modal-text', '#fff');
+        } else if (scheme === 'blue-on-orange') {
+            document.documentElement.style.setProperty('--background-color', '#e67e22');
+            document.documentElement.style.setProperty('--text-color', '#2980b9');
+            document.documentElement.style.setProperty('--modal-bg', '#2980b9');
+            document.documentElement.style.setProperty('--modal-text', '#fff');
+        } else if (scheme === 'orange-on-blue') {
+            document.documentElement.style.setProperty('--background-color', '#2980b9');
+            document.documentElement.style.setProperty('--text-color', '#e67e22');
+            document.documentElement.style.setProperty('--modal-bg', '#e67e22');
+            document.documentElement.style.setProperty('--modal-text', '#fff');
+        } else if (scheme === 'green-on-brown') {
+            document.documentElement.style.setProperty('--background-color', '#2ecc71');
+            document.documentElement.style.setProperty('--text-color', '#8e44ad');
+            document.documentElement.style.setProperty('--modal-bg', '#8e44ad');
+            document.documentElement.style.setProperty('--modal-text', '#fff');
+        }
 
-        switch (scheme) {
-            case 'black-on-white':
-                body.style.backgroundColor = '#fff';
-                body.style.color = '#000';
-                modalContent.style.backgroundColor = '#fff';
-                modalContent.style.color = '#000';
-                arabicText.forEach((text) => text.style.color = '#000');
-                translationText.forEach((text) => text.style.color = '#000');
-                break;
-            case 'white-on-black':
-                body.style.backgroundColor = '#000';
-                body.style.color = '#fff';
-                modalContent.style.backgroundColor = '#000';
-                modalContent.style.color = '#fff';
-                arabicText.forEach((text) => text.style.color = '#fff');
-                translationText.forEach((text) => text.style.color = '#fff');
-                break;
-            case 'black-on-yellow':
-                body.style.backgroundColor = '#FFEB3B';
-                body.style.color = '#000';
-                modalContent.style.backgroundColor = '#FFEB3B';
-                modalContent.style.color = '#000';
-                arabicText.forEach((text) => text.style.color = '#000');
-                translationText.forEach((text) => text.style.color = '#000');
-                break;
-            case 'yellow-on-black':
-                body.style.backgroundColor = '#000';
-                body.style.color = '#FFEB3B';
-                modalContent.style.backgroundColor = '#000';
-                modalContent.style.color = '#FFEB3B';
-                arabicText.forEach((text) => text.style.color = '#FFEB3B');
-                translationText.forEach((text) => text.style.color = '#FFEB3B');
-                break;
-            case 'white-on-purple':
-                body.style.backgroundColor = '#800080';
-                body.style.color = '#fff';
-                modalContent.style.backgroundColor = '#800080';
-                modalContent.style.color = '#fff';
-                arabicText.forEach((text) => text.style.color = '#fff');
-                translationText.forEach((text) => text.style.color = '#fff');
-                break;
-            case 'purple-on-white':
-                body.style.backgroundColor = '#fff';
-                body.style.color = '#800080';
-                modalContent.style.backgroundColor = '#fff';
-                modalContent.style.color = '#800080';
-                arabicText.forEach((text) => text.style.color = '#800080');
-                translationText.forEach((text) => text.style.color = '#800080');
-                break;
-            case 'blue-on-orange':
-                body.style.backgroundColor = '#FFA500';
-                body.style.color = '#0000FF';
-                modalContent.style.backgroundColor = '#FFA500';
-                modalContent.style.color = '#0000FF';
-                arabicText.forEach((text) => text.style.color = '#0000FF');
-                translationText.forEach((text) => text.style.color = '#0000FF');
-                break;
-            case 'orange-on-blue':
-                body.style.backgroundColor = '#0000FF';
-                body.style.color = '#FFA500';
-                modalContent.style.backgroundColor = '#0000FF';
-                modalContent.style.color = '#FFA500';
-                arabicText.forEach((text) => text.style.color = '#FFA500');
-                translationText.forEach((text) => text.style.color = '#FFA500');
-                break;
-            default:
-                body.style.backgroundColor = '#f4f4f4';
-                body.style.color = '#333';
-                modalContent.style.backgroundColor = '#fff';
-                modalContent.style.color = '#333';
-                arabicText.forEach((text) => text.style.color = '#333');
-                translationText.forEach((text) => text.style.color = '#333');
-                break;
+        // Save the user preference to localStorage
+        localStorage.setItem('theme', scheme);
+    }
+
+    // Change line spacing and save the preference
+    function changeLineSpacing(value) {
+        document.documentElement.style.setProperty('--line-height', value);
+        localStorage.setItem('lineSpacing', value);
+    }
+
+    // Change font size
+    function changeFontSize(value) {
+        document.documentElement.style.setProperty('--font-size', value);
+        localStorage.setItem('fontSize', value);
+    }
+
+    // Change font weight
+    function changeFontWeight(value) {
+        document.documentElement.style.setProperty('--font-weight', value);
+        localStorage.setItem('fontWeight', value);
+    }
+
+    // Load saved preferences
+    function loadPreferences() {
+        const savedTheme = localStorage.getItem('theme');
+        const savedLineSpacing = localStorage.getItem('lineSpacing');
+        const savedFontSize = localStorage.getItem('fontSize');
+        const savedFontWeight = localStorage.getItem('fontWeight');
+
+        if (savedTheme) {
+            changeColorScheme(savedTheme);
+        }
+
+        if (savedLineSpacing) {
+            document.documentElement.style.setProperty('--line-height', savedLineSpacing);
+            document.getElementById('line-spacing').value = savedLineSpacing;
+        }
+
+        if (savedFontSize) {
+            document.documentElement.style.setProperty('--font-size', savedFontSize);
+            document.getElementById('font-size').value = savedFontSize;
+        }
+
+        if (savedFontWeight) {
+            document.documentElement.style.setProperty('--font-weight', savedFontWeight);
+            document.getElementById('font-weight').value = savedFontWeight;
         }
     }
 </script>
