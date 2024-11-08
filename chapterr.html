@@ -81,19 +81,27 @@
             font-weight: bold;
         }
 
-        .verse {
+        .verse-container {
+            white-space: nowrap; /* Prevent line breaks between verses */
+            font-size: 1.8em;
             margin: 0;
-            padding: 5px 0;
-            font-size: 1.5em;
-            line-height: 1.8;
-            display: block;
-            color: #333;
+            padding: 0;
+            display: inline-block;
             text-align: right;
             direction: rtl;
         }
 
+        .verse {
+            display: inline; /* Display verses inline */
+            font-size: 1.5em;
+            color: #333;
+            line-height: 1.8;
+            margin-right: 5px; /* Add some spacing between verses */
+            direction: rtl;
+        }
+
         .verse-number {
-            font-size: 1em;
+            font-size: 1.2em;
             color: #2980b9;
             font-weight: bold;
             margin-left: 10px;
@@ -274,14 +282,13 @@
     <div id="surah-heading" class="surah-heading" style="display: none;"></div>
 </div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
-<div id="content"></div>
+<div id="content" class="verse-container"></div>
 
 <!-- Back to Top Button -->
 <button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
 
 <!-- Notification -->
 <div class="notification" id="notification"></div>
-
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -298,7 +305,6 @@
 
         document.getElementById('fontSelect').value = selectedFont;
 
-        // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
     });
@@ -315,109 +321,28 @@
     }
 
     function displaySurah(data) {
-    const surahHeading = document.getElementById('surah-heading');
-    const firstVerse = document.getElementById('first-verse');
-    const content = document.getElementById('content');
-    const count = data.count;
-    const verses = data.verse;
+        const surahHeading = document.getElementById('surah-heading');
+        const firstVerse = document.getElementById('first-verse');
+        const content = document.getElementById('content');
+        const count = data.count;
+        const verses = data.verse;
 
-    surahHeading.style.display = 'block';
-    firstVerse.style.display = 'block';
-    content.innerHTML = ''; // Clear content
+        surahHeading.style.display = 'block';
+        firstVerse.style.display = 'block';
+        content.innerHTML = '';
 
-    surahHeading.innerText = data.name;
-    firstVerse.innerText = verses['verse_0'];  // Display verse_0 separately and centrally
+        surahHeading.innerText = data.name;
+        firstVerse.innerText = verses['verse_0'];
 
-    // Loop through verses starting from verse_1
-    for (let i = 1; i <= count; i++) {  // Start the loop from 1 to avoid duplicating verse_0
-        const verseKey = `verse_${i}`;
-        const verseText = verses[verseKey];
+        for (let i = 1; i <= count; i++) {
+            const verseKey = `verse_${i}`;
+            const verseText = verses[verseKey];
 
-        const verseDiv = document.createElement('div');
-        verseDiv.classList.add('verse');
-        verseDiv.setAttribute('id', `verse-${i}`);
-        verseDiv.innerHTML = `
-            <div class="arabic-text">${verseText}
-                <span class="verse-number">${i + 1}</span>
-            </div>
-        `;
-
-        // Check if verse is bookmarked
-        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-        const isBookmarked = bookmarks.includes(i);
-        const bookmarkIcon = isBookmarked ? 'fas fa-bookmark' : 'far fa-bookmark';
-
-        // Add bookmark button with icon
-        const bookmarkButton = document.createElement('button');
-        bookmarkButton.classList.add('bookmark-button');
-        bookmarkButton.innerHTML = `<i class="${bookmarkIcon}"></i>`;
-        bookmarkButton.onclick = () => toggleBookmark(i, verseDiv);
-        verseDiv.appendChild(bookmarkButton);
-
-        // Add event listener to highlight verse
-        verseDiv.onclick = () => toggleHighlight(i);
-
-        content.appendChild(verseDiv);
-    }
-
-    loadBookmarkedVerses();
-}
-
-
-    function toggleBookmark(verseId, verseElement) {
-        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-        const notification = document.getElementById('notification');
-        if (bookmarks.includes(verseId)) {
-            bookmarks.splice(bookmarks.indexOf(verseId), 1);
-            notification.innerText = `Verse ${verseId + 1} removed from bookmarks!`;
-        } else {
-            bookmarks.push(verseId);
-            notification.innerText = `Verse ${verseId + 1} bookmarked!`;
+            const verseDiv = document.createElement('span');
+            verseDiv.classList.add('verse');
+            verseDiv.innerHTML = `${verseText} <span class="verse-number">${i + 1}</span>`;
+            content.appendChild(verseDiv);
         }
-        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-        loadBookmarkedVerses();
-        showNotification();
-    }
-
-    function loadBookmarkedVerses() {
-        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-        const bookmarkedList = document.getElementById('bookmarkedList');
-        bookmarkedList.innerHTML = ''; // Clear current list
-
-        bookmarks.forEach((verseId) => {
-            const li = document.createElement('li');
-            li.innerHTML = `Verse ${verseId + 1}`;
-            li.onclick = () => scrollToVerse(verseId);
-            bookmarkedList.appendChild(li);
-        });
-    }
-
-    function scrollToVerse(verseId) {
-        const verseElement = document.getElementById(`verse-${verseId}`);
-        if (verseElement) {
-            verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-        toggleBookmarkPanel(); // Close the panel
-    }
-
-    function toggleBookmarkPanel() {
-        const panel = document.getElementById('bookmarked-panel');
-        panel.classList.toggle('open');
-    }
-
-    function toggleHighlight(verseId) {
-        const verseElement = document.getElementById(`verse-${verseId}`);
-        verseElement.classList.toggle('highlighted');
-    }
-
-    function showNotification() {
-        const notification = document.getElementById('notification');
-        notification.classList.add('show');
-        setTimeout(() => notification.classList.remove('show'), 3000);
-    }
-
-    function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function toggleTheme() {
