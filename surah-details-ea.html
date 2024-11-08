@@ -31,6 +31,23 @@
             width: 100%; /* Arabic text takes up 100% of the modal's width */
             word-wrap: break-word; /* Ensures that Arabic text breaks correctly */
             overflow-wrap: break-word; /* Handles word breaking in Arabic */
+            overflow-y: auto; /* Enables scrolling */
+            max-height: 250px; /* Fix height for scrollable area */
+        }
+
+        /* Style for scrollable areas with custom scrollbar */
+        .arabic-text::-webkit-scrollbar, .translation-text::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .arabic-text::-webkit-scrollbar-thumb, .translation-text::-webkit-scrollbar-thumb {
+            background-color: #3498db;
+            border-radius: 10px;
+        }
+
+        .arabic-text::-webkit-scrollbar-thumb:hover, .translation-text::-webkit-scrollbar-thumb:hover {
+            background-color: #2980b9;
         }
 
         .verse {
