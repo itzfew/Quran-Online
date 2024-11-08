@@ -34,14 +34,15 @@
         }
 
         .verse-number {
-            font-size: 1.4em;
+            font-size: 1.3em;
             background-color: #3498db;
             color: white;
             font-weight: bold;
             padding: 5px 10px;
             border-radius: 50%;
-            margin-right: 15px;
-            vertical-align: top;
+            margin-left: 10px;
+            position: relative;
+            top: -3px;
         }
 
         .pagination {
@@ -75,6 +76,16 @@
                 font-size: 1em;
             }
         }
+
+        @media (max-width: 480px) {
+            .verse {
+                font-size: 1.3em;
+            }
+
+            .pagination button {
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -97,7 +108,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const index = getQueryParam('index');
-        fetchSurah(index ? index : 1);
+        fetchSurah(index ? index : '001');
     });
 
     function getQueryParam(param) {
@@ -110,7 +121,7 @@
             // Show loading spinner
             document.getElementById('loading').style.display = 'block';
 
-            // Fetch Surah JSON data
+            // Fetch Surah JSON data from the provided structure
             const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(3, '0')}.json`);
             if (!response.ok) throw new Error("Error loading Surah");
 
@@ -133,48 +144,56 @@
         surahHeading.innerText = data.name;
         surahHeading.style.display = 'block';
 
-        // Store all verses along with their numbers
-        let allVerses = [];
+        // Combine all verses into a single string of words
+        let allWords = [];
+        let verseNumbers = []; // Store verse numbers
         for (let i = 0; i < count; i++) {
             const verseKey = `verse_${i}`;
             const verseText = verses[verseKey];
-            allVerses.push({ number: i + 1, text: verseText });
+            const verseWords = verseText.split(' ');
+            allWords = allWords.concat(verseWords);  // Flatten the array
+            verseNumbers.push(i + 1); // Store the verse number (1-based index)
         }
 
         const wordsPerPage = 60;
-        const totalVerses = allVerses.length;
-        const totalPages = Math.ceil(totalVerses / wordsPerPage);
+        const totalWords = allWords.length;
+        const totalPages = Math.ceil(totalWords / wordsPerPage);
 
         let currentPage = 1;
 
         // Function to render the page
         function renderPage(page) {
             const startIdx = (page - 1) * wordsPerPage;
-            const endIdx = Math.min(startIdx + wordsPerPage, totalVerses);
-            const versesToShow = allVerses.slice(startIdx, endIdx);
+            const endIdx = Math.min(startIdx + wordsPerPage, totalWords);
+            const wordsToShow = allWords.slice(startIdx, endIdx);
+            const verseNumbersToShow = verseNumbers.slice(startIdx, endIdx);  // Get corresponding verse numbers
 
             const versesContainer = document.getElementById('verses-container') || createVersesContainer();
             versesContainer.innerHTML = '';  // Clear previous content
 
-            // Loop through the selected verses for the page
-            versesToShow.forEach((verse) => {
-                const verseDiv = document.createElement('div');
-                verseDiv.classList.add('verse');
+            let verseText = '';
+            let wordCount = 0;
+            let verseIndex = 0; // Track the verse number
 
-                // Add the verse number
-                const verseNumberDiv = document.createElement('div');
-                verseNumberDiv.classList.add('verse-number');
-                verseNumberDiv.textContent = verse.number;
-                verseDiv.appendChild(verseNumberDiv);
+            // Build the HTML content with 60 words per page
+            for (let word of wordsToShow) {
+                verseText += word + ' ';
+                wordCount++;
+                if (wordCount % 15 === 0) {  // Add a line break after 15 words for better formatting
+                    verseText += '<br>';
+                }
 
-                // Add the verse text
-                const verseTextDiv = document.createElement('div');
-                verseTextDiv.classList.add('arabic-text');
-                verseTextDiv.textContent = verse.text;
-                verseDiv.appendChild(verseTextDiv);
+                // Display the verse number after every 15 words
+                if (wordCount % 15 === 0 || wordCount === wordsToShow.length) {
+                    const verseNumber = verseNumbersToShow[verseIndex++];
+                    verseText += `<span class="verse-number">${verseNumber}</span><br>`;
+                }
+            }
 
-                versesContainer.appendChild(verseDiv);
-            });
+            const verseDiv = document.createElement('div');
+            verseDiv.classList.add('verse');
+            verseDiv.innerHTML = `<span class="arabic-text">${verseText}</span>`;
+            versesContainer.appendChild(verseDiv);
 
             // Update pagination controls
             document.getElementById('prev-btn').style.display = page > 1 ? 'inline-block' : 'none';
