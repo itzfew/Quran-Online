@@ -172,7 +172,8 @@
     <!-- Language Switch -->
     <div class="language-switch-container">
         <a href="javascript:void(0)" class="language-switch selected" id="arabic-link">Arabic</a> |
-        <a href="javascript:void(0)" class="language-switch" id="english-link">English</a>
+        <a href="javascript:void(0)" class="language-switch" id="english-link">English</a> |
+        <a href="javascript:void(0)" class="language-switch" id="ea-link">English-Arabic</a>
     </div>
 
     <!-- Surah List -->
@@ -202,11 +203,21 @@
                 const surahIndex = parseInt(surah.index, 10);
                 const surahDetailsUrl = `surah-details-${language}.html?index=${surahIndex}`;
 
+                let surahTitle = '';
+                if (language === 'en') {
+                    surahTitle = surah.title;
+                } else if (language === 'ar') {
+                    surahTitle = surah.titleAr;
+                } else if (language === 'ea') {
+                    // Display both English and Arabic titles
+                    surahTitle = `${surah.title} / ${surah.titleAr}`;
+                }
+
                 const surahItem = document.createElement('a');
                 surahItem.className = 'surah-item';
                 surahItem.href = surahDetailsUrl;
                 surahItem.innerHTML = `
-                    <h3>${language === 'en' ? surah.title : surah.titleAr}</h3>
+                    <h3>${surahTitle}</h3>
                     <p>Surah: ${surahIndex}</p>
                     <p>${surah.type}</p>
                 `;
@@ -234,8 +245,8 @@
             const filteredSurahs = surahs.filter(surah => {
                 return surah.title.toLowerCase().includes(searchQuery) || surah.index.includes(searchQuery);
             });
-            const selectedLang = document.querySelector('.language-switch.selected').id === 'arabic-link' ? 'ar' : 'en';
-            renderSurahs(filteredSurahs, selectedLang);
+            const selectedLang = document.querySelector('.language-switch.selected').id;
+            renderSurahs(filteredSurahs, selectedLang === 'arabic-link' ? 'ar' : selectedLang === 'english-link' ? 'en' : 'ea');
         });
 
         // Handle Sort
@@ -243,11 +254,11 @@
             const sortCriteria = this.value;
             const surahs = await fetchSurahs();
             const sortedSurahs = sortSurahs(surahs, sortCriteria);
-            const selectedLang = document.querySelector('.language-switch.selected').id === 'arabic-link' ? 'ar' : 'en';
-            renderSurahs(sortedSurahs, selectedLang);
+            const selectedLang = document.querySelector('.language-switch.selected').id;
+            renderSurahs(sortedSurahs, selectedLang === 'arabic-link' ? 'ar' : selectedLang === 'english-link' ? 'en' : 'ea');
         });
 
-        // Toggle between Arabic and English
+        // Toggle between Arabic, English, and English-Arabic
         document.getElementById('english-link').addEventListener('click', async function () {
             const surahs = await fetchSurahs();
             renderSurahs(surahs, 'en');
@@ -260,14 +271,24 @@
             updateLanguageSelection('ar');
         });
 
+        document.getElementById('ea-link').addEventListener('click', async function () {
+            const surahs = await fetchSurahs();
+            renderSurahs(surahs, 'ea');
+            updateLanguageSelection('ea');
+        });
+
         // Update language selection UI
         function updateLanguageSelection(language) {
+            document.querySelectorAll('.language-switch').forEach(link => {
+                link.classList.remove('selected');
+            });
+
             if (language === 'en') {
                 document.getElementById('english-link').classList.add('selected');
-                document.getElementById('arabic-link').classList.remove('selected');
-            } else {
+            } else if (language === 'ar') {
                 document.getElementById('arabic-link').classList.add('selected');
-                document.getElementById('english-link').classList.remove('selected');
+            } else if (language === 'ea') {
+                document.getElementById('ea-link').classList.add('selected');
             }
         }
 
