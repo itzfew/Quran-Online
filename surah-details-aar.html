@@ -3,98 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quran Kareem (Ar)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
+    <title>Quran Kareem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Amiri', sans-serif;
-            background-image: url('https://yourbackgroundimageurl.com/image.jpg');
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png'), #f4f4f4;
             background-size: cover;
             background-attachment: fixed;
             color: #333;
-            margin: 0;
-            padding: 0;
+            line-height: 1.6;
+            transition: background 0.3s ease, color 0.3s ease;
             font-size: 18px;
-            overflow-y: auto; /* Allow scrolling if content is too long */
-            line-height: 1.6; /* Adjust line spacing for better readability */
+            word-wrap: break-word;
         }
 
-        .header {
-            text-align: center;
-            margin-top: 60px;
-        }
-
-        .surah-heading {
-            font-size: 1.7em;
+        /* Text styling for Arabic */
+        .arabic-text {
+            font-family: 'Amiri', serif;
+            font-size: 1.6em;
+            direction: rtl;
+            line-height: 1.6;
             padding: 5px;
-            color: #3498db;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .first-verse {
-            text-align: center;
-            font-size: 1.8em;
-            margin: 5px 0;
             color: #2980b9;
-            font-weight: bold;
-        }
-
-        /* Flexbox container to keep verses in one line (responsive) */
-        .verses-container {
-            display: flex;
-            flex-wrap: wrap; /* Allow wrapping of verses if space is constrained */
-            justify-content: center; /* Center verses */
-            gap: 10px; /* Space between verses */
-            margin: 10px;
+            margin: 0;
         }
 
         .verse {
-            padding: 10px;
-            background-color: rgba(236, 240, 241, 0.8);
-            font-size: 1.5em;
-            width: auto; /* Allow verses to resize based on content */
-            text-align: center;
-            box-sizing: border-box;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            display: inline-block; /* Inline block to allow continuous verses */
-            margin: 0;
-        }
-
-        .verse:hover {
-            background-color: rgba(52, 152, 219, 0.2);
+            display: inline;
+            margin: 5px 0;
+            padding: 5px;
+            color: #2980b9;
         }
 
         .verse-number {
-            font-size: 1.0em;
-            color: #2980b9;
+            background-color: #3498db;
+            color: white;
             font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 50%;
+            font-size: 1.4em;
+            margin-left: 10px;
+            text-align: center;
+            line-height: 1.2;
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            vertical-align: middle;
         }
 
-        /* Dark mode styling */
+        .verse:hover {
+            color: #3498db;
+        }
+
+        .surah-heading {
+            font-size: 2em;
+            text-align: center;
+            padding: 20px;
+            color: #3498db;
+            font-weight: bold;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .first-verse {
+            font-size: 1.6em;
+            color: #2980b9;
+            text-align: center;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
         .dark-mode {
-            background-color: #2c3e50;
+            background: #2c3e50;
+            color: #ecf0f1;
+        }
+
+        .dark-mode .arabic-text {
             color: #ecf0f1;
         }
 
         .dark-mode .verse {
-            background-color: rgba(52, 152, 219, 0.2);
             color: #ecf0f1;
         }
 
-        .dark-mode .verse-number {
-            color: #ecf0f1;
+        .settings-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .settings-item {
+            cursor: pointer;
+            padding: 10px;
+            font-size: 1.5em;
+            color: #2980b9;
+            transition: color 0.3s;
+        }
+
+        .settings-item:hover {
+            color: #3498db;
+        }
+
+        #verseSearch {
+            padding: 8px;
+            font-size: 1.2em;
+            border: 1px solid #2980b9;
+            border-radius: 5px;
+            background-color: transparent;
+            color: #2980b9;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .verse {
+            .settings-container {
+                padding: 5px;
+            }
+
+            .settings-item {
                 font-size: 1.3em;
+            }
+
+            .verse {
+                font-size: 1.2em;
             }
         }
 
         @media (max-width: 480px) {
+            .settings-item {
+                font-size: 1.1em;
+            }
+
             .verse {
                 font-size: 1.1em;
             }
@@ -103,12 +153,17 @@
 </head>
 <body>
 
-<!-- Main Content -->
-<div class="header">
-    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
+<!-- Settings Section (Fixed) -->
+<div class="settings-container">
+    <input type="text" id="verseSearch" placeholder="Search for a verse..." onkeyup="searchVerse()">
+    <div class="settings-item" onclick="toggleTheme()">
+        🌙
+    </div>
 </div>
+
+<!-- Surah and Verses -->
+<div class="surah-heading" id="surah-heading" style="display: none;"></div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
-<div class="verses-container" id="content"></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -142,46 +197,45 @@
     function displaySurah(data) {
         const surahHeading = document.getElementById('surah-heading');
         const firstVerse = document.getElementById('first-verse');
-        const content = document.getElementById('content');
         const count = data.count;
         const verses = data.verse;
 
         surahHeading.style.display = 'block';
         firstVerse.style.display = 'block';
-        content.innerHTML = ''; // Clear content
 
         surahHeading.innerText = data.name;
-        firstVerse.innerText = verses['verse_0'];  // Display verse_0 separately and centrally
+        firstVerse.innerText = verses['verse_0'];  // Display verse_0 separately
 
         // Loop through verses starting from verse_1
         for (let i = 1; i <= count; i++) {  // Start the loop from 1 to avoid duplicating verse_0
             const verseKey = `verse_${i}`;
             const verseText = verses[verseKey];
 
-            const verseDiv = document.createElement('div');
-            verseDiv.classList.add('verse');
-            verseDiv.setAttribute('id', `verse-${i}`);
-            verseDiv.innerHTML = `
-                <div class="arabic-text">${verseText}
-                    <span class="verse-number">${i + 1}</span>
-                </div>
-            `;
+            const verseSpan = document.createElement('span');
+            verseSpan.classList.add('verse');
+            verseSpan.innerHTML = `<span class="arabic-text">${verseText}</span><span class="verse-number">${i + 1}</span>`;
 
-            // Add event listener to highlight verse
-            verseDiv.onclick = () => toggleHighlight(i);
-
-            content.appendChild(verseDiv);
+            // Add the verse directly to the body
+            document.body.appendChild(verseSpan);
         }
-    }
-
-    function toggleHighlight(verseId) {
-        const verseElement = document.getElementById(`verse-${verseId}`);
-        verseElement.classList.toggle('highlighted');
     }
 
     function toggleTheme() {
         const isDark = document.body.classList.toggle('dark-mode');
         localStorage.setItem('darkMode', isDark);
+    }
+
+    function searchVerse() {
+        const searchQuery = document.getElementById('verseSearch').value.toLowerCase();
+        const verses = document.querySelectorAll('.verse');
+        verses.forEach((verse) => {
+            const verseText = verse.textContent.toLowerCase();
+            if (verseText.includes(searchQuery)) {
+                verse.style.display = '';
+            } else {
+                verse.style.display = 'none';
+            }
+        });
     }
 </script>
 
