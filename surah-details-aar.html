@@ -6,185 +6,151 @@
     <title>Quran Kareem</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <style>
+        /* Global Body Styles */
         body {
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
-            background: url('https://www.transparenttextures.com/patterns/asfalt-dark.png'), #f4f4f4;
-            background-size: cover;
-            background-attachment: fixed;
+            background: #f4f4f4;
             color: #333;
-            line-height: 1.6;
-            transition: background 0.3s ease, color 0.3s ease;
+            line-height: 1.8;
             font-size: 18px;
             word-wrap: break-word;
+            overflow-y: scroll;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
-        /* Text styling for Arabic */
+        /* Styling for Arabic Text */
         .arabic-text {
             font-family: 'Amiri', serif;
-            font-size: 1.6em;
+            font-size: 1.7em;
             direction: rtl;
             line-height: 1.6;
             padding: 5px;
             color: #2980b9;
-            margin: 0;
         }
 
+        /* Verse Container */
         .verse {
             display: block;
-            margin: 10px 0;
-            padding: 5px;
+            margin: 15px auto;
+            padding: 10px;
+            background-color: rgba(236, 240, 241, 0.9);
             color: #2980b9;
+            text-align: center;
+            font-size: 1.6em;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+            width: 90%;
+            max-width: 800px;
         }
 
         .verse-number {
+            font-size: 1.1em;
             background-color: #3498db;
             color: white;
             font-weight: bold;
             padding: 5px 10px;
             border-radius: 50%;
-            font-size: 1.2em;
             margin-left: 10px;
-            vertical-align: middle;
         }
 
+        /* Hover Effect on Verse */
         .verse:hover {
-            color: #3498db;
+            background-color: rgba(52, 152, 219, 0.2);
         }
 
+        /* Surah Heading Styles */
         .surah-heading {
-            font-size: 2em;
             text-align: center;
-            padding: 20px;
+            font-size: 2.5em;
             color: #3498db;
             font-weight: bold;
-            margin-top: 20px;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            margin-top: 50px;
+            letter-spacing: 3px;
+            padding: 20px;
         }
 
+        /* First Verse Styling */
         .first-verse {
-            font-size: 1.6em;
+            font-size: 1.8em;
             color: #2980b9;
             text-align: center;
             font-weight: bold;
             margin: 10px 0;
         }
 
-        .dark-mode {
-            background: #2c3e50;
-            color: #ecf0f1;
+        /* Pagination Styles */
+        .pagination {
+            text-align: center;
+            margin-top: 30px;
         }
 
-        .dark-mode .arabic-text {
-            color: #ecf0f1;
-        }
-
-        .dark-mode .verse {
-            color: #ecf0f1;
-        }
-
-        .settings-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.9);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-
-        .settings-item {
-            cursor: pointer;
-            padding: 10px;
-            font-size: 1.5em;
-            color: #2980b9;
-            transition: color 0.3s;
-        }
-
-        .settings-item:hover {
-            color: #3498db;
-        }
-
-        #verseSearch {
-            padding: 8px;
-            font-size: 1.2em;
-            border: 1px solid #2980b9;
+        .pagination button {
+            padding: 10px 15px;
+            font-size: 1.1em;
+            margin: 0 5px;
+            background-color: #3498db;
+            color: white;
+            border: none;
             border-radius: 5px;
-            background-color: transparent;
-            color: #2980b9;
-            width: 50%;
+            cursor: pointer;
+        }
+
+        .pagination button:hover {
+            background-color: #2980b9;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .settings-container {
-                padding: 5px;
-            }
-
-            .settings-item {
-                font-size: 1.3em;
-            }
-
             .verse {
-                font-size: 1.2em;
+                font-size: 1.4em;
+                width: 95%;
             }
 
-            #verseSearch {
-                width: 70%;
+            .surah-heading {
+                font-size: 2em;
+            }
+
+            .first-verse {
+                font-size: 1.5em;
+            }
+
+            .pagination button {
+                font-size: 1em;
             }
         }
 
         @media (max-width: 480px) {
-            .settings-item {
-                font-size: 1.1em;
-            }
-
             .verse {
-                font-size: 1.1em;
+                font-size: 1.3em;
             }
 
-            #verseSearch {
-                width: 80%;
+            .surah-heading {
+                font-size: 1.8em;
+            }
+
+            .first-verse {
+                font-size: 1.4em;
             }
         }
     </style>
 </head>
 <body>
 
-<!-- Settings Section (Fixed) -->
-<div class="settings-container">
-    <input type="text" id="verseSearch" placeholder="Search for a verse..." onkeyup="searchVerse()">
-    <div class="settings-item" onclick="toggleTheme()">
-        🌙
-    </div>
-</div>
-
 <!-- Surah and Verses -->
 <div class="surah-heading" id="surah-heading" style="display: none;"></div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 
-<!-- Container for verses -->
-<div id="verses-container"></div>
+<!-- Pagination Controls -->
+<div class="pagination" id="pagination-controls" style="display: none;">
+    <button id="prev-btn">Previous</button>
+    <button id="next-btn">Next</button>
+</div>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const darkMode = localStorage.getItem('darkMode') === 'true';
-        const textSize = localStorage.getItem('textSize') || '18';
-        const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
-
-        if (darkMode) {
-            document.body.classList.add('dark-mode');
-        }
-
-        document.body.style.fontSize = textSize + 'px';
-        document.body.style.fontFamily = selectedFont;
-
         // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
@@ -196,21 +162,14 @@
     }
 
     async function fetchSurah(index) {
-        try {
-            const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
-            const data = await response.json();
-            displaySurah(data);
-        } catch (error) {
-            console.error("Error fetching surah data:", error);
-            alert("There was an error loading the surah data.");
-        }
+        const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
+        const data = await response.json();
+        displaySurah(data);
     }
 
     function displaySurah(data) {
         const surahHeading = document.getElementById('surah-heading');
         const firstVerse = document.getElementById('first-verse');
-        const versesContainer = document.getElementById('verses-container');
-
         const count = data.count;
         const verses = data.verse;
 
@@ -220,35 +179,67 @@
         surahHeading.innerText = data.name;
         firstVerse.innerText = verses['verse_0'];  // Display verse_0 separately
 
-        // Loop through verses starting from verse_1
-        for (let i = 1; i <= count; i++) {  // Start the loop from 1 to avoid duplicating verse_0
-            const verseKey = `verse_${i}`;
-            const verseText = verses[verseKey];
+        // Calculate number of verses per page based on screen height
+        const versesPerPage = calculateVersesPerPage();
+        const totalPages = Math.ceil(count / versesPerPage);
+        let currentPage = 1;
 
-            const verseSpan = document.createElement('div');
-            verseSpan.classList.add('verse');
-            verseSpan.innerHTML = `<span class="arabic-text">${verseText}</span><span class="verse-number">${i + 1}</span>`;
-
-            versesContainer.appendChild(verseSpan);
+        function calculateVersesPerPage() {
+            // Calculate how many verses can fit on the screen based on window height
+            const verseHeight = 100; // Approx height for each verse
+            const availableHeight = window.innerHeight;
+            return Math.floor(availableHeight / verseHeight);
         }
-    }
 
-    function toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
+        function showPage(page) {
+            const startIdx = (page - 1) * versesPerPage + 1;
+            const endIdx = Math.min(page * versesPerPage, count);
 
-    function searchVerse() {
-        const searchQuery = document.getElementById('verseSearch').value.toLowerCase();
-        const verses = document.querySelectorAll('.verse');
-        verses.forEach((verse) => {
-            const verseText = verse.textContent.toLowerCase();
-            if (verseText.includes(searchQuery)) {
-                verse.style.display = '';
-            } else {
-                verse.style.display = 'none';
+            // Clear existing verses
+            const versesContainer = document.getElementById('verses-container');
+            if (versesContainer) {
+                versesContainer.remove();
             }
-        });
+
+            // Create new container for verses
+            const newContainer = document.createElement('div');
+            newContainer.id = 'verses-container';
+            document.body.appendChild(newContainer);
+
+            for (let i = startIdx; i <= endIdx; i++) {
+                const verseKey = `verse_${i}`;
+                const verseText = verses[verseKey];
+
+                const verseDiv = document.createElement('div');
+                verseDiv.classList.add('verse');
+                verseDiv.innerHTML = `<span class="arabic-text">${verseText}</span><span class="verse-number">${i}</span>`;
+                newContainer.appendChild(verseDiv);
+            }
+
+            // Update pagination controls visibility
+            document.getElementById('prev-btn').style.display = page > 1 ? 'inline-block' : 'none';
+            document.getElementById('next-btn').style.display = page < totalPages ? 'inline-block' : 'none';
+        }
+
+        // Display first page of verses
+        showPage(currentPage);
+
+        // Set up pagination buttons
+        document.getElementById('prev-btn').onclick = () => {
+            if (currentPage > 1) {
+                currentPage--;
+                showPage(currentPage);
+            }
+        };
+
+        document.getElementById('next-btn').onclick = () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                showPage(currentPage);
+            }
+        };
+
+        document.getElementById('pagination-controls').style.display = 'block';
     }
 </script>
 
