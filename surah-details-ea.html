@@ -28,6 +28,9 @@
             padding: 5px;
             color: #2980b9;
             margin: 0;
+            width: 100%; /* Arabic text takes up 100% of the modal's width */
+            word-wrap: break-word; /* Ensures that Arabic text breaks correctly */
+            overflow-wrap: break-word; /* Handles word breaking in Arabic */
         }
 
         .verse {
@@ -93,12 +96,14 @@
             background-color: white;
             padding: 20px;
             border-radius: 8px;
-            width: 100%; /* Full width */
-            max-width: 800px; /* Max width to ensure it's not too wide on large screens */
+            width: 100%;
+            max-width: 800px;
             margin: auto;
             text-align: center;
-            overflow: hidden; /* Prevent content overflow */
-            max-height: 80vh; /* Limit height */
+            overflow: hidden;
+            max-height: 80vh; /* Ensure modal is within viewport */
+            display: flex;
+            flex-direction: column;
         }
 
         .close {
@@ -120,17 +125,17 @@
         .modal-content .arabic-text {
             font-size: 1.5em;
             margin-bottom: 20px;
-            overflow-y: auto; /* Make the Arabic text scrollable */
-            max-height: 250px; /* Limit height */
-            padding-right: 10px; /* Prevent text from touching the scroll */
+            overflow-y: auto;
+            max-height: 250px; /* Make the Arabic text scrollable */
+            padding-right: 10px;
         }
 
         .modal-content .translation-text {
             font-size: 1.5em;
             margin-bottom: 20px;
-            max-height: 250px; /* Set a fixed height for translation text */
-            overflow-y: auto; /* Make the translation scrollable */
-            padding-right: 10px; /* Prevent text from touching the scroll */
+            max-height: 250px; /* Make the translation text scrollable */
+            overflow-y: auto;
+            padding-right: 10px;
         }
 
         /* Smooth transition on modal appearance */
@@ -141,7 +146,7 @@
 
         .modal.hide {
             opacity: 0;
-            pointer-events: none; /* Prevent interaction when hidden */
+            pointer-events: none;
         }
 
         /* Responsive Design */
@@ -157,7 +162,7 @@
 
             .translation-text {
                 font-size: 1.4em;
-                max-height: 250px; /* Adjust height for smaller screens */
+                max-height: 250px;
             }
 
             .verse-number {
@@ -186,7 +191,7 @@
 
             .translation-text {
                 font-size: 1.2em;
-                max-height: 200px; /* Reduce height on very small screens */
+                max-height: 200px;
             }
 
             .verse-number {
