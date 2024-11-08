@@ -113,10 +113,73 @@
             cursor: pointer;
         }
 
-        .modal-content .arabic-text,
+        .modal-content .arabic-text {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
         .modal-content .translation-text {
             font-size: 1.5em;
             margin-bottom: 20px;
+            max-height: 300px; /* Set a fixed height for translation text */
+            overflow-y: auto; /* Make the translation scrollable */
+            padding-right: 10px; /* Prevent text from touching the scroll */
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 90%;
+                padding: 15px;
+            }
+
+            .arabic-text {
+                font-size: 1.4em;
+            }
+
+            .translation-text {
+                font-size: 1.4em;
+            }
+
+            .verse-number {
+                font-size: 1em;
+            }
+
+            .surah-heading {
+                font-size: 1.8em;
+            }
+
+            .first-verse {
+                font-size: 1.4em;
+            }
+        }
+
+        /* Extra small screen handling */
+        @media (max-width: 480px) {
+            .modal-content {
+                width: 95%;
+                padding: 10px;
+            }
+
+            .arabic-text {
+                font-size: 1.2em;
+            }
+
+            .translation-text {
+                font-size: 1.2em;
+            }
+
+            .verse-number {
+                font-size: 0.9em;
+            }
+
+            .surah-heading {
+                font-size: 1.6em;
+            }
+
+            .first-verse {
+                font-size: 1.2em;
+            }
         }
 
     </style>
