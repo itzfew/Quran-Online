@@ -28,15 +28,21 @@
             padding: 5px;
             color: #2980b9;
             margin: 0;
-            display: inline-block;
-            cursor: pointer;
         }
 
         .verse {
-            display: inline-block;
+            display: inline;
             margin: 5px 0;
             padding: 5px;
             color: #2980b9;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: background-color 0.3s;
+        }
+
+        .verse:hover {
+            background-color: #3498db;
+            color: white;
         }
 
         .verse-number {
@@ -47,10 +53,6 @@
             border-radius: 50%;
             font-size: 1.2em;
             margin-left: 10px;
-        }
-
-        .verse:hover {
-            color: #3498db;
         }
 
         .surah-heading {
@@ -72,52 +74,51 @@
             margin: 10px 0;
         }
 
-        /* Popup Styles */
-        .popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
+        /* Modal styles */
+        .modal {
             display: none;
-            z-index: 1001;
-        }
-
-        .popup .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 1.5em;
-            cursor: pointer;
-        }
-
-        /* Popup Background */
-        .popup-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            display: none;
+            background-color: rgba(0, 0, 0, 0.7);
             z-index: 1000;
+            padding: 50px;
+            box-sizing: border-box;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .verse {
-                font-size: 1.2em;
-            }
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 800px;
+            margin: auto;
+            text-align: center;
         }
 
-        @media (max-width: 480px) {
-            .verse {
-                font-size: 1.1em;
-            }
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 25px;
         }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content .arabic-text,
+        .modal-content .translation-text {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
     </style>
 </head>
 <body>
@@ -126,12 +127,13 @@
 <div class="surah-heading" id="surah-heading" style="display: none;"></div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 
-<!-- Popup for Translation -->
-<div id="popup-background" class="popup-background"></div>
-<div id="popup" class="popup">
-    <div class="close-btn" onclick="closePopup()">×</div>
-    <h3 id="popup-title"></h3>
-    <p id="popup-content"></p>
+<!-- The Modal for Verse and Translation -->
+<div id="verse-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="arabic-text"></div>
+        <div class="translation-text"></div>
+    </div>
 </div>
 
 <script>
@@ -147,54 +149,77 @@
     }
 
     async function fetchSurah(index) {
-        const surahResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
-        const surahData = await surahResponse.json();
-        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(3, '0')}.json`);
+        const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
+        const arabicData = await arabicResponse.json();
+
+        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(1, '0')}.json`);
         const translationData = await translationResponse.json();
-        displaySurah(surahData, translationData);
+
+        displaySurah(arabicData, translationData);
     }
 
-    function displaySurah(surahData, translationData) {
+    function displaySurah(arabicData, translationData) {
         const surahHeading = document.getElementById('surah-heading');
         const firstVerse = document.getElementById('first-verse');
-        const verses = surahData.verse;
-        const translation = translationData.verse;
+        const count = arabicData.count;
+        const arabicVerses = arabicData.verse;
+        const translationVerses = translationData.verse;
 
         surahHeading.style.display = 'block';
         firstVerse.style.display = 'block';
 
-        surahHeading.innerText = surahData.name;
-        firstVerse.innerText = verses['verse_0'];  // Display verse_0 separately
+        surahHeading.innerText = arabicData.name;
+        firstVerse.innerText = translationVerses['verse_0'];  // Display translation of verse_0 separately
 
         // Loop through verses starting from verse_1
-        for (let i = 1; i <= surahData.count; i++) {  // Start the loop from 1 to avoid duplicating verse_0
-            const verseKey = `verse_${i}`;
-            const verseText = verses[verseKey];
-            const verseTranslation = translation[verseKey];
+        for (let i = 1; i < count; i++) {  // Start from verse_1, i.e., ignore verse_0
+            const arabicVerse = arabicVerses[`verse_${i}`];
+            const translatedVerse = translationVerses[`verse_${i}`];
 
             const verseSpan = document.createElement('span');
             verseSpan.classList.add('verse');
-            verseSpan.innerHTML = `<span class="arabic-text" onclick="showTranslation('${verseTranslation}', '${verseText}')">${verseText}</span><span class="verse-number">${i + 1}</span>`;
+            verseSpan.setAttribute('data-arabic', arabicVerse);  // Store Arabic verse
+            verseSpan.setAttribute('data-translation', translatedVerse);  // Store Translation
+
+            verseSpan.innerHTML = `
+                <span class="arabic-text">${arabicVerse}</span>
+                <span class="verse-number">${i}</span>
+            `;
+
+            // Add click event to open modal
+            verseSpan.addEventListener('click', () => {
+                openModal(verseSpan);
+            });
 
             // Add the verse directly to the body
             document.body.appendChild(verseSpan);
         }
     }
 
-    function showTranslation(translation, arabicText) {
-        // Display the popup with the translation
-        document.getElementById('popup-title').innerText = 'Translation';
-        document.getElementById('popup-content').innerText = translation;
+    // Open the modal and display both the Arabic and Translation
+    function openModal(verseSpan) {
+        const arabicText = verseSpan.getAttribute('data-arabic');
+        const translatedText = verseSpan.getAttribute('data-translation');
 
-        // Show popup and background
-        document.getElementById('popup').style.display = 'block';
-        document.getElementById('popup-background').style.display = 'block';
-    }
+        // Populate the modal with Arabic and Translation
+        const modal = document.getElementById('verse-modal');
+        modal.querySelector('.arabic-text').innerText = arabicText;
+        modal.querySelector('.translation-text').innerText = translatedText;
 
-    function closePopup() {
-        // Hide popup and background
-        document.getElementById('popup').style.display = 'none';
-        document.getElementById('popup-background').style.display = 'none';
+        // Display the modal
+        modal.style.display = 'block';
+
+        // Close modal when clicked on the "X"
+        modal.querySelector('.close').addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Close modal if clicked outside the modal content
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
     }
 </script>
 
