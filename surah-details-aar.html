@@ -10,42 +10,27 @@
             margin: 0;
             padding: 0;
             font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f4;
+            background: #f4f4f4;
             color: #333;
             line-height: 1.8;
             font-size: 18px;
             word-wrap: break-word;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            overflow-y: hidden;
+            overflow-y: scroll;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
-        /* Styling for Arabic Text */
-        .arabic-text {
-            font-family: 'Amiri', serif;
-            font-size: 1.7em;
-            direction: rtl;
-            line-height: 1.6;
-            padding: 5px;
-            color: #2980b9;
-        }
-
-        /* Verse Container */
         .verse {
             display: block;
             margin: 15px auto;
-            padding: 15px;
+            padding: 10px;
             background-color: rgba(236, 240, 241, 0.9);
             color: #2980b9;
             text-align: center;
             font-size: 1.6em;
             border-radius: 8px;
+            transition: background-color 0.3s ease;
             width: 90%;
             max-width: 800px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .verse-number {
@@ -58,31 +43,9 @@
             margin-left: 10px;
         }
 
-        /* Hover Effect on Verse */
-        .verse:hover {
-            background-color: rgba(52, 152, 219, 0.2);
-            transform: translateY(-5px);
-        }
-
-        /* Surah Heading Styles */
-        .surah-heading {
-            text-align: center;
-            font-size: 2.8em;
-            color: #3498db;
-            font-weight: bold;
-            text-transform: uppercase;
-            margin-top: 40px;
-            letter-spacing: 2px;
-            padding: 15px;
-            max-width: 80%;
-            margin-bottom: 20px;
-        }
-
-        /* Pagination Controls */
         .pagination {
             text-align: center;
             margin-top: 30px;
-            margin-bottom: 20px;
         }
 
         .pagination button {
@@ -94,12 +57,10 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
         .pagination button:hover {
             background-color: #2980b9;
-            transform: scale(1.05);
         }
 
         /* Responsive Design */
@@ -109,26 +70,8 @@
                 width: 95%;
             }
 
-            .surah-heading {
-                font-size: 2.2em;
-            }
-
             .pagination button {
                 font-size: 1em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .verse {
-                font-size: 1.3em;
-            }
-
-            .surah-heading {
-                font-size: 1.8em;
-            }
-
-            .pagination button {
-                font-size: 0.9em;
             }
         }
     </style>
@@ -139,8 +82,10 @@
 <div class="surah-heading" id="surah-heading" style="display: none;"></div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 
-<!-- Verses Container (Content will be loaded here) -->
-<div id="verses-container"></div>
+<!-- Loading Spinner -->
+<div id="loading" style="text-align: center; font-size: 1.5em; color: #2980b9; display: none;">
+    Loading...
+</div>
 
 <!-- Pagination Controls -->
 <div class="pagination" id="pagination-controls" style="display: none;">
@@ -160,95 +105,108 @@
     }
 
     async function fetchSurah(index) {
-        const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
-        const data = await response.json();
-        displaySurah(data);
+        try {
+            // Show loading spinner
+            document.getElementById('loading').style.display = 'block';
+
+            // Fetch Surah JSON data
+            const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
+            if (!response.ok) throw new Error("Error loading Surah");
+
+            const data = await response.json();
+            displaySurah(data);
+        } catch (error) {
+            console.error("Error fetching Surah:", error);
+            alert("Failed to load Surah. Please try again later.");
+        } finally {
+            // Hide loading spinner
+            document.getElementById('loading').style.display = 'none';
+        }
     }
 
     function displaySurah(data) {
         const surahHeading = document.getElementById('surah-heading');
-        const firstVerse = document.getElementById('first-verse');
-        const count = data.count;
         const verses = data.verse;
-
-        surahHeading.style.display = 'block';
-        firstVerse.style.display = 'block';
+        const count = data.count;
 
         surahHeading.innerText = data.name;
-        firstVerse.innerText = verses['verse_0']; // Display first verse separately
+        surahHeading.style.display = 'block';
 
-        // Calculate number of words per page dynamically based on screen height
-        const wordsPerPage = calculateWordsPerPage();
-        const totalWords = Object.values(verses).reduce((acc, verse) => acc + verse.split(' ').length, 0);
-        const totalPages = Math.ceil(totalWords / wordsPerPage);
-        let currentPage = 1;
-
-        function calculateWordsPerPage() {
-            const availableHeight = window.innerHeight;
-            const averageWordHeight = 20; // Approximate height per word
-            return Math.floor(availableHeight / averageWordHeight);
+        // Combine all verses into a single string of words
+        let allWords = [];
+        for (let i = 0; i < count; i++) {
+            const verseKey = `verse_${i}`;
+            const verseText = verses[verseKey];
+            const verseWords = verseText.split(' ');
+            allWords = allWords.concat(verseWords);  // Flatten the array
         }
 
-        function showPage(page) {
-            // Hide any previously displayed verses
+        const wordsPerPage = 60;
+        const totalWords = allWords.length;
+        const totalPages = Math.ceil(totalWords / wordsPerPage);
+
+        let currentPage = 1;
+
+        // Function to render the page
+        function renderPage(page) {
+            const startIdx = (page - 1) * wordsPerPage;
+            const endIdx = Math.min(startIdx + wordsPerPage, totalWords);
+            const wordsToShow = allWords.slice(startIdx, endIdx);
+
             const versesContainer = document.getElementById('verses-container');
             if (versesContainer) {
-                versesContainer.innerHTML = ''; // Clear the container
+                versesContainer.innerHTML = '';  // Clear previous content
+            } else {
+                const newContainer = document.createElement('div');
+                newContainer.id = 'verses-container';
+                document.body.appendChild(newContainer);
             }
 
-            let wordsToShow = wordsPerPage * page;
-            let wordsCount = 0;
+            const newContainer = document.getElementById('verses-container');
+            let verseText = '';
+            let wordCount = 0;
 
-            // Create a new container for verses
-            const newContainer = document.createElement('div');
-            newContainer.id = 'verses-container';
-            document.body.appendChild(newContainer);
-
-            // Loop through verses and display words that fit on the page
-            for (let i = 1; i <= count; i++) {
-                const verseKey = `verse_${i}`;
-                const verseText = verses[verseKey];
-                const verseWords = verseText.split(' ');
-
-                wordsCount += verseWords.length;
-
-                if (wordsCount > wordsToShow) {
-                    break;
+            // Build the HTML content with 60 words per page
+            for (let word of wordsToShow) {
+                verseText += word + ' ';
+                wordCount++;
+                if (wordCount % 15 === 0) {  // Add a line break after 15 words for better formatting
+                    verseText += '<br>';
                 }
-
-                const verseDiv = document.createElement('div');
-                verseDiv.classList.add('verse');
-                verseDiv.innerHTML = `<span class="arabic-text">${verseText}</span><span class="verse-number">${i}</span>`;
-                newContainer.appendChild(verseDiv);
             }
 
-            // Update pagination controls visibility
+            const verseDiv = document.createElement('div');
+            verseDiv.classList.add('verse');
+            verseDiv.innerHTML = `<span class="arabic-text">${verseText}</span>`;
+            newContainer.appendChild(verseDiv);
+
+            // Update pagination controls
             document.getElementById('prev-btn').style.display = page > 1 ? 'inline-block' : 'none';
             document.getElementById('next-btn').style.display = page < totalPages ? 'inline-block' : 'none';
         }
 
-        // Display the first page of verses
-        showPage(currentPage);
+        // Display the first page
+        renderPage(currentPage);
 
-        // Set up pagination buttons
+        // Pagination buttons
         document.getElementById('prev-btn').onclick = () => {
             if (currentPage > 1) {
                 currentPage--;
-                showPage(currentPage);
+                renderPage(currentPage);
             }
         };
 
         document.getElementById('next-btn').onclick = () => {
             if (currentPage < totalPages) {
                 currentPage++;
-                showPage(currentPage);
+                renderPage(currentPage);
             }
         };
 
+        // Show pagination controls
         document.getElementById('pagination-controls').style.display = 'block';
     }
 </script>
 
 </body>
 </html>
-``
