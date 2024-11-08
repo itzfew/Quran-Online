@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -31,7 +31,7 @@
             background-color: #f5f5f5;
             color: #333;
             line-height: 1.6;
-            padding-top: 0px; /* To avoid navbar overlap */
+            padding-top: 70px; /* To avoid navbar overlap */
             transition: background-color 0.3s, color 0.3s;
         }
 
@@ -41,6 +41,74 @@
             color: #4CAF50;
             margin-bottom: 20px;
             font-weight: bold;
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .navbar .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar .logo img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .menu-toggle {
+            font-size: 1.5em;
+            cursor: pointer;
+            display: none;
+            color: white;
+        }
+
+        /* Sidebar Menu */
+        .menu {
+            position: fixed;
+            top: 0;
+            left: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: #333;
+            color: white;
+            transition: left 0.3s ease;
+            padding-top: 60px;
+        }
+
+        .menu a {
+            display: block;
+            text-decoration: none;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.2em;
+            border-bottom: 1px solid #444;
+            transition: background 0.3s ease;
+        }
+
+        .menu a:hover {
+            background-color: #4CAF50;
+        }
+
+        .menu.active {
+            left: 0;
         }
 
         /* Search and Sort */
@@ -177,6 +245,8 @@
 </head>
 
 <body>
+
+
     <!-- Search and Sort Section -->
     <div class="search-sort-container">
         <input type="text" id="search-bar" class="search-bar" placeholder="Search by title or index...">
