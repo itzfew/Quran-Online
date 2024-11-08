@@ -19,7 +19,6 @@
     <link rel="icon" href="source/pic.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Reset and base styles */
         * {
             margin: 0;
             padding: 0;
@@ -31,87 +30,10 @@
             background-color: #f5f5f5;
             color: #333;
             line-height: 1.6;
-            padding-top: 70px; /* To avoid navbar overlap */
+            padding-top:0px; /* To avoid navbar overlap */
             transition: background-color 0.3s, color 0.3s;
         }
 
-        h1 {
-            font-size: 2.5em;
-            text-align: center;
-            color: #4CAF50;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        /* Navbar */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: #333;
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-        }
-
-        .navbar .logo {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: white;
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar .logo img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-
-        .menu-toggle {
-            font-size: 1.5em;
-            cursor: pointer;
-            display: none;
-            color: white;
-        }
-
-        /* Sidebar Menu */
-        .menu {
-            position: fixed;
-            top: 0;
-            left: -250px;
-            width: 250px;
-            height: 100%;
-            background-color: #333;
-            color: white;
-            transition: left 0.3s ease;
-            padding-top: 60px;
-        }
-
-        .menu a {
-            display: block;
-            text-decoration: none;
-            color: white;
-            padding: 15px 20px;
-            font-size: 1.2em;
-            border-bottom: 1px solid #444;
-            transition: background 0.3s ease;
-        }
-
-        .menu a:hover {
-            background-color: #4CAF50;
-        }
-
-        .menu.active {
-            left: 0;
-        }
-
-        /* Search and Sort */
         .search-sort-container {
             display: flex;
             justify-content: space-between;
@@ -150,7 +72,6 @@
             border-color: #45a049;
         }
 
-        /* Language Switch */
         .language-switch-container {
             text-align: center;
             padding: 10px;
@@ -179,7 +100,6 @@
             color: white;
         }
 
-        /* Surah List Styles */
         .surah-list {
             padding: 0 10%;
             display: flex;
@@ -187,7 +107,6 @@
             gap: 20px;
         }
 
-        /* Surah Item */
         .surah-item {
             background-color: white;
             padding: 15px;
@@ -215,7 +134,6 @@
             color: #666;
         }
 
-        /* Responsive Styles */
         @media (max-width: 768px) {
             .search-sort-container {
                 flex-direction: column;
@@ -231,41 +149,11 @@
             .surah-list {
                 padding: 0 5%;
             }
-
-            .menu-toggle {
-                display: block;
-            }
-
-            /* Hide the menu in small screens */
-            .menu.active {
-                left: 0;
-            }
         }
     </style>
 </head>
 
 <body>
-
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="logo">
-            <img src="source/pic.png" alt="Quran Kareem Logo">
-            Quran Kareem
-        </div>
-        <div class="menu-toggle" id="menu-toggle">
-            <i class="fas fa-bars"></i>
-        </div>
-    </div>
-
-    <!-- Sidebar Menu -->
-    <div class="menu" id="menu">
-        <a href="index.html">Home</a>
-        <a href="verse.html">Quran(verse with Audio)</a>
-        <a href="hadith.html">Hadith</a>
-        <a href="prayer.html">Prayer</a>
-        <a href="tasbih.html">Tasbih</a>
-        <a href="99-names.html">100 Names</a>
-    </div>
 
     <!-- Search and Sort Section -->
     <div class="search-sort-container">
@@ -288,12 +176,6 @@
     </div>
 
     <script>
-        // Toggle Sidebar Menu
-        document.getElementById('menu-toggle').addEventListener('click', () => {
-            const menu = document.getElementById('menu');
-            menu.classList.toggle('active');
-        });
-
         // Fetch Surah Data
         async function fetchSurahs() {
             try {
