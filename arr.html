@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran Kareem</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             margin: 0;
@@ -18,10 +17,9 @@
             line-height: 1.6;
             font-size: 18px;
             word-wrap: break-word;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.5s, color 0.5s;
         }
 
-        /* Text styling for Arabic */
         .arabic-text {
             font-family: 'Amiri', serif;
             font-size: 1.6em;
@@ -30,14 +28,7 @@
             padding: 5px;
             color: #2980b9;
             margin: 0;
-        }
-
-        /* Text styling for English Translation */
-        .translation-text {
-            font-family: 'Roboto', sans-serif;
-            font-size: 1.6em;
-            padding: 5px;
-            color: #2ecc71;
+            transition: color 0.5s;
         }
 
         .verse {
@@ -129,105 +120,44 @@
             margin-bottom: 20px;
         }
 
-        /* Dropdown menu styles */
-        .dropdown {
+        /* Scroll control UI */
+        .scroll-control {
             position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 999;
-            background-color: rgba(255, 255, 255, 0.9);
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.5);
             padding: 10px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .dropdown select {
-            padding: 5px 10px;
-            font-size: 1em;
-            cursor: pointer;
-            border: none;
-            background-color: transparent;
-        }
-
-        .dropdown i {
-            margin-right: 5px;
-        }
-
-        .dropdown select option {
-            padding: 10px;
-        }
-
-        .dropdown div {
-            display: flex;
-            align-items: center;
-        }
-
-        /* Speed dropdown specific styles */
-        .speed-option {
-            display: flex;
-            align-items: center;
-            padding: 5px 10px;
+            color: white;
             border-radius: 5px;
-            margin: 0 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
         }
 
-        .speed-option:hover {
+        .scroll-control button {
+            padding: 5px 10px;
+            margin: 5px;
             background-color: #3498db;
             color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
         }
 
-        .speed-option[data-speed="slow"] {
-            background-color: #f39c12;
-        }
-
-        .speed-option[data-speed="normal"] {
-            background-color: #2ecc71;
-        }
-
-        .speed-option[data-speed="fast"] {
-            background-color: #e74c3c;
+        .scroll-control input {
+            width: 50px;
+            margin: 5px;
         }
 
     </style>
 </head>
 <body>
 
-<!-- Dropdowns for User Settings -->
-<div class="dropdown">
-    <div id="scroll-speed" class="speed-options">
-        <div class="speed-option" data-speed="slow">
-            <i class="fas fa-turtle"></i> 1 (Slow)
-        </div>
-        <div class="speed-option" data-speed="normal">
-            <i class="fas fa-arrows-alt-h"></i> 2 (Normal)
-        </div>
-        <div class="speed-option" data-speed="fast">
-            <i class="fas fa-bolt"></i> 3 (Fast)
-        </div>
-    </div>
-
-    <div>
-        <label for="text-color" style="display: none;">Text Color:</label>
-        <select id="text-color">
-            <option value="#2980b9" selected> <i class="fas fa-palette"></i> Blue </option>
-            <option value="#2ecc71"> <i class="fas fa-palette"></i> Green </option>
-            <option value="#e74c3c"> <i class="fas fa-palette"></i> Red </option>
-        </select>
-    </div>
-
-    <div>
-        <label for="bg-color" style="display: none;">Background Color:</label>
-        <select id="bg-color">
-            <option value="#f4f4f4" selected> <i class="fas fa-paint-roller"></i> Light </option>
-            <option value="#34495e"> <i class="fas fa-paint-roller"></i> Dark </option>
-            <option value="#ecf0f1"> <i class="fas fa-paint-roller"></i> Soft Light </option>
-        </select>
-    </div>
+<!-- Scroll Control Panel -->
+<div class="scroll-control">
+    <button onclick="changeBackgroundColor()">Change Background Color</button>
+    <button onclick="changeTextColor()">Change Text Color</button>
+    <label for="scroll-speed">Scroll Speed (ms): </label>
+    <input type="number" id="scroll-speed" value="100" min="10" max="1000">
+    <button onclick="startAutoScroll()">Start Auto Scroll</button>
+    <button onclick="stopAutoScroll()">Stop Auto Scroll</button>
 </div>
 
 <!-- Surah and Verses -->
@@ -248,13 +178,6 @@
         // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
-        
-        // Event listeners for dropdowns to update the settings
-        document.querySelectorAll('.speed-option').forEach(option => {
-            option.addEventListener('click', updateScrollSpeed);
-        });
-        document.getElementById('text-color').addEventListener('change', updateTextColor);
-        document.getElementById('bg-color').addEventListener('change', updateBackgroundColor);
     });
 
     function getQueryParam(param) {
@@ -328,7 +251,7 @@
             modal.style.display = 'none';
         });
 
-        // Close modal if clicked outside the modal content
+               // Close modal if clicked outside the modal content
         window.addEventListener('click', (event) => {
             if (event.target === modal) {
                 modal.style.display = 'none';
@@ -336,38 +259,55 @@
         });
     }
 
-    // Update scroll speed
-    function updateScrollSpeed(event) {
-        const speed = event.target.dataset.speed;
-        let scrollDuration = 0;
+    // Auto Scrolling functionality
+    let scrollInterval;
+    let scrollSpeed = 100; // Default scroll speed
 
-        switch (speed) {
-            case 'slow':
-                scrollDuration = 3000; // Slow speed
-                break;
-            case 'normal':
-                scrollDuration = 1500; // Normal speed
-                break;
-            case 'fast':
-                scrollDuration = 800; // Fast speed
-                break;
+    // Start auto-scrolling through the verses
+    function startAutoScroll() {
+        const verses = document.querySelectorAll('.verse');
+        let currentIndex = 0;
+
+        scrollInterval = setInterval(() => {
+            if (currentIndex < verses.length) {
+                verses[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'center' });
+                currentIndex++;
+            } else {
+                currentIndex = 0; // Restart from the beginning
+            }
+        }, scrollSpeed);
+    }
+
+    // Stop auto-scrolling
+    function stopAutoScroll() {
+        clearInterval(scrollInterval);
+    }
+
+    // Change background color randomly
+    function changeBackgroundColor() {
+        const colors = ['#3498db', '#e74c3c', '#2ecc71', '#9b59b6', '#f39c12'];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        document.body.style.backgroundColor = randomColor;
+    }
+
+    // Change text color randomly
+    function changeTextColor() {
+        const colors = ['#3498db', '#e74c3c', '#2ecc71', '#9b59b6', '#f39c12'];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        const arabicTextElements = document.querySelectorAll('.arabic-text');
+        arabicTextElements.forEach(el => {
+            el.style.color = randomColor;
+        });
+    }
+
+    // Update the scroll speed based on user input
+    document.getElementById('scroll-speed').addEventListener('input', (e) => {
+        scrollSpeed = parseInt(e.target.value, 10);
+        if (scrollInterval) {
+            stopAutoScroll();
+            startAutoScroll();
         }
-
-        document.body.style.transition = `scroll-behavior ${scrollDuration}ms ease-in-out`;
-    }
-
-    // Update text color
-    function updateTextColor() {
-        const color = document.getElementById('text-color').value;
-        document.querySelectorAll('.arabic-text').forEach(element => element.style.color = color);
-        document.querySelectorAll('.translation-text').forEach(element => element.style.color = color);
-    }
-
-    // Update background color
-    function updateBackgroundColor() {
-        const color = document.getElementById('bg-color').value;
-        document.body.style.backgroundColor = color;
-    }
+    });
 </script>
 
 </body>
