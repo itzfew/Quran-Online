@@ -155,19 +155,60 @@
         .dropdown i {
             margin-right: 5px;
         }
+
+        .dropdown select option {
+            padding: 10px;
+        }
+
+        .dropdown div {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Speed dropdown specific styles */
+        .speed-option {
+            display: flex;
+            align-items: center;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 0 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .speed-option:hover {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .speed-option[data-speed="slow"] {
+            background-color: #f39c12;
+        }
+
+        .speed-option[data-speed="normal"] {
+            background-color: #2ecc71;
+        }
+
+        .speed-option[data-speed="fast"] {
+            background-color: #e74c3c;
+        }
+
     </style>
 </head>
 <body>
 
 <!-- Dropdowns for User Settings -->
 <div class="dropdown">
-    <div>
-        <label for="scroll-speed" style="display: none;">Scroll Speed:</label>
-        <select id="scroll-speed">
-            <option value="slow"> <i class="fas fa-turtle"></i> </option>
-            <option value="normal" selected> <i class="fas fa-arrows-alt-h"></i> </option>
-            <option value="fast"> <i class="fas fa-bolt"></i> </option>
-        </select>
+    <div id="scroll-speed" class="speed-options">
+        <div class="speed-option" data-speed="slow">
+            <i class="fas fa-turtle"></i> 1 (Slow)
+        </div>
+        <div class="speed-option" data-speed="normal">
+            <i class="fas fa-arrows-alt-h"></i> 2 (Normal)
+        </div>
+        <div class="speed-option" data-speed="fast">
+            <i class="fas fa-bolt"></i> 3 (Fast)
+        </div>
     </div>
 
     <div>
@@ -209,7 +250,9 @@
         fetchSurah(index ? index : 1);
         
         // Event listeners for dropdowns to update the settings
-        document.getElementById('scroll-speed').addEventListener('change', updateScrollSpeed);
+        document.querySelectorAll('.speed-option').forEach(option => {
+            option.addEventListener('click', updateScrollSpeed);
+        });
         document.getElementById('text-color').addEventListener('change', updateTextColor);
         document.getElementById('bg-color').addEventListener('change', updateBackgroundColor);
     });
@@ -294,8 +337,8 @@
     }
 
     // Update scroll speed
-    function updateScrollSpeed() {
-        const speed = document.getElementById('scroll-speed').value;
+    function updateScrollSpeed(event) {
+        const speed = event.target.dataset.speed;
         let scrollDuration = 0;
 
         switch (speed) {
