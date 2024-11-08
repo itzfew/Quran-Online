@@ -15,7 +15,6 @@
             background-attachment: fixed;
             color: #333;
             line-height: 1.6;
-            transition: background 0.3s ease, color 0.3s ease;
             font-size: 18px;
             word-wrap: break-word;
         }
@@ -71,62 +70,15 @@
             margin: 10px 0;
         }
 
-        .dark-mode {
-            background: #2c3e50;
-            color: #ecf0f1;
-        }
-
-        .dark-mode .arabic-text {
-            color: #ecf0f1;
-        }
-
-        .dark-mode .verse {
-            color: #ecf0f1;
-        }
-
-        .settings-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.9);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-
-        .settings-item {
-            cursor: pointer;
-            padding: 10px;
-            font-size: 1.5em;
-            color: #2980b9;
-            transition: color 0.3s;
-        }
-
-        .settings-item:hover {
-            color: #3498db;
-        }
-
-        #verseSearch {
-            padding: 8px;
-            font-size: 1.2em;
-            border: 1px solid #2980b9;
-            border-radius: 5px;
-            background-color: transparent;
-            color: #2980b9;
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
-            .settings-container {
-                padding: 5px;
+            .surah-heading {
+                font-size: 1.8em;
+                padding: 15px;
             }
 
-            .settings-item {
-                font-size: 1.3em;
+            .first-verse {
+                font-size: 1.4em;
             }
 
             .verse {
@@ -135,8 +87,13 @@
         }
 
         @media (max-width: 480px) {
-            .settings-item {
-                font-size: 1.1em;
+            .surah-heading {
+                font-size: 1.6em;
+                padding: 10px;
+            }
+
+            .first-verse {
+                font-size: 1.2em;
             }
 
             .verse {
@@ -147,31 +104,12 @@
 </head>
 <body>
 
-<!-- Settings Section (Fixed) -->
-<div class="settings-container">
-    <input type="text" id="verseSearch" placeholder="Search for a verse..." onkeyup="searchVerse()">
-    <div class="settings-item" onclick="toggleTheme()">
-        🌙
-    </div>
-</div>
-
 <!-- Surah and Verses -->
 <div class="surah-heading" id="surah-heading" style="display: none;"></div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const darkMode = localStorage.getItem('darkMode') === 'true';
-        const textSize = localStorage.getItem('textSize') || '18';
-        const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
-
-        if (darkMode) {
-            document.body.classList.add('dark-mode');
-        }
-
-        document.body.style.fontSize = textSize + 'px';
-        document.body.style.fontFamily = selectedFont;
-
         // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
@@ -212,24 +150,6 @@
             // Add the verse directly to the body
             document.body.appendChild(verseSpan);
         }
-    }
-
-    function toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
-
-    function searchVerse() {
-        const searchQuery = document.getElementById('verseSearch').value.toLowerCase();
-        const verses = document.querySelectorAll('.verse');
-        verses.forEach((verse) => {
-            const verseText = verse.textContent.toLowerCase();
-            if (verseText.includes(searchQuery)) {
-                verse.style.display = '';
-            } else {
-                verse.style.display = 'none';
-            }
-        });
     }
 </script>
 
