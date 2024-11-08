@@ -92,9 +92,11 @@
             background-color: white;
             padding: 20px;
             border-radius: 8px;
-            max-width: 800px;
+            width: 100%; /* Full width */
+            max-width: 800px; /* Max width to ensure it's not too wide on large screens */
             margin: auto;
             text-align: center;
+            overflow: hidden; /* Prevent content overflow */
         }
 
         .close {
@@ -129,7 +131,7 @@
         /* Responsive Design */
         @media (max-width: 768px) {
             .modal-content {
-                width: 90%;
+                width: 95%;
                 padding: 15px;
             }
 
@@ -139,6 +141,7 @@
 
             .translation-text {
                 font-size: 1.4em;
+                max-height: 250px; /* Adjust height for smaller screens */
             }
 
             .verse-number {
@@ -167,6 +170,7 @@
 
             .translation-text {
                 font-size: 1.2em;
+                max-height: 200px; /* Reduce height on very small screens */
             }
 
             .verse-number {
