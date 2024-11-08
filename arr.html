@@ -157,7 +157,7 @@
     <button onclick="changeBackgroundColor()">Change Background</button>
     <button onclick="changeTextColor()">Change Text Color</button>
     <label for="scroll-speed">Scroll Speed:</label>
-    <input type="number" id="scroll-speed" value="100" min="10" max="1000">
+    <input type="number" id="scroll-speed" value="150" min="10" max="1000">
     <button onclick="startAutoScroll()">Start Auto Scroll</button>
     <button onclick="stopAutoScroll()">Stop Auto Scroll</button>
 </div>
@@ -250,9 +250,9 @@
         });
     }
 
-    // Auto-scroll functionality
+    // Auto-scroll functionality for slow scrolling
     let scrollInterval;
-    let scrollSpeed = 100; // Default speed
+    let scrollSpeed = 150; // Slow scroll speed by default
 
     function startAutoScroll() {
         const verses = document.querySelectorAll('.verse');
@@ -265,7 +265,7 @@
             } else {
                 currentIndex = 0; // Restart scrolling
             }
-        }, scrollSpeed);
+        }, scrollSpeed); // Adjust speed based on user input
     }
 
     function stopAutoScroll() {
