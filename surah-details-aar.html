@@ -15,39 +15,43 @@
             margin: 0;
             padding: 0;
             font-size: 18px;
+            overflow-y: auto; /* Allow scrolling if content is too long */
+            line-height: 1.6; /* Adjust line spacing for better readability */
+        }
+
+        .header {
+            text-align: center;
+            margin-top: 60px;
         }
 
         .surah-heading {
             font-size: 1.7em;
-            padding: 10px;
+            padding: 5px;
             color: #3498db;
             font-weight: bold;
-            text-align: center;
-            margin-top: 20px;
+            letter-spacing: 1px;
         }
 
         .first-verse {
             text-align: center;
             font-size: 1.8em;
+            margin: 5px 0;
             color: #2980b9;
             font-weight: bold;
         }
 
         .verse {
-            margin: 5px 0;
-            padding: 15px;
+            padding: 10px;
             background-color: rgba(236, 240, 241, 0.8);
             font-size: 1.5em;
             width: 100%;
-            text-align: justify;
+            text-align: center;
             box-sizing: border-box;
             cursor: pointer;
             transition: background-color 0.3s;
-            border: 2px solid #2980b9; /* Border added around the verse */
-            border-radius: 5px;
-            white-space: nowrap; /* Prevent line breaks within each verse */
-            overflow: hidden; /* Hide any overflow */
-            text-overflow: ellipsis; /* Add ellipsis if the text overflows */
+            display: inline-block; /* Change to inline-block to remove line breaks */
+            margin: 0; /* Remove margin */
+            padding-right: 15px; /* Add a small gap between verses */
         }
 
         .verse:hover {
@@ -57,7 +61,6 @@
         .verse-number {
             font-size: 1.0em;
             color: #2980b9;
-            margin-top: 10px;
             font-weight: bold;
         }
 
@@ -92,6 +95,13 @@
 </head>
 <body>
 
+<!-- Main Content -->
+<div class="header">
+    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
+</div>
+<div id="first-verse" class="first-verse" style="display: none;"></div>
+<div id="content"></div>
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const darkMode = localStorage.getItem('darkMode') === 'true';
@@ -122,18 +132,18 @@
     }
 
     function displaySurah(data) {
-        const surahHeading = document.createElement('div');
-        surahHeading.classList.add('surah-heading');
-        surahHeading.innerText = data.name;
-        document.body.appendChild(surahHeading);
-
-        const firstVerse = document.createElement('div');
-        firstVerse.classList.add('first-verse');
-        firstVerse.innerText = data.verse['verse_0']; // Display verse_0 separately and centrally
-        document.body.appendChild(firstVerse);
-
+        const surahHeading = document.getElementById('surah-heading');
+        const firstVerse = document.getElementById('first-verse');
+        const content = document.getElementById('content');
         const count = data.count;
         const verses = data.verse;
+
+        surahHeading.style.display = 'block';
+        firstVerse.style.display = 'block';
+        content.innerHTML = ''; // Clear content
+
+        surahHeading.innerText = data.name;
+        firstVerse.innerText = verses['verse_0'];  // Display verse_0 separately and centrally
 
         // Loop through verses starting from verse_1
         for (let i = 1; i <= count; i++) {  // Start the loop from 1 to avoid duplicating verse_0
@@ -152,8 +162,7 @@
             // Add event listener to highlight verse
             verseDiv.onclick = () => toggleHighlight(i);
 
-            // Append the verse directly to the body
-            document.body.appendChild(verseDiv);
+            content.appendChild(verseDiv);
         }
     }
 
