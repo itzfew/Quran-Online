@@ -70,36 +70,7 @@
             margin: 10px 0;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .surah-heading {
-                font-size: 1.8em;
-                padding: 15px;
-            }
-
-            .first-verse {
-                font-size: 1.4em;
-            }
-
-            .verse {
-                font-size: 1.2em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .surah-heading {
-                font-size: 1.6em;
-                padding: 10px;
-            }
-
-            .first-verse {
-                font-size: 1.2em;
-            }
-
-            .verse {
-                font-size: 1.1em;
-            }
-        }
+        /* Remove any dark mode styles */
     </style>
 </head>
 <body>
@@ -139,13 +110,13 @@
         firstVerse.innerText = verses['verse_0'];  // Display verse_0 separately
 
         // Loop through verses starting from verse_1
-        for (let i = 1; i <= count; i++) {  // Start the loop from 1 to avoid duplicating verse_0
+        for (let i = 1; i < count; i++) {  // Start from verse_1, i.e., ignore verse_0
             const verseKey = `verse_${i}`;
             const verseText = verses[verseKey];
 
             const verseSpan = document.createElement('span');
             verseSpan.classList.add('verse');
-            verseSpan.innerHTML = `<span class="arabic-text">${verseText}</span><span class="verse-number">${i + 1}</span>`;
+            verseSpan.innerHTML = `<span class="arabic-text">${verseText}</span><span class="verse-number">${i}</span>`;  // Correct the verse number display
 
             // Add the verse directly to the body
             document.body.appendChild(verseSpan);
