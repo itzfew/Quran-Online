@@ -3,84 +3,213 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Settings - Quran Kareem</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <title>Quran Kareem(Ar)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            margin: 0;
-            padding: 10px;
-            font-family: 'Roboto', sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://yourbackgroundimageurl.com/image.jpg');
+            background-size: cover;
+            background-attachment: fixed;
             color: #333;
-            line-height: 1.6;
-            text-align: center;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.5s, color 0.5s, font-family 0.5s;
             font-size: 18px;
-            word-wrap: break-word;
         }
 
-        .container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 80%;
-            max-width: 500px;
-            text-align: center;
-            margin: 30px auto;
-        }
-
-        .settings-heading {
-            font-size: 2em;
-            color: #3498db;
-            font-weight: bold;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        /* Settings Section */
+        .settings-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-bottom: 2px solid #3498db;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            white-space: nowrap;
+            overflow-x: auto;
         }
 
         .settings-item {
-            margin-bottom: 20px;
+            margin-right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
         }
 
-        .settings-item select,
-        .settings-item input[type="range"] {
-            font-size: 1.2em;
+        .settings-item:hover {
+            color: #2980b9;
+            transform: scale(1.1);
+        }
+
+        #verseSearch {
             padding: 5px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #3498db;
+        }
+
+        .header {
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .surah-heading {
+            font-size: 1.7em;
+            padding: 5px;
+            border: 0px solid #3498db;
+            border-radius: 0px;
+            color: #3498db;
+            box-shadow: 0 0 0px rgba(0, 0, 0, 0.1);
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .first-verse {
+            text-align: center;
+            font-size: 1.8em;
+            margin: 5px 0;
+            padding: 0px;
+            border-radius: 10px;
+            border: 0px solid #3498db;
+            color: #2980b9;
+            font-weight: bold;
+        }
+
+        .verse {
+            margin: 5px 0;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: rgba(236, 240, 241, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+            border-left: 5px solid #3498db;
+            transition: background-color 0.3s;
+            cursor: pointer;
+            font-size: 1.5em;
             width: 100%;
-            max-width: 300px;
+            box-sizing: border-box;
         }
 
-        .settings-item label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 1.2em;
+        .verse:hover {
+            background-color: rgba(52, 152, 219, 0.2);
         }
 
-        .button {
+        .verse-number {
+            font-size: 1.0em;
+            color: #2980b9;
+            margin-top: 10px;
+            font-weight: bold;
+            border: 2px solid #2980b9;
+            border-radius: 50%;
+        }
+
+        .highlighted {
+            background-color: transparent;
+            color: inherit;
+        }
+
+        .bookmark-button {
+            margin-top: 10px;
             background-color: #3498db;
             color: white;
-            padding: 10px 20px;
             border: none;
+            padding: 5px 10px;
             border-radius: 5px;
-            font-size: 1.2em;
             cursor: pointer;
-            transition: background-color 0.3s;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
         }
 
-        .button:hover {
+        .bookmark-button:hover {
             background-color: #2980b9;
         }
 
-        .settings-link {
-            display: inline-block;
-            margin-top: 20px;
-            font-size: 1.2em;
-            color: #2980b9;
-            text-decoration: none;
+        /* Bookmarked Panel */
+        .bookmarked-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 300px;
+            height: 100%;
+            background-color: #fff;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+            transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            z-index: 999;
+            padding: 20px;
+            overflow-y: auto;
         }
 
-        .settings-link:hover {
-            text-decoration: underline;
+        .bookmarked-panel.open {
+            transform: translateX(0);
+        }
+
+        .bookmarked-panel ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .bookmarked-panel ul li {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .bookmarked-panel ul li:hover {
+            background-color: #f39c12;
+            color: white;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 16px;
+            display: none;
+            transition: opacity 0.3s ease;
+            z-index: 1001;
+        }
+
+        .notification.show {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            display: none;
+            transition: background-color 0.3s;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-to-top:hover {
+            background-color: #2980b9;
         }
 
         .dark-mode {
@@ -88,101 +217,265 @@
             color: #ecf0f1;
         }
 
-        .dark-mode .button {
-            background-color: #2980b9;
+        .dark-mode .verse {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: #ecf0f1;
+        }
+
+        .dark-mode .verse-number {
+            color: #ecf0f1;
+        }
+
+        .dark-mode .bookmarked-panel {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .settings-container {
+                padding: 10px;
+            }
+            .settings-item {
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .settings-container {
+                padding: 10px;
+            }
+            .settings-item {
+                font-size: 18px;
+                margin-right: 10px;
+            }
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div class="container">
-    <div class="settings-heading">Settings</div>
-
-    <!-- Theme Toggle -->
-    <div class="settings-item">
-        <label for="theme">Select Theme:</label>
-        <select id="theme" onchange="changeTheme()">
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
-        </select>
+<!-- Settings Section at the top (Fixed) -->
+<div class="settings-container">
+    <input type="text" id="verseSearch" placeholder="Search for a verse..." onkeyup="searchVerse()" />
+    <div class="settings-item" onclick="toggleTheme()">
+        <i class="fas fa-adjust"></i>
     </div>
-
-    <!-- Font Selection -->
+    <div class="settings-item" onclick="changeTextSize(1)">
+        <i class="fas fa-text-height"></i>
+    </div>
+    <div class="settings-item" onclick="changeTextSize(-1)">
+        <i class="fas fa-text-height"></i>
+    </div>
     <div class="settings-item">
-        <label for="fontSelect">Select Font:</label>
         <select id="fontSelect" onchange="changeFont()">
             <option value="Amiri">Amiri</option>
-            <option value="Roboto">Roboto</option>
+            <option value="Cairo">Cairo</option>
+            <option value="El Messiri">El Messiri</option>
+            <option value="Harmattan">Harmattan</option>
+            <option value="Lateef">Lateef</option>
+            <option value="Scheherazade New">Scheherazade New</option>
         </select>
     </div>
-
-    <!-- Text Size Control -->
-    <div class="settings-item">
-        <label for="textSize">Text Size:</label>
-        <input type="range" id="textSize" min="14" max="24" value="18" onchange="changeTextSize(event)" />
+    <div class="settings-item" onclick="resetPreferences()">
+        <i class="fas fa-undo"></i>
     </div>
-
-    <!-- Reset Preferences -->
-    <div class="settings-item">
-        <button class="button" onclick="resetPreferences()">Reset to Default</button>
+    <div class="settings-item" onclick="toggleBookmarkPanel()">
+        <i class="fas fa-bookmark"></i>
     </div>
-
-    <a href="index.html" class="settings-link">Back to Quran</a>
 </div>
+
+<!-- Bookmarked Panel -->
+<div class="bookmarked-panel" id="bookmarked-panel">
+    <h3>Bookmarked Verses</h3>
+    <ul id="bookmarkedList"></ul>
+</div>
+
+<!-- Main Content -->
+<div class="header">
+    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
+</div>
+<div id="first-verse" class="first-verse" style="display: none;"></div>
+<div id="content"></div>
+
+<!-- Back to Top Button -->
+<button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
+
+<!-- Notification -->
+<div class="notification" id="notification"></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Load saved preferences from localStorage
-        const savedTheme = localStorage.getItem('darkMode') === 'true' ? 'dark' : 'light';
-        const savedFont = localStorage.getItem('selectedFont') || 'Amiri';
-        const savedTextSize = localStorage.getItem('textSize') || 18;
+        const darkMode = localStorage.getItem('darkMode') === 'true';
+        const textSize = localStorage.getItem('textSize') || '18';
+        const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
 
-        // Set default theme, font, and text size
-        document.getElementById('theme').value = savedTheme;
-        document.getElementById('fontSelect').value = savedFont;
-        document.getElementById('textSize').value = savedTextSize;
+        if (darkMode) {
+            document.body.classList.add('dark-mode');
+        }
 
-        // Apply saved settings
-        changeTheme(savedTheme);
-        changeFont(savedFont);
-        document.body.style.fontSize = savedTextSize + 'px';
+        document.body.style.fontSize = textSize + 'px';
+        document.body.style.fontFamily = selectedFont;
+
+        document.getElementById('fontSelect').value = selectedFont;
+
+        // Fetch Surah based on URL parameter if provided
+        const index = getQueryParam('index');
+        fetchSurah(index ? index : 1);
     });
 
-    // Change the theme
-    function changeTheme(theme) {
-        if (!theme) {
-            theme = document.getElementById('theme').value;
-        }
-
-        if (theme === 'dark') {
-            document.body.classList.add('dark-mode');
-            localStorage.setItem('darkMode', 'true');
-        } else {
-            document.body.classList.remove('dark-mode');
-            localStorage.setItem('darkMode', 'false');
-        }
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
     }
 
-    // Change the font
+    async function fetchSurah(index) {
+        const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(1, '0')}.json`);
+        const data = await response.json();
+        displaySurah(data);
+    }
+
+    function displaySurah(data) {
+    const surahHeading = document.getElementById('surah-heading');
+    const firstVerse = document.getElementById('first-verse');
+    const content = document.getElementById('content');
+    const count = data.count;
+    const verses = data.verse;
+
+    surahHeading.style.display = 'block';
+    firstVerse.style.display = 'block';
+    content.innerHTML = ''; // Clear content
+
+    surahHeading.innerText = data.name;
+    firstVerse.innerText = verses['verse_0'];  // Display verse_0 separately and centrally
+
+    // Loop through verses starting from verse_1
+    for (let i = 1; i <= count; i++) {  // Start the loop from 1 to avoid duplicating verse_0
+        const verseKey = `verse_${i}`;
+        const verseText = verses[verseKey];
+
+        const verseDiv = document.createElement('div');
+        verseDiv.classList.add('verse');
+        verseDiv.setAttribute('id', `verse-${i}`);
+        verseDiv.innerHTML = `
+            <div class="arabic-text">${verseText}
+                <span class="verse-number">${i + 1}</span>
+            </div>
+        `;
+
+        // Check if verse is bookmarked
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+        const isBookmarked = bookmarks.includes(i);
+        const bookmarkIcon = isBookmarked ? 'fas fa-bookmark' : 'far fa-bookmark';
+
+        // Add bookmark button with icon
+        const bookmarkButton = document.createElement('button');
+        bookmarkButton.classList.add('bookmark-button');
+        bookmarkButton.innerHTML = `<i class="${bookmarkIcon}"></i>`;
+        bookmarkButton.onclick = () => toggleBookmark(i, verseDiv);
+        verseDiv.appendChild(bookmarkButton);
+
+        // Add event listener to highlight verse
+        verseDiv.onclick = () => toggleHighlight(i);
+
+        content.appendChild(verseDiv);
+    }
+
+    loadBookmarkedVerses();
+}
+
+
+    function toggleBookmark(verseId, verseElement) {
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+        const notification = document.getElementById('notification');
+        if (bookmarks.includes(verseId)) {
+            bookmarks.splice(bookmarks.indexOf(verseId), 1);
+            notification.innerText = `Verse ${verseId + 1} removed from bookmarks!`;
+        } else {
+            bookmarks.push(verseId);
+            notification.innerText = `Verse ${verseId + 1} bookmarked!`;
+        }
+        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+        loadBookmarkedVerses();
+        showNotification();
+    }
+
+    function loadBookmarkedVerses() {
+        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+        const bookmarkedList = document.getElementById('bookmarkedList');
+        bookmarkedList.innerHTML = ''; // Clear current list
+
+        bookmarks.forEach((verseId) => {
+            const li = document.createElement('li');
+            li.innerHTML = `Verse ${verseId + 1}`;
+            li.onclick = () => scrollToVerse(verseId);
+            bookmarkedList.appendChild(li);
+        });
+    }
+
+    function scrollToVerse(verseId) {
+        const verseElement = document.getElementById(`verse-${verseId}`);
+        if (verseElement) {
+            verseElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        toggleBookmarkPanel(); // Close the panel
+    }
+
+    function toggleBookmarkPanel() {
+        const panel = document.getElementById('bookmarked-panel');
+        panel.classList.toggle('open');
+    }
+
+    function toggleHighlight(verseId) {
+        const verseElement = document.getElementById(`verse-${verseId}`);
+        verseElement.classList.toggle('highlighted');
+    }
+
+    function showNotification() {
+        const notification = document.getElementById('notification');
+        notification.classList.add('show');
+        setTimeout(() => notification.classList.remove('show'), 3000);
+    }
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', isDark);
+    }
+
+    function changeTextSize(increment) {
+        const newSize = parseInt(document.body.style.fontSize) + increment;
+        document.body.style.fontSize = newSize + 'px';
+        localStorage.setItem('textSize', newSize);
+    }
+
     function changeFont() {
         const selectedFont = document.getElementById('fontSelect').value;
         document.body.style.fontFamily = selectedFont;
         localStorage.setItem('selectedFont', selectedFont);
     }
 
-    // Change the text size
-    function changeTextSize(event) {
-        const textSize = event.target.value;
-        document.body.style.fontSize = textSize + 'px';
-        localStorage.setItem('textSize', textSize);
-    }
-
-    // Reset preferences to default
     function resetPreferences() {
         localStorage.removeItem('darkMode');
-        localStorage.removeItem('selectedFont');
         localStorage.removeItem('textSize');
-        location.reload(); // Reload the page to apply default settings
+        localStorage.removeItem('selectedFont');
+        location.reload();
+    }
+
+    function searchVerse() {
+        const searchQuery = document.getElementById('verseSearch').value.toLowerCase();
+        const verses = document.querySelectorAll('.verse');
+        verses.forEach((verse) => {
+            const verseText = verse.textContent.toLowerCase();
+            if (verseText.includes(searchQuery)) {
+                verse.style.display = '';
+            } else {
+                verse.style.display = 'none';
+            }
+        });
     }
 </script>
 
