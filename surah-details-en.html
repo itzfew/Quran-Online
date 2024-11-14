@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Quran Kareem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+            text-align: center;
+            font-size: 18px;
+            word-wrap: break-word;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+            margin: 30px auto;
+        }
+
+        .settings-heading {
+            font-size: 2em;
+            color: #3498db;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .settings-item {
+            margin-bottom: 20px;
+        }
+
+        .settings-item select,
+        .settings-item input[type="range"] {
+            font-size: 1.2em;
+            padding: 5px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .settings-item label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.2em;
+        }
+
+        .button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #2980b9;
+        }
+
+        .settings-link {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #2980b9;
+            text-decoration: none;
+        }
+
+        .settings-link:hover {
+            text-decoration: underline;
+        }
+
+        .dark-mode {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+
+        .dark-mode .button {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="settings-heading">Settings</div>
+
+    <!-- Theme Toggle -->
+    <div class="settings-item">
+        <label for="theme">Select Theme:</label>
+        <select id="theme" onchange="changeTheme()">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+        </select>
+    </div>
+
+    <!-- Font Selection -->
+    <div class="settings-item">
+        <label for="fontSelect">Select Font:</label>
+        <select id="fontSelect" onchange="changeFont()">
+            <option value="Amiri">Amiri</option>
+            <option value="Roboto">Roboto</option>
+        </select>
+    </div>
+
+    <!-- Text Size Control -->
+    <div class="settings-item">
+        <label for="textSize">Text Size:</label>
+        <input type="range" id="textSize" min="14" max="24" value="18" onchange="changeTextSize(event)" />
+    </div>
+
+    <!-- Reset Preferences -->
+    <div class="settings-item">
+        <button class="button" onclick="resetPreferences()">Reset to Default</button>
+    </div>
+
+    <a href="index.html" class="settings-link">Back to Quran</a>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Load saved preferences from localStorage
+        const savedTheme = localStorage.getItem('darkMode') === 'true' ? 'dark' : 'light';
+        const savedFont = localStorage.getItem('selectedFont') || 'Amiri';
+        const savedTextSize = localStorage.getItem('textSize') || 18;
+
+        // Set default theme, font, and text size
+        document.getElementById('theme').value = savedTheme;
+        document.getElementById('fontSelect').value = savedFont;
+        document.getElementById('textSize').value = savedTextSize;
+
+        // Apply saved settings
+        changeTheme(savedTheme);
+        changeFont(savedFont);
+        document.body.style.fontSize = savedTextSize + 'px';
+    });
+
+    // Change the theme
+    function changeTheme(theme) {
+        if (!theme) {
+            theme = document.getElementById('theme').value;
+        }
+
+        if (theme === 'dark') {
+            document.body.classList.add('dark-mode');
+            localStorage.setItem('darkMode', 'true');
+        } else {
+            document.body.classList.remove('dark-mode');
+            localStorage.setItem('darkMode', 'false');
+        }
+    }
+
+    // Change the font
+    function changeFont() {
+        const selectedFont = document.getElementById('fontSelect').value;
+        document.body.style.fontFamily = selectedFont;
+        localStorage.setItem('selectedFont', selectedFont);
+    }
+
+    // Change the text size
+    function changeTextSize(event) {
+        const textSize = event.target.value;
+        document.body.style.fontSize = textSize + 'px';
+        localStorage.setItem('textSize', textSize);
+    }
+
+    // Reset preferences to default
+    function resetPreferences() {
+        localStorage.removeItem('darkMode');
+        localStorage.removeItem('selectedFont');
+        localStorage.removeItem('textSize');
+        location.reload(); // Reload the page to apply default settings
+    }
+</script>
+
+</body>
+</html>
