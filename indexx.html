@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quran Kareem</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            font-family: 'Roboto', sans-serif;
+            background-color: #fff;
+            color: #000;
+            line-height: 1.6;
+            width: 95%;
+            text-align: center;
+            font-size: 20px;
+            word-wrap: break-word;
+        }
+
+        .arabic-text {
+            font-family: 'Amiri', serif;
+            font-size: 1.6em;
+            direction: rtl;
+            line-height: 1.6;
+            padding: 5px;
+            color: #000;
+            margin: 0;
+            width: 95%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            overflow-y: auto;
+            max-height: 250px;
+        }
+
+        .arabic-text::-webkit-scrollbar, .translation-text::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .arabic-text::-webkit-scrollbar-thumb, .translation-text::-webkit-scrollbar-thumb {
+            background-color: #3498db;
+            border-radius: 10px;
+        }
+
+        .arabic-text::-webkit-scrollbar-thumb:hover, .translation-text::-webkit-scrollbar-thumb:hover {
+            background-color: #2980b9;
+        }
+
+        .verse {
+            display: inline;
+            margin: 5px 0;
+            padding: 5px;
+            color: #3498db;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: background-color 0.3s;
+        }
+
+        .verse:hover {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .verse-number {
+            background-color: #3498db;
+            color: white;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 50%;
+            font-size: 1.2em;
+            margin-left: 10px;
+        }
+
+        .surah-heading {
+            font-size: 2em;
+            text-align: center;
+            padding: 20px;
+            color: #3498db;
+            font-weight: bold;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .first-verse {
+            font-size: 1.6em;
+            color: #000;
+            text-align: center;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            padding: 50px;
+            box-sizing: border-box;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+            text-align: center;
+            overflow: hidden;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 25px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-content .arabic-text {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            max-height: 250px;
+            padding-right: 10px;
+        }
+
+        .modal-content .translation-text {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            max-height: 250px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .modal.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .modal.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .arabic-text {
+                font-size: 1.4em;
+            }
+
+            .translation-text {
+                font-size: 1.4em;
+            }
+
+            .verse-number {
+                font-size: 1em;
+            }
+
+            .surah-heading {
+                font-size: 1.8em;
+            }
+
+            .first-verse {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .modal-content {
+                width: 95%;
+                padding: 10px;
+            }
+
+            .arabic-text {
+                font-size: 1.2em;
+            }
+
+            .translation-text {
+                font-size: 1.2em;
+            }
+
+            .verse-number {
+                font-size: 0.9em;
+            }
+
+            .surah-heading {
+                font-size: 1.6em;
+            }
+
+            .first-verse {
+                font-size: 1.2em;
+            }
+        }
+
+        /* Settings Button Style */
+        #settings-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            font-size: 20px;
+            background-color: #3498db;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Language Menu Style */
+        #language-menu {
+            display: none;
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #language-menu button {
+            margin-top: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Settings Button -->
+<div id="settings-btn">⚙️</div>
+
+<!-- Language Selection Menu -->
+<div id="language-menu">
+    <label><input type="checkbox" id="show-arabic" /> Show Arabic</label><br>
+    <label><input type="checkbox" id="show-english" /> Show English</label><br>
+    <button id="save-preference">Save Preference</button>
+</div>
+
+<!-- Surah and Verses -->
+<div class="surah-heading" id="surah-heading" style="display: none;"></div>
+<div id="first-verse" class="first-verse" style="display: none;"></div>
+
+<!-- The Modal for Verse and Translation -->
+<div id="verse-modal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="arabic-text"></div>
+        <div class="translation-text"></div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const userPref = JSON.parse(localStorage.getItem('languagePref')) || { arabic: true, english: true };
+        document.getElementById('show-arabic').checked = userPref.arabic;
+        document.getElementById('show-english').checked = userPref.english;
+
+        const index = getQueryParam('index');
+        fetchSurah(index ? index : 1);
+    });
+
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    async function fetchSurah(index) {
+        const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
+        const arabicData = await arabicResponse.json();
+
+        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(1, '0')}.json`);
+        const translationData = await translationResponse.json();
+
+        displaySurah(arabicData, translationData);
+    }
+
+    function displaySurah(arabicData, translationData) {
+        const surahHeading = document.getElementById('surah-heading');
+        const firstVerse = document.getElementById('first-verse');
+        const count = arabicData.count;
+        const arabicVerses = arabicData.verse;
+        const translationVerses = translationData.verse;
+
+        surahHeading.style.display = 'block';
+        firstVerse.style.display = 'block';
+
+        surahHeading.innerText = arabicData.name;
+        firstVerse.innerText = translationVerses['verse_0'];
+
+        // Loop through verses starting from verse_1
+        for (let i = 1; i < count; i++) {
+            const arabicVerse = arabicVerses[`verse_${i}`];
+            const translatedVerse = translationVerses[`verse_${i}`];
+
+            const verseSpan = document.createElement('span');
+            verseSpan.classList.add('verse');
+            verseSpan.setAttribute('data-arabic', arabicVerse);
+            verseSpan.setAttribute('data-translation', translatedVerse);
+
+            verseSpan.innerHTML = `
+                ${userPref.arabic ? `<span class="arabic-text">${arabicVerse}</span>` : ''}
+                ${userPref.english ? `<span class="translation-text">${translatedVerse}</span>` : ''}
+                <span class="verse-number">${i}</span>
+            `;
+
+            verseSpan.addEventListener('click', () => {
+                openModal(verseSpan);
+            });
+
+            document.body.appendChild(verseSpan);
+        }
+    }
+
+    function openModal(verseSpan) {
+        const arabicText = verseSpan.getAttribute('data-arabic');
+        const translatedText = verseSpan.getAttribute('data-translation');
+
+        const modal = document.getElementById('verse-modal');
+        modal.querySelector('.arabic-text').innerText = arabicText;
+        modal.querySelector('.translation-text').innerText = translatedText;
+
+        modal.classList.add('show');
+        modal.classList.remove('hide');
+
+        modal.querySelector('.close').addEventListener('click', () => {
+            modal.classList.add('hide');
+            modal.classList.remove('show');
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.classList.add('hide');
+                modal.classList.remove('show');
+            }
+        });
+    }
+
+    document.getElementById('settings-btn').addEventListener('click', () => {
+        const menu = document.getElementById('language-menu');
+        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    document.getElementById('save-preference').addEventListener('click', () => {
+        const arabic = document.getElementById('show-arabic').checked;
+        const english = document.getElementById('show-english').checked;
+
+        const userPref = { arabic, english };
+        localStorage.setItem('languagePref', JSON.stringify(userPref));
+
+        alert('Preferences saved!');
+        window.location.reload();
+    });
+</script>
+
+</body>
+</html>
