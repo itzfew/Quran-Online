@@ -8,24 +8,24 @@
         /* General Styles */
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            background-color: #f4f6f9;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             text-align: center;
         }
 
         .container {
             width: 100%;
             max-width: 900px;
-            margin: 0 auto;
+            margin: 20px auto;
             padding: 20px;
         }
 
         .surah-heading {
             font-size: 2.5em;
             font-weight: bold;
-            margin-bottom: 20px;
             color: #2c3e50;
+            margin-bottom: 20px;
         }
 
         .first-verse {
@@ -39,29 +39,31 @@
         }
 
         .content {
-            margin-top: 30px;
+            margin-top: 20px;
             text-align: right;
         }
 
         .verse {
-            font-size: 1.2em;
+            font-size: 1.3em;
             margin: 10px 0;
-            padding: 10px 20px;
-            background-color: #f1f1f1;
+            padding: 12px 20px;
+            background-color: #fff;
             border-radius: 8px;
             display: inline-block;
-            margin-right: 10px;
+            margin-right: 15px;
             line-height: 1.8;
-            width: auto;
-            word-wrap: break-word;
             color: #34495e;
             direction: rtl;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: auto;
+            word-wrap: break-word;
+            max-width: 100%;
         }
 
         .verse-number {
             font-size: 0.85em;
             font-weight: normal;
-            margin-left: 8px;
+            margin-left: 10px;
             color: #7f8c8d;
         }
 
@@ -69,8 +71,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            align-items: flex-start;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         .arabic-text {
@@ -79,18 +80,18 @@
 
         /* Responsiveness */
         @media (max-width: 768px) {
-            .verse {
-                font-size: 1em;
-                padding: 8px 15px;
-            }
-
             .surah-heading {
                 font-size: 2em;
             }
 
             .first-verse {
-                font-size: 1.2em;
+                font-size: 1.3em;
                 padding: 12px;
+            }
+
+            .verse {
+                font-size: 1.1em;
+                padding: 10px 15px;
             }
         }
     </style>
@@ -111,7 +112,8 @@
                 displaySurah(data);
             } catch (error) {
                 console.error('Error fetching surah:', error);
-                alert('Failed to load surah.');
+                alert('Failed to load Surah. Defaulting to Surah 1.');
+                fetchSurah(1); // Fallback to Surah 1 on error
             }
         }
 
@@ -170,7 +172,7 @@
             if (surahIndex && surahIndex >= 1 && surahIndex <= 114) {
                 fetchSurah(surahIndex); // Load the surah based on the index
             } else {
-                alert('Invalid or missing Surah index in URL!');
+                fetchSurah(1); // Default to Surah 1 if invalid or missing
             }
         }
 
