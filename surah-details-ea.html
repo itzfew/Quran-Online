@@ -10,8 +10,8 @@
             margin: 0;
             padding: 10px;
             font-family: 'Roboto', sans-serif;
-            background-color: #fff;  /* White background */
-            color: #000;  /* Black text color */
+            background-color: #fff;
+            color: #000;
             line-height: 1.6;
             width:95%;
             text-align:center;
@@ -26,45 +26,21 @@
             direction: rtl;
             line-height: 1.6;
             padding: 5px;
-            color: #000;  /* Black text for Arabic */
+            color: #000;
             margin: 0;
-            width: 95%; /* Arabic text takes up 100% of the modal's width */
-            word-wrap: break-word; /* Ensures that Arabic text breaks correctly */
-            overflow-wrap: break-word; /* Handles word breaking in Arabic */
-            overflow-y: auto; /* Enables scrolling */
-            max-height: 250px; /* Fix height for scrollable area */
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
-        /* Style for scrollable areas with custom scrollbar */
-        .arabic-text::-webkit-scrollbar, .translation-text::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+        /* Verse container */
+        .verse-container {
+            margin: 15px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
         }
 
-        .arabic-text::-webkit-scrollbar-thumb, .translation-text::-webkit-scrollbar-thumb {
-            background-color: #3498db;
-            border-radius: 10px;
-        }
-
-        .arabic-text::-webkit-scrollbar-thumb:hover, .translation-text::-webkit-scrollbar-thumb:hover {
-            background-color: #2980b9;
-        }
-
-        .verse {
-            display: inline;
-            margin: 5px 0;
-            padding: 5px;
-            color: #3498db; /* Blue color for verses */
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: background-color 0.3s;
-        }
-
-        .verse:hover {
-            background-color: #3498db;
-            color: white;
-        }
-
+        /* Verse number */
         .verse-number {
             background-color: #3498db;
             color: white;
@@ -75,6 +51,7 @@
             margin-left: 10px;
         }
 
+        /* Surah heading */
         .surah-heading {
             font-size: 2em;
             text-align: center;
@@ -86,106 +63,17 @@
             letter-spacing: 2px;
         }
 
+        /* First verse */
         .first-verse {
             font-size: 1.6em;
-            color: #000;  /* Black text for first verse */
+            color: #000;
             text-align: center;
             font-weight: bold;
             margin: 10px 0;
         }
 
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            padding: 50px;
-            box-sizing: border-box;
-            transition: opacity 0.3s ease-in-out;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 100%;
-            max-width: 800px;
-            margin: auto;
-            text-align: center;
-            overflow: hidden;
-            max-height: 80vh; /* Ensure modal is within viewport */
-            display: flex;
-            flex-direction: column;
-        }
-
-        .close {
-            color: #aaa;
-            font-size: 28px;
-            font-weight: bold;
-            position: absolute;
-            top: 10px;
-            right: 25px;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .modal-content .arabic-text {
-            font-size: 1.5em;
-            margin-bottom: 20px;
-            overflow-y: auto;
-            max-height: 250px; /* Make the Arabic text scrollable */
-            padding-right: 10px;
-        }
-
-        .modal-content .translation-text {
-            font-size: 1.5em;
-            margin-bottom: 20px;
-            max-height: 250px; /* Make the translation text scrollable */
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        /* Smooth transition on modal appearance */
-        .modal.show {
-            display: block;
-            opacity: 1;
-        }
-
-        .modal.hide {
-            opacity: 0;
-            pointer-events: none;
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
-            .modal-content {
-                width: 95%;
-                padding: 15px;
-            }
-
-            .arabic-text {
-                font-size: 1.4em;
-            }
-
-            .translation-text {
-                font-size: 1.4em;
-                max-height: 250px;
-            }
-
-            .verse-number {
-                font-size: 1em;
-            }
-
             .surah-heading {
                 font-size: 1.8em;
             }
@@ -193,28 +81,17 @@
             .first-verse {
                 font-size: 1.4em;
             }
-        }
-
-        /* Extra small screen handling */
-        @media (max-width: 480px) {
-            .modal-content {
-                width: 95%;
-                padding: 10px;
-            }
 
             .arabic-text {
-                font-size: 1.2em;
-            }
-
-            .translation-text {
-                font-size: 1.2em;
-                max-height: 200px;
+                font-size: 1.4em;
             }
 
             .verse-number {
-                font-size: 0.9em;
+                font-size: 1em;
             }
+        }
 
+        @media (max-width: 480px) {
             .surah-heading {
                 font-size: 1.6em;
             }
@@ -222,8 +99,15 @@
             .first-verse {
                 font-size: 1.2em;
             }
-        }
 
+            .arabic-text {
+                font-size: 1.2em;
+            }
+
+            .verse-number {
+                font-size: 0.9em;
+            }
+        }
     </style>
 </head>
 <body>
@@ -232,14 +116,8 @@
 <div class="surah-heading" id="surah-heading" style="display: none;"></div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 
-<!-- The Modal for Verse and Translation -->
-<div id="verse-modal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <div class="arabic-text"></div>
-        <div class="translation-text"></div>
-    </div>
-</div>
+<!-- Container for verses -->
+<div id="verses-container"></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -266,10 +144,12 @@
     function displaySurah(arabicData, translationData) {
         const surahHeading = document.getElementById('surah-heading');
         const firstVerse = document.getElementById('first-verse');
+        const versesContainer = document.getElementById('verses-container');
         const count = arabicData.count;
         const arabicVerses = arabicData.verse;
         const translationVerses = translationData.verse;
 
+        // Display Surah name and first verse
         surahHeading.style.display = 'block';
         firstVerse.style.display = 'block';
 
@@ -281,53 +161,19 @@
             const arabicVerse = arabicVerses[`verse_${i}`];
             const translatedVerse = translationVerses[`verse_${i}`];
 
-            const verseSpan = document.createElement('span');
-            verseSpan.classList.add('verse');
-            verseSpan.setAttribute('data-arabic', arabicVerse);  // Store Arabic verse
-            verseSpan.setAttribute('data-translation', translatedVerse);  // Store Translation
+            // Create a container for each verse
+            const verseContainer = document.createElement('div');
+            verseContainer.classList.add('verse-container');
 
-            verseSpan.innerHTML = `
-                <span class="arabic-text">${arabicVerse}</span>
-                <span class="verse-number">${i}</span>
+            // Add the Arabic verse and translation
+            verseContainer.innerHTML = `
+                <div class="arabic-text">${arabicVerse}</div>
+                <div><span class="verse-number">${i}</span> - <span class="translation-text">${translatedVerse}</span></div>
             `;
 
-            // Add click event to open modal
-            verseSpan.addEventListener('click', () => {
-                openModal(verseSpan);
-            });
-
-            // Add the verse directly to the body
-            document.body.appendChild(verseSpan);
+            // Add verse container to the main container
+            versesContainer.appendChild(verseContainer);
         }
-    }
-
-    // Open the modal and display both the Arabic and Translation
-    function openModal(verseSpan) {
-        const arabicText = verseSpan.getAttribute('data-arabic');
-        const translatedText = verseSpan.getAttribute('data-translation');
-
-        // Populate the modal with Arabic and Translation
-        const modal = document.getElementById('verse-modal');
-        modal.querySelector('.arabic-text').innerText = arabicText;
-        modal.querySelector('.translation-text').innerText = translatedText;
-
-        // Show the modal with transition
-        modal.classList.add('show');
-        modal.classList.remove('hide');
-
-        // Close modal when clicked on the "X"
-        modal.querySelector('.close').addEventListener('click', () => {
-            modal.classList.add('hide');
-            modal.classList.remove('show');
-        });
-
-        // Close modal if clicked outside the modal content
-        window.addEventListener('click', (event) => {
-            if (event.target === modal) {
-                modal.classList.add('hide');
-                modal.classList.remove('show');
-            }
-        });
     }
 </script>
 
