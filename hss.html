@@ -16,48 +16,82 @@
 
         .container {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
+            padding: 20px;
         }
 
         .surah-heading {
-            font-size: 2em;
+            font-size: 2.5em;
             font-weight: bold;
             margin-bottom: 20px;
+            color: #2c3e50;
         }
 
         .first-verse {
-            font-size: 1.2em;
+            font-size: 1.5em;
             font-weight: bold;
             margin-bottom: 30px;
-            background-color: #f0f0f0;
-            padding: 10px;
-            border-radius: 5px;
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: right;
         }
 
         .content {
-            margin-top: 20px;
-            text-align: left;
+            margin-top: 30px;
+            text-align: right;
         }
 
         .verse {
-            font-size: 1.1em;
+            font-size: 1.2em;
             margin: 10px 0;
-            padding: 10px;
-            background-color: #e9e9e9;
-            border-radius: 5px;
+            padding: 10px 20px;
+            background-color: #f1f1f1;
+            border-radius: 8px;
+            display: inline-block;
+            margin-right: 10px;
+            line-height: 1.8;
+            width: auto;
+            word-wrap: break-word;
+            color: #34495e;
+            direction: rtl;
         }
 
         .verse-number {
-            font-size: 0.8em;
+            font-size: 0.85em;
             font-weight: normal;
-            margin-left: 10px;
-            color: #555;
+            margin-left: 8px;
+            color: #7f8c8d;
+        }
+
+        .verse-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            margin-top: 10px;
         }
 
         .arabic-text {
             font-family: 'Amiri', serif; /* Arabic font */
-            direction: rtl;
+        }
+
+        /* Responsiveness */
+        @media (max-width: 768px) {
+            .verse {
+                font-size: 1em;
+                padding: 8px 15px;
+            }
+
+            .surah-heading {
+                font-size: 2em;
+            }
+
+            .first-verse {
+                font-size: 1.2em;
+                padding: 12px;
+            }
         }
     </style>
 </head>
@@ -99,21 +133,27 @@
             // Display the first verse separately
             firstVerse.innerText = verses['verse_0'];  // Display verse_0 separately
 
+            // Create a container for verses to be in continuous line
+            const verseContainer = document.createElement('div');
+            verseContainer.classList.add('verse-container');
+            content.appendChild(verseContainer);
+
             // Loop through verses starting from verse_1
             for (let i = 1; i < count; i++) {  // Start the loop from 1 to avoid duplicating verse_0
                 const verseKey = `verse_${i}`;
                 const verseText = verses[verseKey];
 
+                // Create a div for each verse
                 const verseDiv = document.createElement('div');
                 verseDiv.classList.add('verse');
                 verseDiv.setAttribute('id', `verse-${i}`);
                 verseDiv.innerHTML = `
-                    <div class="arabic-text">${verseText}
-                        <span class="verse-number">${i + 1}</span>
-                    </div>
+                    <span class="arabic-text">${verseText}</span>
+                    <span class="verse-number">${i + 1}</span>
                 `;
 
-                content.appendChild(verseDiv); // Append each verse div to content
+                // Append the verse to the container
+                verseContainer.appendChild(verseDiv);
             }
         }
 
