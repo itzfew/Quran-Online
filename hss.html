@@ -3,135 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quran Kareem(Ar)</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
+    <title>Quran Surah Viewer</title>
     <style>
+        /* General Styles */
         body {
-            font-family: 'Arial', sans-serif;
-            background-image: url('https://yourbackgroundimageurl.com/image.jpg');
-            background-size: cover;
-            background-attachment: fixed;
-            color: #333;
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
             margin: 0;
-            padding: 0;
-            transition: background-color 0.5s, color 0.5s, font-family 0.5s;
-            font-size: 18px;
+            padding: 20px;
+            text-align: center;
         }
 
-        .header {
-            text-align: center;
-            margin-top: 60px;
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .surah-heading {
-            font-size: 1.7em;
-            padding: 5px;
-            color: #3498db;
+            font-size: 2em;
             font-weight: bold;
-            text-transform: uppercase;
+            margin-bottom: 20px;
         }
 
         .first-verse {
-            text-align: center;
-            font-size: 1.8em;
-            margin: 5px 0;
-            color: #2980b9;
+            font-size: 1.2em;
             font-weight: bold;
+            margin-bottom: 30px;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .content {
+            margin-top: 20px;
+            text-align: left;
         }
 
         .verse {
-            margin: 5px 0;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: rgba(236, 240, 241, 0.8);
-            font-size: 1.5em;
-            direction: rtl; /* Ensure Arabic text is displayed RTL */
-            text-align: right; /* Align text to the right */
-        }
-
-        .verse:hover {
-            background-color: rgba(52, 152, 219, 0.2);
-        }
-
-        .settings-link {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #3498db;
-            color: white;
-            padding: 10px 20px;
+            font-size: 1.1em;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #e9e9e9;
             border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
         }
 
-        .settings-link:hover {
-            background-color: #2980b9;
+        .verse-number {
+            font-size: 0.8em;
+            font-weight: normal;
+            margin-left: 10px;
+            color: #555;
+        }
+
+        .arabic-text {
+            font-family: 'Amiri', serif; /* Arabic font */
+            direction: rtl;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <div id="surah-heading" class="surah-heading"></div>
+        <div id="first-verse" class="first-verse"></div>
+        <div id="content" class="content"></div>
+    </div>
 
-<!-- Settings Link -->
-<a href="settings.html" class="settings-link">Settings</a>
-
-<!-- Main Content -->
-<div class="header">
-    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
-</div>
-<div id="first-verse" class="first-verse" style="display: none;"></div>
-<div id="content"></div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Fetch Surah based on URL parameter if provided
-        const index = getQueryParam('index');
-        fetchSurah(index ? index : 1);
-    });
-
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
-
-    async function fetchSurah(index) {
-        const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
-        const data = await response.json();
-        displaySurah(data);
-    }
-
-    function displaySurah(data) {
-        const surahHeading = document.getElementById('surah-heading');
-        const firstVerse = document.getElementById('first-verse');
-        const content = document.getElementById('content');
-        const count = data.count;
-        const verses = data.verse;
-
-        surahHeading.style.display = 'block';
-        firstVerse.style.display = 'block';
-        content.innerHTML = ''; // Clear content
-
-        surahHeading.innerText = data.name;
-        firstVerse.innerText = verses['verse_0'];  // Display verse_0 separately and centrally
-
-        // Loop through verses starting from verse_1
-        for (let i = 1; i <= count; i++) {  // Start the loop from 1 to avoid duplicating verse_0
-            const verseKey = `verse_${i}`;
-            const verseText = verses[verseKey];
-
-            const verseDiv = document.createElement('div');
-            verseDiv.classList.add('verse');
-            verseDiv.setAttribute('id', `verse-${i}`);
-            verseDiv.innerHTML = `
-                <div class="arabic-text">${verseText}
-                    <span class="verse-number">${i + 1}</span>
-                </div>
-            `;
-            content.appendChild(verseDiv);
+    <script>
+        // Fetch and display the surah based on the index
+        async function fetchSurah(index) {
+            try {
+                const response = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
+                const data = await response.json();
+                displaySurah(data);
+            } catch (error) {
+                console.error('Error fetching surah:', error);
+                alert('Failed to load surah.');
+            }
         }
-    }
-</script>
 
+        // Display the surah and its verses
+        function displaySurah(data) {
+            const surahHeading = document.getElementById('surah-heading');
+            const firstVerse = document.getElementById('first-verse');
+            const content = document.getElementById('content');
+            const count = data.count;
+            const verses = data.verse;
+
+            surahHeading.style.display = 'block';
+            firstVerse.style.display = 'block';
+            content.innerHTML = ''; // Clear content
+
+            // Display surah name
+            surahHeading.innerText = data.name;
+
+            // Display the first verse separately
+            firstVerse.innerText = verses['verse_0'];  // Display verse_0 separately
+
+            // Loop through verses starting from verse_1
+            for (let i = 1; i < count; i++) {  // Start the loop from 1 to avoid duplicating verse_0
+                const verseKey = `verse_${i}`;
+                const verseText = verses[verseKey];
+
+                const verseDiv = document.createElement('div');
+                verseDiv.classList.add('verse');
+                verseDiv.setAttribute('id', `verse-${i}`);
+                verseDiv.innerHTML = `
+                    <div class="arabic-text">${verseText}
+                        <span class="verse-number">${i + 1}</span>
+                    </div>
+                `;
+
+                content.appendChild(verseDiv); // Append each verse div to content
+            }
+        }
+
+        // Get the 'index' from the URL query string
+        function getSurahIndexFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const index = urlParams.get('index');
+            return index ? parseInt(index) : null;
+        }
+
+        // Automatically load the surah based on the 'index' parameter in the URL
+        function loadSurahFromURL() {
+            const surahIndex = getSurahIndexFromURL();
+            if (surahIndex && surahIndex >= 1 && surahIndex <= 114) {
+                fetchSurah(surahIndex); // Load the surah based on the index
+            } else {
+                alert('Invalid or missing Surah index in URL!');
+            }
+        }
+
+        // Call the function to load the surah as soon as the page loads
+        window.onload = loadSurahFromURL;
+    </script>
 </body>
 </html>
