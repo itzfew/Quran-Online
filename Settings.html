@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Quran Kareem</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            font-size: 18px;
+        }
+
+        .settings-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .settings-item {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .settings-item select,
+        .settings-item input {
+            padding: 5px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #3498db;
+        }
+
+        .back-link {
+            margin-top: 20px;
+            display: inline-block;
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            color: #2980b9;
+        }
+
+        .settings-item button {
+            padding: 5px 15px;
+            font-size: 16px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .settings-item button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="settings-container">
+    <h2>Settings</h2>
+    
+    <div class="settings-item">
+        <label for="themeSelect">Theme:</label>
+        <select id="themeSelect">
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+        </select>
+    </div>
+
+    <div class="settings-item">
+        <label for="fontSizeSelect">Font Size:</label>
+        <input type="number" id="fontSizeSelect" min="14" max="28" value="18">
+    </div>
+
+    <div class="settings-item">
+        <label for="fontSelect">Font Style:</label>
+        <select id="fontSelect">
+            <option value="Amiri">Amiri</option>
+            <option value="Cairo">Cairo</option>
+            <option value="El Messiri">El Messiri</option>
+            <option value="Harmattan">Harmattan</option>
+            <option value="Lateef">Lateef</option>
+            <option value="Scheherazade New">Scheherazade New</option>
+        </select>
+    </div>
+
+    <div class="settings-item">
+        <button onclick="savePreferences()">Save Preferences</button>
+    </div>
+
+    <a href="index.html" class="back-link">Back to Quran</a>
+</div>
+
+<script>
+    // Load current preferences
+    document.addEventListener('DOMContentLoaded', () => {
+        const darkMode = localStorage.getItem('darkMode') === 'true';
+        const textSize = localStorage.getItem('textSize') || '18';
+        const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
+
+        // Set initial values in settings form
+        document.getElementById('themeSelect').value = darkMode ? 'dark' : 'light';
+        document.getElementById('fontSizeSelect').value = textSize;
+        document.getElementById('fontSelect').value = selectedFont;
+    });
+
+    // Save preferences to localStorage
+    function savePreferences() {
+        const theme = document.getElementById('themeSelect').value;
+        const fontSize = document.getElementById('fontSizeSelect').value;
+        const font = document.getElementById('fontSelect').value;
+
+        localStorage.setItem('darkMode', theme === 'dark');
+        localStorage.setItem('textSize', fontSize);
+        localStorage.setItem('selectedFont', font);
+
+        // Go back to main Quran page
+        window.location.href = 'index.html';
+    }
+</script>
+
+</body>
+</html>
