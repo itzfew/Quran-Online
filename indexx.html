@@ -10,8 +10,8 @@
             margin: 0;
             padding: 10px;
             font-family: 'Roboto', sans-serif;
-            background-color: #fff;
-            color: #000;
+            background-color: #fff;  /* White background */
+            color: #000;  /* Black text color */
             line-height: 1.6;
             width: 95%;
             text-align: center;
@@ -19,21 +19,23 @@
             word-wrap: break-word;
         }
 
+        /* Text styling for Arabic */
         .arabic-text {
             font-family: 'Amiri', serif;
             font-size: 1.6em;
             direction: rtl;
             line-height: 1.6;
             padding: 5px;
-            color: #000;
+            color: #000;  /* Black text for Arabic */
             margin: 0;
-            width: 95%;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            overflow-y: auto;
-            max-height: 250px;
+            width: 95%; /* Arabic text takes up 100% of the modal's width */
+            word-wrap: break-word; /* Ensures that Arabic text breaks correctly */
+            overflow-wrap: break-word; /* Handles word breaking in Arabic */
+            overflow-y: auto; /* Enables scrolling */
+            max-height: 250px; /* Fix height for scrollable area */
         }
 
+        /* Style for scrollable areas with custom scrollbar */
         .arabic-text::-webkit-scrollbar, .translation-text::-webkit-scrollbar {
             width: 8px;
             height: 8px;
@@ -52,7 +54,7 @@
             display: inline;
             margin: 5px 0;
             padding: 5px;
-            color: #3498db;
+            color: #3498db; /* Blue color for verses */
             cursor: pointer;
             border: 1px solid transparent;
             transition: background-color 0.3s;
@@ -86,12 +88,13 @@
 
         .first-verse {
             font-size: 1.6em;
-            color: #000;
+            color: #000;  /* Black text for first verse */
             text-align: center;
             font-weight: bold;
             margin: 10px 0;
         }
 
+        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -115,7 +118,7 @@
             margin: auto;
             text-align: center;
             overflow: hidden;
-            max-height: 80vh;
+            max-height: 80vh; /* Ensure modal is within viewport */
             display: flex;
             flex-direction: column;
         }
@@ -140,18 +143,19 @@
             font-size: 1.5em;
             margin-bottom: 20px;
             overflow-y: auto;
-            max-height: 250px;
+            max-height: 250px; /* Make the Arabic text scrollable */
             padding-right: 10px;
         }
 
         .modal-content .translation-text {
             font-size: 1.5em;
             margin-bottom: 20px;
-            max-height: 250px;
+            max-height: 250px; /* Make the translation text scrollable */
             overflow-y: auto;
             padding-right: 10px;
         }
 
+        /* Smooth transition on modal appearance */
         .modal.show {
             display: block;
             opacity: 1;
@@ -162,6 +166,7 @@
             pointer-events: none;
         }
 
+        /* Responsive Design */
         @media (max-width: 768px) {
             .modal-content {
                 width: 95%;
@@ -174,6 +179,7 @@
 
             .translation-text {
                 font-size: 1.4em;
+                max-height: 250px;
             }
 
             .verse-number {
@@ -189,6 +195,7 @@
             }
         }
 
+        /* Extra small screen handling */
         @media (max-width: 480px) {
             .modal-content {
                 width: 95%;
@@ -201,6 +208,7 @@
 
             .translation-text {
                 font-size: 1.2em;
+                max-height: 200px;
             }
 
             .verse-number {
@@ -215,54 +223,9 @@
                 font-size: 1.2em;
             }
         }
-
-        /* Settings Button Style */
-        #settings-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-            font-size: 20px;
-            background-color: #3498db;
-            color: white;
-            padding: 10px;
-            border-radius: 50%;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Language Menu Style */
-        #language-menu {
-            display: none;
-            position: fixed;
-            top: 60px;
-            right: 20px;
-            background-color: white;
-            padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        #language-menu button {
-            margin-top: 10px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
-
-<!-- Settings Button -->
-<div id="settings-btn">⚙️</div>
-
-<!-- Language Selection Menu -->
-<div id="language-menu">
-    <label><input type="checkbox" id="show-arabic" /> Show Arabic</label><br>
-    <label><input type="checkbox" id="show-english" /> Show English</label><br>
-    <button id="save-preference">Save Preference</button>
-</div>
 
 <!-- Surah and Verses -->
 <div class="surah-heading" id="surah-heading" style="display: none;"></div>
@@ -279,10 +242,12 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Load language preferences from localStorage or default to both Arabic and English
         const userPref = JSON.parse(localStorage.getItem('languagePref')) || { arabic: true, english: true };
         document.getElementById('show-arabic').checked = userPref.arabic;
         document.getElementById('show-english').checked = userPref.english;
 
+        // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
     });
@@ -313,17 +278,17 @@
         firstVerse.style.display = 'block';
 
         surahHeading.innerText = arabicData.name;
-        firstVerse.innerText = translationVerses['verse_0'];
+        firstVerse.innerText = translationVerses['verse_0'];  // Display translation of verse_0 separately
 
         // Loop through verses starting from verse_1
-        for (let i = 1; i < count; i++) {
+        for (let i = 1; i < count; i++) {  // Start from verse_1, i.e., ignore verse_0
             const arabicVerse = arabicVerses[`verse_${i}`];
             const translatedVerse = translationVerses[`verse_${i}`];
 
             const verseSpan = document.createElement('span');
             verseSpan.classList.add('verse');
-            verseSpan.setAttribute('data-arabic', arabicVerse);
-            verseSpan.setAttribute('data-translation', translatedVerse);
+            verseSpan.setAttribute('data-arabic', arabicVerse);  // Store Arabic verse
+            verseSpan.setAttribute('data-translation', translatedVerse);  // Store Translation
 
             verseSpan.innerHTML = `
                 ${userPref.arabic ? `<span class="arabic-text">${arabicVerse}</span>` : ''}
@@ -331,30 +296,37 @@
                 <span class="verse-number">${i}</span>
             `;
 
+            // Add click event to open modal
             verseSpan.addEventListener('click', () => {
                 openModal(verseSpan);
             });
 
+            // Add the verse directly to the body
             document.body.appendChild(verseSpan);
         }
     }
 
+    // Open the modal and display both the Arabic and Translation
     function openModal(verseSpan) {
         const arabicText = verseSpan.getAttribute('data-arabic');
         const translatedText = verseSpan.getAttribute('data-translation');
 
+        // Populate the modal with Arabic and Translation
         const modal = document.getElementById('verse-modal');
         modal.querySelector('.arabic-text').innerText = arabicText;
         modal.querySelector('.translation-text').innerText = translatedText;
 
+        // Show the modal with transition
         modal.classList.add('show');
         modal.classList.remove('hide');
 
+        // Close modal when clicked on the "X"
         modal.querySelector('.close').addEventListener('click', () => {
             modal.classList.add('hide');
             modal.classList.remove('show');
         });
 
+        // Close modal if clicked outside the modal content
         window.addEventListener('click', (event) => {
             if (event.target === modal) {
                 modal.classList.add('hide');
@@ -363,21 +335,16 @@
         });
     }
 
-    document.getElementById('settings-btn').addEventListener('click', () => {
-        const menu = document.getElementById('language-menu');
-        menu.style.display = menu.style.display === 'block' ? 'none' : 'block';
-    });
-
-    document.getElementById('save-preference').addEventListener('click', () => {
+    // Save the user's preferences to localStorage
+    function savePreferences() {
         const arabic = document.getElementById('show-arabic').checked;
         const english = document.getElementById('show-english').checked;
-
         const userPref = { arabic, english };
-        localStorage.setItem('languagePref', JSON.stringify(userPref));
 
+        localStorage.setItem('languagePref', JSON.stringify(userPref));
         alert('Preferences saved!');
-        window.location.reload();
-    });
+        window.location.reload();  // Reload the page to apply changes
+    }
 </script>
 
 </body>
