@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quran Kareem (Ar)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
+    <style>
+        /* General body styles */
+        body {
+            font-family: 'Amiri', serif;
+            background-color: white;
+            color: black;
+            margin: 0;
+            padding: 0;
+            font-size: 18px;
+            direction: rtl; /* Ensure right to left text direction */
+        }
+
+        /* Settings Section */
+        .settings-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: #f0f0f0;
+        }
+
+        .settings-item {
+            margin-right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: black; /* Default color for settings items */
+        }
+
+        /* Header and Surah Styling */
+        .header {
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .surah-heading {
+            font-size: 1.7em;
+            color: black;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        /* First Verse Styling */
+        .first-verse {
+            text-align: center;
+            font-size: 1.2em;
+            margin: 10px 0;
+            padding: 5px;
+            color: black;
+            font-weight: bold;
+        }
+
+        /* Verse Styling */
+        .verse {
+            margin: 10px 0;
+            padding: 15px;
+            background-color: transparent;
+            color: black;
+            font-size: 1.2em;
+            cursor: pointer;
+            direction: rtl;
+        }
+
+        .verse:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .verse-number {
+            font-size: 1.0em;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .translation-text {
+            font-size: 0.7em;
+            color: #555;
+            margin-top: 5px;
+            text-align: left;
+        }
+
+        /* Dark mode styles */
+        .dark-mode {
+            background-color: black;
+            color: white;
+        }
+
+        .dark-mode .verse {
+            background-color: rgba(0, 0, 0, 0.1);
+            color: white; /* Change verse text color */
+        }
+
+        .dark-mode .first-verse, 
+        .dark-mode .surah-heading {
+            color: white;
+        }
+
+        .dark-mode .settings-item {
+            color: white; /* Change settings item text color */
+        }
+
+        .dark-mode .settings-container {
+            background-color: #333; /* Dark background for settings */
+        }
+
+        .dark-mode .back-to-top {
+            background-color: #555;
+            color: white;
+        }
+
+        .dark-mode .back-to-top:hover {
+            background-color: #888;
+        }
+
+        /* Highlighted verse (selected verse border) */
+        .verse.selected {
+            border: 2px solid #007bff;
+            background-color: rgba(0, 123, 255, 0.1);
+        }
+   .back-to-top {
+        position: fixed;
+        bottom: 10px;
+        right: 15px;
+        background-color: black;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .back-to-top:hover {
+        background-color: gray;
+    }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .settings-container {
+                padding: 10px;
+            }
+            .settings-item {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Settings Section at the top (Fixed) -->
+<div class="settings-container">
+    <div class="settings-item" onclick="toggleTheme()">
+        <i class="fas fa-adjust"></i>
+    </div>
+    <div class="settings-item" onclick="changeTextSize(1)">
+        <i class="fas fa-text-height"></i>
+    </div>
+    <div class="settings-item" onclick="changeTextSize(-1)">
+        <i class="fas fa-text-height"></i>
+    </div>
+    <div class="settings-item">
+        <select id="fontSelect" onchange="changeFont()">
+            <option value="Amiri">Amiri</option>
+            <option value="Cairo">Cairo</option>
+            <option value="El Messiri">El Messiri</option>
+            <option value="Harmattan">Harmattan</option>
+            <option value="Lateef">Lateef</option>
+            <option value="Scheherazade New">Scheherazade New</option>
+        </select>
+    </div>
+    <div class="settings-item" onclick="resetPreferences()">
+        <i class="fas fa-undo"></i>
+    </div>
+    <!-- Language Toggle -->
+    <div class="settings-item" onclick="toggleLanguage()">
+        <i class="fas fa-language"></i>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="header">
+    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
+</div>
+<div id="first-verse" class="first-verse" style="display: none;"></div>
+<div id="content"></div>
+
+<!-- Back to Top Button -->
+<button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
+
+<!-- Notification -->
+<div class="notification" id="notification"></div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const darkMode = localStorage.getItem('darkMode') === 'true';
+        const textSize = localStorage.getItem('textSize') || '18';
+        const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
+        const languageMode = localStorage.getItem('languageMode') || 'both'; // Default to both Arabic and English
+
+        if (darkMode) {
+            document.body.classList.add('dark-mode');
+        }
+
+        document.body.style.fontSize = textSize + 'px';
+        document.body.style.fontFamily = selectedFont;
+
+        document.getElementById('fontSelect').value = selectedFont;
+        setLanguageMode(languageMode);
+
+        // Fetch Surah based on URL parameter if provided
+        const index = getQueryParam('index');
+        fetchSurah(index ? index : 1);
+    });
+
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    async function fetchSurah(index) {
+        const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
+        const arabicData = await arabicResponse.json();
+
+        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(1, '0')}.json`);
+        const translationData = await translationResponse.json();
+
+        displaySurah(arabicData, translationData);
+    }
+
+    function setLanguageMode(languageMode) {
+        localStorage.setItem('languageMode', languageMode);
+        if (languageMode === 'arabic') {
+            document.body.classList.add('arabic-only');
+            document.body.classList.remove('english-only');
+        } else if (languageMode === 'english') {
+            document.body.classList.add('english-only');
+            document.body.classList.remove('arabic-only');
+        } else {
+            document.body.classList.remove('english-only', 'arabic-only');
+        }
+    }
+
+    function displaySurah(arabicData, translationData) {
+        const surahHeading = document.getElementById('surah-heading');
+        const firstVerse = document.getElementById('first-verse');
+        const content = document.getElementById('content');
+        const count = arabicData.count;
+        const arabicVerses = arabicData.verse;
+        const translationVerses = translationData.verse;
+
+        surahHeading.style.display = 'block';
+        firstVerse.style.display = 'block';
+        content.innerHTML = ''; // Clear content
+
+        surahHeading.innerText = arabicData.name;
+        firstVerse.innerText = arabicVerses['verse_0'];  // Display translation of verse_0 separately
+
+        // Loop through verses starting from verse_1
+        for (let i = 1; i <= count; i++) {
+            const arabicVerse = arabicVerses[`verse_${i}`];
+            const translatedVerse = translationVerses[`verse_${i}`];
+
+            const verseDiv = document.createElement('div');
+            verseDiv.classList.add('verse');
+            verseDiv.setAttribute('id', `verse-${i}`);
+            
+            let verseContent = '';
+
+            // Depending on the language mode, display only Arabic, English, or both
+            if (localStorage.getItem('languageMode') === 'arabic') {
+                verseContent = `
+                    <div class="arabic-text">${arabicVerse}
+                        <span class="verse-number">${i}</span>
+                    </div>`;
+            } else if (localStorage.getItem('languageMode') === 'english') {
+                verseContent = `
+                    <div class="translation-text">${translatedVerse}
+                        <span class="verse-number">${i}</span>
+                    </div>`;
+            } else {
+                verseContent = `
+                    <div class="arabic-text">${arabicVerse}
+                        <span class="verse-number">${i}</span>
+                    </div>
+                    <div class="translation-text">${translatedVerse}</div>`;
+            }
+
+            verseDiv.innerHTML = verseContent;
+
+            // Add event listener to highlight verse
+            verseDiv.onclick = () => toggleHighlight(i);
+
+            content.appendChild(verseDiv);
+        }
+    }
+
+    function toggleHighlight(verseId) {
+        // Remove highlight from all verses
+        const allVerses = document.querySelectorAll('.verse');
+        allVerses.forEach(verse => {
+            verse.classList.remove('selected');
+        });
+
+        // Add highlight to clicked verse
+        const verseElement = document.getElementById(`verse-${verseId}`);
+        verseElement.classList.add('selected');
+    }
+
+    function toggleLanguage() {
+        const currentMode = localStorage.getItem('languageMode');
+        const newMode = currentMode === 'arabic' ? 'english' : currentMode === 'english' ? 'both' : 'arabic';
+        setLanguageMode(newMode);
+        fetchSurah(getQueryParam('index') || 1); // Reload the surah with the updated language mode
+    }
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', isDark);
+    }
+
+    function changeTextSize(increment) {
+        const newSize = parseInt(document.body.style.fontSize) + increment;
+        document.body.style.fontSize = newSize + 'px';
+        localStorage.setItem('textSize', newSize);
+    }
+
+    function changeFont() {
+        const selectedFont = document.getElementById('fontSelect').value;
+        document.body.style.fontFamily = selectedFont;
+        localStorage.setItem('selectedFont', selectedFont);
+    }
+
+    function resetPreferences() {
+        localStorage.removeItem('darkMode');
+        localStorage.removeItem('textSize');
+        localStorage.removeItem('selectedFont');
+        localStorage.removeItem('languageMode');
+        location.reload();
+    }
+</script>
+
+</body>
+</html>
