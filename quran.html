@@ -194,12 +194,29 @@
 
     <!-- Settings Section at the top (Fixed) -->
     <div class="settings-container">
-        <div class="settings-item" onclick="toggleTheme()">
-            <i class="fas fa-adjust"></i> <!-- Dark/Light Mode toggle -->
-        </div>
-        <div class="settings-item" onclick="installPWA()">
-            <i class="fas fa-download"></i> <!-- Install App -->
-       </div>
+    <!-- Dark/Light Mode Toggle -->
+    <div class="settings-item" onclick="toggleTheme()">
+        <i class="fas fa-adjust"></i> <!-- Dark/Light Mode toggle -->
+    </div>
+
+    <!-- Install App -->
+    <div class="settings-item" onclick="installPWA()">
+        <i class="fas fa-download"></i> <!-- Install App -->
+    </div>
+
+    <!-- Hadith Link -->
+    <div class="settings-item">
+        <a href="hadith.html">
+            <i class="fas fa-book-open"></i> <!-- Hadith -->
+        </a>
+    </div>
+
+    <!-- Tasbih Link -->
+    <div class="settings-item">
+        <a href="tasbih.html">
+            <i class="fas fa-pray"></i> <!-- Tasbih -->
+        </a>
+    </div>
 
     <div class="controls">
         <input type="text" id="search-input" placeholder="Search Surahs..." oninput="filterSurahs()">
