@@ -3,14 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <!-- Link to PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-
-    <!-- Include Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-
     <title>Chapters List</title>
-    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"> <!-- Font Awesome CDN -->
     <style>
         /* General Reset */
         * {
@@ -26,6 +20,7 @@
             padding: 0;
             margin: 0;
         }
+
         /* Dark Mode */
         body.dark-mode {
             background-color: #1a1a1a;  /* Dark background */
@@ -39,7 +34,8 @@
             margin-top: 40px;
             padding: 0 10px;
         }
-header {
+
+        header {
             color: white;
             padding: 10px;
             text-align: center;
@@ -80,7 +76,7 @@ header {
         .settings-item.dark-mode {
             color: white;
         }
- 
+
         .book-details {
             text-align: center;
             margin-top: 20px;
@@ -154,6 +150,7 @@ header {
             background-color: #333;  /* Dark background for Surah item */
             border: 1px solid #444;  /* Slightly darker border */
         }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .chapter-list {
@@ -204,30 +201,31 @@ header {
 <body>
     <!-- Settings Section at the top (Fixed) -->
     <div class="settings-container">
-    <!-- Dark/Light Mode Toggle -->
-    <div class="settings-item" onclick="toggleTheme()">
-        <i class="fas fa-adjust"></i> <!-- Dark/Light Mode toggle -->
+        <!-- Dark/Light Mode Toggle -->
+        <div class="settings-item" onclick="toggleTheme()">
+            <i class="fas fa-adjust"></i> <!-- Dark/Light Mode toggle -->
+        </div>
+
+        <!-- Install App -->
+        <div class="settings-item" onclick="installPWA()">
+            <i class="fas fa-download"></i> <!-- Install App -->
+        </div>
+
+        <!-- Hadith Link -->
+        <div class="settings-item">
+            <a href="hadith.html">
+                <i class="fas fa-book-open"></i> <!-- Hadith -->
+            </a>
+        </div>
+
+        <!-- Tasbih Link -->
+        <div class="settings-item">
+            <a href="tasbih.html">
+                <i class="fas fa-pray"></i> <!-- Tasbih -->
+            </a>
+        </div>
     </div>
 
-    <!-- Install App -->
-    <div class="settings-item" onclick="installPWA()">
-        <i class="fas fa-download"></i> <!-- Install App -->
-    </div>
-
-    <!-- Hadith Link -->
-    <div class="settings-item">
-        <a href="hadith.html">
-            <i class="fas fa-book-open"></i> <!-- Hadith -->
-        </a>
-    </div>
-
-    <!-- Tasbih Link -->
-    <div class="settings-item">
-        <a href="tasbih.html">
-            <i class="fas fa-pray"></i> <!-- Tasbih -->
-        </a>
-    </div>
-    </div>
     <h1>Chapters List</h1>
 
     <div class="book-details">
@@ -336,7 +334,8 @@ header {
             console.log('Book not found!');  // Debug log
             document.getElementById("chapterList").innerHTML = "<p>No chapters found for this book.</p>";
         }
-            // Toggle Dark/Light Mode
+
+        // Toggle Dark/Light Mode
         function toggleTheme() {
             const isDark = document.body.classList.toggle('dark-mode');
             localStorage.setItem('darkMode', isDark);
@@ -351,6 +350,7 @@ header {
         });
 
         // Function to handle PWA installation
+        let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
