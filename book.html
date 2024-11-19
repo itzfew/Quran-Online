@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Link to PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Include Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
     <title>Chapters List</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet"> <!-- Font Awesome CDN -->
+
     <style>
         /* General Reset */
         * {
@@ -16,6 +23,7 @@
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f9f9f9;
+            color: #333; /* Default text color for light mode */
             line-height: 1.6;
             padding: 0;
             margin: 0;
@@ -23,18 +31,27 @@
 
         /* Dark Mode */
         body.dark-mode {
-            background-color: #1a1a1a;  /* Dark background */
-            color: #fff;  /* White text */
+            background-color: #1a1a1a; /* Dark background */
+            color: #ddd; /* Lighter text for dark mode */
         }
 
-        h1 {
+        h1,
+        h2 {
             text-align: center;
-            color: #2c3e50;
             font-size: 2rem;
             margin-top: 40px;
             padding: 0 10px;
         }
 
+        h1 {
+            color: #2c3e50;
+        }
+
+        body.dark-mode h1 {
+            color: #3498db; /* Lighter color for heading in dark mode */
+        }
+
+        /* Header styles */
         header {
             color: white;
             padding: 10px;
@@ -49,6 +66,7 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
+        /* Settings Section (Fixed) */
         .settings-container {
             display: flex;
             justify-content: flex-start;
@@ -84,7 +102,7 @@
             background-color: #fff;
             border-radius: 8px;
             margin-bottom: 30px;
-            box-shadow: none;  /* Removed shadow */
+            box-shadow: none;
         }
 
         .book-details h2 {
@@ -92,9 +110,18 @@
             font-size: 1.5rem;
         }
 
+        body.dark-mode .book-details {
+            background-color: #333;
+            color: #ddd; /* Light text color for dark mode */
+        }
+
         .book-details p {
             font-size: 1rem;
             color: #555;
+        }
+
+        body.dark-mode .book-details p {
+            color: #ddd; /* Lighter text color for dark mode */
         }
 
         /* List for Chapters */
@@ -110,13 +137,13 @@
             background-color: #fff;
             padding: 20px;
             margin-bottom: 15px;
-            border-left: 4px solid #3498db;  /* Simple accent line */
+            border-left: 4px solid #3498db;
             border-radius: 8px;
-            transition: background-color 0.3s ease; /* Smooth color transition */
+            transition: background-color 0.3s ease;
         }
 
         .chapter-item:hover {
-            background-color: #f1f1f1; /* Light background on hover */
+            background-color: #f1f1f1;
         }
 
         .chapter-item h3 {
@@ -145,10 +172,22 @@
             color: #2980b9;
         }
 
-        /* Dark Mode Surah Card */
+        /* Dark Mode for Chapter Items */
         body.dark-mode .chapter-item {
-            background-color: #333;  /* Dark background for Surah item */
-            border: 1px solid #444;  /* Slightly darker border */
+            background-color: #333;
+            border: 1px solid #444;
+        }
+
+        body.dark-mode .chapter-item h3 {
+            color: #ddd;
+        }
+
+        body.dark-mode .chapter-item p {
+            color: #bbb;
+        }
+
+        body.dark-mode .chapter-item a {
+            color: #3498db;
         }
 
         /* Responsive Design */
@@ -198,6 +237,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Settings Section at the top (Fixed) -->
     <div class="settings-container">
@@ -297,12 +337,12 @@
         // Extract book slug from URL
         const urlParams = new URLSearchParams(window.location.search);
         const bookSlug = urlParams.get('book');
-        console.log('Book Slug from URL:', bookSlug);  // Debug log
+        console.log('Book Slug from URL:', bookSlug); // Debug log
 
         const book = books.find(b => b.route.base === bookSlug);
 
         if (book) {
-            console.log('Book found:', book);  // Debug log
+            console.log('Book found:', book); // Debug log
             // Set book details
             document.getElementById("bookTitle").textContent = book.english.title;
             document.getElementById("bookAuthor").textContent = book.english.author;
@@ -331,7 +371,7 @@
                     document.getElementById("chapterList").innerHTML = "<p>Could not load chapters at this time.</p>";
                 });
         } else {
-            console.log('Book not found!');  // Debug log
+            console.log('Book not found!'); // Debug log
             document.getElementById("chapterList").innerHTML = "<p>No chapters found for this book.</p>";
         }
 
@@ -350,7 +390,6 @@
         });
 
         // Function to handle PWA installation
-        let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
@@ -384,4 +423,5 @@
         }
     </script>
 </body>
+
 </html>
