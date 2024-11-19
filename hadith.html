@@ -123,32 +123,31 @@
     </style>
 </head>
 <body>
-
     <!-- Settings Section at the top (Fixed) -->
     <div class="settings-container">
-        <!-- Dark/Light Mode Toggle -->
-        <div class="settings-item" onclick="toggleTheme()">
-            <i class="fas fa-adjust"></i> <!-- Dark/Light Mode toggle -->
-        </div>
+    <!-- Dark/Light Mode Toggle -->
+    <div class="settings-item" onclick="toggleTheme()">
+        <i class="fas fa-adjust"></i> <!-- Dark/Light Mode toggle -->
+    </div>
 
-        <!-- Install App -->
-        <div class="settings-item" onclick="installPWA()">
-            <i class="fas fa-download"></i> <!-- Install App -->
-        </div>
+    <!-- Install App -->
+    <div class="settings-item" onclick="installPWA()">
+        <i class="fas fa-download"></i> <!-- Install App -->
+    </div>
 
-        <!-- Hadith Link -->
-        <div class="settings-item">
-            <a href="hadith.html">
-                <i class="fas fa-book-open"></i> <!-- Hadith -->
-            </a>
-        </div>
+    <!-- Hadith Link -->
+    <div class="settings-item">
+        <a href="hadith.html">
+            <i class="fas fa-book-open"></i> <!-- Hadith -->
+        </a>
+    </div>
 
-        <!-- Tasbih Link -->
-        <div class="settings-item">
-            <a href="tasbih.html">
-                <i class="fas fa-pray"></i> <!-- Tasbih -->
-            </a>
-        </div>
+    <!-- Tasbih Link -->
+    <div class="settings-item">
+        <a href="tasbih.html">
+            <i class="fas fa-pray"></i> <!-- Tasbih -->
+        </a>
+    </div>
     </div>
 
     <h1>Hadith Books</h1>
@@ -227,7 +226,7 @@
             bookList.appendChild(bookElement);
         });
 
-        // Toggle Dark/Light Mode
+    // Toggle Dark/Light Mode
         function toggleTheme() {
             const isDark = document.body.classList.toggle('dark-mode');
             localStorage.setItem('darkMode', isDark);
@@ -242,7 +241,6 @@
         });
 
         // Function to handle PWA installation
-        let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
