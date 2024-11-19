@@ -139,29 +139,14 @@
 
         body.dark-mode .header-meta {
             background-color: #34495e;
-            color: white; /* Make the text white in header-meta */
         }
 
         body.dark-mode .arabic-text {
-            color: #ecf0f1; /* Light color for Arabic text */
+            color: #ecf0f1;
         }
 
         body.dark-mode .english-text {
-            color: #ecf0f1; /* Light color for English text */
-        }
-
-        /* Additional improvements for readability in dark mode */
-        body.dark-mode .settings-container {
-            background-color: #333;
-            border-bottom: 2px solid #1abc9c;
-        }
-
-        body.dark-mode .settings-item {
-            color: white;
-        }
-
-        body.dark-mode .settings-item:hover {
-            color: #3498db;
+            color: #ecf0f1;
         }
 
         @media (max-width: 768px) {
@@ -233,17 +218,18 @@
         let chaptersData = [];
 
         document.addEventListener('DOMContentLoaded', () => {
-            const darkMode = localStorage.getItem('darkMode') === 'true';
-            const textSize = localStorage.getItem('textSize') || '18';
-            const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
+        const darkMode = localStorage.getItem('darkMode') === 'true';
+        const textSize = localStorage.getItem('textSize') || '18';
+        const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
+        const languageMode = localStorage.getItem('languageMode') || 'both'; // Default to both Arabic and English
 
-            if (darkMode) {
-                document.body.classList.add('dark-mode');
-            }
+        if (darkMode) {
+            document.body.classList.add('dark-mode');
+        }
 
-            document.body.style.fontSize = textSize + 'px';
-            document.body.style.fontFamily = selectedFont;
-
+        document.body.style.fontSize = textSize + 'px';
+        document.body.style.fontFamily = selectedFont;
+            
             document.getElementById('fontSelect').value = selectedFont;
 
             const { book } = getURLParams();
