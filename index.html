@@ -90,10 +90,11 @@
         /* Prayer Times Cards */
         .prayer-times-cards {
             display: flex;
-            justify-content: space-around;
+            justify-content: flex-start;
             margin-top: 20px;
-            overflow-x: auto;
             padding-bottom: 20px;
+            overflow-x: auto;
+            white-space: nowrap; /* Prevents wrapping */
         }
 
         .prayer-time-card {
@@ -105,6 +106,7 @@
             text-align: center;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            flex-shrink: 0; /* Prevents shrinking */
         }
 
         body.dark-mode .prayer-time-card {
@@ -207,64 +209,26 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            body {
-                padding-top: 60px;
-            }
-
-            .section {
-                padding: 10px;
-                width: 100%;
-            }
-
-            .verse, .hadith {
-                font-size: 0.9rem;
-                padding: 12px;
-            }
-
             .prayer-times-cards {
-                flex-direction: column;
-                align-items: center;
+                flex-wrap: nowrap; /* Prevent wrapping */
+                padding-bottom: 10px; /* Less padding on smaller screens */
             }
 
             .prayer-time-card {
-                margin-right: 0;
-                margin-bottom: 10px;
-                width: 100%;
-                max-width: 300px;
-            }
-
-            .settings-container {
-                padding: 15px 10px;
-            }
-
-            .settings-item {
-                font-size: 20px;
+                margin-right: 5px; /* Less margin for small screens */
+                width: 120px; /* Make cards smaller for better fit */
             }
         }
 
         @media (max-width: 480px) {
-            .settings-item {
-                font-size: 18px;
-                margin-right: 15px;
-            }
-
-            .copy-btn {
-                font-size: 1rem;
-                padding: 6px 8px;
-            }
-
-            .prayer-time-card h3 {
-                font-size: 1rem;
-            }
-
-            .prayer-time-card p {
-                font-size: 1rem;
+            .prayer-time-card {
+                width: 100px; /* Even smaller cards for very small screens */
+                font-size: 0.9rem; /* Adjust font size */
             }
         }
     </style>
 </head>
 <body>
-
     <!-- Side Menu (Slides In) -->
     <div class="settings-container">
         <a href="quran.html" class="settings-item"><i class="fas fa-book"></i></a>
