@@ -399,7 +399,7 @@ function convertTo12HourFormat(timeStr) {
                     const englishVerse = englishData.verse[randomVerseKey];
                     const verseNumber = randomVerseKey.split('_')[1]; 
 
-                    const surahLink = `https://itzfew.github.io/Quran-Online/surah-details-ar.html?index=${surahNumber}`;
+                    const surahLink = `https://quran-online.pages.dev/surah.html?index=${surahNumber}`;
                     document.getElementById('verse').innerHTML = `
                         <div class="surah-info">
                             <strong>Surah ${surahNumber}: ${arabicData.name}</strong>
@@ -453,7 +453,7 @@ function convertTo12HourFormat(timeStr) {
                         .then(response => response.json())
                         .then(hadithData => {
                             const randomHadith = hadithData.hadiths[Math.floor(Math.random() * hadithData.hadiths.length)];
-                            const hadithLink = `https://itzfew.github.io/Quran-Online/chapter.html?book=${selectedBook.slug}&chapter=${randomChapter.book_number}`;
+                            const hadithLink = `https://quran-online.pages.dev/chapter.html?book=${selectedBook.slug}&chapter=${randomChapter.book_number}`;
 
                             document.getElementById('hadith').innerHTML = `
                                 <div class="hadith-info">
