@@ -4,421 +4,367 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Link to PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
+    <title>Hadith Viewer</title>
 
-    <!-- Include Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-    <title>Chapters List</title>
+    <!-- Google Fonts for Arabic fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade+New&family=Cairo&family=Lalezar&display=swap" rel="stylesheet">
 
     <style>
-        /* General Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
-            color: #333; /* Default text color for light mode */
-            line-height: 1.6;
-            padding: 0;
+            background-color: #f4f4f4;
             margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Dark Mode */
-        body.dark-mode {
-            background-color: #1a1a1a; /* Dark background */
-            color: #ddd; /* Lighter text for dark mode */
-        }
-
-        h1,
-        h2 {
+        h1, h2 {
             text-align: center;
-            font-size: 2rem;
-            margin-top: 50px;
-            padding: 0 10px;
-        }
-
-        h1 {
             color: #2c3e50;
+            margin-top: 20px;
         }
 
-        body.dark-mode h1 {
-            color: #3498db; /* Lighter color for heading in dark mode */
-        }
-
-        /* Header styles */
-        header {
-            color: white;
-            padding: 10px;
-            text-align: center;
-            font-size: 2rem;
-            background-color: #3498db;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Settings Section (Fixed) */
         .settings-container {
             display: flex;
             justify-content: flex-start;
             align-items: center;
             padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-bottom: 2px solid #3498db;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             z-index: 1000;
-            background-color: #f0f0f0;
+            white-space: nowrap;
+            overflow-x: auto;
         }
 
         .settings-item {
             margin-right: 20px;
             font-size: 24px;
             cursor: pointer;
-            color: black; /* Default color for settings items */
+            transition: transform 0.2s ease-in-out;
         }
 
-        .settings-container.dark-mode {
-            background-color: #333;
+        .settings-item:hover {
+            color: #2980b9;
+            transform: scale(1.1);
         }
 
-        .settings-item.dark-mode {
-            color: white;
-        }
-
-        .book-details {
-            text-align: center;
-            margin-top: 20px;
-            padding: 15px;
+        .hadith-container {
+            margin: 20px;
+            padding: 20px;
             background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .hadith {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
             border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: none;
+            background-color: #fafafa;
         }
 
-        .book-details h2 {
-            color: #3498db;
-            font-size: 1.5rem;
+        .hadith h3 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #16a085;
         }
 
-        body.dark-mode .book-details {
-            background-color: #333;
-            color: #ddd; /* Light text color for dark mode */
+        .hadith p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #34495e;
         }
 
-        .book-details p {
-            font-size: 1rem;
+        .hadith .arabic-text {
+            font-size: 18px;
+            text-align: center;
+            direction: rtl;
+            transition: font-size 0.3s ease;
+        }
+
+        .hadith .english-text {
+            font-size: 16px;
+            font-family: 'Arial', sans-serif;
             color: #555;
         }
 
-        body.dark-mode .book-details p {
-            color: #ddd; /* Lighter text color for dark mode */
+        .loading,
+        .error {
+            text-align: center;
+            font-size: 20px;
+            color: #3498db;
         }
 
-        /* List for Chapters */
-        .chapter-list {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0;
-            list-style-type: none;
+        .error {
+            color: red;
         }
 
-        .chapter-item {
-            background-color: #fff;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 4px solid #3498db;
+        #hadithResult {
+            margin-top: 30px;
+        }
+
+        .header-meta {
+            background-color: #ecf0f1;
+            padding: 10px;
             border-radius: 8px;
-            transition: background-color 0.3s ease;
+            margin-bottom: 20px;
         }
 
-        .chapter-item:hover {
-            background-color: #f1f1f1;
+        .header-meta strong {
+            color: #2c3e50;
         }
 
-        .chapter-item h3 {
-            font-size: 1.3rem;
-            color: #333;
-            margin-bottom: 5px;
+        body.dark-mode {
+            background-color: #1a1a1a;
+            color: white;
         }
 
-        .chapter-item p {
-            font-size: 1rem;
-            color: #777;
-            margin: 5px 0;
+        body.dark-mode .hadith {
+            background-color: #34495e;
+            border-color: #1abc9c;
         }
 
-        .chapter-item a {
-            font-size: 1.1rem;
-            font-weight: bold;
-            text-decoration: none;
-            color: #3498db;
-            margin-top: 10px;
-            display: inline-block;
-            transition: color 0.3s ease;
+        body.dark-mode .hadith h3 {
+            color: #1abc9c;
         }
 
-        .chapter-item a:hover {
-            color: #2980b9;
+        body.dark-mode .header-meta {
+            background-color: #34495e;
+            color: white; /* Make the text white in header-meta */
         }
 
-        /* Dark Mode for Chapter Items */
-        body.dark-mode .chapter-item {
+        body.dark-mode .arabic-text {
+            color: #ecf0f1; /* Light color for Arabic text */
+        }
+
+        body.dark-mode .english-text {
+            color: #ecf0f1; /* Light color for English text */
+        }
+
+        /* Additional improvements for readability in dark mode */
+        body.dark-mode .settings-container {
             background-color: #333;
-            border: 1px solid #444;
+            border-bottom: 2px solid #1abc9c;
         }
 
-        body.dark-mode .chapter-item h3 {
-            color: #ddd;
+        body.dark-mode .settings-item {
+            color: white;
         }
 
-        body.dark-mode .chapter-item p {
-            color: #bbb;
-        }
-
-        body.dark-mode .chapter-item a {
+        body.dark-mode .settings-item:hover {
             color: #3498db;
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
-            .chapter-list {
+            .settings-container {
                 padding: 10px;
             }
 
-            h1 {
-                font-size: 1.8rem;
-                padding: 0 20px;
-            }
-
-            .book-details h2 {
-                font-size: 1.3rem;
-            }
-
-            .book-details p {
-                font-size: 0.9rem;
-            }
-
-            .chapter-item {
-                padding: 15px;
-            }
-
-            .chapter-item h3 {
-                font-size: 1.1rem;
-            }
-
-            .chapter-item p {
-                font-size: 0.9rem;
+            .settings-item {
+                font-size: 20px;
             }
         }
 
         @media (max-width: 480px) {
-            .chapter-item h3 {
-                font-size: 1rem;
+            .settings-container {
+                padding: 10px;
             }
 
-            .chapter-item p {
-                font-size: 0.9rem;
-            }
-
-            .chapter-item a {
-                font-size: 1rem;
+            .settings-item {
+                font-size: 18px;
+                margin-right: 10px;
             }
         }
     </style>
 </head>
 
 <body>
+
     <!-- Settings Section at the top (Fixed) -->
     <div class="settings-container">
-        <!-- Dark/Light Mode Toggle -->
+        <input type="text" id="verseSearch" placeholder="Search for a verse..." onkeyup="searchVerse()" />
         <div class="settings-item" onclick="toggleTheme()">
-            <i class="fas fa-adjust"></i> <!-- Dark/Light Mode toggle -->
+            <i class="fas fa-adjust"></i>
         </div>
-
-        <!-- Install App -->
-        <div class="settings-item" onclick="installPWA()">
-            <i class="fas fa-download"></i> <!-- Install App -->
+        <div class="settings-item" onclick="changeTextSize(1)">
+            <i class="fas fa-text-height"></i>
         </div>
-
-        <!-- Hadith Link -->
+        <div class="settings-item" onclick="changeTextSize(-1)">
+            <i class="fas fa-text-height"></i>
+        </div>
         <div class="settings-item">
-            <a href="hadith.html">
-                <i class="fas fa-book-open"></i> <!-- Hadith -->
-            </a>
+            <select id="fontSelect" onchange="changeFont()">
+                <option value="Amiri">Amiri</option>
+                <option value="Cairo">Cairo</option>
+                <option value="Scheherazade New">Scheherazade New</option>
+                <option value="Lalezar">Lalezar</option>
+            </select>
         </div>
-
-        <!-- Tasbih Link -->
-        <div class="settings-item">
-            <a href="tasbih.html">
-                <i class="fas fa-pray"></i> <!-- Tasbih -->
-            </a>
+        <div class="settings-item" onclick="resetPreferences()">
+            <i class="fas fa-undo"></i>
         </div>
     </div>
 
-    <h1>Chapters List</h1>
-
-    <div class="book-details">
-        <h2 id="bookTitle"></h2>
-        <p><strong>Author:</strong> <span id="bookAuthor"></span></p>
-    </div>
-
-    <ul class="chapter-list" id="chapterList"></ul>
+    <div id="loading" class="loading">Loading...</div>
+    <div id="hadithResult"></div>
 
     <script>
-        // Book data as per your provided JavaScript structure
         const books = [
-            {
-                id: 1,
-                arabic: { title: "صحيح البخاري", author: "الإمام محمد بن إسماعيل البخاري" },
-                english: { title: "Sahih al-Bukhari", author: "Imam Muhammad ibn Ismail al-Bukhari" },
-                route: { base: "bukhari" }
-            },
-            {
-                id: 2,
-                arabic: { title: "صحيح مسلم", author: "الإمام مسلم بن الحجاج القشيري النيسابوري" },
-                english: { title: "Sahih Muslim", author: "Imam Muslim ibn al-Hajjaj al-Naysaburi" },
-                route: { base: "muslim" }
-            },
-            {
-                id: 3,
-                arabic: { title: "سنن أبي داود", author: "الإمام سليمان بن الأشعث أبو داود السجستاني" },
-                english: { title: "Sunan Abi Dawud", author: "Imam Sulayman ibn al-Ash'ath Abu Dawud al-Sijistani" },
-                route: { base: "abudawud" }
-            },
-            {
-                id: 4,
-                arabic: { title: "جامع الترمذي", author: "الإمام أبو عيسى محمد بن عيسى الترمذي" },
-                english: { title: "Jami' al-Tirmidhi", author: "Imam Abu Isa Muhammad ibn Isa al-Tirmidhi" },
-                route: { base: "tirmidhi" }
-            },
-            {
-                id: 5,
-                arabic: { title: "سنن النسائي", author: "الإمام أبو عبد الرحمن أحمد بن شعيب النسائي" },
-                english: { title: "Sunan al-Nasa'i", author: "Imam Ahmad ibn Shu'ayb al-Nasa'i" },
-                route: { base: "nasai" }
-            },
-            {
-                id: 6,
-                arabic: { title: "سنن ابن ماجه", author: "الإمام محمد بن يزيد بن ماجه القزويني" },
-                english: { title: "Sunan Ibn Majah", author: "Imam Muhammad ibn Yazid Ibn Majah al-Qazwini" },
-                route: { base: "ibnmajah" }
-            },
-            {
-                id: 7,
-                arabic: { title: "موطأ مالك", author: "الإمام مالك بن أنس" },
-                english: { title: "Muwatta Malik", author: "Imam Malik ibn Anas" },
-                route: { base: "malik" }
-            },
-            {
-                id: 8,
-                arabic: { title: "مسند الإمام أحمد بن حنبل", author: "الإمام أحمد بن حنبل" },
-                english: { title: "Musnad Ahmad ibn Hanbal", author: "Imam Ahmad ibn Hanbal" },
-                route: { base: "ahmed" }
-            },
-            {
-                id: 9,
-                arabic: { title: "سنن الدارمي", author: "الإمام أبو محمد عبد الرحمن بن عبد الله بن الدارمي" },
-                english: { title: "Sunan al-Darimi", author: "Imam Abu Muhammad Abd al-Rahman ibn Abd Allah ibn al-Darimi" },
-                route: { base: "darimi" }
-            }
+            { slug: 'bukhari', name: 'Sahih al-Bukhari' },
+            { slug: 'muslim', name: 'Sahih Muslim' },
+            { slug: 'tirmidhi', name: 'Jami` at-Tirmidhi' },
+            { slug: 'nasa', name: 'Sunan al-Nasa\'i' },
+            { slug: 'ibnmajah', name: 'Sunan Ibn Majah' },
+            { slug: 'abudawud', name: 'Sunan Abu Dawud' },
+            { slug: 'malik', name: 'Muwatta Malik' },
+            { slug: 'ahmed', name: 'Musnad Ahmad ibn Hanbal' },
+            { slug: 'darimi', name: 'Sunan al-Darimi' }
         ];
 
-        // Extract book slug from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const bookSlug = urlParams.get('book');
-        console.log('Book Slug from URL:', bookSlug); // Debug log
+        let chaptersData = [];
 
-        const book = books.find(b => b.route.base === bookSlug);
+        document.addEventListener('DOMContentLoaded', () => {
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            const textSize = localStorage.getItem('textSize') || '18';
+            const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
 
-        if (book) {
-            console.log('Book found:', book); // Debug log
-            // Set book details
-            document.getElementById("bookTitle").textContent = book.english.title;
-            document.getElementById("bookAuthor").textContent = book.english.author;
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+            }
 
-            // Fetch the chapters JSON file dynamically based on the bookSlug
-            const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
-            fetch(chaptersUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const chapterList = document.getElementById("chapterList");
+            document.body.style.fontSize = textSize + 'px';
+            document.body.style.fontFamily = selectedFont;
 
-                    // Iterate over the chapters from the fetched JSON and display them
-                    data.collection.books.forEach(chapter => {
-                        const chapterElement = document.createElement('li');
-                        chapterElement.classList.add('chapter-item');
-                        chapterElement.innerHTML = `
-                            <h3>Chapter ${chapter.book_number}</h3>
-                            <p>${chapter.book_name}</p>
-                            <a href="chapter.html?book=${bookSlug}&chapter=${chapter.book_number}">View Hadiths</a>
-                        `;
-                        chapterList.appendChild(chapterElement);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching chapter data:', error);
-                    document.getElementById("chapterList").innerHTML = "<p>Could not load chapters at this time.</p>";
-                });
-        } else {
-            console.log('Book not found!'); // Debug log
-            document.getElementById("chapterList").innerHTML = "<p>No chapters found for this book.</p>";
-        }
+            document.getElementById('fontSelect').value = selectedFont;
 
-        // Toggle Dark/Light Mode
+            const { book } = getURLParams();
+            if (book) {
+                fetchChaptersData(book);
+            }
+        });
+
         function toggleTheme() {
             const isDark = document.body.classList.toggle('dark-mode');
             localStorage.setItem('darkMode', isDark);
         }
 
-        // Set theme based on user preference
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('darkMode');
-            if (savedTheme === 'true') {
-                document.body.classList.add('dark-mode');
-            }
-        });
+        function changeTextSize(increment) {
+            const arabicText = document.querySelectorAll('.arabic-text');
+            arabicText.forEach(text => {
+                const currentSize = parseInt(window.getComputedStyle(text).fontSize);
+                text.style.fontSize = (currentSize + increment) + 'px';
+            });
+        }
 
-        // Function to handle PWA installation
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
+        function changeFont() {
+            const selectedFont = document.getElementById('fontSelect').value;
+            document.body.style.fontFamily = selectedFont;
+            localStorage.setItem('selectedFont', selectedFont);
+        }
 
-        function installPWA() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the A2HS prompt');
-                    } else {
-                        console.log('User dismissed the A2HS prompt');
-                    }
+        function resetPreferences() {
+            localStorage.removeItem('darkMode');
+            localStorage.removeItem('textSize');
+            localStorage.removeItem('selectedFont');
+            location.reload();
+        }
+
+        function getURLParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const book = urlParams.get('book');
+            const chapter = urlParams.get('chapter');
+            return { book, chapter };
+        }
+
+        function fetchChaptersData(bookSlug) {
+            const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
+            fetch(chaptersUrl)
+                .then(response => response.json())
+                .then(data => {
+                    chaptersData = data.collection.books;
+                    initializeViewer(bookSlug);
+                })
+                .catch(error => {
+                    console.error('Error fetching chapters data:', error);
+                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load chapters data for this book. Please try again later.</p>';
+                    document.getElementById('loading').style.display = 'none';
                 });
-                deferredPrompt = null;
+        }
+
+        function fetchHadiths(bookSlug, chapterNumber) {
+            const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/${chapterNumber}.json`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    displayHadiths(data, bookSlug);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load Hadiths for this chapter. Please try again later.</p>';
+                    document.getElementById('loading').style.display = 'none';
+                });
+        }
+
+        function displayHadiths(data, bookSlug) {
+            const hadithResult = document.getElementById('hadithResult');
+            const loading = document.getElementById('loading');
+            loading.style.display = 'none';
+
+            const bookName = books.find(b => b.slug === bookSlug)?.name || 'Unknown Book';
+
+            if (data.hadiths && data.hadiths.length > 0) {
+                let htmlContent = `
+                    <div class="header-meta">
+                        <h2>${bookName} <span style="font-size: 18px;">(Chapter: ${data.metadata.english.introduction})</span></h2>
+                        <p><strong>Author:</strong> ${data.metadata.english.author}</p>
+                        <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
+                    </div>
+                `;
+                data.hadiths.forEach(hadith => {
+                    htmlContent += `
+                        <div class="hadith">
+                            <h3>Hadith #${hadith.id}</h3>
+                            <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
+                            <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
+                        </div>
+                    `;
+                });
+                hadithResult.innerHTML = htmlContent;
+            } else {
+                hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
             }
         }
 
-        // Register Service Worker for PWA functionality
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then((registration) => {
-                        console.log('Service Worker registered with scope:', registration.scope);
-                    })
-                    .catch((error) => {
-                        console.log('Service Worker registration failed:', error);
-                    });
+        function initializeViewer(bookSlug) {
+            const { book, chapter } = getURLParams();
+            if (book && chapter) {
+                fetchHadiths(book, chapter);
+            } else {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=bukhari&chapter=10).</p>';
+            }
+        }
+
+        function searchVerse() {
+            const searchQuery = document.getElementById('verseSearch').value.toLowerCase();
+            const allHadiths = document.querySelectorAll('.hadith');
+            allHadiths.forEach(hadith => {
+                const englishText = hadith.querySelector('.english-text').textContent.toLowerCase();
+                const arabicText = hadith.querySelector('.arabic-text').textContent.toLowerCase();
+                if (englishText.includes(searchQuery) || arabicText.includes(searchQuery)) {
+                    hadith.style.display = 'block';
+                } else {
+                    hadith.style.display = 'none';
+                }
             });
         }
     </script>
