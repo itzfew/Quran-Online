@@ -16,27 +16,34 @@
             padding: 0;
             font-size: 18px;
             direction: rtl; /* Ensure right to left text direction */
+            transition: all 0.3s ease;
         }
 
         /* Settings Section */
         .settings-container {
             display: flex;
-            justify-content: flex-start;
+            justify-content: space-between;
             align-items: center;
             padding: 10px 20px;
             position: fixed;
             top: 0;
-            left: 0;
-            width: 100%;
+            left:0;
+            width: 95%;
             z-index: 1000;
             background-color: #f0f0f0;
+            border-bottom: 2px solid #ccc;
         }
 
         .settings-item {
-            margin-right: 20px;
             font-size: 24px;
             cursor: pointer;
-            color: black; /* Default color for settings items */
+            color: black;
+            padding: 5px;
+            transition: all 0.3s;
+        }
+
+        .settings-item:hover {
+            color: #007bff;
         }
 
         /* Header and Surah Styling */
@@ -64,17 +71,20 @@
 
         /* Verse Styling */
         .verse {
-            margin: 10px 0;
-            padding: 15px;
+            margin: 15px 0;
+            padding: 20px;
             background-color: transparent;
             color: black;
             font-size: 1.2em;
             cursor: pointer;
             direction: rtl;
+            border-radius: 8px;
+            transition: all 0.3s ease;
         }
 
         .verse:hover {
             background-color: rgba(0, 0, 0, 0.1);
+            transform: scale(1.02);
         }
 
         .verse-number {
@@ -84,7 +94,7 @@
         }
 
         .translation-text {
-            font-size: 0.7em;
+            font-size: 0.8em;
             color: #555;
             margin-top: 5px;
             text-align: left;
@@ -92,13 +102,13 @@
 
         /* Dark mode styles */
         .dark-mode {
-            background-color: black;
+            background-color: #121212;
             color: white;
         }
 
         .dark-mode .verse {
-            background-color: rgba(0, 0, 0, 0.1);
-            color: white; /* Change verse text color */
+            background-color: rgba(255, 255, 255, 0.05);
+            color: white;
         }
 
         .dark-mode .first-verse, 
@@ -107,20 +117,12 @@
         }
 
         .dark-mode .settings-item {
-            color: white; /* Change settings item text color */
-        }
-
-        .dark-mode .settings-container {
-            background-color: #333; /* Dark background for settings */
-        }
-
-        .dark-mode .back-to-top {
-            background-color: #555;
             color: white;
         }
 
-        .dark-mode .back-to-top:hover {
-            background-color: #888;
+        .dark-mode .settings-container {
+            background-color: #333;
+            border-bottom: 2px solid #444;
         }
 
         /* Highlighted verse (selected verse border) */
@@ -128,29 +130,39 @@
             border: 2px solid #007bff;
             background-color: rgba(0, 123, 255, 0.1);
         }
-   .back-to-top {
-        position: fixed;
-        bottom: 10px;
-        right: 15px;
-        background-color: black;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 5px;
-        cursor: pointer;
-    }
 
-    .back-to-top:hover {
-        background-color: gray;
-    }
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 10px;
+            right: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .back-to-top:hover {
+            background-color: #0056b3;
+        }
 
         /* Responsive Design */
         @media (max-width: 768px) {
             .settings-container {
-                padding: 10px;
+                padding: 8px 15px;
             }
+
             .settings-item {
                 font-size: 20px;
+            }
+
+            .back-to-top {
+                font-size: 0.9em;
+                padding: 8px 12px;
             }
         }
     </style>
@@ -354,4 +366,4 @@
 </script>
 
 </body>
-</html>
+</html> 
