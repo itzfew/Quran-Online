@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -121,33 +120,99 @@
             color: #ecf0f1;
         }
 
+        /* Settings Container */
+        .settings-container {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            padding: 10px;
+            z-index: 999;
+        }
+
+        .settings-item {
+            margin: 0 10px;
+            cursor: pointer;
+            font-size: 24px;
+            color: black;
+        }
+
+        .settings-item:hover {
+            color: #007bff;
+        }
+
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 10px;
+            right: 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        .back-to-top:hover {
+            background-color: #0056b3;
+        }
+
         @media (max-width: 768px) {
             .settings-container {
-                padding: 10px;
+                flex-direction: column;
+                width: 80%;
             }
 
             .settings-item {
                 font-size: 20px;
+                margin: 5px 0;
             }
         }
 
         @media (max-width: 480px) {
-            .settings-container {
-                padding: 10px;
-            }
-
             .settings-item {
                 font-size: 18px;
-                margin-right: 10px;
             }
         }
     </style>
 </head>
-
 <body>
 
+    <!-- Settings Section -->
+    <div class="settings-container">
+        <div class="settings-item" onclick="toggleTheme()">
+            <i class="fas fa-adjust"></i>
+        </div>
+        <div class="settings-item" onclick="changeTextSize(1)">
+            <i class="fas fa-plus"></i>
+        </div>
+        <div class="settings-item" onclick="changeTextSize(-1)">
+            <i class="fas fa-minus"></i>
+        </div>
+        <div class="settings-item">
+            <select id="fontSelect" onchange="changeFont()">
+                <option value="Amiri">Amiri</option>
+                <option value="Cairo">Cairo</option>
+                <option value="Scheherazade New">Scheherazade New</option>
+                <option value="Lalezar">Lalezar</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Main Content -->
     <div id="loading" class="loading">Loading...</div>
     <div id="hadithResult"></div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
 
     <script>
         const books = [
@@ -161,8 +226,6 @@
             { slug: 'ahmed', name: 'Musnad Ahmad ibn Hanbal' },
             { slug: 'darimi', name: 'Sunan al-Darimi' }
         ];
-
-        let chaptersData = [];
 
         document.addEventListener('DOMContentLoaded', () => {
             const darkMode = localStorage.getItem('darkMode') === 'true';
@@ -187,7 +250,6 @@
             fetch(chaptersUrl)
                 .then(response => response.json())
                 .then(data => {
-                    chaptersData = data.collection.books;
                     initializeViewer(bookSlug);
                 })
                 .catch(error => {
@@ -257,7 +319,32 @@
             const chapter = urlParams.get('chapter');
             return { book, chapter };
         }
+
+        // Dark Mode Toggle
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        // Change Text Size
+        function changeTextSize(amount) {
+            let currentSize = parseInt(document.body.style.fontSize || '18');
+            currentSize += amount;
+            document.body.style.fontSize = currentSize + 'px';
+            localStorage.setItem('textSize', currentSize);
+        }
+
+        // Change Font
+        function changeFont() {
+            const selectedFont = document.getElementById('fontSelect').value;
+            document.body.style.fontFamily = selectedFont;
+            localStorage.setItem('selectedFont', selectedFont);
+        }
+
+        // Scroll to Top
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
     </script>
 </body>
-
 </html>
