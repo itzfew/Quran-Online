@@ -47,7 +47,6 @@
 
         .settings-item:hover {
             color: #2980b9;
-            transform: scale(1.1);
         }
 
         h1, h2 {
@@ -60,17 +59,16 @@
         .hadith {
             background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             margin: 15px 0;
             padding: 15px;
             cursor: pointer;
             direction: rtl;
-            transition: all 0.3s ease;
+            /* Removed 3D effects */
         }
 
         .hadith:hover {
             background-color: #ecf0f1;
-            transform: translateY(-5px);
+            /* Removed transform and box-shadow */
         }
 
         .hadith h3 {
