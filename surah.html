@@ -1,374 +1,218 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quran Kareem (Ar)</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
+    <title>Hadith Viewer</title>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Google Fonts for Arabic fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade+New&family=Cairo&family=Lalezar&display=swap" rel="stylesheet">
+
     <style>
-        /* General body styles */
         body {
-            font-family: 'Amiri', serif;
-            background-color: white;
-            color: black;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            font-size: 18px;
-            direction: rtl; /* Ensure right to left text direction */
-            transition: all 0.3s ease;
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Settings Section */
-        .settings-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            position: fixed;
-            top: 0;
-            left:0;
-            width: 95%;
-            z-index: 1000;
-            background-color: #f0f0f0;
-            border-bottom: 2px solid #ccc;
-        }
-
-        .settings-item {
-            font-size: 24px;
-            cursor: pointer;
-            color: black;
-            padding: 5px;
-            transition: all 0.3s;
-        }
-
-        .settings-item:hover {
-            color: #007bff;
-        }
-
-        /* Header and Surah Styling */
-        .header {
+        h1, h2 {
             text-align: center;
-            margin-top: 80px;
+            color: #2c3e50;
+            margin-top: 20px;
         }
 
-        .surah-heading {
-            font-size: 1.7em;
-            color: black;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        /* First Verse Styling */
-        .first-verse {
-            text-align: center;
-            font-size: 1.2em;
-            margin: 10px 0;
-            padding: 5px;
-            color: black;
-            font-weight: bold;
-        }
-
-        /* Verse Styling */
-        .verse {
-            margin: 15px 0;
+        .hadith-container {
+            margin: 20px;
             padding: 20px;
-            background-color: transparent;
-            color: black;
-            font-size: 1.2em;
-            cursor: pointer;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .hadith {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+
+        .hadith h3 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #16a085;
+        }
+
+        .hadith p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #34495e;
+        }
+
+        .hadith .arabic-text {
+            font-size: 18px;
+            text-align: center;
             direction: rtl;
+            transition: font-size 0.3s ease;
+        }
+
+        .hadith .english-text {
+            font-size: 16px;
+            font-family: 'Arial', sans-serif;
+            color: #555;
+        }
+
+        .loading,
+        .error {
+            text-align: center;
+            font-size: 20px;
+            color: #3498db;
+        }
+
+        .error {
+            color: red;
+        }
+
+        #hadithResult {
+            margin-top: 30px;
+        }
+
+        .header-meta {
+            background-color: #ecf0f1;
+            padding: 10px;
             border-radius: 8px;
-            transition: all 0.3s ease;
+            margin-bottom: 20px;
         }
 
-        .verse:hover {
-            background-color: rgba(0, 0, 0, 0.1);
-            transform: scale(1.02);
+        .header-meta strong {
+            color: #2c3e50;
         }
 
-        .verse-number {
-            font-size: 1.0em;
-            margin-top: 10px;
-            font-weight: bold;
-            background-image: url('https://quran-online.pages.dev/source/download.png');
-            background-size: cover;
-            background-position: center;
-            padding: 5px 10px;
-            border-radius: 8px;
-            color: black; /* Default color for light mode */
-            display: inline-block;
-            margin-left: 10px;
-        }
-
-        /* Dark mode styles */
-        .dark-mode {
-            background-color: #121212;
-            color: white;
-        }
-
-        .dark-mode .verse {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: white;
-        }
-
-        .dark-mode .first-verse, 
-        .dark-mode .surah-heading {
-            color: white;
-        }
-
-        .dark-mode .settings-item {
-            color: white;
-        }
-
-        .dark-mode .settings-container {
-            background-color: #333;
-            border-bottom: 2px solid #444;
-        }
-
-        .dark-mode .verse-number {
-            color: white; /* White color for verse number in dark mode */
-        }
-
-        /* Highlighted verse (selected verse border) */
-        .verse.selected {
-            border: 2px solid #007bff;
-            background-color: rgba(0, 123, 255, 0.1);
-        }
-
-        /* Back to Top Button */
-        .back-to-top {
-            position: fixed;
-            bottom: 10px;
-            right: 15px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s;
-        }
-
-        .back-to-top:hover {
-            background-color: #0056b3;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .settings-container {
-                padding: 8px 15px;
-            }
-
-            .settings-item {
-                font-size: 20px;
-            }
-
-            .back-to-top {
-                font-size: 0.9em;
-                padding: 8px 12px;
-            }
-        }
+        
     </style>
 </head>
+
 <body>
 
-<!-- Settings Section at the top (Fixed) -->
-<div class="settings-container">
-    <div class="settings-item" onclick="toggleTheme()">
-        <i class="fas fa-adjust"></i>
-    </div>
-    <div class="settings-item" onclick="changeTextSize(1)">
-        <i class="fas fa-plus"></i>
-    </div>
-    <div class="settings-item" onclick="changeTextSize(-1)">
-        <i class="fas fa-minus"></i>
-    </div>
-    <div class="settings-item">
-        <select id="fontSelect" onchange="changeFont()">
-            <option value="Amiri">Amiri</option>
-            <option value="Cairo">Cairo</option>
-            <option value="El Messiri">El Messiri</option>
-            <option value="Harmattan">Harmattan</option>
-            <option value="Lateef">Lateef</option>
-            <option value="Scheherazade New">Scheherazade New</option>
-        </select>
-    </div>
-    <div class="settings-item" onclick="resetPreferences()">
-        <i class="fas fa-undo"></i>
-    </div>
-    <!-- Language Toggle -->
-    <div class="settings-item" onclick="toggleLanguage()">
-        <i class="fas fa-language"></i>
-    </div>
-</div>
+    <div id="loading" class="loading">Loading...</div>
+    <div id="hadithResult"></div>
 
-<!-- Main Content -->
-<div class="header">
-    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
-</div>
-<div id="first-verse" class="first-verse" style="display: none;"></div>
-<div id="content"></div>
+    <script>
+        const books = [
+            { slug: 'bukhari', name: 'Sahih al-Bukhari' },
+            { slug: 'muslim', name: 'Sahih Muslim' },
+            { slug: 'tirmidhi', name: 'Jami` at-Tirmidhi' },
+            { slug: 'nasa', name: 'Sunan al-Nasa\'i' },
+            { slug: 'ibnmajah', name: 'Sunan Ibn Majah' },
+            { slug: 'abudawud', name: 'Sunan Abu Dawud' },
+            { slug: 'malik', name: 'Muwatta Malik' },
+            { slug: 'ahmed', name: 'Musnad Ahmad ibn Hanbal' },
+            { slug: 'darimi', name: 'Sunan al-Darimi' }
+        ];
 
-<!-- Back to Top Button -->
-<button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
+        let chaptersData = [];
 
-<!-- Notification -->
-<div class="notification" id="notification"></div>
+        document.addEventListener('DOMContentLoaded', () => {
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            const textSize = localStorage.getItem('textSize') || '18';
+            const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const darkMode = localStorage.getItem('darkMode') === 'true';
-        const textSize = localStorage.getItem('textSize') || '18';
-        const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
-        const languageMode = localStorage.getItem('languageMode') || 'both'; // Default to both Arabic and English
-
-        if (darkMode) {
-            document.body.classList.add('dark-mode');
-        }
-
-        document.body.style.fontSize = textSize + 'px';
-        document.body.style.fontFamily = selectedFont;
-
-        document.getElementById('fontSelect').value = selectedFont;
-        setLanguageMode(languageMode);
-
-        // Fetch Surah based on URL parameter if provided
-        const index = getQueryParam('index');
-        fetchSurah(index ? index : 1);
-    });
-
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
-
-    async function fetchSurah(index) {
-        const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
-        const arabicData = await arabicResponse.json();
-
-        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(1, '0')}.json`);
-        const translationData = await translationResponse.json();
-
-        displaySurah(arabicData, translationData);
-    }
-
-    function setLanguageMode(languageMode) {
-        localStorage.setItem('languageMode', languageMode);
-        if (languageMode === 'arabic') {
-            document.body.classList.add('arabic-only');
-            document.body.classList.remove('english-only');
-        } else if (languageMode === 'english') {
-            document.body.classList.add('english-only');
-            document.body.classList.remove('arabic-only');
-        } else {
-            document.body.classList.remove('english-only', 'arabic-only');
-        }
-    }
-
-    function displaySurah(arabicData, translationData) {
-        const surahHeading = document.getElementById('surah-heading');
-        const firstVerse = document.getElementById('first-verse');
-        const content = document.getElementById('content');
-        const count = arabicData.count;
-        const arabicVerses = arabicData.verse;
-        const translationVerses = translationData.verse;
-
-        surahHeading.style.display = 'block';
-        firstVerse.style.display = 'block';
-        content.innerHTML = ''; // Clear content
-
-        surahHeading.innerText = arabicData.name;
-        firstVerse.innerText = arabicVerses['verse_0'];  // Display translation of verse_0 separately
-
-        // Loop through verses starting from verse_1
-        for (let i = 1; i <= count; i++) {
-            const arabicVerse = arabicVerses[`verse_${i}`];
-            const translatedVerse = translationVerses[`verse_${i}`];
-
-            const verseDiv = document.createElement('div');
-            verseDiv.classList.add('verse');
-            verseDiv.setAttribute('id', `verse-${i}`);
-            
-            let verseContent = '';
-
-            // Depending on the language mode, display only Arabic, English, or both
-            if (localStorage.getItem('languageMode') === 'arabic') {
-                verseContent = `
-                    <div class="arabic-text">${arabicVerse}
-                        <span class="verse-number">${i}</span>
-                    </div>`;
-            } else if (localStorage.getItem('languageMode') === 'english') {
-                verseContent = `
-                    <div class="translation-text">${translatedVerse}
-                        <span class="verse-number">${i}</span>
-                    </div>`;
-            } else {
-                verseContent = `
-                    <div class="arabic-text">${arabicVerse}
-                        <span class="verse-number">${i}</span>
-                    </div>
-                    <div class="translation-text">${translatedVerse}</div>`;
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
             }
 
-            verseDiv.innerHTML = verseContent;
+            document.body.style.fontSize = textSize + 'px';
+            document.body.style.fontFamily = selectedFont;
 
-            // Add event listener to highlight verse
-            verseDiv.onclick = () => toggleHighlight(i);
-
-            content.appendChild(verseDiv);
-        }
-    }
-
-    function toggleHighlight(verseId) {
-        // Remove highlight from all verses
-        const allVerses = document.querySelectorAll('.verse');
-        allVerses.forEach(verse => {
-            verse.classList.remove('selected');
+            const { book } = getURLParams();
+            if (book) {
+                fetchChaptersData(book);
+            }
         });
 
-        // Add highlight to clicked verse
-        const verseElement = document.getElementById(`verse-${verseId}`);
-        verseElement.classList.add('selected');
-    }
+        function fetchChaptersData(bookSlug) {
+            const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
+            fetch(chaptersUrl)
+                .then(response => response.json())
+                .then(data => {
+                    chaptersData = data.collection.books;
+                    initializeViewer(bookSlug);
+                })
+                .catch(error => {
+                    console.error('Error fetching chapters data:', error);
+                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load chapters data for this book. Please try again later.</p>';
+                    document.getElementById('loading').style.display = 'none';
+                });
+        }
 
-    function toggleLanguage() {
-        const currentMode = localStorage.getItem('languageMode');
-        const newMode = currentMode === 'arabic' ? 'english' : currentMode === 'english' ? 'both' : 'arabic';
-        setLanguageMode(newMode);
-        fetchSurah(getQueryParam('index') || 1); // Reload the surah with the updated language mode
-    }
+        function fetchHadiths(bookSlug, chapterNumber) {
+            const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/${chapterNumber}.json`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    displayHadiths(data, bookSlug);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load Hadiths for this chapter. Please try again later.</p>';
+                    document.getElementById('loading').style.display = 'none';
+                });
+        }
 
-    function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+        function displayHadiths(data, bookSlug) {
+            const hadithResult = document.getElementById('hadithResult');
+            const loading = document.getElementById('loading');
+            loading.style.display = 'none';
 
-    function toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
+            const bookName = books.find(b => b.slug === bookSlug)?.name || 'Unknown Book';
 
-    function changeTextSize(increment) {
-        const newSize = parseInt(document.body.style.fontSize) + increment;
-        document.body.style.fontSize = newSize + 'px';
-        localStorage.setItem('textSize', newSize);
-    }
+            if (data.hadiths && data.hadiths.length > 0) {
+                let htmlContent = `
+                    <div class="header-meta">
+                        <h2>${bookName} <span style="font-size: 18px;">(Chapter: ${data.metadata.english.introduction})</span></h2>
+                        <p><strong>Author:</strong> ${data.metadata.english.author}</p>
+                        <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
+                    </div>
+                `;
+                data.hadiths.forEach(hadith => {
+                    htmlContent += `
+                        <div class="hadith">
+                            <h3>Hadith #${hadith.id}</h3>
+                            <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
+                            <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
+                        </div>
+                    `;
+                });
+                hadithResult.innerHTML = htmlContent;
+            } else {
+                hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
+            }
+        }
 
-    function changeFont() {
-        const selectedFont = document.getElementById('fontSelect').value;
-        document.body.style.fontFamily = selectedFont;
-        localStorage.setItem('selectedFont', selectedFont);
-    }
+        function initializeViewer(bookSlug) {
+            const { book, chapter } = getURLParams();
+            if (book && chapter) {
+                fetchHadiths(book, chapter);
+            } else {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=bukhari&chapter=10).</p>';
+            }
+        }
 
-    function resetPreferences() {
-        localStorage.removeItem('darkMode');
-        localStorage.removeItem('textSize');
-        localStorage.removeItem('selectedFont');
-        localStorage.removeItem('languageMode');
-        location.reload();
-    }
-</script>
-
+        function getURLParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const book = urlParams.get('book');
+            const chapter = urlParams.get('chapter');
+            return { book, chapter };
+        }
+    </script>
 </body>
+
 </html>
