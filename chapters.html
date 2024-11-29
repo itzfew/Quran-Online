@@ -243,11 +243,10 @@
         }
 
         function changeTextSize(increment) {
-            const arabicText = document.querySelectorAll('.arabic-text');
-            arabicText.forEach(text => {
-                const currentSize = parseInt(window.getComputedStyle(text).fontSize);
-                text.style.fontSize = (currentSize + increment) + 'px';
-            });
+            const currentSize = parseInt(localStorage.getItem('textSize')) || 18;
+            const newSize = currentSize + increment;
+            localStorage.setItem('textSize', newSize);
+            document.body.style.fontSize = newSize + 'px';
         }
 
         function changeFont() {
