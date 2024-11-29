@@ -91,13 +91,14 @@
             font-size: 1.0em;
             margin-top: 10px;
             font-weight: bold;
-        }
-
-        .translation-text {
-            font-size: 0.8em;
-            color: #555;
-            margin-top: 5px;
-            text-align: left;
+            background-image: url('https://quran-online.pages.dev/source/download.png');
+            background-size: cover;
+            background-position: center;
+            padding: 5px 10px;
+            border-radius: 8px;
+            color: black; /* Default color for light mode */
+            display: inline-block;
+            margin-left: 10px;
         }
 
         /* Dark mode styles */
@@ -123,6 +124,10 @@
         .dark-mode .settings-container {
             background-color: #333;
             border-bottom: 2px solid #444;
+        }
+
+        .dark-mode .verse-number {
+            color: white; /* White color for verse number in dark mode */
         }
 
         /* Highlighted verse (selected verse border) */
@@ -366,4 +371,4 @@
 </script>
 
 </body>
-</html> 
+</html>
