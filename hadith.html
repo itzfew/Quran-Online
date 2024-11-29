@@ -78,7 +78,7 @@
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            margin-top: 0px;
+            margin-top: 80px;
             padding: 0px;
         }
 
@@ -91,6 +91,7 @@
             text-align: center;
             width: 100%;
             transition: transform 0.2s ease;
+            position: relative;
         }
 
         .book-item:hover {
@@ -118,11 +119,35 @@
             color: #7f8c8d;
         }
 
+        /* Numbering background image */
+        .book-item .numbering {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 40px;
+            height: 40px;
+            background-image: url('https://quran-online.pages.dev/source/download.png');
+            background-size: cover;
+            background-position: center;
+            border-radius: 50%;
+            color: black;  /* Light color for the number */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            font-size: 16px;
+            border: 2px solid #fff;  /* White border for better contrast */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Shadow for better visibility */
+        }
+
         /* Dark Mode Surah Card */
         body.dark-mode .book-item {
-            background-color: #333;  /* Dark background for Surah item */
+            background-color: #1a1a1a;  /* Dark background for Surah item */
             border: 1px solid #444;  /* Slightly darker border */
         }
+            body.dark-mode .numbering {
+color: white;  /* Dark background for Surah item */
+            }
     </style>
 </head>
 <body>
@@ -158,7 +183,6 @@
     <div class="book-list" id="bookList"></div>
 
     <script>
-        // Book data as per your provided JavaScript structure
         const books = [
             {
                 id: 1,
@@ -218,18 +242,24 @@
 
         // Dynamically generate book list
         const bookList = document.getElementById('bookList');
-        books.forEach(book => {
+        books.forEach((book, index) => {
             const bookElement = document.createElement('div');
             bookElement.classList.add('book-item');
+            
+            // Wrapping the entire book item in a clickable link
             bookElement.innerHTML = `
-                <h3>${book.english.title}</h3>
-                <p><strong>Author:</strong> ${book.english.author}</p>
-                <a href="books.html?book=${book.route.base}">View Chapters</a>
+                <a href="books.html?book=${book.route.base}">
+                    <div class="numbering">${index + 1}</div>
+                    <h3>${book.english.title}</h3>
+                    <p><strong>Author:</strong> ${book.english.author}</p>
+                    <p><strong>Chapters:</strong> ${book.route.chapters.length}</p>
+                </a>
             `;
+            
             bookList.appendChild(bookElement);
         });
 
-    // Toggle Dark/Light Mode
+        // Toggle Dark/Light Mode
         function toggleTheme() {
             const isDark = document.body.classList.toggle('dark-mode');
             localStorage.setItem('darkMode', isDark);
@@ -276,6 +306,5 @@
             });
         }
     </script>
-
 </body>
 </html>
