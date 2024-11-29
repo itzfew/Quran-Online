@@ -22,7 +22,8 @@
             transition: background-color 0.3s, color 0.3s, font-size 0.3s;
             font-size: 18px; /* Default font size */
         }
-.settings-container {
+
+        .settings-container {
             display: flex;
             justify-content: flex-start;
             align-items: center;
@@ -48,25 +49,35 @@
             color: #2980b9;
             transform: scale(1.1);
         }
+
         h1, h2 {
             text-align: center;
             color: #2c3e50;
             margin-top: 20px;
         }
 
+        /* Style for each Hadith */
         .hadith {
-            color: black;
-            font-size: 1.2em;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 15px 0;
+            padding: 15px;
             cursor: pointer;
             direction: rtl;
             transition: all 0.3s ease;
-            padding: 10px;
+        }
+
+        .hadith:hover {
+            background-color: #ecf0f1;
+            transform: translateY(-5px);
         }
 
         .hadith h3 {
             font-size: 20px;
             color: #16a085;
             margin-top: 0;
+            text-align: center;
         }
 
         .hadith p {
@@ -76,17 +87,19 @@
         }
 
         .hadith .arabic-text {
-            font-size: inherit;
+            font-size: 1.2em;
             text-align: center;
-            direction: rtl;
+            font-family: 'Scheherazade New', serif;
+            color: #2c3e50;
         }
 
         .hadith .english-text {
-            font-size: inherit;
+            font-size: 1.1em;
             font-family: 'Arial', sans-serif;
             color: #555;
         }
 
+        /* Loading and Error Styles */
         .loading,
         .error {
             text-align: center;
@@ -104,7 +117,8 @@
         }
 
         body.dark-mode .hadith {
-            background-color: #1a1a1a;
+            background-color: #2c3e50;
+            color: white;
         }
 
         body.dark-mode .hadith h3 {
