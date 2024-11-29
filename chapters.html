@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -120,26 +121,27 @@
             color: #ecf0f1;
         }
 
-        /* Settings Container */
+        /* Settings Section */
         .settings-container {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            background-color: #f0f0f0;
-            border-radius: 10px;
             padding: 10px;
-            z-index: 999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: #fff;
+            border-bottom: 2px solid #ccc;
         }
 
         .settings-item {
-            margin: 0 10px;
-            cursor: pointer;
             font-size: 24px;
+            cursor: pointer;
             color: black;
+            padding: 5px;
+            transition: all 0.3s;
         }
 
         .settings-item:hover {
@@ -165,15 +167,19 @@
             background-color: #0056b3;
         }
 
+        /* Responsive Design */
         @media (max-width: 768px) {
             .settings-container {
-                flex-direction: column;
-                width: 80%;
+                padding: 8px 15px;
             }
 
             .settings-item {
                 font-size: 20px;
-                margin: 5px 0;
+            }
+
+            .back-to-top {
+                font-size: 0.9em;
+                padding: 8px 12px;
             }
         }
 
@@ -184,6 +190,7 @@
         }
     </style>
 </head>
+
 <body>
 
     <!-- Settings Section -->
@@ -205,14 +212,16 @@
                 <option value="Lalezar">Lalezar</option>
             </select>
         </div>
+        <div class="settings-item" onclick="resetPreferences()">
+            <i class="fas fa-undo"></i>
+        </div>
     </div>
-
-    <!-- Main Content -->
-    <div id="loading" class="loading">Loading...</div>
-    <div id="hadithResult"></div>
 
     <!-- Back to Top Button -->
     <button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
+
+    <div id="loading" class="loading">Loading...</div>
+    <div id="hadithResult"></div>
 
     <script>
         const books = [
@@ -226,6 +235,8 @@
             { slug: 'ahmed', name: 'Musnad Ahmad ibn Hanbal' },
             { slug: 'darimi', name: 'Sunan al-Darimi' }
         ];
+
+        let chaptersData = [];
 
         document.addEventListener('DOMContentLoaded', () => {
             const darkMode = localStorage.getItem('darkMode') === 'true';
@@ -250,6 +261,7 @@
             fetch(chaptersUrl)
                 .then(response => response.json())
                 .then(data => {
+                    chaptersData = data.collection.books;
                     initializeViewer(bookSlug);
                 })
                 .catch(error => {
@@ -320,31 +332,40 @@
             return { book, chapter };
         }
 
-        // Dark Mode Toggle
+        // Dark mode toggle
         function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', isDark);
         }
 
-        // Change Text Size
-        function changeTextSize(amount) {
-            let currentSize = parseInt(document.body.style.fontSize || '18');
-            currentSize += amount;
-            document.body.style.fontSize = currentSize + 'px';
-            localStorage.setItem('textSize', currentSize);
+        // Change font size
+        function changeTextSize(increment) {
+            let newSize = parseInt(window.getComputedStyle(document.body).fontSize) + increment;
+            newSize = Math.max(12, Math.min(30, newSize)); // Prevent font size from getting too small or too large
+            document.body.style.fontSize = newSize + 'px';
+            localStorage.setItem('textSize', newSize);
         }
 
-        // Change Font
+        // Change font
         function changeFont() {
             const selectedFont = document.getElementById('fontSelect').value;
             document.body.style.fontFamily = selectedFont;
             localStorage.setItem('selectedFont', selectedFont);
         }
 
-        // Scroll to Top
+        // Reset preferences
+        function resetPreferences() {
+            localStorage.removeItem('darkMode');
+            localStorage.removeItem('textSize');
+            localStorage.removeItem('selectedFont');
+            location.reload();
+        }
+
+        // Scroll to top
         function scrollToTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
 </body>
+
 </html>
