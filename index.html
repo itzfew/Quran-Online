@@ -87,55 +87,78 @@
             color: #80c7ff;
         }
 
-        /* Prayer Times Cards */
-        .prayer-times-cards {
-            display: flex;
-            justify-content: flex-start;
-            margin-top: 20px;
-            padding-bottom: 20px;
-            overflow-x: auto;
-            white-space: nowrap; /* Prevents wrapping */
+/* Prayer Grid (3 Columns for all screen sizes) */
+        .prayer-times-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+            gap: 10px;
+            width: 100%;
+            max-width: 1200px; /* Limit max width for large screens */
+            margin: 0 auto;
+            padding: 0px;
+            box-sizing: border-box;
         }
 
-        .prayer-time-card {
-            background: #fff;
-            padding: 15px;
-            margin-right: 10px;
-            width: 150px;
+        /* Each Prayer Time Box (Static Image) */
+        .prayer-time-box {
+            position: relative;
+            background-image: url('https://quran-online.pages.dev/source/1000080617-removebg-preview.png');
+            background-size: cover;
+            background-position: center;
             border-radius: 8px;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            flex-shrink: 0; /* Prevents shrinking */
+            color: #fff;
+            height: 250px; /* Fixed height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
         }
 
-        body.dark-mode .prayer-time-card {
-            background: #333;
+        /* Name and Time Text (Centered) */
+        .prayer-time-box .name,
+        .prayer-time-box .time {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-weight: bold;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        /* Prayer Time Name (Top Text) */
+        .prayer-time-box .name {
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        /* Prayer Time (Bottom Text) */
+        .prayer-time-box .time {
+            bottom:50px;
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+        }
+
+        /* Dark Mode for Prayer Time Boxes */
+        body.dark-mode .prayer-time-box {
+            background-image: url('https://quran-online.pages.dev/source/1000080617-removebg-preview.png');
             color: #ddd;
         }
 
-        .prayer-time-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        /* Responsive Design (Always 3 Columns) */
+        @media (max-width: 768px) {
+            .prayer-times-grid {
+                grid-template-columns: repeat(3, 1fr); /* Force 3 columns */
+            }
         }
 
-        .prayer-time-card.active {
-            background-color: #2980b9;
-            color: white;
+        @media (max-width: 480px) {
+            .prayer-time-box {
+                font-size: 1rem;
+                padding: 15px;
+                height: 200px; /* Smaller height for mobile screens */
+            }
         }
-
-        .prayer-time-card h3 {
-            margin: 0;
-            font-size: 1.2rem;
-            color: inherit;
-        }
-
-        .prayer-time-card p {
-            font-size: 1.1rem;
-            color: inherit;
-            margin-top: 10px;
-        }
-
         /* Loading Indicator */
         .loading {
             font-size: 1rem;
@@ -207,25 +230,6 @@
             color: #80c7ff;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .prayer-times-cards {
-                flex-wrap: nowrap; /* Prevent wrapping */
-                padding-bottom: 10px; /* Less padding on smaller screens */
-            }
-
-            .prayer-time-card {
-                margin-right: 5px; /* Less margin for small screens */
-                width: 120px; /* Make cards smaller for better fit */
-            }
-        }
-
-        @media (max-width: 480px) {
-            .prayer-time-card {
-                width: 100px; /* Even smaller cards for very small screens */
-                font-size: 0.9rem; /* Adjust font size */
-            }
-        }
     </style>
 </head>
 <body>
@@ -242,30 +246,31 @@
     </div>
     </div>
 
-    <!-- Prayer Times Section -->
-    <div class="section">
-        <h2>Prayer Times</h2>
-        <div id="prayer-times-cards" class="prayer-times-cards">
-            <div class="prayer-time-card" id="fajr-card">
-                <h3>Fajr</h3>
-                <p id="fajr-time">Loading...</p>
-            </div>
-            <div class="prayer-time-card" id="dhuhr-card">
-                <h3>Dhuhr</h3>
-                <p id="dhuhr-time">Loading...</p>
-            </div>
-            <div class="prayer-time-card" id="asr-card">
-                <h3>Asr</h3>
-                <p id="asr-time">Loading...</p>
-            </div>
-            <div class="prayer-time-card" id="maghrib-card">
-                <h3>Maghrib</h3>
-                <p id="maghrib-time">Loading...</p>
-            </div>
-            <div class="prayer-time-card" id="isha-card">
-                <h3>Isha</h3>
-                <p id="isha-time">Loading...</p>
-            </div>
+<!-- Prayer Times Grid -->
+    <div id="prayer-times-grid" class="prayer-times-grid">
+        <div class="prayer-time-box" id="fajr-box">
+            <div class="name">Fajr</div>
+            <div class="time" id="fajr-time">Loading...</div>
+        </div>
+        <div class="prayer-time-box" id="dhuhr-box">
+            <div class="name">Dhuhr</div>
+            <div class="time" id="dhuhr-time">Loading...</div>
+        </div>
+        <div class="prayer-time-box" id="asr-box">
+            <div class="name">Asr</div>
+            <div class="time" id="asr-time">Loading...</div>
+        </div>
+        <div class="prayer-time-box" id="maghrib-box">
+            <div class="name">Maghrib</div>
+            <div class="time" id="maghrib-time">Loading...</div>
+        </div>
+        <div class="prayer-time-box" id="isha-box">
+            <div class="name">Isha</div>
+            <div class="time" id="isha-time">Loading...</div>
+        </div>
+        <div class="prayer-time-box" id="tahajjud-box">
+            <div class="name">Tahajjud</div>
+            <div class="time" id="tahajjud-time">12:00 AM</div> <!-- Static time for now -->
         </div>
     </div>
 
