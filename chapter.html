@@ -63,6 +63,18 @@
             background-color: #fafafa;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
             border-radius: 4px;
+            border: 1px solid transparent; /* Border for visual difference */
+            cursor: pointer;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .hadith.selected {
+            border-color: #3498db; /* Blue border when selected */
+            background-color: #eaf6fb; /* Light blue background when selected */
+        }
+
+        .hadith:hover {
+            background-color: #f1f1f1;
         }
 
         .hadith h3 {
@@ -123,10 +135,16 @@
 
         body.dark-mode .hadith {
             background-color: #1a1a1a;
+            border-color: #555;
         }
 
-        body.dark-mode .hadith h3 {
-            color: #1abc9c;
+        body.dark-mode .hadith.selected {
+            border-color: #1abc9c; /* Light green border for dark mode */
+            background-color: #2c3e50; /* Darker background when selected in dark mode */
+        }
+
+        body.dark-mode .hadith:hover {
+            background-color: #34495e;
         }
 
         body.dark-mode .header-meta {
@@ -173,7 +191,7 @@
             <i class="fas fa-plus"></i>
         </div>
         <div class="settings-item" onclick="changeTextSize(-1)">
-            <i class="fas fa-minu"></i>
+            <i class="fas fa-minus"></i>
         </div>
         <div class="settings-item">
             <select id="fontSelect" onchange="changeFont()">
@@ -305,7 +323,7 @@
                 `;
                 data.hadiths.forEach(hadith => {
                     htmlContent += `
-                        <div class="hadith">
+                        <div class="hadith" onclick="selectHadith(event)">
                             <h3>Hadith #${hadith.id}</h3>
                             <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
                             <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
@@ -316,6 +334,16 @@
             } else {
                 hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
             }
+        }
+
+        function selectHadith(event) {
+            // Deselect all hadiths first
+            const allHadiths = document.querySelectorAll('.hadith');
+            allHadiths.forEach(hadith => hadith.classList.remove('selected'));
+
+            // Select the clicked hadith
+            const selectedHadith = event.currentTarget;
+            selectedHadith.classList.add('selected');
         }
 
         function initializeViewer(bookSlug) {
