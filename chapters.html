@@ -22,42 +22,42 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Settings Section */
-        .settings-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 95%;
-            z-index: 1000;
-            background-color: #f0f0f0;
-            border-bottom: 2px solid #ccc;
-        }
-
-        .settings-item {
-            font-size: 24px;
-            cursor: pointer;
-            color: black;
-            padding: 5px;
-            transition: all 0.3s;
-        }
-
-        .settings-item:hover {
-            color: #007bff;
-        }
-
-        /* Header and Hadith Styling */
         h1, h2 {
             text-align: center;
             color: #2c3e50;
             margin-top: 20px;
         }
 
+        .settings-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-bottom: 2px solid #3498db;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
+        .settings-item {
+            margin-right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .settings-item:hover {
+            color: #2980b9;
+            transform: scale(1.1);
+        }
+
         .hadith-container {
-            margin: 20px;
+            margin: 100px 20px 20px;
             padding: 20px;
             background-color: #fff;
             border-radius: 10px;
@@ -70,6 +70,7 @@
             border: 1px solid #eee;
             border-radius: 8px;
             background-color: #fafafa;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .hadith h3 {
@@ -123,52 +124,51 @@
             color: #2c3e50;
         }
 
-        /* Dark mode styles */
-        .dark-mode {
-            background-color: #121212;
+        body.dark-mode {
+            background-color: #1a1a1a;
             color: white;
         }
 
-        .dark-mode .hadith {
-            background-color: rgba(255, 255, 255, 0.1);
+        body.dark-mode .hadith {
+            background-color: #34495e;
+            border-color: #1abc9c;
         }
 
-        .dark-mode .hadith h3,
-        .dark-mode .hadith p {
-            color: white;
+        body.dark-mode .hadith h3 {
+            color: #1abc9c;
         }
 
-        .dark-mode .settings-container {
-            background-color: #333;
-            border-bottom: 2px solid #444;
+        body.dark-mode .header-meta {
+            background-color: #34495e;
         }
 
-        .dark-mode .settings-item {
-            color: white;
+        body.dark-mode .arabic-text {
+            color: #ecf0f1;
         }
 
-        .dark-mode .loading,
-        .dark-mode .error {
-            color: white;
+        body.dark-mode .english-text {
+            color: #ecf0f1;
         }
 
-        /* Back to Top Button */
-        .back-to-top {
-            position: fixed;
-            bottom: 10px;
-            right: 15px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s;
+        @media (max-width: 768px) {
+            .settings-container {
+                padding: 10px;
+            }
+
+            .settings-item {
+                font-size: 20px;
+            }
         }
 
-        .back-to-top:hover {
-            background-color: #0056b3;
+        @media (max-width: 480px) {
+            .settings-container {
+                padding: 10px;
+            }
+
+            .settings-item {
+                font-size: 18px;
+                margin-right: 10px;
+            }
         }
     </style>
 </head>
@@ -177,14 +177,15 @@
 
     <!-- Settings Section at the top (Fixed) -->
     <div class="settings-container">
+        <input type="text" id="verseSearch" placeholder="Search for a verse..." onkeyup="searchVerse()" />
         <div class="settings-item" onclick="toggleTheme()">
             <i class="fas fa-adjust"></i>
         </div>
         <div class="settings-item" onclick="changeTextSize(1)">
-            <i class="fas fa-plus"></i>
+            <i class="fas fa-text-height"></i>
         </div>
         <div class="settings-item" onclick="changeTextSize(-1)">
-            <i class="fas fa-minus"></i>
+            <i class="fas fa-text-height"></i>
         </div>
         <div class="settings-item">
             <select id="fontSelect" onchange="changeFont()">
@@ -197,16 +198,10 @@
         <div class="settings-item" onclick="resetPreferences()">
             <i class="fas fa-undo"></i>
         </div>
-        <div class="settings-item" onclick="toggleLanguage()">
-            <i class="fas fa-language"></i>
-        </div>
     </div>
 
     <div id="loading" class="loading">Loading...</div>
-    <div id="hadithResult"></div>
-
-    <!-- Back to Top Button -->
-    <button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
+    <div id="hadithResult" class="hadith-container"></div>
 
     <script>
         const books = [
@@ -223,9 +218,62 @@
 
         let chaptersData = [];
 
-        const { book } = getURLParams();
-        if (book) {
-            fetchChaptersData(book);
+        document.addEventListener('DOMContentLoaded', () => {
+            const darkMode = localStorage.getItem('darkMode') === 'true';
+            const textSize = localStorage.getItem('textSize') || '18';
+            const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
+
+            if (darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+
+            document.body.style.fontSize = textSize + 'px';
+            document.body.style.fontFamily = selectedFont;
+
+            document.getElementById('fontSelect').value = selectedFont;
+
+            const { book } = getURLParams();
+            if (book) {
+                fetchChaptersData(book);
+            }
+        });
+
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
+
+        function changeTextSize(increment) {
+            const arabicText = document.querySelectorAll('.arabic-text');
+            const englishText = document.querySelectorAll('.english-text');
+            arabicText.forEach(text => {
+                const currentSize = parseInt(window.getComputedStyle(text).fontSize);
+                text.style.fontSize = (currentSize + increment) + 'px';
+            });
+            englishText.forEach(text => {
+                const currentSize = parseInt(window.getComputedStyle(text).fontSize);
+                text.style.fontSize = (currentSize + increment) + 'px';
+            });
+        }
+
+        function changeFont() {
+            const selectedFont = document.getElementById('fontSelect').value;
+            document.body.style.fontFamily = selectedFont;
+            localStorage.setItem('selectedFont', selectedFont);
+        }
+
+        function resetPreferences() {
+            localStorage.removeItem('darkMode');
+            localStorage.removeItem('textSize');
+            localStorage.removeItem('selectedFont');
+            location.reload();
+        }
+
+        function getURLParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const book = urlParams.get('book');
+            const chapter = urlParams.get('chapter');
+            return { book, chapter };
         }
 
         function fetchChaptersData(bookSlug) {
@@ -297,43 +345,18 @@
             }
         }
 
-        function getURLParams() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const book = urlParams.get('book');
-            const chapter = urlParams.get('chapter');
-            return { book, chapter };
-        }
-
-        function toggleTheme() {
-            document.body.classList.toggle('dark-mode');
-        }
-
-        function changeTextSize(increment) {
-            const currentSize = parseInt(window.getComputedStyle(document.body).fontSize);
-            document.body.style.fontSize = (currentSize + increment) + 'px';
-        }
-
-        function changeFont() {
-            const selectedFont = document.getElementById('fontSelect').value;
-            document.body.style.fontFamily = selectedFont;
-        }
-
-        function resetPreferences() {
-            document.body.classList.remove('dark-mode');
-            document.body.style.fontSize = '16px';
-            document.body.style.fontFamily = 'Arial';
-            document.getElementById('fontSelect').value = 'Amiri';
-        }
-
-        function toggleLanguage() {
-            const arabicText = document.querySelectorAll('.arabic-text');
-            const englishText = document.querySelectorAll('.english-text');
-            arabicText.forEach(element => element.classList.toggle('hidden'));
-            englishText.forEach(element => element.classList.toggle('hidden'));
-        }
-
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        function searchVerse() {
+            const searchQuery = document.getElementById('verseSearch').value.toLowerCase();
+            const allHadiths = document.querySelectorAll('.hadith');
+            allHadiths.forEach(hadith => {
+                const englishText = hadith.querySelector('.english-text').textContent.toLowerCase();
+                const arabicText = hadith.querySelector('.arabic-text').textContent.toLowerCase();
+                if (englishText.includes(searchQuery) || arabicText.includes(searchQuery)) {
+                    hadith.style.display = 'block';
+                } else {
+                    hadith.style.display = 'none';
+                }
+            });
         }
     </script>
 </body>
