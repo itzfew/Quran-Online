@@ -120,16 +120,6 @@
         let chaptersData = [];
 
         document.addEventListener('DOMContentLoaded', () => {
-            const darkMode = localStorage.getItem('darkMode') === 'true';
-            const textSize = localStorage.getItem('textSize') || '18';
-            const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
-
-            if (darkMode) {
-                document.body.classList.add('dark-mode');
-            }
-
-            document.body.style.fontSize = textSize + 'px';
-            document.body.style.fontFamily = selectedFont;
 
             const { book } = getURLParams();
             if (book) {
