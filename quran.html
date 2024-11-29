@@ -264,40 +264,40 @@ body.dark-mode .surah-number {
             console.error("Error loading Surah data:", error);
         });
 
-    // Function to render Surahs
-    function renderSurahs(surahList) {
-        const listElement = document.getElementById("surah-list");
-        listElement.innerHTML = '';  // Clear the previous list
+function renderSurahs(surahList) {
+    const listElement = document.getElementById("surah-list");
+    listElement.innerHTML = '';  // Clear the previous list
 
-        surahList.forEach(surah => {
-            // Create the anchor link that wraps the entire Surah item
-            const surahLink = document.createElement('a');
-            surahLink.href = `surah?index=${surah.index}`;  // Link to the Surah page
-            surahLink.classList.add('surah-link'); // Add class for styling
-            surahLink.style.textDecoration = 'none';  // Remove default underline from anchor tag
+    surahList.forEach(surah => {
+        // Create the anchor link that wraps the entire Surah item
+        const surahLink = document.createElement('a');
+        surahLink.href = `surah?index=${parseInt(surah.index)}`;  // Remove leading zeros from index
+        surahLink.classList.add('surah-link'); // Add class for styling
+        surahLink.style.textDecoration = 'none';  // Remove default underline from anchor tag
 
-            // Create the Surah item element
-            const surahItem = document.createElement('div');
-            surahItem.classList.add('surah-item');
+        // Create the Surah item element
+        const surahItem = document.createElement('div');
+        surahItem.classList.add('surah-item');
 
-            // Setting the inner HTML of the Surah item
-            surahItem.innerHTML = `
-                <div class="surah-number">${parseInt(surah.index)}</div>  <!-- Surah Number with Background -->
-                <div class="surah-title">${surah.title}</div>
-                <div class="surah-arabic">${surah.titleAr}</div>
-                <div class="surah-meta">
-                    <p>${surah.type}</p> <!-- Type -->
-                    <p>${surah.count}</p> <!-- Verse Count -->
-                </div>
-            `;
+        // Setting the inner HTML of the Surah item
+        surahItem.innerHTML = `
+            <div class="surah-number">${parseInt(surah.index)}</div>  <!-- Surah Number with Background -->
+            <div class="surah-title">${surah.title}</div>
+            <div class="surah-arabic">${surah.titleAr}</div>
+            <div class="surah-meta">
+                <p>${surah.type}</p> <!-- Type -->
+                <p>${surah.count}</p> <!-- Verse Count -->
+            </div>
+        `;
 
-            // Append the Surah item to the anchor tag
-            surahLink.appendChild(surahItem);
+        // Append the Surah item to the anchor tag
+        surahLink.appendChild(surahItem);
 
-            // Append the anchor link (which wraps the Surah item) to the list
-            listElement.appendChild(surahLink);
-        });
-    }
+        // Append the anchor link (which wraps the Surah item) to the list
+        listElement.appendChild(surahLink);
+    });
+}
+
 
     // Function to filter Surahs
     function filterSurahs() {
