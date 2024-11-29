@@ -172,6 +172,38 @@
             color: #bbb;
         }
 
+        /* Surah Number Image Border */
+        .surah-number-container {
+            position: relative;
+            display: inline-block;
+            width: 150px; /* Adjust size as needed */
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid #3498db; /* Optional border for the container */
+            overflow: hidden;
+        }
+
+        .surah-number-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .surah-number-container .surah-number-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .chapter-list {
@@ -253,6 +285,11 @@
 
     <ul class="chapter-list" id="chapterList"></ul>
 
+    <div class="surah-number-container">
+        <img src="https://quran-online.pages.dev/source/download.png" alt="Surah Number">
+        <!-- The text will be removed and we only show the image as a border -->
+    </div>
+
     <script>
         const books = [
             {
@@ -272,29 +309,22 @@
             document.getElementById("bookTitle").textContent = book.english.title;
             document.getElementById("bookAuthor").textContent = book.english.author;
 
-            const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
+            const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/chapters/${book.route.base}.json`;
+
             fetch(chaptersUrl)
                 .then(response => response.json())
                 .then(data => {
-                    const chapterList = document.getElementById("chapterList");
-
-                    data.collection.books.forEach(chapter => {
-                        const chapterElement = document.createElement('a');
-                        chapterElement.href = `chapter.html?book=${bookSlug}&chapter=${chapter.book_number}`;
-                        chapterElement.classList.add('chapter-item');
-                        chapterElement.innerHTML = `
-                            <h3>Chapter ${chapter.book_number}</h3>
-                            <p>${chapter.book_name}</p>
+                    const chapterList = document.getElementById('chapterList');
+                    data.forEach(chapter => {
+                        const li = document.createElement('li');
+                        li.classList.add('chapter-item');
+                        li.innerHTML = `
+                            <h3>${chapter.title}</h3>
+                            <p>${chapter.english_translation}</p>
                         `;
-                        chapterList.appendChild(chapterElement);
+                        chapterList.appendChild(li);
                     });
-                })
-                .catch(error => {
-                    console.error('Error fetching chapter data:', error);
-                    document.getElementById("chapterList").innerHTML = "<p>Could not load chapters at this time.</p>";
                 });
-        } else {
-            document.getElementById("chapterList").innerHTML = "<p>No chapters found for this book.</p>";
         }
 
         function toggleTheme() {
