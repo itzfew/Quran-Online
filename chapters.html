@@ -19,7 +19,8 @@
             margin: 0;
             padding: 0;
             line-height: 1.6;
-            transition: background-color 0.3s, color 0.3s;
+            transition: background-color 0.3s, color 0.3s, font-size 0.3s;
+            font-size: 18px; /* Default font size */
         }
 
         h1, h2 {
@@ -67,10 +68,9 @@
         .hadith {
             margin-bottom: 20px;
             padding: 15px;
-            border: 1px solid #eee;
-            border-radius: 8px;
             background-color: #fafafa;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
         }
 
         .hadith h3 {
@@ -86,14 +86,14 @@
         }
 
         .hadith .arabic-text {
-            font-size: 18px;
+            font-size: inherit;
             text-align: center;
             direction: rtl;
             transition: font-size 0.3s ease;
         }
 
         .hadith .english-text {
-            font-size: 16px;
+            font-size: inherit;
             font-family: 'Arial', sans-serif;
             color: #555;
         }
@@ -131,7 +131,6 @@
 
         body.dark-mode .hadith {
             background-color: #34495e;
-            border-color: #1abc9c;
         }
 
         body.dark-mode .hadith h3 {
@@ -142,10 +141,7 @@
             background-color: #34495e;
         }
 
-        body.dark-mode .arabic-text {
-            color: #ecf0f1;
-        }
-
+        body.dark-mode .arabic-text,
         body.dark-mode .english-text {
             color: #ecf0f1;
         }
@@ -227,6 +223,7 @@
                 document.body.classList.add('dark-mode');
             }
 
+            // Set font size directly on the body
             document.body.style.fontSize = textSize + 'px';
             document.body.style.fontFamily = selectedFont;
 
@@ -244,16 +241,10 @@
         }
 
         function changeTextSize(increment) {
-            const arabicText = document.querySelectorAll('.arabic-text');
-            const englishText = document.querySelectorAll('.english-text');
-            arabicText.forEach(text => {
-                const currentSize = parseInt(window.getComputedStyle(text).fontSize);
-                text.style.fontSize = (currentSize + increment) + 'px';
-            });
-            englishText.forEach(text => {
-                const currentSize = parseInt(window.getComputedStyle(text).fontSize);
-                text.style.fontSize = (currentSize + increment) + 'px';
-            });
+            const currentSize = parseInt(window.getComputedStyle(document.body).fontSize);
+            const newSize = currentSize + increment;
+            document.body.style.fontSize = newSize + 'px';
+            localStorage.setItem('textSize', newSize);
         }
 
         function changeFont() {
