@@ -22,7 +22,32 @@
             transition: background-color 0.3s, color 0.3s, font-size 0.3s;
             font-size: 18px; /* Default font size */
         }
+.settings-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
 
+        .settings-item {
+            margin-right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .settings-item:hover {
+            color: #2980b9;
+            transform: scale(1.1);
+        }
         h1, h2 {
             text-align: center;
             color: #2c3e50;
