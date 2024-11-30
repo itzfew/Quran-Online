@@ -4,258 +4,210 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>99 Names of Allah</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <style>
-    /* Global styles */
-    * {
+    /* General Body Styles */
+    body {
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding-top: 20px;
+    }
+
+ 
+
+    /* Container for names list */
+    #namesList {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      width: 100%;
+      max-width: 1200px;
+      overflow-y: auto;
+      height: 100vh; /* Make it scrollable */
       box-sizing: border-box;
     }
 
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f4f7fc;
+    /* Circle styles for each name */
+    .name-circle {
       display: flex;
-      justify-content: center;
       align-items: center;
-      width: 100%;
+      justify-content: center;
+      width: 120px;
+      height: 120px;
+      background-image: url('https://quran-online.pages.dev/images/1000080753-removebg-preview.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.2em;
+      cursor: pointer;
+      transition: transform 0.3s ease-in-out;
       text-align: center;
-      color: #333;
-      overflow: hidden;
-      padding: 0;
-    }
-
-    h1 {
-      font-size: 3em;
-      color: #2c3e50;
-      margin-bottom: 30px;
-      font-weight: bold;
-    }
-
-    /* Card container styles */
-    .card-container {
+      user-select: none;
       position: relative;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Hover effect on name circles */
+    .name-circle:hover {
+      transform: scale(1.1); /* Slight zoom on hover */
+    }
+
+    /* Popup modal styles */
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      max-width: 100%;
       height: 100%;
-      display: flex;
+      background-color: rgba(0, 0, 0, 0.7); /* Slightly darker overlay */
+      display: none;
       justify-content: center;
       align-items: center;
+      z-index: 1000;
     }
 
-    .card {
+    .popup-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 10px;
+      max-width: 500px;
+      width: 80%;
+      text-align: center;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Popup Heading */
+    .popup h3 {
+      font-size: 2em;
+      margin: 0;
+      color: #4CAF50;
+    }
+
+    /* Popup Text */
+    .popup p {
+      font-size: 1.2em;
+      margin: 10px 0;
+      color: #333;
+    }
+
+    /* Close Button */
+    .close-btn {
+      cursor: pointer;
+      padding: 12px 18px;
+      background-color: #f44336;
+      color: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5em;
+      transition: background-color 0.3s ease;
+    }
+
+    .close-btn:hover {
+      background-color: #d32f2f;
+    }
+
+    /* Style for background overlay */
+    .popup-background {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      background: #ecf0f1;
-      border-radius: 15px;
-      padding: 20px;
-      box-sizing: border-box;
-      opacity: 0;
-      transform: translateX(100%);
-      transition: all 0.5s ease;
     }
 
-    /* Numbering */
-    .card-number {
-      font-size: 2em;
-      font-weight: bold;
-      color: #2980b9;
-      margin-bottom: 15px;
-    }
-
-    /* Name and Meaning */
-    .name {
-      font-size: 3em;
-      font-weight: bold;
-      color: #2980b9;
-      border: 2px solid #2980b9;
-      padding: 20px;
-      border-radius: 10px;
-      background-color: #fff;
-      margin-bottom: 15px;
-      text-align: center;
-      box-sizing: border-box;
-    }
-
-    .name .transliteration {
-      font-size: 1.1em;
-      color: #7f8c8d;
-      margin-top: 8px;
-    }
-
-    .meaning {
-      font-size: 1.5em;
-      color: #27ae60;
-      line-height: 1.6;
-      margin-bottom: 20px;
-      text-align: center;
-      box-sizing: border-box;
-    }
-
-    /* Responsive Styles */
-    @media (max-width: 768px) {
+    /* Responsive Design for Smaller Screens */
+    @media (max-width: 600px) {
       h1 {
-        font-size: 2.5em;
-      }
-
-      .card-container {
-        height: 80%;
-      }
-
-      .card-number {
-        font-size: 1.5em;
-      }
-
-      .name {
-        font-size: 2.5em;
-      }
-
-      .meaning {
-        font-size: 1.2em;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .card-container {
-        height: 70%;
-      }
-
-      .card-number {
-        font-size: 1.2em;
-      }
-
-      .name {
         font-size: 2em;
       }
 
-      .meaning {
-        font-size: 1.1em;
+      .name-circle {
+        width: 100px;
+        height: 100px;
+        font-size: 1em;
+      }
+
+      .popup-content {
+        padding: 20px;
       }
     }
 
-    /* Swipe area (Invisible detection) */
-    .swipe-area {
-      height: 100%;
-      width: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 1;
-      opacity: 0;
-    }
   </style>
 </head>
 <body>
 
-  <!-- Main Content -->
-  <div class="content">
-    <h1>99 Names of Allah</h1>
+  <div id="namesList">
+    <!-- Names will be inserted here -->
+  </div>
 
-    <!-- Card Container -->
-    <div class="card-container" id="cardContainer">
-      <div class="card" id="card1">
-        <div class="card-number" id="cardNumber">Name 1</div>
-        <div class="name" id="name">
-          <span id="nameText"></span>
-          <span class="transliteration" id="transliteration"></span>
-        </div>
-        <div class="meaning" id="meaning"></div>
-      </div>
+  <!-- Popup Modal -->
+  <div id="popup" class="popup">
+    <div class="popup-background" onclick="closePopup()"></div> <!-- Click outside to close -->
+    <div class="popup-content">
+      <div class="close-btn" onclick="closePopup()">×</div>
+      <h3 id="popupName"></h3>
+      <p id="popupTransliteration"></p>
+      <p id="popupMeaning"></p>
     </div>
   </div>
 
-  <!-- Swipe Detection Area -->
-  <div class="swipe-area" id="swipeArea"></div>
-
   <script>
     let namesData = [];
-    let currentIndex = 0;
-
-    const nameElement = document.getElementById('nameText');
-    const meaningElement = document.getElementById('meaning');
-    const cardNumber = document.getElementById('cardNumber');
-    const swipeArea = document.getElementById('swipeArea');
 
     // Fetch the Names Data from a JSON source
     fetch('https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/names-of-allah.json')
       .then(response => response.json())
       .then(data => {
         namesData = data;
-        displayName(); // Display the first name
+        displayNames(); // Display all names and meanings
       })
       .catch(error => {
         console.error("Error fetching names:", error);
         alert("Failed to load names.");
       });
 
-    // Function to display the name and its meaning
-    function displayName() {
-      if (namesData.length > 0) {
-        const currentName = namesData[currentIndex];
-        cardNumber.textContent = `Name ${currentIndex + 1}`;
-        nameElement.innerHTML = currentName.name;
-        document.getElementById('transliteration').innerHTML = `(${currentName.transliteration})`;
-        meaningElement.innerHTML = `Meaning: ${currentName.meaning}`;
+    // Function to display all names and their meanings in circles
+    function displayNames() {
+      const namesList = document.getElementById('namesList');
 
-        // Show the card with transition
-        const card = document.getElementById('card1');
-        card.style.transform = 'translateX(0)';
-        card.style.opacity = '1';
-      }
+      // Loop through all names and create a circle for each one
+      namesData.forEach((name, index) => {
+        const nameDiv = document.createElement('div');
+        nameDiv.classList.add('name-circle');
+        
+        const nameText = document.createElement('span');
+        nameText.innerHTML = name.name;  // Display Arabic name in the circle
+        nameDiv.appendChild(nameText);
+        
+        nameDiv.setAttribute('data-index', index);
+        nameDiv.onclick = () => openPopup(index);
+        namesList.appendChild(nameDiv);
+      });
     }
 
-    // Swipe Gesture
-    let touchStartX = 0;
-    let touchEndX = 0;
-    swipeArea.addEventListener('touchstart', function(event) {
-      touchStartX = event.changedTouches[0].screenX;
-    });
-
-    swipeArea.addEventListener('touchend', function(event) {
-      touchEndX = event.changedTouches[0].screenX;
-      handleSwipe();
-    });
-
-    // Handle Swipe
-    function handleSwipe() {
-      if (touchStartX > touchEndX) {
-        changeName(1); // Swiped left (Next)
-      } else if (touchStartX < touchEndX) {
-        changeName(-1); // Swiped right (Previous)
-      }
+    // Open popup with detailed information
+    function openPopup(index) {
+      const name = namesData[index];
+      document.getElementById('popupName').textContent = name.name;
+      document.getElementById('popupTransliteration').textContent = `Transliteration: ${name.transliteration}`;
+      document.getElementById('popupMeaning').textContent = `Meaning: ${name.meaning}`;
+      document.getElementById('popup').style.display = 'flex';
     }
 
-    // Change name based on direction (prev or next)
-    function changeName(direction) {
-      currentIndex += direction;
-
-      // Ensure the index is within bounds
-      if (currentIndex < 0) {
-        currentIndex = 0;
-      } else if (currentIndex >= namesData.length) {
-        currentIndex = namesData.length - 1;
-      }
-
-      updateCardTransition(direction);
-    }
-
-    // Card Slide Transition
-    function updateCardTransition(direction) {
-      const card = document.getElementById('card1');
-      card.style.transform = `translateX(${direction === 1 ? '-100%' : '100%'})`;
-      card.style.opacity = '0';
-
-      setTimeout(() => {
-        displayName();
-      }, 500);
+    // Close the popup
+    function closePopup() {
+      document.getElementById('popup').style.display = 'none';
     }
   </script>
 
