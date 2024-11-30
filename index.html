@@ -9,9 +9,6 @@
     <!-- Link to PWA Manifest -->
     <link rel="manifest" href="manifest.json">
 
-    <!-- Link to Font Awesome for Icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-
     <!-- Internal CSS -->
     <style>
         /* Resetting some basic styles */
@@ -176,79 +173,115 @@
 
         .settings-item {
             margin-right: 20px;
-            font-size: 24px;
             cursor: pointer;
-            color: black; /* Default color for settings items */
         }
 
+        /* Dark Mode Settings Section */
         .settings-container.dark-mode {
             background-color: #333;
         }
 
-        .settings-item.dark-mode {
-            color: white;
+        .settings-item img {
+            width: 24px; /* Set the icon size */
+            height: 24px; /* Set the icon size */
+            object-fit: contain;
         }
 
-/* Surah Number Styling with Background Image */
-.surah-number {
-    display: inline-block;
-    width: 50px;
-    height: 50px;
-    background-image: url('https://quran-online.pages.dev/source/download.png');
-    background-size: cover;
-    background-position: center;
-    text-align: center;
-    line-height: 50px;
-    color: black; /* Default to black text in light mode */
-    font-weight: bold;
-    border-radius: 50%;
-    margin-right: 15px;
-}
+        .settings-item.dark-mode img {
+            filter: brightness(1.2); /* Brighter icons in dark mode */
+        }
 
-/* Change text color to white in dark mode */
-body.dark-mode .surah-number {
-    color: white; /* White text in dark mode */
-}
+        /* Surah Number Styling with Background Image */
+        .surah-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background-image: url('https://quran-online.pages.dev/source/download.png');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            line-height: 50px;
+            color: black; /* Default to black text in light mode */
+            font-weight: bold;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        /* Change text color to white in dark mode */
+        body.dark-mode .surah-number {
+            color: white; /* White text in dark mode */
+        }
 
     </style>
 </head>
 <body>
 
-    <!-- Settings Section at the top (Fixed) -->
-    <div class="settings-container">
-        <!-- Dark/Light Mode Toggle -->
-        <div class="settings-item" onclick="toggleTheme()">
-            <i class="fas fa-adjust"></i> <!-- Dark/Light Mode toggle -->
-        </div>
-
-        <!-- Install App -->
-        <div class="settings-item" onclick="installPWA()">
-            <i class="fas fa-download"></i> <!-- Install App -->
-        </div>
-
-        <!-- Hadith Link -->
-        <div class="settings-item">
-            <a href="hadith.html">
-                <i class="fas fa-book-open"></i> <!-- Hadith -->
-            </a>
-        </div>
-
-        <!-- Tasbih Link -->
-        <div class="settings-item">
-            <a href="tasbih.html">
-                <i class="fas fa-pray"></i> <!-- Tasbih -->
-            </a>
-        </div>
-
-        <div class="controls">
-            <input type="text" id="search-input" placeholder="Search Surahs..." oninput="filterSurahs()">
-        </div>
+<!-- Settings Section at the top (Fixed) -->
+<div class="settings-container">
+    <!-- Dark/Light Mode Toggle -->
+    <div class="settings-item" onclick="toggleTheme()">
+        <img src="images/dark-light-mode.png" alt="Dark/Light Mode" class="icon" /> <!-- Dark/Light Mode toggle -->
     </div>
+
+    <!-- Install App (PWA) -->
+    <div class="settings-item" onclick="installPWA()">
+        <img src="images/install-app.png" alt="Install App" class="icon" /> <!-- Install App -->
+    </div>
+
+    <!-- Quran Link -->
+    <div class="settings-item">
+        <a href="quran.html">
+            <img src="images/quran.png" alt="Quran" class="icon" /> <!-- Quran -->
+        </a>
+    </div>
+
+    <!-- Verse Link -->
+    <div class="settings-item">
+        <a href="verse.html">
+            <img src="images/verse.png" alt="Verse" class="icon" /> <!-- Verse -->
+        </a>
+    </div>
+
+    <!-- Hadith Link -->
+    <div class="settings-item">
+        <a href="hadith.html">
+            <img src="images/hadith.png" alt="Hadith" class="icon" /> <!-- Hadith -->
+        </a>
+    </div>
+
+    <!-- Tasbih Link -->
+    <div class="settings-item">
+        <a href="tasbih.html">
+            <img src="images/tasbih.png" alt="Tasbih" class="icon" /> <!-- Tasbih -->
+        </a>
+    </div>
+
+    <!-- 99 Names Link -->
+    <div class="settings-item">
+        <a href="99-names.html">
+            <img src="images/99-names.png" alt="99 Names" class="icon" /> <!-- 99 Names -->
+        </a>
+    </div>
+
+    <!-- Prayer Link -->
+    <div class="settings-item">
+        <a href="prayer.html">
+            <img src="images/prayer.png" alt="Prayer" class="icon" /> <!-- Prayer -->
+        </a>
+    </div>
+
+    <!-- Search Input for Surahs -->
+    <div class="controls">
+        <input type="text" id="search-input" placeholder="Search Surahs..." oninput="filterSurahs()">
+    </div>
+</div>
+
+
     <!-- Surah List -->
     <div id="surah-list">
         <!-- Surah items will be dynamically populated here -->
     </div>
- 
+
 <script>
     let surahData = [];
     let deferredPrompt;
@@ -264,40 +297,39 @@ body.dark-mode .surah-number {
             console.error("Error loading Surah data:", error);
         });
 
-function renderSurahs(surahList) {
-    const listElement = document.getElementById("surah-list");
-    listElement.innerHTML = '';  // Clear the previous list
+    function renderSurahs(surahList) {
+        const listElement = document.getElementById("surah-list");
+        listElement.innerHTML = '';  // Clear the previous list
 
-    surahList.forEach(surah => {
-        // Create the anchor link that wraps the entire Surah item
-        const surahLink = document.createElement('a');
-        surahLink.href = `surah?index=${parseInt(surah.index)}`;  // Remove leading zeros from index
-        surahLink.classList.add('surah-link'); // Add class for styling
-        surahLink.style.textDecoration = 'none';  // Remove default underline from anchor tag
+        surahList.forEach(surah => {
+            // Create the anchor link that wraps the entire Surah item
+            const surahLink = document.createElement('a');
+            surahLink.href = `surah?index=${parseInt(surah.index)}`;  // Remove leading zeros from index
+            surahLink.classList.add('surah-link'); // Add class for styling
+            surahLink.style.textDecoration = 'none';  // Remove default underline from anchor tag
 
-        // Create the Surah item element
-        const surahItem = document.createElement('div');
-        surahItem.classList.add('surah-item');
+            // Create the Surah item element
+            const surahItem = document.createElement('div');
+            surahItem.classList.add('surah-item');
 
-        // Setting the inner HTML of the Surah item
-        surahItem.innerHTML = `
-            <div class="surah-number">${parseInt(surah.index)}</div>  <!-- Surah Number with Background -->
-            <div class="surah-title">${surah.title}</div>
-            <div class="surah-arabic">${surah.titleAr}</div>
-            <div class="surah-meta">
-                <p>${surah.type}</p> <!-- Type -->
-                <p>${surah.count}</p> <!-- Verse Count -->
-            </div>
-        `;
+            // Setting the inner HTML of the Surah item
+            surahItem.innerHTML = `
+                <div class="surah-number">${parseInt(surah.index)}</div>  <!-- Surah Number with Background -->
+                <div class="surah-title">${surah.title}</div>
+                <div class="surah-arabic">${surah.titleAr}</div>
+                <div class="surah-meta">
+                    <p>${surah.type}</p> <!-- Type -->
+                    <p>${surah.count}</p> <!-- Verse Count -->
+                </div>
+            `;
 
-        // Append the Surah item to the anchor tag
-        surahLink.appendChild(surahItem);
+            // Append the Surah item to the anchor tag
+            surahLink.appendChild(surahItem);
 
-        // Append the anchor link (which wraps the Surah item) to the list
-        listElement.appendChild(surahLink);
-    });
-}
-
+            // Append the anchor link (which wraps the Surah item) to the list
+            listElement.appendChild(surahLink);
+        });
+    }
 
     // Function to filter Surahs
     function filterSurahs() {
