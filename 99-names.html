@@ -17,11 +17,8 @@
       align-items: center;
       justify-content: flex-start;
       min-height: 100vh;
-      padding-top: 20px;
+      padding-top: 10px;
     }
-
- 
-
     /* Container for names list */
     #namesList {
       display: grid;
@@ -56,7 +53,6 @@
       box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
     }
 
-    /* Hover effect on name circles */
     .name-circle:hover {
       transform: scale(1.1); /* Slight zoom on hover */
     }
@@ -68,35 +64,58 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0, 0, 0, 0.7); /* Slightly darker overlay */
+      background-color: rgba(0, 0, 0, 0.7); /* Dark background overlay */
       display: none;
       justify-content: center;
       align-items: center;
       z-index: 1000;
     }
 
+    /* Popup Content */
     .popup-content {
-      background-color: white;
-      padding: 30px;
-      border-radius: 10px;
-      max-width: 500px;
+      background: linear-gradient(to bottom right, #3b8d99, #6b6e6b); /* Gradient background */
+      padding: 40px;
+      border-radius: 15px;
+      max-width: 600px;
       width: 80%;
       text-align: center;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+      box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.3);
+      position: relative;
+      color: white;
+    }
+
+    /* Arabic Name in a prominent circle in the popup */
+    .popup-name-circle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 150px;
+      height: 150px;
+      background-image: url('https://quran-online.pages.dev/images/1000080753-removebg-preview.png');
+      background-size: cover;
+      background-position: center;
+      border-radius: 50%;
+      color: white;
+      font-size: 2.5em;
+      text-align: center;
+      user-select: none;
+      margin: 0 auto 20px auto;
     }
 
     /* Popup Heading */
     .popup h3 {
-      font-size: 2em;
+      font-size: 2.2em;
       margin: 0;
-      color: #4CAF50;
+      color: #ffeb3b;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      margin-bottom: 15px;
     }
 
     /* Popup Text */
     .popup p {
-      font-size: 1.2em;
+      font-size: 1.1em;
       margin: 10px 0;
-      color: #333;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
     }
 
     /* Close Button */
@@ -124,6 +143,7 @@
       left: 0;
       width: 100%;
       height: 100%;
+      background-color: rgba(0, 0, 0, 0.5); /* Darker overlay */
     }
 
     /* Responsive Design for Smaller Screens */
@@ -140,12 +160,21 @@
 
       .popup-content {
         padding: 20px;
+        width: 90%;
+      }
+
+      .popup-name-circle {
+        width: 120px;
+        height: 120px;
+        font-size: 2em;
       }
     }
 
   </style>
 </head>
 <body>
+
+  <h1>99 Names of Allah</h1>
 
   <div id="namesList">
     <!-- Names will be inserted here -->
@@ -156,6 +185,9 @@
     <div class="popup-background" onclick="closePopup()"></div> <!-- Click outside to close -->
     <div class="popup-content">
       <div class="close-btn" onclick="closePopup()">×</div>
+      <div id="popupNameCircle" class="popup-name-circle">
+        <!-- Arabic name will go here -->
+      </div>
       <h3 id="popupName"></h3>
       <p id="popupTransliteration"></p>
       <p id="popupMeaning"></p>
@@ -199,9 +231,13 @@
     // Open popup with detailed information
     function openPopup(index) {
       const name = namesData[index];
-      document.getElementById('popupName').textContent = name.name;
+      
+      // Set Arabic name in the popup
+      document.getElementById('popupNameCircle').textContent = name.name;
       document.getElementById('popupTransliteration').textContent = `Transliteration: ${name.transliteration}`;
       document.getElementById('popupMeaning').textContent = `Meaning: ${name.meaning}`;
+      
+      // Show the popup
       document.getElementById('popup').style.display = 'flex';
     }
 
