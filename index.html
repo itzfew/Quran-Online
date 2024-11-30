@@ -184,6 +184,15 @@
         .settings-container.dark-mode {
             background-color: #333;
         }
+        .settings-item img {
+            width: 24px; /* Set the icon size */
+            height: 24px; /* Set the icon size */
+            object-fit: contain;
+        }
+
+        .settings-item.dark-mode img {
+            filter: brightness(1.2); /* Brighter icons in dark mode */
+        }
 
         /* Surah Number Styling with Background Image */
         .surah-number {
