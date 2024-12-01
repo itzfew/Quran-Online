@@ -41,11 +41,14 @@
             z-index: 10;
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
-            gap: 10px;
+            gap: 15px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .control-panel button {
+        .control-panel button, .control-panel select, .control-panel input[type="range"] {
             padding: 8px;
             background-color: #007bff;
             color: white;
@@ -70,6 +73,14 @@
             <button id="downloadButton">Download Image</button>
             <label for="textSize">Text Size</label>
             <input type="range" id="textSize" min="10" max="100" value="30">
+            <label for="bgSelector">Change Background</label>
+            <select id="bgSelector">
+                <option value="0">Background 1</option>
+                <option value="1">Background 2</option>
+            </select>
+            <button id="editArabic">Edit Arabic</button>
+            <button id="editTranslation">Edit Translation</button>
+            <button id="editUrdu">Edit Urdu</button>
         </div>
     </div>
 
@@ -77,10 +88,11 @@
         // Define global variables
         const canvas = document.getElementById('verseCanvas');
         const ctx = canvas.getContext('2d');
-        let arabicText = decodeURIComponent(new URLSearchParams(window.location.search).get('arabic'));
-        let translationText = decodeURIComponent(new URLSearchParams(window.location.search).get('translation'));
-        let urduText = decodeURIComponent(new URLSearchParams(window.location.search).get('urdu'));
+        let arabicText = "إِنَّ مَعَ الْعُسْرِ يُسْرًا";  // Example Arabic Text
+        let translationText = "Verily, with hardship comes ease.";  // Example English translation
+        let urduText = "یقیناً مشکل کے ساتھ آسانی ہے۔";  // Example Urdu translation
         let currentText = arabicText;
+        let currentLanguage = 'arabic';
         let textSize = 30;
 
         // Background images
@@ -106,12 +118,22 @@
             ctx.fillStyle = "white";
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
-            ctx.fillText(currentText, canvas.width / 2, canvas.height / 3);  // Place text in the center
+
+            // Define positions for each text block
+            let yOffset = canvas.height / 4;
+            if (currentLanguage === 'arabic') {
+                ctx.fillText(arabicText, canvas.width / 2, yOffset);
+            } else if (currentLanguage === 'translation') {
+                ctx.fillText(translationText, canvas.width / 2, yOffset);
+            } else if (currentLanguage === 'urdu') {
+                ctx.fillText(urduText, canvas.width / 2, yOffset);
+            }
         }
 
         // Reset text to initial values
         document.getElementById('resetButton').addEventListener('click', function() {
-            currentText = arabicText;  // Reset to the Arabic text
+            currentLanguage = 'arabic';
+            currentText = arabicText;
             drawCanvas();
         });
 
@@ -121,31 +143,58 @@
             drawCanvas();
         });
 
+        // Change background image
+        document.getElementById('bgSelector').addEventListener('change', function(event) {
+            const bgIndex = event.target.value;
+            bgImage.src = bgImages[bgIndex];
+            bgImage.onload = drawCanvas;
+        });
+
+        // Edit Arabic text
+        document.getElementById('editArabic').addEventListener('click', function() {
+            const newText = prompt("Edit Arabic Text:", arabicText);
+            if (newText !== null) {
+                arabicText = newText;
+                if (currentLanguage === 'arabic') {
+                    currentText = arabicText;
+                    drawCanvas();
+                }
+            }
+        });
+
+        // Edit English Translation
+        document.getElementById('editTranslation').addEventListener('click', function() {
+            const newText = prompt("Edit English Translation:", translationText);
+            if (newText !== null) {
+                translationText = newText;
+                if (currentLanguage === 'translation') {
+                    currentText = translationText;
+                    drawCanvas();
+                }
+            }
+        });
+
+        // Edit Urdu Translation
+        document.getElementById('editUrdu').addEventListener('click', function() {
+            const newText = prompt("Edit Urdu Translation:", urduText);
+            if (newText !== null) {
+                urduText = newText;
+                if (currentLanguage === 'urdu') {
+                    currentText = urduText;
+                    drawCanvas();
+                }
+            }
+        });
+
         // Download the canvas as an image
         document.getElementById('downloadButton').addEventListener('click', function() {
             const imageUrl = canvas.toDataURL("image/png");
             const link = document.createElement('a');
             link.href = imageUrl;
-            link.download = `verse_image.png`;
+            link.download = `quran_verse_image.png`;
             link.click();
         });
 
-        // Enable text editing
-        canvas.addEventListener('click', function(event) {
-            const x = event.offsetX;
-            const y = event.offsetY;
-            const width = ctx.measureText(currentText).width;
-
-            if (x >= canvas.width / 2 - width / 2 && x <= canvas.width / 2 + width / 2 &&
-                y >= canvas.height / 3 - textSize / 2 && y <= canvas.height / 3 + textSize / 2) {
-                // Allow user to edit text
-                const newText = prompt("Edit the text:", currentText);
-                if (newText !== null) {
-                    currentText = newText;  // Update text with user input
-                    drawCanvas();
-                }
-            }
-        });
     </script>
 </body>
 </html>
