@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quran - Verse Details</title>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- FontAwesome for icons -->
+</head>
+<body>
+    <div id="verse-container">
+        <div id="verse-details">
+            <h1 id="verse-heading">Verse Details</h1>
+            <div id="verse-content"></div>
+            <div id="verse-actions">
+                <button class="share-btn" onclick="shareVerse()">Share</button>
+                <button class="back-btn" onclick="goBack()">Back to Surah</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get the surah and verse from URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const surahIndex = urlParams.get('surah');
+        const verseId = urlParams.get('verse');
+
+        // Fetch and display the verse details
+        async function fetchVerseDetails(surahIndex, verseId) {
+            try {
+                const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(surahIndex).padStart(1, '0')}.json`);
+                const arabicData = await arabicResponse.json();
+                
+                const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(surahIndex).padStart(1, '0')}.json`);
+                const translationData = await translationResponse.json();
+
+                const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(surahIndex).padStart(3, '0')}.json`);
+                const urduData = await urduResponse.json();
+
+                displayVerse(arabicData, translationData, urduData, verseId);
+            } catch (error) {
+                console.error('Error fetching verse data:', error);
+            }
+        }
+
+        function displayVerse(arabicData, translationData, urduData, verseId) {
+            const verseDiv = document.getElementById('verse-content');
+            const arabicVerse = arabicData.verse[`verse_${verseId}`];
+            const translatedVerse = translationData.verse[`verse_${verseId}`];
+            const urduVerse = urduData.data.find(v => v.aya == verseId)?.text || '';
+
+            let verseContent = `
+                <div class="arabic-text">
+                    <p>${arabicVerse}</p>
+                    <span class="verse-number">Verse ${verseId}</span>
+                </div>
+                <div class="translation-text">
+                    <p><strong>Translation (English):</strong> ${translatedVerse}</p>
+                </div>
+                <div class="urdu-text">
+                    <p><strong>Translation (Urdu):</strong> ${urduVerse}</p>
+                </div>
+            `;
+
+            verseDiv.innerHTML = verseContent;
+        }
+
+        // Share functionality
+        function shareVerse() {
+            const verseText = document.getElementById('verse-content').innerText;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Quran Verse',
+                    text: verseText,
+                    url: window.location.href
+                }).catch((error) => console.log('Error sharing: ', error));
+            } else {
+                navigator.clipboard.writeText(verseText).then(() => {
+                    alert('Verse copied to clipboard!');
+                }).catch((error) => {
+                    console.log('Error copying to clipboard: ', error);
+                });
+            }
+        }
+
+        // Go back to the Surah page
+        function goBack() {
+            window.location.href = `surah.html?index=${surahIndex}`;
+        }
+
+        // Fetch verse data when the page is loaded
+        fetchVerseDetails(surahIndex, verseId);
+    </script>
+</body>
+</html>
