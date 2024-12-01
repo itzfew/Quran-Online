@@ -112,9 +112,9 @@
 
         /* Base Styles */
         body {
-            font-size: 16px; /* Default font size */
-            font-family: Arial, sans-serif; /* Default font */
-            transition: background-color 0.3s, color 0.3s, font-size 0.3s; /* Smooth transition */
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s, color 0.3s, font-size 0.3s;
         }
 
         /* Light Mode (Default) */
@@ -127,18 +127,18 @@
             padding: 10px 20px;
             border: 1px solid black;
             background-color: transparent;
-            color: inherit; /* inherit color from parent */
+            color: inherit;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         button:hover {
-            background-color: #f0f0f0; /* Light hover effect */
+            background-color: #f0f0f0;
         }
 
         button:active {
-            background-color: #d0d0d0; /* Active button effect */
+            background-color: #d0d0d0;
         }
 
         /* Dark Mode */
@@ -153,16 +153,11 @@
         }
 
         body.dark-mode button:hover {
-            background-color: #333333; /* Dark hover effect */
+            background-color: #333333;
         }
 
         body.dark-mode button:active {
-            background-color: #444444; /* Active button effect in dark mode */
-        }
-
-        /* Add transition for smooth color changes */
-        button {
-            transition: color 0.3s, background-color 0.3s;
+            background-color: #444444;
         }
     </style>
 
@@ -172,31 +167,42 @@
         const surahIndex = urlParams.get('surah');
         const verseId = urlParams.get('verse');
 
+        // Function to calculate the audio file number based on Surah and Verse
+        function getAudioFileNumber(surahIndex, verseId) {
+            // Convert the Surah index to a number for easier calculations
+            const surahNumber = parseInt(surahIndex, 10);
+            const verseNumber = parseInt(verseId, 10);
+            
+            // Logic to calculate the audio file number:
+            // For Surah 1, verse 1 -> 2.mp3, Surah 1, verse 2 -> 3.mp3, etc.
+            // For Surah 2, verse 1 -> 8.mp3, Surah 2, verse 2 -> 9.mp3, etc.
+            return (surahNumber - 1) * 7 + verseNumber + 1;
+        }
+
         // Fetch and display the verse details
         async function fetchVerseDetails(surahIndex, verseId) {
             try {
-                // Fetch the Surah data (title, place, etc.)
-                const surahResponse = await fetch('https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah.json');
-                const surahData = await surahResponse.json();
-                const surah = surahData.find(s => s.index === surahIndex);
-
-                // Fetch the Arabic, English, and Urdu translations for the specific verse
+                // Fetch Arabic data for Surah
                 const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(surahIndex).padStart(1, '0')}.json`);
                 const arabicData = await arabicResponse.json();
                 
+                // Fetch Translation data
                 const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(surahIndex).padStart(1, '0')}.json`);
                 const translationData = await translationResponse.json();
 
+                // Fetch Urdu Translation data
                 const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(surahIndex).padStart(3, '0')}.json`);
                 const urduData = await urduResponse.json();
 
-                displayVerse(surah, arabicData, translationData, urduData, verseId);
+                // Display the Verse
+                displayVerse(arabicData, translationData, urduData, verseId, surahIndex);
             } catch (error) {
                 console.error('Error fetching verse data:', error);
             }
         }
 
-        function displayVerse(surah, arabicData, translationData, urduData, verseId) {
+        // Display the Verse, translation, and audio
+        function displayVerse(arabicData, translationData, urduData, verseId, surahIndex) {
             const verseDiv = document.getElementById('verse-content');
             const arabicVerse = arabicData.verse[`verse_${verseId}`];
             const translatedVerse = translationData.verse[`verse_${verseId}`];
@@ -217,10 +223,15 @@
 
             verseDiv.innerHTML = verseContent;
 
-            // Set the audio URL for the verse
+            // Get the audio file number based on Surah and Verse
+            const audioFileNumber = getAudioFileNumber(surahIndex, verseId);
+
+            // Set the audio URL
             const audioSource = document.getElementById('audioSource');
-            const audioUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${surahIndex}${verseId}.mp3`;
+            const audioUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${audioFileNumber}.mp3`;
             audioSource.src = audioUrl;
+
+            // Refresh and play the audio
             const audioPlayer = document.getElementById('verse-audio');
             audioPlayer.load(); // Refresh the audio player to update the new source
             audioPlayer.play(); // Automatically start playing the audio
@@ -238,18 +249,16 @@
             } else {
                 navigator.clipboard.writeText(verseText).then(() => {
                     alert('Verse copied to clipboard!');
-                }).catch((error) => {
-                    console.log('Error copying to clipboard: ', error);
-                });
+                }).catch((error) => console.log('Error copying to clipboard: ', error));
             }
         }
 
-        // Go back to the Surah page
+        // Go back to Surah page
         function goBack() {
-            window.location.href = `surah.html?index=${surahIndex}`;
+            window.history.back();
         }
 
-        // Fetch verse data when the page is loaded
+        // Initialize the page with Surah and Verse details
         fetchVerseDetails(surahIndex, verseId);
     </script>
 </body>
