@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran - Verse Details</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- FontAwesome for icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script> <!-- html2canvas library -->
 </head>
 <body>
     <div id="verse-container">
@@ -16,47 +16,43 @@
             <div id="verse-actions">
                 <button class="share-btn" onclick="shareVerse()">Share</button>
                 <button class="back-btn" onclick="goBack()">Back to Surah</button>
-                <button class="download-btn" onclick="downloadVerseImage()">Download Image</button>
+                <button class="screenshot-btn" onclick="captureScreenshot()">Capture Screenshot</button>
             </div>
-            <label for="background-color-picker">Choose Background Color: </label>
-            <input type="color" id="background-color-picker" value="#f0f0f0">
         </div>
     </div>
 
     <style>
         /* Existing styles omitted for brevity */
 
-        /* Download Button */
-        .download-btn {
+        /* Screenshot Button Styling */
+        .screenshot-btn {
             padding: 10px 20px;
-            border: 1px solid #007bff;
-            background-color: #007bff;
+            border: 1px solid #28a745;
+            background-color: #28a745;
             color: white;
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 10px;
+            margin-left: 10px;
+            border-radius: 5px;
         }
 
-        .download-btn:hover {
-            background-color: #0056b3;
+        .screenshot-btn:hover {
+            background-color: #218838;
         }
 
-        .download-btn:active {
-            background-color: #004085;
-        }
-
-        /* Background Color Picker */
-        #background-color-picker {
-            margin-top: 20px;
+        .screenshot-btn:active {
+            background-color: #1e7e34;
         }
     </style>
 
     <script>
+        // Get the surah and verse from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const surahIndex = urlParams.get('surah');
         const verseId = urlParams.get('verse');
 
+        // Fetch and display the verse details
         async function fetchVerseDetails(surahIndex, verseId) {
             try {
                 const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(surahIndex).padStart(1, '0')}.json`);
@@ -96,6 +92,7 @@
             verseDiv.innerHTML = verseContent;
         }
 
+        // Share functionality
         function shareVerse() {
             const verseText = document.getElementById('verse-content').innerText;
             if (navigator.share) {
@@ -113,26 +110,30 @@
             }
         }
 
+        // Go back to the Surah page
         function goBack() {
             window.location.href = `surah.html?index=${surahIndex}`;
         }
 
-        function downloadVerseImage() {
-            const verseDetails = document.getElementById('verse-details');
-            verseDetails.style.backgroundColor = "#f0f0f0";
-            verseDetails.style.backgroundImage = "url('https://www.example.com/custom-bg-image.jpg')";
-            verseDetails.style.backgroundSize = "cover";
+        // Capture screenshot of the verse content
+        function captureScreenshot() {
+            const verseContainer = document.getElementById('verse-container');
 
-            html2canvas(verseDetails).then(canvas => {
+            // Use html2canvas to capture the content
+            html2canvas(verseContainer).then((canvas) => {
+                // Create a download link for the generated image
                 const link = document.createElement('a');
                 link.href = canvas.toDataURL();
-                link.download = 'quran-verse.png';
+                link.download = 'quran-verse.png'; // Specify the filename for the downloaded image
+
+                // Trigger the download
                 link.click();
-            }).catch(error => {
-                console.error('Error capturing the content as an image:', error);
+            }).catch((error) => {
+                console.error('Error capturing screenshot: ', error);
             });
         }
 
+        // Fetch verse data when the page is loaded
         fetchVerseDetails(surahIndex, verseId);
     </script>
 </body>
