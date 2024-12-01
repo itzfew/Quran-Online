@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quran Verse Image</title>
+    <title>Editable Quran Verse Image</title>
     <style>
         body {
             font-family: 'Amiri', serif;
@@ -11,79 +11,141 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
             background-color: #f8f9fa;
         }
 
         .canvas-container {
             position: relative;
-            width: 500px;
-            height: 700px;
-            background-image: url('https://example.com/background.jpg');
-            background-size: cover;
+            width: 600px;
+            height: 800px;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            background-color: #f5f5f5;
             border-radius: 10px;
+            border: 1px solid #ddd;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
 
         canvas {
             border-radius: 10px;
+            cursor: crosshair;
         }
 
-        .download-btn {
-            margin-top: 20px;
-            padding: 10px;
+        .control-panel {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .control-panel button {
+            padding: 8px;
             background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
+
+        .control-panel input[type="range"] {
+            width: 100px;
+        }
     </style>
 </head>
 <body>
 
     <div class="canvas-container">
-        <canvas id="verseCanvas" width="500" height="700"></canvas>
+        <canvas id="verseCanvas" width="600" height="800"></canvas>
+
+        <!-- Control Panel -->
+        <div class="control-panel">
+            <button id="resetButton">Reset Text</button>
+            <button id="downloadButton">Download Image</button>
+            <label for="textSize">Text Size</label>
+            <input type="range" id="textSize" min="10" max="100" value="30">
+        </div>
     </div>
 
-    <button class="download-btn" onclick="downloadImage()">Download Image</button>
-
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const verseNumber = urlParams.get('verse');
-        const arabic = decodeURIComponent(urlParams.get('arabic'));
-        const translation = decodeURIComponent(urlParams.get('translation'));
-        const urdu = decodeURIComponent(urlParams.get('urdu'));
-
+        // Define global variables
         const canvas = document.getElementById('verseCanvas');
         const ctx = canvas.getContext('2d');
+        let arabicText = decodeURIComponent(new URLSearchParams(window.location.search).get('arabic'));
+        let translationText = decodeURIComponent(new URLSearchParams(window.location.search).get('translation'));
+        let urduText = decodeURIComponent(new URLSearchParams(window.location.search).get('urdu'));
+        let currentText = arabicText;
+        let textSize = 30;
 
-        ctx.font = "30px Amiri, serif";
-        ctx.textAlign = "center";
-        ctx.fillStyle = "white";
+        // Background images
+        const bgImages = [
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaK_aKWVG4viedeI1-cuEAyumZO_VjEF2UO9L6I_tb-4yaXjobUH32_mw6sYJWFRyjX5k&usqp=CAU",
+            "https://t4.ftcdn.net/jpg/03/17/81/93/360_F_317819316_8hZjKDxvVcwMlJGXG7wDYUL7ZHEGVrWU.jpg"
+        ];
+        const bgImage = new Image();
+        bgImage.src = bgImages[0];  // Set default background
 
-        // Add the Arabic text
-        ctx.fillText(arabic, canvas.width / 2, 100);
+        // Initialize the canvas
+        bgImage.onload = function() {
+            drawCanvas();
+        };
 
-        // Add the Translation
-        ctx.font = "20px Arial";
-        ctx.fillText(translation, canvas.width / 2, 200);
+        // Draw background and text on canvas
+        function drawCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);  // Clear canvas
+            ctx.drawImage(bgImage, 0, 0, canvas.width, canvas.height);  // Draw background
 
-        // Add the Urdu text
-        ctx.font = "20px Tahoma";
-        ctx.fillText(urdu, canvas.width / 2, 300);
+            // Draw current text
+            ctx.font = `${textSize}px Amiri`;
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText(currentText, canvas.width / 2, canvas.height / 3);  // Place text in the center
+        }
 
-        // Function to download the canvas as an image
-        function downloadImage() {
-            const imageUrl = canvas.toDataURL();
+        // Reset text to initial values
+        document.getElementById('resetButton').addEventListener('click', function() {
+            currentText = arabicText;  // Reset to the Arabic text
+            drawCanvas();
+        });
+
+        // Update text size based on range input
+        document.getElementById('textSize').addEventListener('input', function(event) {
+            textSize = event.target.value;
+            drawCanvas();
+        });
+
+        // Download the canvas as an image
+        document.getElementById('downloadButton').addEventListener('click', function() {
+            const imageUrl = canvas.toDataURL("image/png");
             const link = document.createElement('a');
             link.href = imageUrl;
-            link.download = `verse_${verseNumber}.png`;
+            link.download = `verse_image.png`;
             link.click();
-        }
-    </script>
+        });
 
+        // Enable text editing
+        canvas.addEventListener('click', function(event) {
+            const x = event.offsetX;
+            const y = event.offsetY;
+            const width = ctx.measureText(currentText).width;
+
+            if (x >= canvas.width / 2 - width / 2 && x <= canvas.width / 2 + width / 2 &&
+                y >= canvas.height / 3 - textSize / 2 && y <= canvas.height / 3 + textSize / 2) {
+                // Allow user to edit text
+                const newText = prompt("Edit the text:", currentText);
+                if (newText !== null) {
+                    currentText = newText;  // Update text with user input
+                    drawCanvas();
+                }
+            }
+        });
+    </script>
 </body>
 </html>
