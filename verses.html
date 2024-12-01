@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran - Verse Details</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- FontAwesome for icons -->
 </head>
 <body>
     <div id="verse-container">
@@ -34,18 +34,21 @@
             padding: 20px;
         }
 
+        /* Heading of Verse */
         #verse-heading {
             font-size: 2.5em;
             margin-bottom: 20px;
             color: #007bff;
         }
 
+        /* Verse Content Styling */
         #verse-content {
             font-size: 1.5em;
             line-height: 1.5;
             margin-bottom: 20px;
         }
 
+        /* Arabic Text */
         .arabic-text {
             font-family: 'Scheherazade New', serif;
             font-size: 1.8em;
@@ -53,6 +56,7 @@
             margin: 20px 0;
         }
 
+        /* Translation and Urdu Text */
         .translation-text, .urdu-text {
             font-family: 'Amiri', serif;
             font-size: 1.2em;
@@ -60,6 +64,7 @@
             margin: 10px 0;
         }
 
+        /* Verse Number */
         .verse-number {
             font-size: 1.0em;
             margin-top: 10px;
@@ -74,6 +79,7 @@
             margin-left: 10px;
         }
 
+        /* Audio Player */
         #audio-player-container {
             margin-top: 20px;
         }
@@ -85,6 +91,7 @@
             border-radius: 8px;
         }
 
+        /* Responsive Styles for Verse Page */
         @media (max-width: 768px) {
             #verse-heading {
                 font-size: 2em;
@@ -103,27 +110,59 @@
             }
         }
 
+        /* Base Styles */
         body {
-            font-size: 16px;
-            font-family: Arial, sans-serif;
+            font-size: 16px; /* Default font size */
+            font-family: Arial, sans-serif; /* Default font */
+            transition: background-color 0.3s, color 0.3s, font-size 0.3s; /* Smooth transition */
+        }
+
+        /* Light Mode (Default) */
+        body:not(.dark-mode) {
+            background-color: white;
+            color: black;
         }
 
         button {
             padding: 10px 20px;
             border: 1px solid black;
             background-color: transparent;
-            color: inherit;
+            color: inherit; /* inherit color from parent */
             font-size: 16px;
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         button:hover {
-            background-color: #f0f0f0;
+            background-color: #f0f0f0; /* Light hover effect */
         }
 
         button:active {
-            background-color: #d0d0d0;
+            background-color: #d0d0d0; /* Active button effect */
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+
+        body.dark-mode button {
+            border: 1px solid white;
+            color: white;
+        }
+
+        body.dark-mode button:hover {
+            background-color: #333333; /* Dark hover effect */
+        }
+
+        body.dark-mode button:active {
+            background-color: #444444; /* Active button effect in dark mode */
+        }
+
+        /* Add transition for smooth color changes */
+        button {
+            transition: color 0.3s, background-color 0.3s;
         }
     </style>
 
@@ -133,44 +172,34 @@
         const surahIndex = urlParams.get('surah');
         const verseId = urlParams.get('verse');
 
-        // Fetch Surah details
-        async function fetchSurahDetails() {
-            try {
-                const response = await fetch('https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah.json');
-                const surahData = await response.json();
-                return surahData.find(surah => surah.index === surahIndex);
-            } catch (error) {
-                console.error('Error fetching Surah details:', error);
-            }
-        }
-
-        // Fetch verse details (Arabic, English, Urdu)
+        // Fetch and display the verse details
         async function fetchVerseDetails(surahIndex, verseId) {
             try {
-                // Fetch Surah details from surah.json
-                const surahData = await fetchSurahDetails();
-                
-                // Fetch Arabic, English, and Urdu translations
-                const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${surahIndex}.json`);
-                const arabicData = await arabicResponse.json();
+                // Fetch the Surah data (title, place, etc.)
+                const surahResponse = await fetch('https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah.json');
+                const surahData = await surahResponse.json();
+                const surah = surahData.find(s => s.index === surahIndex);
 
-                const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahIndex}.json`);
+                // Fetch the Arabic, English, and Urdu translations for the specific verse
+                const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(surahIndex).padStart(1, '0')}.json`);
+                const arabicData = await arabicResponse.json();
+                
+                const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(surahIndex).padStart(1, '0')}.json`);
                 const translationData = await translationResponse.json();
 
-                const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${surahIndex}.json`);
+                const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(surahIndex).padStart(3, '0')}.json`);
                 const urduData = await urduResponse.json();
 
-                displayVerse(surahData, arabicData, translationData, urduData, verseId);
+                displayVerse(surah, arabicData, translationData, urduData, verseId);
             } catch (error) {
                 console.error('Error fetching verse data:', error);
             }
         }
 
-        // Display verse content
-        function displayVerse(surahData, arabicData, translationData, urduData, verseId) {
+        function displayVerse(surah, arabicData, translationData, urduData, verseId) {
             const verseDiv = document.getElementById('verse-content');
-            const arabicVerse = arabicData.verse[verseId];
-            const translatedVerse = translationData.verse[verseId];
+            const arabicVerse = arabicData.verse[`verse_${verseId}`];
+            const translatedVerse = translationData.verse[`verse_${verseId}`];
             const urduVerse = urduData.data.find(v => v.aya == verseId)?.text || '';
 
             let verseContent = `
@@ -188,19 +217,16 @@
 
             verseDiv.innerHTML = verseContent;
 
-            // Generate the audio URL
-            const audioNumber = parseInt(verseId.split('_')[1]) + parseInt(surahIndex + "0") - 1;
-            const audioUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${audioNumber}.mp3`;
-
-            // Set the audio source
+            // Set the audio URL for the verse
             const audioSource = document.getElementById('audioSource');
+            const audioUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${surahIndex}${verseId}.mp3`;
             audioSource.src = audioUrl;
             const audioPlayer = document.getElementById('verse-audio');
-            audioPlayer.load();
-            audioPlayer.play();
+            audioPlayer.load(); // Refresh the audio player to update the new source
+            audioPlayer.play(); // Automatically start playing the audio
         }
 
-        // Share verse
+        // Share functionality
         function shareVerse() {
             const verseText = document.getElementById('verse-content').innerText;
             if (navigator.share) {
@@ -218,12 +244,12 @@
             }
         }
 
-        // Go back to Surah page
+        // Go back to the Surah page
         function goBack() {
             window.location.href = `surah.html?index=${surahIndex}`;
         }
 
-        // Initialize page with the verse data
+        // Fetch verse data when the page is loaded
         fetchVerseDetails(surahIndex, verseId);
     </script>
 </body>
