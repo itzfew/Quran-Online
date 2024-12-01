@@ -449,6 +449,7 @@
         localStorage.removeItem('languageMode');
         location.reload();
     }
+
     let currentSurahIndex = 1;  // Starting surah index
 
 // Update the Surah by navigating to the next or previous surah
@@ -466,8 +467,8 @@ function navigateSurah(direction) {
     const newUrl = `https://quran-online.pages.dev/surah?index=${currentSurahIndex}`;
     window.history.pushState({ path: newUrl }, '', newUrl);
 
-    // Load the surah content based on the new index
-    loadSurah(currentSurahIndex);
+    // Refresh the page to reload the surah content
+    window.location.reload();  // Refresh the page after updating the URL
 }
 
 // Load Surah based on the current index
