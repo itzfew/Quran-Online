@@ -131,7 +131,6 @@
 
         /* Highlighted verse (selected verse border) */
         .verse.selected {
-            border: 2px solid #007bff;
             background-color: rgba(0, 123, 255, 0.1);
         }
 
@@ -211,7 +210,9 @@
 <div id="content"></div>
 
 <!-- Back to Top Button -->
-<button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
+<button class="back-to-top" onclick="scrollToTop()">
+    <i class="fas fa-arrow-up"></i>
+</button>
 
 <!-- Notification -->
 <div class="notification" id="notification"></div>
