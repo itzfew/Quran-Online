@@ -5,46 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran - Verse Details</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> 
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <div id="verse-container">
         <div id="verse-details">
             <h1 id="verse-heading">Verse Details</h1>
             <div id="verse-content"></div>
-            <div id="audio-player-container">
-                <audio id="verse-audio" controls>
-                    <source id="audioSource" src="" type="audio/mp3">
-                    Your browser does not support the audio element.
-                </audio>
-            </div>
             <div id="verse-actions">
                 <button class="share-btn" onclick="shareVerse()">Share</button>
                 <button class="back-btn" onclick="goBack()">Back to Surah</button>
+                <button class="download-btn" onclick="downloadVerseImage()">Download Image</button>
             </div>
+            <label for="background-color-picker">Choose Background Color: </label>
+            <input type="color" id="background-color-picker" value="#f0f0f0">
         </div>
     </div>
 
     <style>
-        /* Style goes here */
-        /* ... (You can keep your styles from the previous code) ... */
+        /* Existing styles omitted for brevity */
+
+        /* Download Button */
+        .download-btn {
+            padding: 10px 20px;
+            border: 1px solid #007bff;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .download-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .download-btn:active {
+            background-color: #004085;
+        }
+
+        /* Background Color Picker */
+        #background-color-picker {
+            margin-top: 20px;
+        }
     </style>
 
     <script>
-        // Get the surah and verse from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        const surahIndex = parseInt(urlParams.get('surah'));
-        const verseId = parseInt(urlParams.get('verse'));
+        const surahIndex = urlParams.get('surah');
+        const verseId = urlParams.get('verse');
 
-        // Fetch and display the verse details
         async function fetchVerseDetails(surahIndex, verseId) {
             try {
-                // Fetch the Surah data (title, place, etc.)
-                const surahResponse = await fetch('https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah.json');
-                const surahData = await surahResponse.json();
-                const surah = surahData.find(s => s.index === surahIndex);
-
-                // Fetch the Arabic, English, and Urdu translations for the specific verse
                 const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(surahIndex).padStart(1, '0')}.json`);
                 const arabicData = await arabicResponse.json();
                 
@@ -54,13 +68,13 @@
                 const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(surahIndex).padStart(3, '0')}.json`);
                 const urduData = await urduResponse.json();
 
-                displayVerse(surah, arabicData, translationData, urduData, verseId);
+                displayVerse(arabicData, translationData, urduData, verseId);
             } catch (error) {
                 console.error('Error fetching verse data:', error);
             }
         }
 
-        function displayVerse(surah, arabicData, translationData, urduData, verseId) {
+        function displayVerse(arabicData, translationData, urduData, verseId) {
             const verseDiv = document.getElementById('verse-content');
             const arabicVerse = arabicData.verse[`verse_${verseId}`];
             const translatedVerse = translationData.verse[`verse_${verseId}`];
@@ -80,33 +94,8 @@
             `;
 
             verseDiv.innerHTML = verseContent;
-
-            // Calculate the audio file number using Surah and Verse numbers
-            const audioNumber = calculateAudioNumber(surahIndex, verseId);
-
-            // Set the audio URL for the verse
-            const audioSource = document.getElementById('audioSource');
-            const audioUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${audioNumber}.mp3`;
-            audioSource.src = audioUrl;
-            const audioPlayer = document.getElementById('verse-audio');
-            audioPlayer.load(); // Refresh the audio player to update the new source
-            audioPlayer.play(); // Automatically start playing the audio
         }
 
-        function calculateAudioNumber(surahIndex, verseId) {
-            let audioIndex = (surahIndex * 100) + verseId;
-
-            // Adjust the base value based on the Surah number
-            if (surahIndex === 1) {
-                audioIndex -= 99; // Surah 1 starts at audio number 2
-            } else if (surahIndex > 1) {
-                audioIndex -= 199; // Surah 2 starts at audio number 8
-            }
-
-            return audioIndex;
-        }
-
-        // Share functionality
         function shareVerse() {
             const verseText = document.getElementById('verse-content').innerText;
             if (navigator.share) {
@@ -124,12 +113,26 @@
             }
         }
 
-        // Go back to the Surah page
         function goBack() {
             window.location.href = `surah.html?index=${surahIndex}`;
         }
 
-        // Fetch verse data when the page is loaded
+        function downloadVerseImage() {
+            const verseDetails = document.getElementById('verse-details');
+            verseDetails.style.backgroundColor = "#f0f0f0";
+            verseDetails.style.backgroundImage = "url('https://www.example.com/custom-bg-image.jpg')";
+            verseDetails.style.backgroundSize = "cover";
+
+            html2canvas(verseDetails).then(canvas => {
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL();
+                link.download = 'quran-verse.png';
+                link.click();
+            }).catch(error => {
+                console.error('Error capturing the content as an image:', error);
+            });
+        }
+
         fetchVerseDetails(surahIndex, verseId);
     </script>
 </body>
