@@ -274,7 +274,7 @@
         const translationData = await translationResponse.json();
 
         // Fetch Urdu translation data from the provided URL
-        const urduResponse = await fetch(`https://raw.githubusercontent.com/aqeel371/QuranJson/refs/heads/master/translation/t_surah_${String(index).padStart(3, '0')}.json`);
+        const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(index).padStart(3, '0')}.json`);
         const urduData = await urduResponse.json();
 
         displaySurah(arabicData, translationData, urduData);
