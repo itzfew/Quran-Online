@@ -197,36 +197,122 @@
                 padding: 8px 12px;
             }
         }
-          .language-selector {
-        font-size: 16px;
-        padding: 8px 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #fff;
-        color: #333;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-        transition: 0.3s ease;
-    }
-    
-    .language-selector:hover {
-        border-color: #007bff;
-    }
-    
-    .language-selector select {
-        border: none;
-        outline: none;
-        background: transparent;
-        font-size: 16px;
-        color: inherit;
-        font-family: inherit;
-        padding: 0;
-        cursor: pointer;
-    }
+          /* Style for the language select dropdown */
+#languageSelect {
+    font-size: 16px;
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    display: inline-block;
+    cursor: pointer;
+    transition: 0.3s ease;
+    width: auto; /* Ensures dropdown has a flexible width based on content */
+}
 
-    .language-icon {
-        margin-right: 10px;
+/* Focus effect when the language select dropdown is clicked */
+#languageSelect:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Hover effect for the language select dropdown */
+#languageSelect:hover {
+    border-color: #007bff;
+}
+
+/* Option styling */
+#languageSelect option {
+    font-family: 'Amiri', serif;  /* Default font for options */
+    font-size: 16px;
+    padding: 10px;
+}
+
+/* Style when dark mode is enabled */
+.dark-mode #languageSelect {
+    background-color: #333;
+    color: white;
+    border-color: #444;
+}
+
+.dark-mode #languageSelect:focus {
+    border-color: #00b0ff;
+    box-shadow: 0 0 5px rgba(0, 183, 255, 0.5);
+}
+
+.dark-mode #languageSelect option {
+    color: white;
+    background-color: #333;
+}
+
+/* Hover effect for dark mode */
+.dark-mode #languageSelect:hover {
+    border-color: #00b0ff;
+}
+
+@media (max-width: 768px) {
+    #languageSelect {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+}   /* Style for the font select dropdown */
+#fontSelect {
+    font-size: 16px;
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    display: inline-block;
+    cursor: pointer;
+    transition: 0.3s ease;
+    width: auto;  /* Ensures dropdown has a flexible width based on content */
+    margin-right: 20px; /* Space between other settings */
+}
+
+/* Focus effect when the font select dropdown is clicked */
+#fontSelect:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Hover effect for the font select dropdown */
+#fontSelect:hover {
+    border-color: #007bff;
+}
+
+/* Option styling */
+#fontSelect option {
+    font-family: 'Amiri', serif;  /* Default font for options */
+    font-size: 16px;
+    padding: 10px;
+}
+
+/* Style when dark mode is enabled */
+.dark-mode #fontSelect {
+    background-color: #333;
+    color: white;
+    border-color: #444;
+}
+
+.dark-mode #fontSelect:focus {
+    border-color: #00b0ff;
+    box-shadow: 0 0 5px rgba(0, 183, 255, 0.5);
+}
+
+.dark-mode #fontSelect option {
+    color: white;
+    background-color: #333;
+}
+
+@media (max-width: 768px) {
+    #fontSelect {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
 }
     </style>
 </head>
