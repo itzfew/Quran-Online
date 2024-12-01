@@ -7,16 +7,54 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Amiri', serif;
-            background-color: white;
-            color: black;
-            margin: 0;
-            padding: 0;
-            font-size: 18px;
-            direction: rtl;
-            transition: all 0.3s ease;
-        }
+        .header {
+    text-align: center;
+    margin-top: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.arrow {
+    font-size: 2em;
+    color: #007bff;
+    cursor: pointer;
+    transition: color 0.3s;
+    padding: 0 20px;
+}
+
+.arrow:hover {
+    color: #0056b3;
+}
+
+.arrow-left {
+    position: absolute;
+    left: 0;
+}
+
+.arrow-right {
+    position: absolute;
+    right: 0;
+}
+
+.surah-heading {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #333;
+    text-transform: uppercase;
+    margin: 0 50px;
+}
+
+@media (max-width: 768px) {
+    .arrow {
+        font-size: 1.5em;
+    }
+
+    .surah-heading {
+        font-size: 1.8em;
+    }
+}
 
         .settings-container {
             display: flex;
@@ -159,36 +197,122 @@
                 padding: 8px 12px;
             }
         }
-          .language-selector {
-        font-size: 16px;
-        padding: 8px 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #fff;
-        color: #333;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-        transition: 0.3s ease;
-    }
-    
-    .language-selector:hover {
-        border-color: #007bff;
-    }
-    
-    .language-selector select {
-        border: none;
-        outline: none;
-        background: transparent;
-        font-size: 16px;
-        color: inherit;
-        font-family: inherit;
-        padding: 0;
-        cursor: pointer;
-    }
+          /* Style for the language select dropdown */
+#languageSelect {
+    font-size: 16px;
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    display: inline-block;
+    cursor: pointer;
+    transition: 0.3s ease;
+    width: auto; /* Ensures dropdown has a flexible width based on content */
+}
 
-    .language-icon {
-        margin-right: 10px;
+/* Focus effect when the language select dropdown is clicked */
+#languageSelect:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Hover effect for the language select dropdown */
+#languageSelect:hover {
+    border-color: #007bff;
+}
+
+/* Option styling */
+#languageSelect option {
+    font-family: 'Amiri', serif;  /* Default font for options */
+    font-size: 16px;
+    padding: 10px;
+}
+
+/* Style when dark mode is enabled */
+.dark-mode #languageSelect {
+    background-color: #333;
+    color: white;
+    border-color: #444;
+}
+
+.dark-mode #languageSelect:focus {
+    border-color: #00b0ff;
+    box-shadow: 0 0 5px rgba(0, 183, 255, 0.5);
+}
+
+.dark-mode #languageSelect option {
+    color: white;
+    background-color: #333;
+}
+
+/* Hover effect for dark mode */
+.dark-mode #languageSelect:hover {
+    border-color: #00b0ff;
+}
+
+@media (max-width: 768px) {
+    #languageSelect {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+}   /* Style for the font select dropdown */
+#fontSelect {
+    font-size: 16px;
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #333;
+    display: inline-block;
+    cursor: pointer;
+    transition: 0.3s ease;
+    width: auto;  /* Ensures dropdown has a flexible width based on content */
+    margin-right: 20px; /* Space between other settings */
+}
+
+/* Focus effect when the font select dropdown is clicked */
+#fontSelect:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Hover effect for the font select dropdown */
+#fontSelect:hover {
+    border-color: #007bff;
+}
+
+/* Option styling */
+#fontSelect option {
+    font-family: 'Amiri', serif;  /* Default font for options */
+    font-size: 16px;
+    padding: 10px;
+}
+
+/* Style when dark mode is enabled */
+.dark-mode #fontSelect {
+    background-color: #333;
+    color: white;
+    border-color: #444;
+}
+
+.dark-mode #fontSelect:focus {
+    border-color: #00b0ff;
+    box-shadow: 0 0 5px rgba(0, 183, 255, 0.5);
+}
+
+.dark-mode #fontSelect option {
+    color: white;
+    background-color: #333;
+}
+
+@media (max-width: 768px) {
+    #fontSelect {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
 }
     </style>
 </head>
@@ -230,7 +354,14 @@
 </div>
 
 <div class="header">
+        <!-- Previous Arrow -->
+    <i class="fas fa-arrow-left arrow arrow-left" onclick="navigateSurah(-1)"></i>
+
+    <!-- Surah Name -->
     <div id="surah-heading" class="surah-heading" style="display: none;"></div>
+
+    <!-- Next Arrow -->
+    <i class="fas fa-arrow-right arrow arrow-right" onclick="navigateSurah(1)"></i>
 </div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 <div id="content"></div>
@@ -404,6 +535,75 @@
         localStorage.removeItem('languageMode');
         location.reload();
     }
+
+    let currentSurahIndex = 1;  // Starting surah index
+
+// Update the Surah by navigating to the next or previous surah
+function navigateSurah(direction) {
+    currentSurahIndex += direction;  // Change the index based on arrow clicked
+
+    // Make sure the surah index stays within the valid range (1 to 114)
+    if (currentSurahIndex < 1) {
+        currentSurahIndex = 1;
+    } else if (currentSurahIndex > 114) {
+        currentSurahIndex = 114;
+    }
+
+    // Change the URL without refreshing the page
+    const newUrl = `https://quran-online.pages.dev/surah?index=${currentSurahIndex}`;
+    window.history.pushState({ path: newUrl }, '', newUrl);
+
+    // Refresh the page to reload the surah content
+    window.location.reload();  // Refresh the page after updating the URL
+}
+
+// Load Surah based on the current index
+function loadSurah(index) {
+    fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(3, '0')}.json`)
+        .then(response => response.json())
+        .then(data => {
+            const surahData = data;
+            const surahHeading = document.getElementById('surah-heading');
+            const content = document.getElementById('content');
+
+            // Display the Surah Name
+            surahHeading.textContent = surahData.name;
+            surahHeading.style.display = 'block';
+
+            // Load the surah content (verses)
+            content.innerHTML = '';
+            surahData.verse.forEach((verse, index) => {
+                const verseDiv = document.createElement('div');
+                verseDiv.classList.add('verse');
+                verseDiv.textContent = verse;
+
+                const verseNumber = document.createElement('span');
+                verseNumber.classList.add('verse-number');
+                verseNumber.textContent = `Verse ${index + 1}`;
+                verseDiv.appendChild(verseNumber);
+
+                content.appendChild(verseDiv);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading surah:', error);
+        });
+}
+
+// Initialize by getting the current index from the URL
+function initializeSurahFromUrl() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const index = parseInt(urlParams.get('index')) || 1;  // Default to 1 if no index is present
+    currentSurahIndex = index;
+
+    loadSurah(currentSurahIndex);
+}
+
+// Run the initialization function on page load
+document.addEventListener('DOMContentLoaded', () => {
+    initializeSurahFromUrl();
+});
+
 </script>
 
 </body>
