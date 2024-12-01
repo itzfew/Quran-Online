@@ -24,146 +24,147 @@
             </div>
         </div>
     </div>
-<style>
-    /* Verse Detail Page */
-#verse-details {
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: center;
-    padding: 20px;
-}
 
-/* Heading of Verse */
-#verse-heading {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    color: #007bff;
-}
+    <style>
+        /* Verse Detail Page */
+        #verse-details {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 20px;
+        }
 
-/* Verse Content Styling */
-#verse-content {
-    font-size: 1.5em;
-    line-height: 1.5;
-    margin-bottom: 20px;
-}
+        /* Heading of Verse */
+        #verse-heading {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
 
-/* Arabic Text */
-.arabic-text {
-    font-family: 'Scheherazade New', serif;
-    font-size: 1.8em;
-    color: #333;
-    margin: 20px 0;
-}
+        /* Verse Content Styling */
+        #verse-content {
+            font-size: 1.5em;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
 
-/* Translation and Urdu Text */
-.translation-text, .urdu-text {
-    font-family: 'Amiri', serif;
-    font-size: 1.2em;
-    color: #555;
-    margin: 10px 0;
-}
+        /* Arabic Text */
+        .arabic-text {
+            font-family: 'Scheherazade New', serif;
+            font-size: 1.8em;
+            color: #333;
+            margin: 20px 0;
+        }
 
-/* Verse Number */
-.verse-number {
-    font-size: 1.0em;
-    margin-top: 10px;
-    font-weight: bold;
-    background-image: url('https://quran-online.pages.dev/source/download.png');
-    background-size: cover;
-    background-position: center;
-    padding: 5px 10px;
-    border-radius: 8px;
-    color: black;
-    display: inline-block;
-    margin-left: 10px;
-}
+        /* Translation and Urdu Text */
+        .translation-text, .urdu-text {
+            font-family: 'Amiri', serif;
+            font-size: 1.2em;
+            color: #555;
+            margin: 10px 0;
+        }
 
-/* Audio Player */
-#audio-player-container {
-    margin-top: 20px;
-}
+        /* Verse Number */
+        .verse-number {
+            font-size: 1.0em;
+            margin-top: 10px;
+            font-weight: bold;
+            background-image: url('https://quran-online.pages.dev/source/download.png');
+            background-size: cover;
+            background-position: center;
+            padding: 5px 10px;
+            border-radius: 8px;
+            color: black;
+            display: inline-block;
+            margin-left: 10px;
+        }
 
-audio {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    border-radius: 8px;
-}
+        /* Audio Player */
+        #audio-player-container {
+            margin-top: 20px;
+        }
 
-/* Responsive Styles for Verse Page */
-@media (max-width: 768px) {
-    #verse-heading {
-        font-size: 2em;
-    }
+        audio {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            border-radius: 8px;
+        }
 
-    .arabic-text {
-        font-size: 1.5em;
-    }
+        /* Responsive Styles for Verse Page */
+        @media (max-width: 768px) {
+            #verse-heading {
+                font-size: 2em;
+            }
 
-    .translation-text, .urdu-text {
-        font-size: 1.1em;
-    }
+            .arabic-text {
+                font-size: 1.5em;
+            }
 
-    #verse-content {
-        font-size: 1.3em;
-    }
-}
+            .translation-text, .urdu-text {
+                font-size: 1.1em;
+            }
 
-/* Base Styles */
-body {
-    font-size: 16px; /* Default font size */
-    font-family: Arial, sans-serif; /* Default font */
-    transition: background-color 0.3s, color 0.3s, font-size 0.3s; /* Smooth transition */
-}
+            #verse-content {
+                font-size: 1.3em;
+            }
+        }
 
-/* Light Mode (Default) */
-body:not(.dark-mode) {
-    background-color: white;
-    color: black;
-}
+        /* Base Styles */
+        body {
+            font-size: 16px; /* Default font size */
+            font-family: Arial, sans-serif; /* Default font */
+            transition: background-color 0.3s, color 0.3s, font-size 0.3s; /* Smooth transition */
+        }
 
-button {
-    padding: 10px 20px;
-    border: 1px solid black;
-    background-color: transparent;
-    color: inherit; /* inherit color from parent */
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
+        /* Light Mode (Default) */
+        body:not(.dark-mode) {
+            background-color: white;
+            color: black;
+        }
 
-button:hover {
-    background-color: #f0f0f0; /* Light hover effect */
-}
+        button {
+            padding: 10px 20px;
+            border: 1px solid black;
+            background-color: transparent;
+            color: inherit; /* inherit color from parent */
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
 
-button:active {
-    background-color: #d0d0d0; /* Active button effect */
-}
+        button:hover {
+            background-color: #f0f0f0; /* Light hover effect */
+        }
 
-/* Dark Mode */
-body.dark-mode {
-    background-color: #121212;
-    color: white;
-}
+        button:active {
+            background-color: #d0d0d0; /* Active button effect */
+        }
 
-body.dark-mode button {
-    border: 1px solid white;
-    color: white;
-}
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #121212;
+            color: white;
+        }
 
-body.dark-mode button:hover {
-    background-color: #333333; /* Dark hover effect */
-}
+        body.dark-mode button {
+            border: 1px solid white;
+            color: white;
+        }
 
-body.dark-mode button:active {
-    background-color: #444444; /* Active button effect in dark mode */
-}
+        body.dark-mode button:hover {
+            background-color: #333333; /* Dark hover effect */
+        }
 
-/* Add transition for smooth color changes */
-button {
-    transition: color 0.3s, background-color 0.3s;
-}
-</style>
+        body.dark-mode button:active {
+            background-color: #444444; /* Active button effect in dark mode */
+        }
+
+        /* Add transition for smooth color changes */
+        button {
+            transition: color 0.3s, background-color 0.3s;
+        }
+    </style>
 
     <script>
         // Get the surah and verse from URL parameters
@@ -174,6 +175,12 @@ button {
         // Fetch and display the verse details
         async function fetchVerseDetails(surahIndex, verseId) {
             try {
+                // Fetch the Surah data (title, place, etc.)
+                const surahResponse = await fetch('https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah.json');
+                const surahData = await surahResponse.json();
+                const surah = surahData.find(s => s.index === surahIndex);
+
+                // Fetch the Arabic, English, and Urdu translations for the specific verse
                 const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(surahIndex).padStart(1, '0')}.json`);
                 const arabicData = await arabicResponse.json();
                 
@@ -183,13 +190,13 @@ button {
                 const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(surahIndex).padStart(3, '0')}.json`);
                 const urduData = await urduResponse.json();
 
-                displayVerse(arabicData, translationData, urduData, verseId);
+                displayVerse(surah, arabicData, translationData, urduData, verseId);
             } catch (error) {
                 console.error('Error fetching verse data:', error);
             }
         }
 
-        function displayVerse(arabicData, translationData, urduData, verseId) {
+        function displayVerse(surah, arabicData, translationData, urduData, verseId) {
             const verseDiv = document.getElementById('verse-content');
             const arabicVerse = arabicData.verse[`verse_${verseId}`];
             const translatedVerse = translationData.verse[`verse_${verseId}`];
