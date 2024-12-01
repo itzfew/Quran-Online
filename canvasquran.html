@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quran Verse Image</title>
+    <style>
+        body {
+            font-family: 'Amiri', serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+
+        .canvas-container {
+            position: relative;
+            width: 500px;
+            height: 700px;
+            background-image: url('https://example.com/background.jpg');
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        canvas {
+            border-radius: 10px;
+        }
+
+        .download-btn {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="canvas-container">
+        <canvas id="verseCanvas" width="500" height="700"></canvas>
+    </div>
+
+    <button class="download-btn" onclick="downloadImage()">Download Image</button>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const verseNumber = urlParams.get('verse');
+        const arabic = decodeURIComponent(urlParams.get('arabic'));
+        const translation = decodeURIComponent(urlParams.get('translation'));
+        const urdu = decodeURIComponent(urlParams.get('urdu'));
+
+        const canvas = document.getElementById('verseCanvas');
+        const ctx = canvas.getContext('2d');
+
+        ctx.font = "30px Amiri, serif";
+        ctx.textAlign = "center";
+        ctx.fillStyle = "white";
+
+        // Add the Arabic text
+        ctx.fillText(arabic, canvas.width / 2, 100);
+
+        // Add the Translation
+        ctx.font = "20px Arial";
+        ctx.fillText(translation, canvas.width / 2, 200);
+
+        // Add the Urdu text
+        ctx.font = "20px Tahoma";
+        ctx.fillText(urdu, canvas.width / 2, 300);
+
+        // Function to download the canvas as an image
+        function downloadImage() {
+            const imageUrl = canvas.toDataURL();
+            const link = document.createElement('a');
+            link.href = imageUrl;
+            link.download = `verse_${verseNumber}.png`;
+            link.click();
+        }
+    </script>
+
+</body>
+</html>
