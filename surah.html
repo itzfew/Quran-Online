@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
     <style>
-        /* General body styles */
         body {
             font-family: 'Amiri', serif;
             background-color: white;
@@ -15,11 +14,10 @@
             margin: 0;
             padding: 0;
             font-size: 18px;
-            direction: rtl; /* Ensure right to left text direction */
+            direction: rtl;
             transition: all 0.3s ease;
         }
 
-        /* Settings Section */
         .settings-container {
             display: flex;
             justify-content: space-between;
@@ -27,7 +25,7 @@
             padding: 10px 20px;
             position: fixed;
             top: 0;
-            left:0;
+            left: 0;
             width: 95%;
             z-index: 1000;
             background-color: #f0f0f0;
@@ -46,7 +44,6 @@
             color: #007bff;
         }
 
-        /* Header and Surah Styling */
         .header {
             text-align: center;
             margin-top: 80px;
@@ -59,7 +56,6 @@
             font-weight: bold;
         }
 
-        /* First Verse Styling */
         .first-verse {
             text-align: center;
             font-size: 1.2em;
@@ -69,7 +65,6 @@
             font-weight: bold;
         }
 
-        /* Verse Styling */
         .verse {
             margin: 15px 0;
             padding: 20px;
@@ -95,12 +90,11 @@
             background-position: center;
             padding: 5px 10px;
             border-radius: 8px;
-            color: black; /* Default color for light mode */
+            color: black;
             display: inline-block;
             margin-left: 10px;
         }
 
-        /* Dark mode styles */
         .dark-mode {
             background-color: #121212;
             color: white;
@@ -111,7 +105,7 @@
             color: white;
         }
 
-        .dark-mode .first-verse, 
+        .dark-mode .first-verse,
         .dark-mode .surah-heading {
             color: white;
         }
@@ -126,15 +120,13 @@
         }
 
         .dark-mode .verse-number {
-            color: white; /* White color for verse number in dark mode */
+            color: white;
         }
 
-        /* Highlighted verse (selected verse border) */
         .verse.selected {
             background-color: rgba(0, 123, 255, 0.1);
         }
 
-        /* Back to Top Button */
         .back-to-top {
             position: fixed;
             bottom: 10px;
@@ -153,7 +145,6 @@
             background-color: #0056b3;
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .settings-container {
                 padding: 8px 15px;
@@ -168,11 +159,41 @@
                 padding: 8px 12px;
             }
         }
+          .language-selector {
+        font-size: 16px;
+        padding: 8px 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #fff;
+        color: #333;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        transition: 0.3s ease;
+    }
+    
+    .language-selector:hover {
+        border-color: #007bff;
+    }
+    
+    .language-selector select {
+        border: none;
+        outline: none;
+        background: transparent;
+        font-size: 16px;
+        color: inherit;
+        font-family: inherit;
+        padding: 0;
+        cursor: pointer;
+    }
+
+    .language-icon {
+        margin-right: 10px;
+}
     </style>
 </head>
 <body>
 
-<!-- Settings Section at the top (Fixed) -->
 <div class="settings-container">
     <div class="settings-item" onclick="toggleTheme()">
         <i class="fas fa-adjust"></i>
@@ -196,26 +217,27 @@
     <div class="settings-item" onclick="resetPreferences()">
         <i class="fas fa-undo"></i>
     </div>
-    <!-- Language Toggle -->
-    <div class="settings-item" onclick="toggleLanguage()">
-        <i class="fas fa-language"></i>
+    <div class="settings-item">
+      <div class="language-selector">
+        <select id="languageSelect" onchange="changeLanguage()">
+            <option value="both">Both</option>
+            <option value="arabic">Arabic</option>
+            <option value="english">English</option>
+            <option value="urdu">Urdu</option> <!-- Added Urdu option -->
+        </select>
     </div>
+  </div>
 </div>
 
-<!-- Main Content -->
 <div class="header">
     <div id="surah-heading" class="surah-heading" style="display: none;"></div>
 </div>
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 <div id="content"></div>
 
-<!-- Back to Top Button -->
 <button class="back-to-top" onclick="scrollToTop()">
     <i class="fas fa-arrow-up"></i>
 </button>
-
-<!-- Notification -->
-<div class="notification" id="notification"></div>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -232,9 +254,9 @@
         document.body.style.fontFamily = selectedFont;
 
         document.getElementById('fontSelect').value = selectedFont;
+        document.getElementById('languageSelect').value = languageMode;
         setLanguageMode(languageMode);
 
-        // Fetch Surah based on URL parameter if provided
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
     });
@@ -251,29 +273,37 @@
         const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(1, '0')}.json`);
         const translationData = await translationResponse.json();
 
-        displaySurah(arabicData, translationData);
+        // Fetch Urdu translation data from the provided URL
+        const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(index).padStart(3, '0')}.json`);
+        const urduData = await urduResponse.json();
+
+        displaySurah(arabicData, translationData, urduData);
     }
 
     function setLanguageMode(languageMode) {
         localStorage.setItem('languageMode', languageMode);
         if (languageMode === 'arabic') {
             document.body.classList.add('arabic-only');
-            document.body.classList.remove('english-only');
+            document.body.classList.remove('english-only', 'urdu-only');
         } else if (languageMode === 'english') {
             document.body.classList.add('english-only');
-            document.body.classList.remove('arabic-only');
+            document.body.classList.remove('arabic-only', 'urdu-only');
+        } else if (languageMode === 'urdu') {
+            document.body.classList.add('urdu-only');
+            document.body.classList.remove('arabic-only', 'english-only');
         } else {
-            document.body.classList.remove('english-only', 'arabic-only');
+            document.body.classList.remove('english-only', 'arabic-only', 'urdu-only');
         }
     }
 
-    function displaySurah(arabicData, translationData) {
+    function displaySurah(arabicData, translationData, urduData) {
         const surahHeading = document.getElementById('surah-heading');
         const firstVerse = document.getElementById('first-verse');
         const content = document.getElementById('content');
         const count = arabicData.count;
         const arabicVerses = arabicData.verse;
         const translationVerses = translationData.verse;
+        const urduVerses = urduData.data;
 
         surahHeading.style.display = 'block';
         firstVerse.style.display = 'block';
@@ -286,6 +316,7 @@
         for (let i = 1; i <= count; i++) {
             const arabicVerse = arabicVerses[`verse_${i}`];
             const translatedVerse = translationVerses[`verse_${i}`];
+            const urduVerse = urduVerses.find(v => v.aya == i.toString())?.text || ''; // Find corresponding Urdu translation
 
             const verseDiv = document.createElement('div');
             verseDiv.classList.add('verse');
@@ -293,7 +324,7 @@
             
             let verseContent = '';
 
-            // Depending on the language mode, display only Arabic, English, or both
+            // Depending on the language mode, display only Arabic, English, Urdu, or both
             if (localStorage.getItem('languageMode') === 'arabic') {
                 verseContent = `
                     <div class="arabic-text">${arabicVerse}
@@ -304,12 +335,18 @@
                     <div class="translation-text">${translatedVerse}
                         <span class="verse-number">${i}</span>
                     </div>`;
+            } else if (localStorage.getItem('languageMode') === 'urdu') {
+                verseContent = `
+                    <div class="urdu-text">${urduVerse}
+                        <span class="verse-number">${i}</span>
+                    </div>`;
             } else {
                 verseContent = `
                     <div class="arabic-text">${arabicVerse}
                         <span class="verse-number">${i}</span>
                     </div>
-                    <div class="translation-text">${translatedVerse}</div>`;
+                    <div class="translation-text">${translatedVerse}</div>
+                    <div class="urdu-text">${urduVerse}</div>`;
             }
 
             verseDiv.innerHTML = verseContent;
@@ -333,10 +370,9 @@
         verseElement.classList.add('selected');
     }
 
-    function toggleLanguage() {
-        const currentMode = localStorage.getItem('languageMode');
-        const newMode = currentMode === 'arabic' ? 'english' : currentMode === 'english' ? 'both' : 'arabic';
-        setLanguageMode(newMode);
+    function changeLanguage() {
+        const selectedLanguage = document.getElementById('languageSelect').value;
+        setLanguageMode(selectedLanguage);
         fetchSurah(getQueryParam('index') || 1); // Reload the surah with the updated language mode
     }
 
