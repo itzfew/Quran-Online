@@ -45,22 +45,21 @@
             color: #3d3d3d;
             line-height: 1.6;
         }
-/* Verse Number */
-.verse-number {
-    font-size: 1.0em;
-    margin-top: 10px;
-    font-weight: bold;
-    background-image: url('https://quran-online.pages.dev/source/download.png');
-    background-size: cover;
-    text-align: center;
 
-    background-position: center;
-    padding: 5px 10px;
-    border-radius: 8px;
-    color: black;
-    display: inline-block;
-    margin-left: 10px;
-}
+        .verse-number {
+            font-size: 1.0em;
+            margin-top: 10px;
+            font-weight: bold;
+            background-image: url('https://quran-online.pages.dev/source/download.png');
+            background-size: cover;
+            text-align: center;
+            background-position: center;
+            padding: 5px 10px;
+            border-radius: 8px;
+            color: black;
+            display: inline-block;
+            margin-left: 10px;
+        }
 
         .translation-text,
         .urdu-text {
@@ -81,8 +80,7 @@
         #tafsir-content {
             background-color: #f9f9f9;
             border-radius: 10px;
-text-align: center;
-
+            text-align: center;
             padding: 15px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             border: 1px solid #ddd; /* Added border for tafsir content */
@@ -145,6 +143,13 @@ text-align: center;
 <body>
     <div id="verse-container">
         <div id="verse-content"></div>
+        <div id="tafsir-language">
+            <label for="tafsir-select">Select Tafsir Language:</label>
+            <select id="tafsir-select" onchange="loadTafsir()">
+                <option value="en">English</option>
+                <option value="ur">Urdu</option>
+            </select>
+        </div>
         <div id="tafsir-content" class="tafsir-box"></div> <!-- Tafsir Section -->
         <div id="verse-actions">
             <button class="share-btn" onclick="shareVerse()">Share <i class="fas fa-share-alt"></i></button>
@@ -170,25 +175,20 @@ text-align: center;
                 const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(surahIndex).padStart(3, '0')}.json`);
                 const urduData = await urduResponse.json();
 
-                const tafsirResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/en-tafisr-ibn-kathir/${surahIndex}.json`);
-                const tafsirData = await tafsirResponse.json();
+                displayVerse(arabicData, translationData, urduData, verseId);
                 
-                const tafsirResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/ur-tafseer-ibn-e-kaseer/${surahIndex}.json`);
-                const tafsirData = await tafsirResponse.json();
-
-                displayVerse(arabicData, translationData, urduData, tafsirData, verseId);
+                // Load default Tafsir in English
+                loadTafsir(); // Default load English Tafsir
             } catch (error) {
                 console.error('Error fetching verse data:', error);
             }
         }
 
-        function displayVerse(arabicData, translationData, urduData, tafsirData, verseId) {
+        function displayVerse(arabicData, translationData, urduData, verseId) {
             const verseDiv = document.getElementById('verse-content');
-            const tafsirDiv = document.getElementById('tafsir-content');
             const arabicVerse = arabicData.verse[`verse_${verseId}`];
             const translatedVerse = translationData.verse[`verse_${verseId}`];
             const urduVerse = urduData.data.find(v => v.aya == verseId)?.text || '';
-            const tafsir = tafsirData.ayahs.find(v => v.ayah == verseId)?.text || 'No tafsir available for this verse.';
 
             // Display Verse
             let verseContent = `
@@ -204,15 +204,30 @@ text-align: center;
                 </div>
             `;
             verseDiv.innerHTML = verseContent;
+        }
 
-            // Display Tafsir
-            let tafsirContent = `
-                <h3>Tafsir (Ibn Kathir) for Verse ${verseId}</h3>
-                <div class="tafsir-text">
-                    <p>${tafsir}</p>
-                </div>
-            `;
-            tafsirDiv.innerHTML = tafsirContent;
+        // Load Tafsir based on selected language
+        async function loadTafsir() {
+            const selectedLanguage = document.getElementById('tafsir-select').value;
+            const tafsirDiv = document.getElementById('tafsir-content');
+            const tafsirUrl = selectedLanguage === 'en' 
+                ? `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/en-tafisr-ibn-kathir/${surahIndex}.json`
+                : `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/ur-tafseer-ibn-e-kaseer/${surahIndex}.json`;
+            
+            try {
+                const response = await fetch(tafsirUrl);
+                const tafsirData = await response.json();
+                const tafsirText = tafsirData.ayahs.find(v => v.ayah == verseId)?.text || 'No tafsir available for this verse.';
+                tafsirDiv.innerHTML = `
+                    <h3>Tafsir for Verse ${verseId}</h3>
+                    <div class="tafsir-text">
+                        <p>${tafsirText}</p>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error fetching tafsir:', error);
+                tafsirDiv.innerHTML = `<p>Unable to load Tafsir.</p>`;
+            }
         }
 
         // Share Verse
@@ -238,7 +253,7 @@ text-align: center;
             window.location.href = `surah.html?index=${surahIndex}`;
         }
 
-        // Fetch verse details
+        // Initial fetch for verse details
         fetchVerseDetails(surahIndex, verseId);
     </script>
 </body>
