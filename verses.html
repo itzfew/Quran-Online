@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran - Verse Details</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="styles.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- FontAwesome for icons -->
 </head>
 <body>
@@ -15,169 +15,63 @@
             <div id="verse-actions">
                 <button class="share-btn" onclick="shareVerse()">Share</button>
                 <button class="back-btn" onclick="goBack()">Back to Surah</button>
+                <div id="nav-buttons">
+                    <button class="prev-btn" onclick="navigateVerse('previous')">Previous</button>
+                    <button class="next-btn" onclick="navigateVerse('next')">Next</button>
+                </div>
             </div>
         </div>
     </div>
-<style>
-    /* Verse Detail Page */
-#verse-details {
-    max-width: 800px;
-    margin: 0 auto;
-    text-align: center;
-    padding: 20px;
-}
 
-/* Heading of Verse */
-#verse-heading {
-    font-size: 2.5em;
-    margin-bottom: 20px;
-    color: #007bff;
-}
-
-/* Verse Content Styling */
-#verse-content {
-    font-size: 1.5em;
-    line-height: 1.5;
-    margin-bottom: 20px;
-}
-
-/* Arabic Text */
-.arabic-text {
-    font-family: 'Scheherazade New', serif;
-    font-size: 1.8em;
-    color: #333;
-    margin: 20px 0;
-}
-
-/* Translation and Urdu Text */
-.translation-text, .urdu-text {
-    font-family: 'Amiri', serif;
-    font-size: 1.2em;
-    color: #555;
-    margin: 10px 0;
-}
-
-/* Verse Number */
-.verse-number {
-    font-size: 1.0em;
-    margin-top: 10px;
-    font-weight: bold;
-    background-image: url('https://quran-online.pages.dev/source/download.png');
-    background-size: cover;
-    background-position: center;
-    padding: 5px 10px;
-    border-radius: 8px;
-    color: black;
-    display: inline-block;
-    margin-left: 10px;
-}
-
-/* Responsive Styles for Verse Page */
-@media (max-width: 768px) {
-    #verse-heading {
-        font-size: 2em;
-    }
-
-    .arabic-text {
-        font-size: 1.5em;
-    }
-
-    .translation-text, .urdu-text {
-        font-size: 1.1em;
-    }
-
-    #verse-content {
-        font-size: 1.3em;
-    }
-}
-/* Base Styles */
-body {
-    font-size: 16px; /* Default font size */
-    font-family: Arial, sans-serif; /* Default font */
-    transition: background-color 0.3s, color 0.3s, font-size 0.3s; /* Smooth transition */
-}
-
-/* Light Mode (Default) */
-body:not(.dark-mode) {
-    background-color: white;
-    color: black;
-}
-
-button {
-    padding: 10px 20px;
-    border: 1px solid black;
-    background-color: transparent;
-    color: inherit; /* inherit color from parent */
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-button:hover {
-    background-color: #f0f0f0; /* Light hover effect */
-}
-
-button:active {
-    background-color: #d0d0d0; /* Active button effect */
-}
-
-/* Dark Mode */
-body.dark-mode {
-    background-color: #121212;
-    color: white;
-}
-
-body.dark-mode button {
-    border: 1px solid white;
-    color: white;
-}
-
-body.dark-mode button:hover {
-    background-color: #333333; /* Dark hover effect */
-}
-
-body.dark-mode button:active {
-    background-color: #444444; /* Active button effect in dark mode */
-}
-
-/* Add transition for smooth color changes */
-button {
-    transition: color 0.3s, background-color 0.3s;
-}
-
-    
-</style>
     <script>
+        // Fetch surah metadata
+        async function fetchSurahData() {
+            const response = await fetch('https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah.json');
+            const data = await response.json();
+            return data;
+        }
+
         // Get the surah and verse from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const surahIndex = urlParams.get('surah');
-        const verseId = urlParams.get('verse');
+        const verseId = parseInt(urlParams.get('verse'));
 
-        // Fetch and display the verse details
-        async function fetchVerseDetails(surahIndex, verseId) {
+        // Fetch the Surah details
+        let surahData = [];
+        fetchSurahData().then(data => {
+            surahData = data;
+            fetchVerseDetails(surahIndex, verseId, surahData);
+        });
+
+        async function fetchVerseDetails(surahIndex, verseId, surahData) {
             try {
-                const arabicResponse = await fetch(https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(surahIndex).padStart(1, '0')}.json);
+                // Get current Surah data to determine verse count
+                const surah = surahData.find(s => s.index === surahIndex);
+                const totalVerses = surah.count;
+
+                // Fetching verses
+                const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(surahIndex).padStart(1, '0')}.json`);
                 const arabicData = await arabicResponse.json();
                 
-                const translationResponse = await fetch(https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(surahIndex).padStart(1, '0')}.json);
+                const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(surahIndex).padStart(1, '0')}.json`);
                 const translationData = await translationResponse.json();
 
-                const urduResponse = await fetch(https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(surahIndex).padStart(3, '0')}.json);
+                const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(surahIndex).padStart(3, '0')}.json`);
                 const urduData = await urduResponse.json();
 
-                displayVerse(arabicData, translationData, urduData, verseId);
+                displayVerse(arabicData, translationData, urduData, verseId, totalVerses);
             } catch (error) {
                 console.error('Error fetching verse data:', error);
             }
         }
 
-        function displayVerse(arabicData, translationData, urduData, verseId) {
+        function displayVerse(arabicData, translationData, urduData, verseId, totalVerses) {
             const verseDiv = document.getElementById('verse-content');
-            const arabicVerse = arabicData.verse[verse_${verseId}];
-            const translatedVerse = translationData.verse[verse_${verseId}];
+            const arabicVerse = arabicData.verse[`verse_${verseId}`];
+            const translatedVerse = translationData.verse[`verse_${verseId}`];
             const urduVerse = urduData.data.find(v => v.aya == verseId)?.text || '';
 
-            let verseContent = 
+            let verseContent = `
                 <div class="arabic-text">
                     <p>${arabicVerse}</p>
                     <span class="verse-number">Verse ${verseId}</span>
@@ -188,9 +82,44 @@ button {
                 <div class="urdu-text">
                     <p><strong>Translation (Urdu):</strong> ${urduVerse}</p>
                 </div>
-            ;
+            `;
 
             verseDiv.innerHTML = verseContent;
+
+            // Update the navigation buttons
+            updateNavigationButtons(verseId, totalVerses);
+        }
+
+        function updateNavigationButtons(currentVerseId, totalVerses) {
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+
+            // Previous verse
+            if (currentVerseId > 1) {
+                prevBtn.disabled = false;
+            } else {
+                prevBtn.disabled = true;
+            }
+
+            // Next verse
+            if (currentVerseId < totalVerses) {
+                nextBtn.disabled = false;
+            } else {
+                nextBtn.disabled = true;
+            }
+        }
+
+        // Navigate to previous or next verse
+        function navigateVerse(direction) {
+            let newVerseId = direction === 'next' ? verseId + 1 : verseId - 1;
+
+            if (newVerseId < 1) {
+                newVerseId = 1; // loop to the first verse
+            } else if (newVerseId > surahData.find(s => s.index === surahIndex).count) {
+                newVerseId = surahData.find(s => s.index === surahIndex).count; // loop to last verse
+            }
+
+            window.location.search = `?surah=${surahIndex}&verse=${newVerseId}`;
         }
 
         // Share functionality
@@ -213,11 +142,8 @@ button {
 
         // Go back to the Surah page
         function goBack() {
-            window.location.href = surah.html?index=${surahIndex};
+            window.location.href = `surah.html?index=${surahIndex}`;
         }
-
-        // Fetch verse data when the page is loaded
-        fetchVerseDetails(surahIndex, verseId);
     </script>
 </body>
-</html> 
+</html>
