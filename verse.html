@@ -146,8 +146,9 @@
         <div id="tafsir-language">
             <label for="tafsir-select">Select Tafsir Language:</label>
             <select id="tafsir-select" onchange="loadTafsir()">
-                <option value="en">English</option>
+                <option value="en">English (Ibn Kathir)</option>
                 <option value="ur">Urdu</option>
+                <option value="maarif-ul-quran">English (Maarif-ul-Quran)</option>
             </select>
         </div>
         <div id="tafsir-content" class="tafsir-box"></div> <!-- Tafsir Section -->
@@ -177,8 +178,8 @@
 
                 displayVerse(arabicData, translationData, urduData, verseId);
                 
-                // Load default Tafsir in English
-                loadTafsir(); // Default load English Tafsir
+                // Load default Tafsir in English (Ibn Kathir)
+                loadTafsir(); // Default load English Ibn Kathir Tafsir
             } catch (error) {
                 console.error('Error fetching verse data:', error);
             }
@@ -210,9 +211,16 @@
         async function loadTafsir() {
             const selectedLanguage = document.getElementById('tafsir-select').value;
             const tafsirDiv = document.getElementById('tafsir-content');
-            const tafsirUrl = selectedLanguage === 'en' 
-                ? `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/en-tafisr-ibn-kathir/${surahIndex}.json`
-                : `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/ur-tafseer-ibn-e-kaseer/${surahIndex}.json`;
+            let tafsirUrl = '';
+
+            // Set Tafsir URL based on selection
+            if (selectedLanguage === 'en') {
+                tafsirUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/en-tafisr-ibn-kathir/${surahIndex}.json`;
+            } else if (selectedLanguage === 'ur') {
+                tafsirUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/ur-tafseer-ibn-e-kaseer/${surahIndex}.json`;
+            } else if (selectedLanguage === 'maarif-ul-quran') {
+                tafsirUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/en-tafsir-maarif-ul-quran/${surahIndex}.json`;
+            }
             
             try {
                 const response = await fetch(tafsirUrl);
