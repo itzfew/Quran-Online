@@ -17,13 +17,12 @@
 
         #verse-container {
             max-width: 900px;
-            margin: 0px auto;
+            margin: 20px auto;
             background-color: white;
-            padding: 10px;
-            text-align: center;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border: 2px solid #ddd; /* Added border around the container */
+            border: 2px solid #ddd;
         }
 
         #verse-heading {
@@ -35,45 +34,40 @@
 
         #verse-content {
             margin-bottom: 30px;
-            border-bottom: 2px solid #ddd; /* Border for verse content */
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 20px;
         }
 
         .arabic-text {
-            text-align: center;
+            text-align: right;
             font-family: 'Scheherazade New', serif;
             font-size: 24px;
             color: #3d3d3d;
             line-height: 1.6;
+            margin-bottom: 10px;
         }
-/* Verse Number */
-.verse-number {
-    font-size: 1.0em;
-    margin-top: 10px;
-    font-weight: bold;
-    background-image: url('https://quran-online.pages.dev/source/download.png');
-    background-size: cover;
-    background-position: center;
-    padding: 5px 10px;
-    border-radius: 8px;
-    color: black;
-    text-align: center;
-    display: inline-block;
-    margin-left: 10px;
-}
 
-        .translation-text,
-        .urdu-text {
+        .verse-number {
+            font-size: 1.0em;
+            margin-top: 10px;
+            font-weight: bold;
+            background-color: #f4f4f9;
+            padding: 5px 10px;
+            border-radius: 8px;
+            color: black;
+            display: inline-block;
+        }
+
+        .translation-text, .urdu-text {
             margin-top: 15px;
         }
 
-        .translation-text p,
-        .urdu-text p {
+        .translation-text p, .urdu-text p {
             font-size: 18px;
             line-height: 1.6;
         }
 
-        .translation-text strong,
-        .urdu-text strong {
+        .translation-text strong, .urdu-text strong {
             font-weight: bold;
         }
 
@@ -82,7 +76,7 @@
             border-radius: 10px;
             padding: 15px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border: 1px solid #ddd; /* Added border for tafsir content */
+            border: 1px solid #ddd;
         }
 
         #tafsir-content h3 {
@@ -101,6 +95,7 @@
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
+            gap: 15px;
         }
 
         .share-btn, .back-btn {
@@ -112,6 +107,8 @@
             cursor: pointer;
             font-size: 16px;
             transition: background-color 0.3s ease;
+            width: 100%;
+            text-align: center;
         }
 
         .share-btn:hover, .back-btn:hover {
@@ -123,7 +120,7 @@
         }
 
         /* For smaller screens */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             #verse-container {
                 padding: 15px;
             }
@@ -137,10 +134,35 @@
                 padding: 8px 16px;
             }
         }
+
+        /* For very small screens (phones) */
+        @media (max-width: 480px) {
+            .share-btn, .back-btn {
+                font-size: 14px;
+                padding: 8px 14px;
+            }
+
+            .arabic-text {
+                font-size: 22px;
+            }
+
+            .translation-text p, .urdu-text p {
+                font-size: 16px;
+            }
+
+            #verse-actions {
+                flex-direction: column;
+            }
+
+            .share-btn {
+                margin-bottom: 10px;
+            }
+        }
     </style>
 </head>
 <body>
     <div id="verse-container">
+        <div id="verse-heading">Quran Verse Details</div>
         <div id="verse-content"></div>
         <div id="tafsir-content" class="tafsir-box"></div> <!-- Tafsir Section -->
         <div id="verse-actions">
