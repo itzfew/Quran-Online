@@ -4,85 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran - Verse Details</title>
-    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New&family=Amiri&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New&family=Amiri&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- FontAwesome for icons -->
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
+            font-family: 'Amiri', serif;
             background-color: #f4f4f9;
             color: #333;
             margin: 0;
             padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
 
         #verse-container {
             max-width: 900px;
-            margin: 30px auto;
+            margin: 20px;
             background-color: white;
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 2px solid #ddd; /* Added border around the container */
         }
 
         #verse-heading {
             text-align: center;
-            font-size: 34px;
+            font-size: 32px;
             margin-bottom: 20px;
             font-family: 'Scheherazade New', serif;
-            color: #005b3d;
         }
 
         #verse-content {
             margin-bottom: 30px;
+            border-bottom: 2px solid #ddd; /* Border for verse content */
+            padding-bottom: 20px;
         }
 
         .arabic-text {
             text-align: right;
             font-family: 'Scheherazade New', serif;
-            font-size: 26px;
-            color: #333;
-            line-height: 1.8;
+            font-size: 24px;
+            color: #3d3d3d;
+            line-height: 1.6;
         }
 
         .verse-number {
-            font-size: 20px;
-            color: #aaa;
+            font-size: 18px;
             margin-top: 10px;
+            font-weight: bold;
+            background-image: url('https://quran-online.pages.dev/source/download.png');
+            background-size: cover;
+            background-position: center;
+            padding: 10px;
+            border-radius: 50%; /* Circular style */
+            color: white;
+            display: inline-block;
+            margin-left: 10px;
         }
 
         .translation-text,
         .urdu-text {
-            margin-top: 20px;
-            background-color: #f8f8f8;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-top: 15px;
         }
 
         .translation-text p,
         .urdu-text p {
             font-size: 18px;
-            line-height: 1.7;
+            line-height: 1.6;
         }
 
         .translation-text strong,
         .urdu-text strong {
             font-weight: bold;
-            color: #005b3d;
         }
 
         #tafsir-content {
             background-color: #f9f9f9;
             border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd; /* Added border for tafsir content */
         }
 
         #tafsir-content h3 {
             font-size: 24px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             font-family: 'Scheherazade New', serif;
-            color: #333;
         }
 
         #tafsir-content .tafsir-text {
@@ -101,24 +110,19 @@
             background-color: #1d72b8;
             color: white;
             border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 10px 20px;
+            border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+            transition: background-color 0.3s ease;
         }
 
         .share-btn:hover, .back-btn:hover {
             background-color: #155a8a;
-            transform: translateY(-3px);
         }
 
         .share-btn:focus, .back-btn:focus {
             outline: none;
-        }
-
-        .share-btn i {
-            margin-left: 8px;
         }
 
         /* For smaller screens */
@@ -133,14 +137,14 @@
 
             .share-btn, .back-btn {
                 font-size: 14px;
-                padding: 10px 18px;
+                padding: 8px 16px;
             }
         }
     </style>
 </head>
 <body>
     <div id="verse-container">
-        <h1 id="verse-heading">Verse Details</h1>
+        <div id="verse-heading">Quran Verse Details</div>
         <div id="verse-content"></div>
         <div id="tafsir-content" class="tafsir-box"></div> <!-- Tafsir Section -->
         <div id="verse-actions">
