@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New&family=Amiri&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- FontAwesome for icons -->
     <style>
+        /* Existing styles */
         body {
             font-family: 'Amiri', serif;
             background-color: #f4f4f9;
@@ -163,6 +164,17 @@
 <body>
     <div id="verse-container">
         <div id="verse-heading">Quran Verse Details</div>
+
+        <!-- Dropdown for Tafsir Language Selection -->
+        <div id="tafsir-lang-selection" style="margin-bottom: 20px;">
+            <label for="tafsir-select">Select Tafsir Language:</label>
+            <select id="tafsir-select" onchange="changeTafsirLanguage()">
+                <option value="en-tafsir-ibn-kathir">Ibn Kathir (English)</option>
+                <option value="en-tafsir-maarif-ul-quran">Maarif-ul-Quran (English)</option>
+                <option value="ur-tafsir-ibn-e-kaseer">Ibn-e-Kaseer (Urdu)</option>
+            </select>
+        </div>
+
         <div id="verse-content"></div>
         <div id="tafsir-content" class="tafsir-box"></div> <!-- Tafsir Section -->
         <div id="verse-actions">
@@ -177,8 +189,10 @@
         const surahIndex = urlParams.get('surah');
         const verseId = urlParams.get('verse');
 
+        let tafsirSource = 'en-tafsir-ibn-kathir'; // Default source for Tafsir
+
         // Fetch Verse Data
-        async function fetchVerseDetails(surahIndex, verseId) {
+        async function fetchVerseDetails(surahIndex, verseId, tafsirSource) {
             try {
                 const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(surahIndex).padStart(1, '0')}.json`);
                 const arabicData = await arabicResponse.json();
@@ -189,7 +203,7 @@
                 const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(surahIndex).padStart(3, '0')}.json`);
                 const urduData = await urduResponse.json();
 
-                const tafsirResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/en-tafisr-ibn-kathir/${surahIndex}.json`);
+                const tafsirResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/${tafsirSource}/${surahIndex}.json`);
                 const tafsirData = await tafsirResponse.json();
 
                 displayVerse(arabicData, translationData, urduData, tafsirData, verseId);
@@ -223,7 +237,7 @@
 
             // Display Tafsir
             let tafsirContent = `
-                <h3>Tafsir (Ibn Kathir) for Verse ${verseId}</h3>
+                <h3>Tafsir for Verse ${verseId}</h3>
                 <div class="tafsir-text">
                     <p>${tafsir}</p>
                 </div>
@@ -254,8 +268,14 @@
             window.location.href = `surah.html?index=${surahIndex}`;
         }
 
+        // Change Tafsir Language
+        function changeTafsirLanguage() {
+            tafsirSource = document.getElementById('tafsir-select').value;
+            fetchVerseDetails(surahIndex, verseId, tafsirSource);
+        }
+
         // Fetch verse details
-        fetchVerseDetails(surahIndex, verseId);
+        fetchVerseDetails(surahIndex, verseId, tafsirSource);
     </script>
 </body>
 </html>
