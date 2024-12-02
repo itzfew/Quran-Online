@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran - Verse Details</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="styles.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- FontAwesome for icons -->
 </head>
 <body>
@@ -12,37 +12,60 @@
         <div id="verse-details">
             <h1 id="verse-heading">Verse Details</h1>
             <div id="verse-content"></div>
-            <div id="tafsir-content"></div> <!-- New container for Tafsir -->
+            <div id="tafsir-content"></div>
             <div id="verse-actions">
                 <button class="share-btn" onclick="shareVerse()">Share</button>
                 <button class="back-btn" onclick="goBack()">Back to Surah</button>
             </div>
         </div>
     </div>
+
 <style>
-    /* Verse Detail Page */
-    #verse-details {
-        max-width: 800px;
-        margin: 0 auto;
-        text-align: center;
+    /* Base Styles */
+    body {
+        font-size: 16px;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #fff;
+        color: #333;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* Container */
+    #verse-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
         padding: 20px;
     }
 
-    /* Heading of Verse */
+    /* Verse Detail Section */
+    #verse-details {
+        max-width: 800px;
+        width: 100%;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        text-align: center;
+    }
+
+    /* Heading */
     #verse-heading {
         font-size: 2.5em;
-        margin-bottom: 20px;
         color: #007bff;
-    }
-
-    /* Verse Content Styling */
-    #verse-content, #tafsir-content {
-        font-size: 1.5em;
-        line-height: 1.5;
         margin-bottom: 20px;
     }
 
-    /* Arabic Text */
+    /* Verse and Translation Styling */
+    #verse-content, #tafsir-content {
+        font-size: 1.4em;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
     .arabic-text {
         font-family: 'Scheherazade New', serif;
         font-size: 1.8em;
@@ -50,7 +73,6 @@
         margin: 20px 0;
     }
 
-    /* Translation and Urdu Text */
     .translation-text, .urdu-text {
         font-family: 'Amiri', serif;
         font-size: 1.2em;
@@ -58,19 +80,18 @@
         margin: 10px 0;
     }
 
-    /* Tafsir Content */
     .tafsir-text {
         font-family: 'Amiri', serif;
         font-size: 1.2em;
         color: #888;
-        background-color: #f9f9f9;
+        background-color: #eef2f7;
         border-left: 4px solid #007bff;
         padding: 10px;
         margin: 15px 0;
         text-align: left;
+        border-radius: 5px;
     }
 
-    /* Verse Number */
     .verse-number {
         font-size: 1.0em;
         margin-top: 10px;
@@ -85,53 +106,42 @@
         margin-left: 10px;
     }
 
-    /* Responsive Styles for Verse Page */
+    /* Buttons */
+    button {
+        padding: 12px 25px;
+        border: 1px solid #007bff;
+        background-color: transparent;
+        color: #007bff;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+        margin: 5px;
+    }
+
+    button:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+    button:active {
+        background-color: #0056b3;
+    }
+
+    /* Responsive Styles */
     @media (max-width: 768px) {
         #verse-heading {
             font-size: 2em;
         }
-
         .arabic-text {
             font-size: 1.5em;
         }
-
         .translation-text, .urdu-text, .tafsir-text {
             font-size: 1.1em;
         }
-
         #verse-content {
             font-size: 1.3em;
         }
-    }
-    /* Base Styles */
-    body {
-        font-size: 16px; /* Default font size */
-        font-family: Arial, sans-serif; /* Default font */
-        transition: background-color 0.3s, color 0.3s, font-size 0.3s; /* Smooth transition */
-    }
-
-    /* Light Mode (Default) */
-    body:not(.dark-mode) {
-        background-color: white;
-        color: black;
-    }
-
-    button {
-        padding: 10px 20px;
-        border: 1px solid black;
-        background-color: transparent;
-        color: inherit; /* inherit color from parent */
-        font-size: 16px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-
-    button:hover {
-        background-color: #f0f0f0; /* Light hover effect */
-    }
-
-    button:active {
-        background-color: #d0d0d0; /* Active button effect */
     }
 
     /* Dark Mode */
@@ -140,31 +150,30 @@
         color: white;
     }
 
+    body.dark-mode #verse-details {
+        background-color: #333;
+    }
+
     body.dark-mode button {
-        border: 1px solid white;
+        border-color: white;
         color: white;
     }
 
     body.dark-mode button:hover {
-        background-color: #333333; /* Dark hover effect */
+        background-color: #0056b3;
+        color: white;
     }
 
     body.dark-mode button:active {
-        background-color: #444444; /* Active button effect in dark mode */
-    }
-
-    /* Add transition for smooth color changes */
-    button {
-        transition: color 0.3s, background-color 0.3s;
+        background-color: #444;
     }
 </style>
+
     <script>
-        // Get the surah and verse from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const surahIndex = urlParams.get('surah');
         const verseId = urlParams.get('verse');
 
-        // Fetch and display the verse details including Tafsir
         async function fetchVerseDetails(surahIndex, verseId) {
             try {
                 const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(surahIndex).padStart(1, '0')}.json`);
@@ -176,7 +185,6 @@
                 const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(surahIndex).padStart(3, '0')}.json`);
                 const urduData = await urduResponse.json();
 
-                // Fetch Tafsir for the Surah
                 const tafsirResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/en-tafisr-ibn-kathir/${surahIndex}.json`);
                 const tafsirData = await tafsirResponse.json();
 
@@ -217,7 +225,6 @@
             tafsirDiv.innerHTML = tafsirContent;
         }
 
-        // Share functionality
         function shareVerse() {
             const verseText = document.getElementById('verse-content').innerText;
             if (navigator.share) {
@@ -235,12 +242,10 @@
             }
         }
 
-        // Go back to the Surah page
         function goBack() {
             window.location.href = `surah.html?index=${surahIndex}`;
         }
 
-        // Fetch verse data when the page is loaded
         fetchVerseDetails(surahIndex, verseId);
     </script>
 </body>
