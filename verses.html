@@ -60,20 +60,26 @@
             background-image: url('https://quran-online.pages.dev/source/download.png');
             background-size: contain;
             background-repeat: no-repeat;
-            background-position: right center;
+            background-position: center;
             position: relative;
             text-align: center;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: transparent; /* Hide the text inside the background */
         }
 
         .verse-number {
-            font-size: 20px;
+            font-size: 32px;
             font-weight: 700;
             color: white;
             position: absolute;
-            bottom: 20px;
-            left: 20px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             background-color: rgba(0, 0, 0, 0.6);
-            padding: 5px 15px;
+            padding: 8px 20px;
             border-radius: 10px;
         }
 
@@ -142,8 +148,8 @@
             }
 
             .verse-number {
-                font-size: 18px;
-                padding: 5px 10px;
+                font-size: 24px;
+                padding: 6px 15px;
             }
 
             .translation-text,
@@ -208,7 +214,6 @@
 
             let verseContent = `
                 <div class="arabic-text">
-                    <p>${arabicVerse}</p>
                     <span class="verse-number">Verse ${verseId}</span>
                 </div>
                 <div class="translation-text">
