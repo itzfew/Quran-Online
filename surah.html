@@ -406,7 +406,61 @@ button {
     }
 }
 
+   /* Style for the verse container */
+.verse {
+    position: relative; /* Allow absolute positioning for child elements like buttons */
+    padding: 20px 10px 40px 10px; /* Padding at the bottom to create space for buttons */
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
 
+/* Style for the Share and View buttons */
+button.share-btn, button.view-btn {
+    position: absolute;
+    bottom: 3px;  /* Positioned 10px from the bottom of the verse container */
+    left: 10px;    /* Positioned 10px from the left of the verse container */
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;  /* Primary blue color */
+    border: 1px solid black;
+    background-color: transparent;
+    color: inherit; /* inherit color from parent */
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    display: none; /* Initially hide the buttons */
+}
+
+/* Separate the buttons horizontally by adding margin-left */
+button.share-btn {
+    left: 10px;    /* 10px from the left */
+}
+
+button.view-btn {
+    left: 120px;   /* Make space for the share button, you can adjust as needed */
+}
+
+/* Hover Effects */
+button.share-btn:hover, button.view-btn:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+button.shre-btn:active, button.view-btn:active {
+    background-color: #003366;
+    transform: scale(0.95);
+}
+
+/* Style for the selected verse */
+.verse.selected {
+    background-color: #f0f8ff;
+    border: 0px solid #007bff;
+}
 
     </style>
 </head>
@@ -712,72 +766,94 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function displaySurah(arabicData, translationData, urduData) {
-        const surahHeading = document.getElementById('surah-heading');
-        const firstVerse = document.getElementById('first-verse');
-        const content = document.getElementById('content');
-        const count = arabicData.count;
-        const arabicVerses = arabicData.verse;
-        const translationVerses = translationData.verse;
-        const urduVerses = urduData.data;
+    const surahHeading = document.getElementById('surah-heading');
+    const firstVerse = document.getElementById('first-verse');
+    const content = document.getElementById('content');
+    const count = arabicData.count;
+    const arabicVerses = arabicData.verse;
+    const translationVerses = translationData.verse;
+    const urduVerses = urduData.data;
 
-        surahHeading.style.display = 'block';
-        firstVerse.style.display = 'block';
-        content.innerHTML = ''; // Clear content
+    surahHeading.style.display = 'block';
+    firstVerse.style.display = 'block';
+    content.innerHTML = ''; // Clear content
 
-        surahHeading.innerText = arabicData.name;
-        firstVerse.innerText = arabicVerses['verse_0'];  // Display translation of verse_0 separately
+    surahHeading.innerText = arabicData.name;
+    firstVerse.innerText = arabicVerses['verse_0'];  // Display translation of verse_0 separately
 
-        // Loop through verses starting from verse_1
-        for (let i = 1; i <= count; i++) {
-            const arabicVerse = arabicVerses[`verse_${i}`];
-            const translatedVerse = translationVerses[`verse_${i}`];
-            const urduVerse = urduVerses.find(v => v.aya == i.toString())?.text || ''; // Find corresponding Urdu translation
+    // Loop through verses starting from verse_1
+    for (let i = 1; i <= count; i++) {
+        const arabicVerse = arabicVerses[`verse_${i}`];
+        const translatedVerse = translationVerses[`verse_${i}`];
+        const urduVerse = urduVerses.find(v => v.aya == i.toString())?.text || ''; // Find corresponding Urdu translation
 
-            const verseDiv = document.createElement('div');
-            verseDiv.classList.add('verse');
-            verseDiv.setAttribute('id', `verse-${i}`);
-            
-            let verseContent = '';
+        const verseDiv = document.createElement('div');
+        verseDiv.classList.add('verse');
+        verseDiv.setAttribute('id', `verse-${i}`);
+        
+        let verseContent = '';
 
-            // Depending on the language mode, display only Arabic, English, Urdu, or both
-            if (localStorage.getItem('languageMode') === 'arabic') {
-                verseContent = `
-                    <div class="arabic-text">${arabicVerse}
-                        <span class="verse-number">${i}</span>
-                    </div>`;
-            } else if (localStorage.getItem('languageMode') === 'english') {
-                verseContent = `
-                    <div class="translation-text">${translatedVerse}
-                        <span class="verse-number">${i}</span>
-                    </div>`;
-            } else if (localStorage.getItem('languageMode') === 'urdu') {
-                verseContent = `
-                    <div class="urdu-text">${urduVerse}
-                        <span class="verse-number">${i}</span>
-                    </div>`;
-            } else {
-                verseContent = `
-                    <div class="arabic-text">${arabicVerse}
-                        <span class="verse-number">${i}</span>
-                    </div>
-                    <div class="translation-text">${translatedVerse}</div>
-                    <div class="urdu-text">${urduVerse}</div>`;
-            }
-
-            // Add "Share" and "View" buttons
-            verseContent += `
-                <button class="share-btn" onclick="shareVerse(${i})">Share</button>
-                <button class="view-btn" onclick="viewVerse(${i})">View</button>
-            `;
-
-            verseDiv.innerHTML = verseContent;
-
-            // Add event listener to highlight verse
-            verseDiv.onclick = () => toggleHighlight(i);
-
-            content.appendChild(verseDiv);
+        // Depending on the language mode, display only Arabic, English, Urdu, or both
+        if (localStorage.getItem('languageMode') === 'arabic') {
+            verseContent = `
+                <div class="arabic-text">${arabicVerse}
+                    <span class="verse-number">${i}</span>
+                </div>`;
+        } else if (localStorage.getItem('languageMode') === 'english') {
+            verseContent = `
+                <div class="translation-text">${translatedVerse}
+                    <span class="verse-number">${i}</span>
+                </div>`;
+        } else if (localStorage.getItem('languageMode') === 'urdu') {
+            verseContent = `
+                <div class="urdu-text">${urduVerse}
+                    <span class="verse-number">${i}</span>
+                </div>`;
+        } else {
+            verseContent = `
+                <div class="arabic-text">${arabicVerse}
+                    <span class="verse-number">${i}</span>
+                </div>
+                <div class="translation-text">${translatedVerse}</div>
+                <div class="urdu-text">${urduVerse}</div>`;
         }
+
+        verseDiv.innerHTML = verseContent;
+
+        // Add the share and view buttons, but hide them by default
+        verseDiv.innerHTML += `
+            <button class="share-btn" onclick="shareVerse(${i})" style="display: none;">Share</button>
+            <button class="view-btn" onclick="viewVerse(${i})" style="display: none;">View</button>
+        `;
+
+        // Add event listener to highlight verse and show the buttons
+        verseDiv.onclick = () => toggleHighlight(i);
+
+        content.appendChild(verseDiv);
     }
+}
+
+function toggleHighlight(verseId) {
+    // Remove highlight from all verses
+    const allVerses = document.querySelectorAll('.verse');
+    allVerses.forEach(verse => {
+        verse.classList.remove('selected');
+        // Hide all buttons
+        const shareButton = verse.querySelector('.share-btn');
+        const viewButton = verse.querySelector('.view-btn');
+        if (shareButton) shareButton.style.display = 'none';
+        if (viewButton) viewButton.style.display = 'none';
+    });
+
+    // Add highlight to clicked verse
+    const verseElement = document.getElementById(`verse-${verseId}`);
+    verseElement.classList.add('selected');
+    // Show the buttons for the selected verse
+    const shareButton = verseElement.querySelector('.share-btn');
+    const viewButton = verseElement.querySelector('.view-btn');
+    if (shareButton) shareButton.style.display = 'inline-block';
+    if (viewButton) viewButton.style.display = 'inline-block';
+}
 
     // Share functionality
     function shareVerse(verseId) {
@@ -844,6 +920,8 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('languageMode');
         location.reload();
     }
+
+
 </script>
 
 </body>
