@@ -17,9 +17,9 @@
 
         #verse-container {
             max-width: 900px;
-            margin: 0px auto;
+            margin: 20px auto;
             background-color: white;
-            padding: 10px;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -29,6 +29,7 @@
             font-size: 32px;
             margin-bottom: 20px;
             font-family: 'Scheherazade New', serif;
+            color: #1d72b8;
         }
 
         #verse-content {
@@ -38,9 +39,10 @@
         .arabic-text {
             text-align: right;
             font-family: 'Scheherazade New', serif;
-            font-size: 24px;
+            font-size: 26px;
             color: #3d3d3d;
             line-height: 1.6;
+            margin-bottom: 10px;
         }
 
         .verse-number {
@@ -51,7 +53,7 @@
 
         .translation-text,
         .urdu-text {
-            margin-top: 15px;
+            margin-top: 20px;
         }
 
         .translation-text p,
@@ -68,14 +70,16 @@
         #tafsir-content {
             background-color: #f9f9f9;
             border-radius: 10px;
-            padding: 15px;
+            padding: 20px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
         }
 
         #tafsir-content h3 {
             font-size: 24px;
             margin-bottom: 10px;
             font-family: 'Scheherazade New', serif;
+            color: #1d72b8;
         }
 
         #tafsir-content .tafsir-text {
@@ -94,11 +98,17 @@
             background-color: #1d72b8;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 20px;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
             transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .share-btn i, .back-btn i {
+            margin-right: 8px;
         }
 
         .share-btn:hover, .back-btn:hover {
@@ -123,16 +133,21 @@
                 font-size: 14px;
                 padding: 8px 16px;
             }
+
+            .arabic-text {
+                font-size: 22px;
+            }
         }
     </style>
 </head>
 <body>
     <div id="verse-container">
+        <div id="verse-heading">Verse Details</div>
         <div id="verse-content"></div>
         <div id="tafsir-content" class="tafsir-box"></div> <!-- Tafsir Section -->
         <div id="verse-actions">
-            <button class="share-btn" onclick="shareVerse()">Share <i class="fas fa-share-alt"></i></button>
-            <button class="back-btn" onclick="goBack()">Back to Surah</button>
+            <button class="share-btn" onclick="shareVerse()"><i class="fas fa-share-alt"></i> Share</button>
+            <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back to Surah</button>
         </div>
     </div>
 
@@ -188,7 +203,7 @@
 
             // Display Tafsir
             let tafsirContent = `
-                <h3>Tafsir (Ibn Kathir) for Verse ${verseId}</h3>
+                <h3><i class="fas fa-scroll"></i> Tafsir (Ibn Kathir) for Verse ${verseId}</h3>
                 <div class="tafsir-text">
                     <p>${tafsir}</p>
                 </div>
