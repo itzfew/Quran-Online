@@ -4,172 +4,180 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran - Verse Details</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New&family=Amiri&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- FontAwesome for icons -->
     <style>
-        /* General Reset */
-        * {
+        /* Base Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* Body */
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f7fa;
-            color: #333;
             line-height: 1.6;
-            padding: 20px;
-            overflow-x: hidden;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+            font-size: 18px;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Full Page Layout */
-        #verse-details {
+        /* Main content container */
+        #verse-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
             background-color: #ffffff;
             border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 100%;
-            text-align: center;
-            position: relative;
-            box-sizing: border-box;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
 
-        /* Verse Heading */
+        /* Heading of the page */
         #verse-heading {
-            font-size: 32px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 30px;
-        }
-
-        /* Arabic Verse */
-        .arabic-text {
-            font-size: 40px;
+            font-family: 'Scheherazade New', serif;
+            font-size: 3em;
+            color: #007bff;
             text-align: center;
-            font-family: 'Scheherazade', serif;
-            color: #34495e;
-            line-height: 1.4;
-            padding: 20px;
-            background-image: url('https://quran-online.pages.dev/source/download.png');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: right center;
-            padding-right: 100px;
-            position: relative;
+            margin-bottom: 30px;
+            font-weight: normal;
+            letter-spacing: 1px;
         }
 
+        /* Verse content styling */
+        #verse-content {
+            font-size: 1.4em;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        /* Arabic Text */
+        .arabic-text {
+            font-family: 'Scheherazade New', serif;
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        /* Translation Text */
+        .translation-text, .urdu-text, .tafsir-text {
+            font-family: 'Amiri', serif;
+            font-size: 1.2em;
+            color: #555;
+            margin: 20px 0;
+            text-align: justify;
+        }
+
+        /* Verse Number */
         .verse-number {
-            font-size: 18px;
-            font-weight: 600;
-            color: #2980b9;
-            position: absolute;
-            bottom: 15px;
-            left: 10px;
-            background-color: rgba(255, 255, 255, 0.7);
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-
-        /* Translation & Tafsir Text */
-        .translation-text, .urdu-text {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: #34495e;
-            padding: 10px 20px;
-            border-radius: 8px;
-            background-color: #ecf0f1;
-        }
-
-        .translation-text strong, .urdu-text strong {
-            font-weight: 600;
-            color: #2980b9;
-        }
-
-        /* Tafsir Section */
-        .tafsir-text {
-            background-color: #ecf0f1;
-            padding: 20px;
+            font-size: 1.1em;
+            font-weight: bold;
+            display: inline-block;
             margin-top: 20px;
-            border-radius: 10px;
-            font-size: 18px;
-            color: #34495e;
-            border-left: 5px solid #2980b9;
+            background-image: url('https://quran-online.pages.dev/source/download.png');
+            background-size: cover;
+            background-position: center;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            color: white;
+            text-align: center;
+            line-height: 45px;
+            letter-spacing: 1px;
         }
 
-        /* Buttons */
-        .verse-actions {
+        /* Action Buttons */
+        #verse-actions {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            gap: 20px;
             margin-top: 30px;
         }
 
-        .share-btn, .back-btn {
-            background-color: #2980b9;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
+        button {
+            padding: 12px 22px;
+            font-size: 16px;
             border: none;
-            font-size: 18px;
+            border-radius: 30px;
             cursor: pointer;
-            width: 45%;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            letter-spacing: 0.8px;
         }
 
-        .share-btn:hover, .back-btn:hover {
-            background-color: #3498db;
+        .share-btn {
+            background-color: #007bff;
+            color: white;
         }
 
-        /* Mobile Responsiveness */
+        .share-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .back-btn {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .back-btn:hover {
+            background-color: #e2e2e2;
+        }
+
+        /* Responsive Styles */
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-
-            #verse-details {
-                padding: 20px;
+            #verse-heading {
+                font-size: 2.5em;
             }
 
             .arabic-text {
-                font-size: 28px;
-                padding-right: 50px;
+                font-size: 2em;
             }
 
-            .translation-text, .urdu-text {
-                font-size: 16px;
-                margin-bottom: 15px;
+            .translation-text, .urdu-text, .tafsir-text {
+                font-size: 1.1em;
             }
 
-            .share-btn, .back-btn {
-                padding: 10px 15px;
-                font-size: 16px;
+            #verse-actions {
+                flex-direction: column;
+            }
+
+            button {
                 width: 100%;
-                margin-bottom: 15px;
+                margin: 10px 0;
             }
         }
 
-        /* Aesthetic Enhancements */
-        .tafsir-text {
-            font-style: italic;
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+
+        body.dark-mode #verse-container {
+            background-color: #1e1e1e;
+            box-shadow: 0 15px 30px rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode #verse-heading {
+            color: #00aaff;
+        }
+
+        body.dark-mode .share-btn {
+            background-color: #0056b3;
+        }
+
+        body.dark-mode .back-btn {
+            background-color: #333;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <div id="verse-details">
+    <div id="verse-container">
         <h1 id="verse-heading">Verse Details</h1>
         <div id="verse-content"></div>
-        <div id="tafsir-content"></div> <!-- New container for Tafsir -->
+        <div id="tafsir-content"></div> <!-- Tafsir Section -->
         <div id="verse-actions">
-            <button class="share-btn" onclick="shareVerse()"><i class="fas fa-share-alt"></i> Share</button>
-            <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back to Surah</button>
+            <button class="share-btn" onclick="shareVerse()">Share</button>
+            <button class="back-btn" onclick="goBack()">Back to Surah</button>
         </div>
     </div>
 
@@ -179,7 +187,6 @@
         const surahIndex = urlParams.get('surah');
         const verseId = urlParams.get('verse');
 
-        // Fetch and display the verse details including Tafsir
         async function fetchVerseDetails(surahIndex, verseId) {
             try {
                 const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(surahIndex).padStart(1, '0')}.json`);
@@ -191,7 +198,6 @@
                 const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(surahIndex).padStart(3, '0')}.json`);
                 const urduData = await urduResponse.json();
 
-                // Fetch Tafsir for the Surah
                 const tafsirResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/en-tafisr-ibn-kathir/${surahIndex}.json`);
                 const tafsirData = await tafsirResponse.json();
 
@@ -212,7 +218,7 @@
             let verseContent = `
                 <div class="arabic-text">
                     <p>${arabicVerse}</p>
-                    <span class="verse-number">Verse ${verseId}</span>
+                    <span class="verse-number">${verseId}</span>
                 </div>
                 <div class="translation-text">
                     <p><strong>Translation (English):</strong> ${translatedVerse}</p>
