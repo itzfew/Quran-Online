@@ -4,142 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran - Verse Details</title>
-    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New&family=Amiri&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New&family=Amiri&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- FontAwesome for icons -->
     <style>
-        /* Global Styles */
         body {
-            font-family: 'Amiri', serif;
-            background-color: #f4f4f9;
+            font-family: 'Roboto', sans-serif;
+            background-color: #fafafa;
             margin: 0;
             padding: 0;
             color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            line-height: 1.6;
         }
-
-        h1, h3 {
-            color: #4b4b4b;
-            text-align: center;
-            font-family: 'Scheherazade New', serif;
-        }
-
-        /* Verse Container */
+        
         #verse-container {
-            background: #fff;
+            max-width: 1000px;
+            margin: 50px auto;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 800px;
-            margin: 20px;
-            text-align: center;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Verse Content */
-        .arabic-text {
-            font-size: 24px;
-            line-height: 1.5;
-            font-family: 'Scheherazade New', serif;
-            color: #000;
-            direction: rtl;
+        h1#verse-heading {
+            font-family: 'Amiri', serif;
+            text-align: center;
+            font-size: 2.5rem;
             margin-bottom: 20px;
+            color: #005b3d;
+        }
+
+        #verse-content, #tafsir-content {
+            margin-bottom: 30px;
+        }
+
+        .arabic-text p {
+            font-family: 'Scheherazade New', serif;
+            font-size: 1.5rem;
+            text-align: right;
+            margin-bottom: 10px;
+            direction: rtl;
         }
 
         .verse-number {
-            font-size: 18px;
-            color: #555;
-            margin-top: 10px;
+            font-size: 1.2rem;
+            color: #005b3d;
+            text-align: center;
+            margin-top: 5px;
         }
 
-        .translation-text,
-        .urdu-text {
-            font-size: 18px;
-            margin-top: 20px;
-            padding: 10px;
-            border: 1px solid #f1f1f1;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-            line-height: 1.6;
-        }
-
-        /* Tafsir Section */
-        .tafsir-box {
-            margin-top: 30px;
-            background: #f7f7f7;
+        .translation-text, .urdu-text, .tafsir-text {
+            background-color: #f4f4f4;
             padding: 15px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 10px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
-        .tafsir-text {
-            font-size: 16px;
+        .translation-text p, .urdu-text p, .tafsir-text p {
+            font-size: 1.2rem;
             color: #555;
-            line-height: 1.7;
-            text-align: left;
-            padding: 10px;
-            background: #fff;
-            border-radius: 5px;
         }
 
-        /* Buttons */
+        .translation-text strong, .urdu-text strong {
+            font-weight: bold;
+            color: #004d26;
+        }
+
         #verse-actions {
-            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
         }
 
-        .share-btn,
-        .back-btn {
+        button {
             padding: 10px 20px;
-            font-size: 16px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
+            font-size: 1rem;
             cursor: pointer;
-            margin: 10px;
-            transition: background-color 0.3s ease;
+            border: none;
+            border-radius: 30px;
+            transition: all 0.3s ease;
         }
 
-        .share-btn:hover,
+        .share-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .share-btn:hover {
+            background-color: #45a049;
+        }
+
+        .back-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+
         .back-btn:hover {
-            background-color: #0056b3;
+            background-color: #1976D2;
         }
 
-        /* Responsive Design */
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
+        .tafsir-box h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
 
-            #verse-container {
-                width: 100%;
-                padding: 15px;
-            }
-
-            .arabic-text {
-                font-size: 22px;
-            }
-
-            .verse-number {
-                font-size: 16px;
-            }
-
-            .translation-text,
-            .urdu-text {
-                font-size: 16px;
-            }
-
-            .tafsir-text {
-                font-size: 14px;
-            }
-
-            .share-btn,
-            .back-btn {
-                font-size: 14px;
-                padding: 8px 16px;
-            }
+        .tafsir-text p {
+            font-size: 1.1rem;
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -193,7 +167,7 @@
             let verseContent = `
                 <div class="arabic-text">
                     <p>${arabicVerse}</p>
-                    <div class="verse-number">${verseId}</div>
+                    <div class="verse-number">Verse ${verseId}</div>
                 </div>
                 <div class="translation-text">
                     <strong>Translation (English):</strong> <p>${translatedVerse}</p>
