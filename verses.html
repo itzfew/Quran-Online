@@ -6,45 +6,165 @@
     <title>Quran - Verse Details</title>
     <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- FontAwesome for icons -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script> <!-- html2canvas library -->
+    <style>
+        /* Verse Detail Page */
+        #verse-details {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        /* Heading of Verse */
+        #verse-heading {
+            font-size: 2.8em;
+            margin-bottom: 20px;
+            color: #007bff;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Verse Content Styling */
+        #verse-content {
+            font-size: 1.5em;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Arabic Text */
+        .arabic-text {
+            font-family: 'Scheherazade New', serif;
+            font-size: 2.0em;
+            color: #333;
+            margin: 20px 0;
+            direction: rtl;
+        }
+
+        /* Translation and Urdu Text */
+        .translation-text, .urdu-text {
+            font-family: 'Amiri', serif;
+            font-size: 1.2em;
+            color: #555;
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        /* Verse Number */
+        .verse-number {
+            font-size: 1.0em;
+            margin-top: 10px;
+            font-weight: bold;
+            background-image: url('https://quran-online.pages.dev/source/download.png');
+            background-size: cover;
+            background-position: center;
+            padding: 5px 10px;
+            border-radius: 8px;
+            color: black;
+            display: inline-block;
+            margin-left: 10px;
+            margin-top: 10px;
+        }
+
+        /* Buttons */
+        .button-container {
+            margin-top: 20px;
+        }
+
+        .share-btn, .back-btn {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .share-btn:hover, .back-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .share-btn:active, .back-btn:active {
+            background-color: #004080;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+
+        body.dark-mode button {
+            border: 1px solid white;
+            color: white;
+        }
+
+        body.dark-mode button:hover {
+            background-color: #333333;
+        }
+
+        body.dark-mode button:active {
+            background-color: #444444;
+        }
+
+        /* Responsive Styles for Verse Page */
+        @media (max-width: 768px) {
+            #verse-heading {
+                font-size: 2.2em;
+            }
+
+            .arabic-text {
+                font-size: 1.8em;
+            }
+
+            .translation-text, .urdu-text {
+                font-size: 1.1em;
+            }
+
+            #verse-content {
+                font-size: 1.3em;
+            }
+
+            .button-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* Base Styles */
+        body {
+            font-size: 16px; /* Default font size */
+            font-family: Arial, sans-serif; /* Default font */
+            transition: background-color 0.3s, color 0.3s, font-size 0.3s; /* Smooth transition */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Light Mode (Default) */
+        body:not(.dark-mode) {
+            background-color: #fafafa;
+            color: black;
+        }
+
+    </style>
 </head>
 <body>
     <div id="verse-container">
         <div id="verse-details">
             <h1 id="verse-heading">Verse Details</h1>
             <div id="verse-content"></div>
-            <div id="verse-actions">
+            <div class="button-container" id="verse-actions">
                 <button class="share-btn" onclick="shareVerse()">Share</button>
                 <button class="back-btn" onclick="goBack()">Back to Surah</button>
-                <button class="screenshot-btn" onclick="captureScreenshot()">Capture Screenshot</button>
             </div>
         </div>
     </div>
-
-    <style>
-        /* Existing styles omitted for brevity */
-
-        /* Screenshot Button Styling */
-        .screenshot-btn {
-            padding: 10px 20px;
-            border: 1px solid #28a745;
-            background-color: #28a745;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-left: 10px;
-            border-radius: 5px;
-        }
-
-        .screenshot-btn:hover {
-            background-color: #218838;
-        }
-
-        .screenshot-btn:active {
-            background-color: #1e7e34;
-        }
-    </style>
 
     <script>
         // Get the surah and verse from URL parameters
@@ -57,7 +177,7 @@
             try {
                 const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(surahIndex).padStart(1, '0')}.json`);
                 const arabicData = await arabicResponse.json();
-                
+
                 const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(surahIndex).padStart(1, '0')}.json`);
                 const translationData = await translationResponse.json();
 
@@ -113,24 +233,6 @@
         // Go back to the Surah page
         function goBack() {
             window.location.href = `surah.html?index=${surahIndex}`;
-        }
-
-        // Capture screenshot of the verse content
-        function captureScreenshot() {
-            const verseContainer = document.getElementById('verse-container');
-
-            // Use html2canvas to capture the content
-            html2canvas(verseContainer).then((canvas) => {
-                // Create a download link for the generated image
-                const link = document.createElement('a');
-                link.href = canvas.toDataURL();
-                link.download = 'quran-verse.png'; // Specify the filename for the downloaded image
-
-                // Trigger the download
-                link.click();
-            }).catch((error) => {
-                console.error('Error capturing screenshot: ', error);
-            });
         }
 
         // Fetch verse data when the page is loaded
