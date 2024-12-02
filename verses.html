@@ -4,170 +4,185 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran - Verse Details</title>
-    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New&family=Amiri&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- FontAwesome for icons -->
+    <style>
+        /* Base Styles */
+        body {
+            font-size: 18px;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Container for the whole page */
+        #verse-container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Heading of the page */
+        #verse-heading {
+            font-size: 2.5em;
+            font-family: 'Scheherazade New', serif;
+            color: #007bff;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Verse Content */
+        #verse-content {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+        }
+
+        /* Arabic Text */
+        .arabic-text {
+            font-family: 'Scheherazade New', serif;
+            font-size: 2.2em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Translation Text */
+        .translation-text, .urdu-text, .tafsir-text {
+            font-family: 'Amiri', serif;
+            font-size: 1.2em;
+            color: #555;
+            margin: 10px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 5px solid #007bff;
+            border-radius: 5px;
+        }
+
+        /* Verse Number */
+        .verse-number {
+            font-size: 1em;
+            font-weight: bold;
+            padding: 8px 15px;
+            margin-left: 10px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        /* Tafsir */
+        .tafsir-text {
+            background-color: #f1f1f1;
+            border-left: 5px solid #0056b3;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #444;
+            font-style: italic;
+        }
+
+        /* Action Buttons */
+        #verse-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: bold;
+        }
+
+        .share-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .share-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .back-btn {
+            background-color: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .back-btn:hover {
+            background-color: #e2e2e2;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            #verse-heading {
+                font-size: 2em;
+            }
+
+            .arabic-text {
+                font-size: 1.8em;
+            }
+
+            .translation-text, .urdu-text, .tafsir-text {
+                font-size: 1.1em;
+                padding: 12px;
+            }
+
+            button {
+                padding: 10px 20px;
+            }
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+
+        body.dark-mode #verse-container {
+            background-color: #1e1e1e;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode #verse-heading {
+            color: #00aaff;
+        }
+
+        body.dark-mode .share-btn {
+            background-color: #0056b3;
+        }
+
+        body.dark-mode .back-btn {
+            background-color: #333;
+            color: white;
+        }
+    </style>
 </head>
 <body>
     <div id="verse-container">
-        <div id="verse-details">
-            <h1 id="verse-heading">Verse Details</h1>
-            <div id="verse-content"></div>
-            <div id="tafsir-content"></div>
-            <div id="verse-actions">
-                <button class="share-btn" onclick="shareVerse()">Share</button>
-                <button class="back-btn" onclick="goBack()">Back to Surah</button>
-            </div>
+        <h1 id="verse-heading">Verse Details</h1>
+        <div id="verse-content"></div>
+        <div id="tafsir-content"></div> <!-- Tafsir Section -->
+        <div id="verse-actions">
+            <button class="share-btn" onclick="shareVerse()">Share</button>
+            <button class="back-btn" onclick="goBack()">Back to Surah</button>
         </div>
     </div>
-
-<style>
-    /* Base Styles */
-    body {
-        font-size: 16px;
-        font-family: Arial, sans-serif;
-        margin: 0;
-        padding: 0;
-        background-color: #fff;
-        color: #333;
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-    /* Container */
-    #verse-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        padding: 20px;
-    }
-
-    /* Verse Detail Section */
-    #verse-details {
-        max-width: 800px;
-        width: 100%;
-        background-color: #f9f9f9;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        padding: 30px;
-        text-align: center;
-    }
-
-    /* Heading */
-    #verse-heading {
-        font-size: 2.5em;
-        color: #007bff;
-        margin-bottom: 20px;
-    }
-
-    /* Verse and Translation Styling */
-    #verse-content, #tafsir-content {
-        font-size: 1.4em;
-        line-height: 1.6;
-        margin-bottom: 20px;
-    }
-
-    .arabic-text {
-        font-family: 'Scheherazade New', serif;
-        font-size: 1.8em;
-        color: #333;
-        margin: 20px 0;
-    }
-
-    .translation-text, .urdu-text {
-        font-family: 'Amiri', serif;
-        font-size: 1.2em;
-        color: #555;
-        margin: 10px 0;
-    }
-
-    .tafsir-text {
-        font-family: 'Amiri', serif;
-        font-size: 1.2em;
-        color: #888;
-        background-color: #eef2f7;
-        border-left: 4px solid #007bff;
-        padding: 10px;
-        margin: 15px 0;
-        text-align: left;
-        border-radius: 5px;
-    }
-
-    .verse-number {
-        font-size: 1.0em;
-        margin-top: 10px;
-        font-weight: bold;
-        background-image: url('https://quran-online.pages.dev/source/download.png');
-        background-size: cover;
-        background-position: center;
-        padding: 5px 10px;
-        border-radius: 8px;
-        color: black;
-        display: inline-block;
-        margin-left: 10px;
-    }
-
-    /* Buttons */
-    button {
-        padding: 12px 25px;
-        border: 1px solid #007bff;
-        background-color: transparent;
-        color: #007bff;
-        font-size: 16px;
-        cursor: pointer;
-        border-radius: 5px;
-        transition: all 0.3s ease;
-        margin: 5px;
-    }
-
-    button:hover {
-        background-color: #007bff;
-        color: white;
-    }
-
-    button:active {
-        background-color: #0056b3;
-    }
-
-    /* Responsive Styles */
-    @media (max-width: 768px) {
-        #verse-heading {
-            font-size: 2em;
-        }
-        .arabic-text {
-            font-size: 1.5em;
-        }
-        .translation-text, .urdu-text, .tafsir-text {
-            font-size: 1.1em;
-        }
-        #verse-content {
-            font-size: 1.3em;
-        }
-    }
-
-    /* Dark Mode */
-    body.dark-mode {
-        background-color: #121212;
-        color: white;
-    }
-
-    body.dark-mode #verse-details {
-        background-color: #333;
-    }
-
-    body.dark-mode button {
-        border-color: white;
-        color: white;
-    }
-
-    body.dark-mode button:hover {
-        background-color: #0056b3;
-        color: white;
-    }
-
-    body.dark-mode button:active {
-        background-color: #444;
-    }
-</style>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
@@ -246,6 +261,7 @@
             window.location.href = `surah.html?index=${surahIndex}`;
         }
 
+        // Fetch verse data when the page is loaded
         fetchVerseDetails(surahIndex, verseId);
     </script>
 </body>
