@@ -6,7 +6,6 @@
     <title>Quran - Verse Details</title>
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- FontAwesome for icons -->
     <style>
         /* General Reset */
@@ -23,57 +22,67 @@
             color: #333;
             line-height: 1.6;
             padding: 20px;
-        }
-
-        #verse-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            overflow-x: hidden;
             min-height: 100vh;
         }
 
+        /* Full Page Layout */
         #verse-details {
             background-color: #ffffff;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 800px;
+            max-width: 100%;
+            margin: 20px auto;
+            text-align: center;
+            position: relative;
         }
 
+        /* Verse Heading */
         #verse-heading {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 20px;
-            text-align: center;
+            margin-bottom: 30px;
         }
 
-        /* Verse Content */
-        .arabic-text, .translation-text, .urdu-text {
-            margin-bottom: 20px;
-        }
-
+        /* Arabic Verse */
         .arabic-text p {
-            font-size: 24px;
+            font-size: 40px;
             text-align: center;
             font-family: 'Scheherazade', serif;
             color: #34495e;
+            line-height: 1.4;
+            padding: 20px;
+            background-image: url('https://quran-online.pages.dev/source/download.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: right center;
+            padding-right: 60px;
         }
 
+        /* Verse Number Styling */
         .verse-number {
-            font-size: 16px;
-            color: #7f8c8d;
-        }
-
-        .translation-text p,
-        .urdu-text p {
             font-size: 18px;
-            color: #2c3e50;
+            font-weight: 600;
+            color: #2980b9;
+            position: absolute;
+            bottom: 10px;
+            left: 20px;
         }
 
-        .translation-text p strong,
-        .urdu-text p strong {
+        /* Translation & Tafsir Text */
+        .translation-text, .urdu-text {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #34495e;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background-color: #ecf0f1;
+        }
+
+        .translation-text strong, .urdu-text strong {
             font-weight: 600;
             color: #2980b9;
         }
@@ -81,13 +90,15 @@
         /* Tafsir Section */
         .tafsir-text {
             background-color: #ecf0f1;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
             font-size: 18px;
             color: #34495e;
+            border-left: 5px solid #2980b9;
         }
 
-        /* Button Styles */
+        /* Buttons */
         .verse-actions {
             display: flex;
             justify-content: space-between;
@@ -97,11 +108,12 @@
         .share-btn, .back-btn {
             background-color: #2980b9;
             color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 20px;
+            border-radius: 8px;
             border: none;
-            font-size: 16px;
+            font-size: 18px;
             cursor: pointer;
+            width: 45%;
             transition: background-color 0.3s ease;
         }
 
@@ -111,43 +123,49 @@
 
         /* Mobile Responsiveness */
         @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
             #verse-details {
                 padding: 20px;
             }
 
             .arabic-text p {
-                font-size: 22px;
+                font-size: 28px;
+                padding-right: 50px;
             }
 
-            .translation-text p, .urdu-text p {
+            .translation-text, .urdu-text {
                 font-size: 16px;
+                margin-bottom: 15px;
             }
 
             .share-btn, .back-btn {
-                padding: 8px 15px;
-                font-size: 14px;
+                padding: 10px 15px;
+                font-size: 16px;
+                width: 100%;
+                margin-bottom: 15px;
             }
         }
 
-        /* Aesthetic Improvements */
+        /* Aesthetic Enhancements */
         .tafsir-text {
-            border-left: 5px solid #2980b9;
-            margin-top: 20px;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
-    <div id="verse-container">
-        <div id="verse-details">
-            <h1 id="verse-heading">Verse Details</h1>
-            <div id="verse-content"></div>
-            <div id="tafsir-content"></div> <!-- New container for Tafsir -->
-            <div id="verse-actions">
-                <button class="share-btn" onclick="shareVerse()"><i class="fas fa-share-alt"></i> Share</button>
-                <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back to Surah</button>
-            </div>
+    <div id="verse-details">
+        <h1 id="verse-heading">Verse Details</h1>
+        <div id="verse-content"></div>
+        <div id="tafsir-content"></div> <!-- New container for Tafsir -->
+        <div id="verse-actions">
+            <button class="share-btn" onclick="shareVerse()"><i class="fas fa-share-alt"></i> Share</button>
+            <button class="back-btn" onclick="goBack()"><i class="fas fa-arrow-left"></i> Back to Surah</button>
         </div>
     </div>
+
     <script>
         // Get the surah and verse from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
