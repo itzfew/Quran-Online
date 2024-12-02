@@ -15,9 +15,6 @@
             <div id="verse-actions">
                 <button class="share-btn" onclick="shareVerse()">Share</button>
                 <button class="back-btn" onclick="goBack()">Back to Surah</button>
-                <!-- Navigation Buttons -->
-                <button class="nav-btn" id="prev-btn" onclick="navigateVerse(-1)">Previous</button>
-                <button class="nav-btn" id="next-btn" onclick="navigateVerse(1)">Next</button>
             </div>
         </div>
     </div>
@@ -148,56 +145,39 @@ button {
     transition: color 0.3s, background-color 0.3s;
 }
 
-.nav-btn {
-    margin: 10px;
-}
+    
 </style>
     <script>
         // Get the surah and verse from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const surahIndex = urlParams.get('surah');
-        const verseId = parseInt(urlParams.get('verse'));
-        let totalVerses = 0;
-
-        // Fetch Surah Data (Get Verse Count)
-        async function fetchSurahData() {
-            try {
-                const surahResponse = await fetch('https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah.json');
-                const surahData = await surahResponse.json();
-                const surah = surahData.find(s => s.index === surahIndex);
-                if (surah) {
-                    totalVerses = surah.count; // Total verses in this Surah
-                }
-            } catch (error) {
-                console.error('Error fetching surah data:', error);
-            }
-        }
+        const verseId = urlParams.get('verse');
 
         // Fetch and display the verse details
-        async function fetchVerseDetails() {
+        async function fetchVerseDetails(surahIndex, verseId) {
             try {
-                const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(surahIndex).padStart(3, '0')}.json`);
+                const arabicResponse = await fetch(https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(surahIndex).padStart(1, '0')}.json);
                 const arabicData = await arabicResponse.json();
-
-                const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(surahIndex).padStart(3, '0')}.json`);
+                
+                const translationResponse = await fetch(https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(surahIndex).padStart(1, '0')}.json);
                 const translationData = await translationResponse.json();
 
-                const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(surahIndex).padStart(3, '0')}.json`);
+                const urduResponse = await fetch(https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(surahIndex).padStart(3, '0')}.json);
                 const urduData = await urduResponse.json();
 
-                displayVerse(arabicData, translationData, urduData);
+                displayVerse(arabicData, translationData, urduData, verseId);
             } catch (error) {
                 console.error('Error fetching verse data:', error);
             }
         }
 
-        function displayVerse(arabicData, translationData, urduData) {
+        function displayVerse(arabicData, translationData, urduData, verseId) {
             const verseDiv = document.getElementById('verse-content');
-            const arabicVerse = arabicData.verse[`verse_${verseId}`];
-            const translatedVerse = translationData.verse[`verse_${verseId}`];
+            const arabicVerse = arabicData.verse[verse_${verseId}];
+            const translatedVerse = translationData.verse[verse_${verseId}];
             const urduVerse = urduData.data.find(v => v.aya == verseId)?.text || '';
 
-            let verseContent = `
+            let verseContent = 
                 <div class="arabic-text">
                     <p>${arabicVerse}</p>
                     <span class="verse-number">Verse ${verseId}</span>
@@ -208,23 +188,9 @@ button {
                 <div class="urdu-text">
                     <p><strong>Translation (Urdu):</strong> ${urduVerse}</p>
                 </div>
-            `;
+            ;
 
             verseDiv.innerHTML = verseContent;
-        }
-
-        // Navigation Function for Next and Previous Verse
-        function navigateVerse(direction) {
-            const newVerseId = verseId + direction;
-            if (newVerseId >= 1 && newVerseId <= totalVerses) {
-                window.location.href = `?surah=${surahIndex}&verse=${newVerseId}`;
-            }
-        }
-
-        // Disable Navigation Buttons if on the First or Last Verse
-        function disableNavigationButtons() {
-            document.getElementById('prev-btn').disabled = verseId <= 1;
-            document.getElementById('next-btn').disabled = verseId >= totalVerses;
         }
 
         // Share functionality
@@ -247,14 +213,11 @@ button {
 
         // Go back to the Surah page
         function goBack() {
-            window.location.href = `surah.html?index=${surahIndex}`;
+            window.location.href = surah.html?index=${surahIndex};
         }
 
-        // Fetch Surah and Verse Data when the page is loaded
-        fetchSurahData().then(() => {
-            fetchVerseDetails();
-            disableNavigationButtons();
-        });
+        // Fetch verse data when the page is loaded
+        fetchVerseDetails(surahIndex, verseId);
     </script>
 </body>
-</html>
+</html> 
