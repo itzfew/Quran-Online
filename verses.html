@@ -4,116 +4,125 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran - Verse Details</title>
-    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New&family=Amiri&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New&family=Amiri&display=swap" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- FontAwesome for icons -->
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #fafafa;
+            font-family: 'Amiri', serif;
+            background-color: #f4f4f9;
+            color: #333;
             margin: 0;
             padding: 0;
-            color: #333;
-            line-height: 1.6;
         }
-        
+
         #verse-container {
-            max-width: 1000px;
-            margin: 50px auto;
+            max-width: 900px;
+            margin: 30px auto;
+            background-color: white;
             padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        h1#verse-heading {
-            font-family: 'Amiri', serif;
+        #verse-heading {
             text-align: center;
-            font-size: 2.5rem;
+            font-size: 32px;
             margin-bottom: 20px;
-            color: #005b3d;
+            font-family: 'Scheherazade New', serif;
         }
 
-        #verse-content, #tafsir-content {
+        #verse-content {
             margin-bottom: 30px;
         }
 
-        .arabic-text p {
-            font-family: 'Scheherazade New', serif;
-            font-size: 1.5rem;
+        .arabic-text {
             text-align: right;
-            margin-bottom: 10px;
-            direction: rtl;
+            font-family: 'Scheherazade New', serif;
+            font-size: 24px;
+            color: #3d3d3d;
+            line-height: 1.6;
         }
 
         .verse-number {
-            font-size: 1.2rem;
-            color: #005b3d;
-            text-align: center;
-            margin-top: 5px;
-        }
-
-        .translation-text, .urdu-text, .tafsir-text {
-            background-color: #f4f4f4;
-            padding: 15px;
-            border-radius: 8px;
+            font-size: 18px;
+            color: #aaa;
             margin-top: 10px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
-        .translation-text p, .urdu-text p, .tafsir-text p {
-            font-size: 1.2rem;
-            color: #555;
+        .translation-text,
+        .urdu-text {
+            margin-top: 15px;
         }
 
-        .translation-text strong, .urdu-text strong {
+        .translation-text p,
+        .urdu-text p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .translation-text strong,
+        .urdu-text strong {
             font-weight: bold;
-            color: #004d26;
+        }
+
+        #tafsir-content {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #tafsir-content h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-family: 'Scheherazade New', serif;
+        }
+
+        #tafsir-content .tafsir-text {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #555;
         }
 
         #verse-actions {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             margin-top: 20px;
         }
 
-        button {
-            padding: 10px 20px;
-            font-size: 1rem;
-            cursor: pointer;
+        .share-btn, .back-btn {
+            background-color: #1d72b8;
+            color: white;
             border: none;
-            border-radius: 30px;
-            transition: all 0.3s ease;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
         }
 
-        .share-btn {
-            background-color: #4CAF50;
-            color: white;
+        .share-btn:hover, .back-btn:hover {
+            background-color: #155a8a;
         }
 
-        .share-btn:hover {
-            background-color: #45a049;
+        .share-btn:focus, .back-btn:focus {
+            outline: none;
         }
 
-        .back-btn {
-            background-color: #2196F3;
-            color: white;
-        }
+        /* For smaller screens */
+        @media (max-width: 600px) {
+            #verse-container {
+                padding: 15px;
+            }
 
-        .back-btn:hover {
-            background-color: #1976D2;
-        }
+            #verse-heading {
+                font-size: 28px;
+            }
 
-        .tafsir-box h3 {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .tafsir-text p {
-            font-size: 1.1rem;
-            line-height: 1.6;
+            .share-btn, .back-btn {
+                font-size: 14px;
+                padding: 8px 16px;
+            }
         }
     </style>
 </head>
@@ -123,7 +132,7 @@
         <div id="verse-content"></div>
         <div id="tafsir-content" class="tafsir-box"></div> <!-- Tafsir Section -->
         <div id="verse-actions">
-            <button class="share-btn" onclick="shareVerse()">Share</button>
+            <button class="share-btn" onclick="shareVerse()">Share <i class="fas fa-share-alt"></i></button>
             <button class="back-btn" onclick="goBack()">Back to Surah</button>
         </div>
     </div>
