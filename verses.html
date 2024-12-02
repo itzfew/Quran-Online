@@ -173,7 +173,7 @@ text-align: center;
                 const tafsirResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/en-tafisr-ibn-kathir/${surahIndex}.json`);
                 const tafsirData = await tafsirResponse.json();
                 
-                const tafsirResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/ur-tafisr-ibn-kathir/${surahIndex}.json`);
+                const tafsirResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/ur-tafseer-ibn-e-kaseer/${surahIndex}.json`);
                 const tafsirData = await tafsirResponse.json();
 
                 displayVerse(arabicData, translationData, urduData, tafsirData, verseId);
