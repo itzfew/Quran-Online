@@ -1001,7 +1001,11 @@
   <itunes:duration>00:09:00</itunes:duration>
   <itunes:episodeType>full</itunes:episodeType>
   <itunes:explicit>no</itunes:explicit>
-  <itunes:summary>Recitation and explanation of Surah Al-Kahf (الكهف), which contains the story of the
+  <itunes:summary>Recitation and explanation of Surah Al-Kahf (الكهف) </itunes:summary>
+  <itunes:author>Alquran</itunes:author>
+  <itunes:subtitle>Al-Kahf (الكهف) - Recited by Alafasy</itunes:subtitle>
+  <itunes:date>2024-12-06</itunes:date>
+  <itunes:time>03:00:00</itunes:time>
   </item>
     <item>
   <title>Surah Maryam Recitation</title>
