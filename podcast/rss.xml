@@ -62,5 +62,117 @@
       <itunes:time>12:00:00</itunes:time>
     </item>
 
+    <!-- Episode 4 -->
+    <item>
+      <title>Surah Al-Nas Recitation</title>
+      <description>Recitation and explanation of Surah Al-Nas (Arabic: الناس, English: The People), by Alafasy.</description>
+      <pubDate>Mon, 03 Dec 2024 13:00:00 GMT</pubDate>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/4.mp3" length="256000" type="audio/mpeg"/>
+      <itunes:duration>00:02:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:summary>Recitation and explanation of Surah Al-Nas (الناس), a chapter for seeking refuge from harm, recited by Alafasy.</itunes:summary>
+      <itunes:author>Alquran</itunes:author>
+      <itunes:subtitle>Al-Nas (الناس) - Recited by Alafasy</itunes:subtitle>
+      <itunes:date>2024-12-03</itunes:date>
+      <itunes:time>13:00:00</itunes:time>
+    </item>
+
+    <!-- Episode 5 -->
+    <item>
+      <title>Surah Al-Falaq Recitation</title>
+      <description>Recitation and explanation of Surah Al-Falaq (Arabic: الفلق, English: The Daybreak), by Alafasy.</description>
+      <pubDate>Mon, 03 Dec 2024 14:00:00 GMT</pubDate>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/5.mp3" length="512000" type="audio/mpeg"/>
+      <itunes:duration>00:02:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:summary>Recitation and explanation of Surah Al-Falaq (الفلق), seeking refuge from the evil of darkness and harm, recited by Alafasy.</itunes:summary>
+      <itunes:author>Alquran</itunes:author>
+      <itunes:subtitle>Al-Falaq (الفلق) - Recited by Alafasy</itunes:subtitle>
+      <itunes:date>2024-12-03</itunes:date>
+      <itunes:time>14:00:00</itunes:time>
+    </item>
+
+    <!-- Episode 6 -->
+    <item>
+      <title>Surah Al-Alaq Recitation</title>
+      <description>Recitation and explanation of Surah Al-Alaq (Arabic: العلق, English: The Clot), by Alafasy.</description>
+      <pubDate>Mon, 03 Dec 2024 15:00:00 GMT</pubDate>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/6.mp3" length="768000" type="audio/mpeg"/>
+      <itunes:duration>00:03:30</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:summary>Recitation and explanation of Surah Al-Alaq (العلق), focusing on the creation of man, recited by Alafasy.</itunes:summary>
+      <itunes:author>Alquran</itunes:author>
+      <itunes:subtitle>Al-Alaq (العلق) - Recited by Alafasy</itunes:subtitle>
+      <itunes:date>2024-12-03</itunes:date>
+      <itunes:time>15:00:00</itunes:time>
+    </item>
+
+    <!-- Episode 7 -->
+    <item>
+      <title>Surah Al-Mulk Recitation</title>
+      <description>Recitation and explanation of Surah Al-Mulk (Arabic: الملك, English: The Sovereignty), by Alafasy.</description>
+      <pubDate>Mon, 03 Dec 2024 16:00:00 GMT</pubDate>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/7.mp3" length="1024000" type="audio/mpeg"/>
+      <itunes:duration>00:04:30</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:summary>Recitation and explanation of Surah Al-Mulk (الملك), emphasizing Allah's dominion over the universe, recited by Alafasy.</itunes:summary>
+      <itunes:author>Alquran</itunes:author>
+      <itunes:subtitle>Al-Mulk (الملك) - Recited by Alafasy</itunes:subtitle>
+      <itunes:date>2024-12-03</itunes:date>
+      <itunes:time>16:00:00</itunes:time>
+    </item>
+
+    <!-- Episode 8 -->
+    <item>
+      <title>Surah Al-Qamar Recitation</title>
+      <description>Recitation and explanation of Surah Al-Qamar (Arabic: القمر, English: The Moon), by Alafasy.</description>
+      <pubDate>Mon, 03 Dec 2024 17:00:00 GMT</pubDate>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/8.mp3" length="1024000" type="audio/mpeg"/>
+      <itunes:duration>00:05:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:summary>Recitation and explanation of Surah Al-Qamar (القمر), discussing the signs of Allah in the moon and the natural world, recited by Alafasy.</itunes:summary>
+      <itunes:author>Alquran</itunes:author>
+      <itunes:subtitle>Al-Qamar (القمر) - Recited by Alafasy</itunes:subtitle>
+      <itunes:date>2024-12-03</itunes:date>
+      <itunes:time>17:00:00</itunes:time>
+    </item>
+
+    <!-- Episode 9 -->
+    <item>
+      <title>Surah Al-Nisa Recitation</title>
+      <description>Recitation and explanation of Surah Al-Nisa (Arabic: النساء, English: The Women), by Alafasy.</description>
+      <pubDate>Mon, 03 Dec 2024 18:00:00 GMT</pubDate>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/9.mp3" length="1536000" type="audio/mpeg"/>
+      <itunes:duration>00:07:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:summary>Recitation and explanation of Surah Al-Nisa (النساء), which discusses the rights and roles of women in Islam, recited by Alafasy.</itunes:summary>
+      <itunes:author>Alquran</itunes:author>
+      <itunes:subtitle>Al-Nisa (النساء) - Recited by Alafasy</itunes:subtitle>
+      <itunes:date>2024-12-03</itunes:date>
+      <itunes:time>18:00:00</itunes:time>
+    </item>
+
+    <!-- Episode 10 -->
+    <item>
+      <title>Surah At-Tawbah Recitation</title>
+      <description>Recitation and explanation of Surah At-Tawbah (Arabic: التوبة, English: The Repentance), by Alafasy.</description>
+      <pubDate>Mon, 03 Dec 2024 19:00:00 GMT</pubDate>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/10.mp3" length="2048000" type="audio/mpeg"/>
+      <itunes:duration>00:09:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:summary>Recitation and explanation of Surah At-Tawbah (التوبة), focusing on repentance and forgiveness, recited by Alafasy.</itunes:summary>
+      <itunes:author>Alquran</itunes:author>
+      <itunes:subtitle>At-Tawbah (التوبة) - Recited by Alafasy</itunes:subtitle>
+      <itunes:date>2024-12-03</itunes:date>
+      <itunes:time>19:00:00</itunes:time>
+    </item>
+
   </channel>
 </rss>
