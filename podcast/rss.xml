@@ -1002,7 +1002,126 @@
   <itunes:episodeType>full</itunes:episodeType>
   <itunes:explicit>no</itunes:explicit>
   <itunes:summary>Recitation and explanation of Surah Al-Kahf (الكهف), which contains the story of the
+  </item>
+    <item>
+  <title>Surah Maryam Recitation</title>
+  <description>Recitation and explanation of Surah Maryam (Arabic: مريم, English: Mary), by Alafasy.</description>
+  <pubDate>Thu, 06 Dec 2024 04:00:00 GMT</pubDate>
+  <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/69.mp3" length="2048000" type="audio/mpeg"/>
+  <itunes:duration>00:09:00</itunes:duration>
+  <itunes:episodeType>full</itunes:episodeType>
+  <itunes:explicit>no</itunes:explicit>
+  <itunes:summary>Recitation and explanation of Surah Maryam (مريم), which includes the story of Mary and the birth of Prophet Isa, recited by Alafasy.</itunes:summary>
+  <itunes:author>Alquran</itunes:author>
+  <itunes:subtitle>Maryam (مريم) - Recited by Alafasy</itunes:subtitle>
+  <itunes:date>2024-12-06</itunes:date>
+  <itunes:time>04:00:00</itunes:time>
+</item>
 
+<item>
+  <title>Surah Taha Recitation</title>
+  <description>Recitation and explanation of Surah Taha (Arabic: طه, English: Taha), by Alafasy.</description>
+  <pubDate>Thu, 06 Dec 2024 05:00:00 GMT</pubDate>
+  <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/70.mp3" length="2048000" type="audio/mpeg"/>
+  <itunes:duration>00:09:00</itunes:duration>
+  <itunes:episodeType>full</itunes:episodeType>
+  <itunes:explicit>no</itunes:explicit>
+  <itunes:summary>Recitation and explanation of Surah Taha (طه), which highlights the story of Prophet Musa (Moses) and his mission to free the Israelites, recited by Alafasy.</itunes:summary>
+  <itunes:author>Alquran</itunes:author>
+  <itunes:subtitle>Taha (طه) - Recited by Alafasy</itunes:subtitle>
+  <itunes:date>2024-12-06</itunes:date>
+  <itunes:time>05:00:00</itunes:time>
+</item>
+
+<item>
+  <title>Surah Al-Anbiya Recitation</title>
+  <description>Recitation and explanation of Surah Al-Anbiya (Arabic: الأنبياء, English: The Prophets), by Alafasy.</description>
+  <pubDate>Thu, 06 Dec 2024 06:00:00 GMT</pubDate>
+  <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/71.mp3" length="2048000" type="audio/mpeg"/>
+  <itunes:duration>00:09:00</itunes:duration>
+  <itunes:episodeType>full</itunes:episodeType>
+  <itunes:explicit>no</itunes:explicit>
+  <itunes:summary>Recitation and explanation of Surah Al-Anbiya (الأنبياء), which talks about various prophets and their communities, recited by Alafasy.</itunes:summary>
+  <itunes:author>Alquran</itunes:author>
+  <itunes:subtitle>Al-Anbiya (الأنبياء) - Recited by Alafasy</itunes:subtitle>
+  <itunes:date>2024-12-06</itunes:date>
+  <itunes:time>06:00:00</itunes:time>
+</item>
+
+<item>
+  <title>Surah Al-Hajj Recitation</title>
+  <description>Recitation and explanation of Surah Al-Hajj (Arabic: الحج, English: The Pilgrimage), by Alafasy.</description>
+  <pubDate>Thu, 06 Dec 2024 07:00:00 GMT</pubDate>
+  <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/72.mp3" length="2048000" type="audio/mpeg"/>
+  <itunes:duration>00:09:00</itunes:duration>
+  <itunes:episodeType>full</itunes:episodeType>
+  <itunes:explicit>no</itunes:explicit>
+  <itunes:summary>Recitation and explanation of Surah Al-Hajj (الحج), which discusses the importance of pilgrimage to Mecca and the significance of sacrifice, recited by Alafasy.</itunes:summary>
+  <itunes:author>Alquran</itunes:author>
+  <itunes:subtitle>Al-Hajj (الحج) - Recited by Alafasy</itunes:subtitle>
+  <itunes:date>2024-12-06</itunes:date>
+  <itunes:time>07:00:00</itunes:time>
+</item>
+
+<item>
+  <title>Surah Al-Mu’minun Recitation</title>
+  <description>Recitation and explanation of Surah Al-Mu’minun (Arabic: المؤمنون, English: The Believers), by Alafasy.</description>
+  <pubDate>Thu, 06 Dec 2024 08:00:00 GMT</pubDate>
+  <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/73.mp3" length="2048000" type="audio/mpeg"/>
+  <itunes:duration>00:09:00</itunes:duration>
+  <itunes:episodeType>full</itunes:episodeType>
+  <itunes:explicit>no</itunes:explicit>
+  <itunes:summary>Recitation and explanation of Surah Al-Mu’minun (المؤمنون), which discusses the characteristics of true believers, recited by Alafasy.</itunes:summary>
+  <itunes:author>Alquran</itunes:author>
+  <itunes:subtitle>Al-Mu’minun (المؤمنون) - Recited by Alafasy</itunes:subtitle>
+  <itunes:date>2024-12-06</itunes:date>
+  <itunes:time>08:00:00</itunes:time>
+</item>
+
+<item>
+  <title>Surah Al-Furqan Recitation</title>
+  <description>Recitation and explanation of Surah Al-Furqan (Arabic: الفرقان, English: The Criterion), by Alafasy.</description>
+  <pubDate>Thu, 06 Dec 2024 09:00:00 GMT</pubDate>
+  <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/74.mp3" length="2048000" type="audio/mpeg"/>
+  <itunes:duration>00:09:00</itunes:duration>
+  <itunes:episodeType>full</itunes:episodeType>
+  <itunes:explicit>no</itunes:explicit>
+  <itunes:summary>Recitation and explanation of Surah Al-Furqan (الفرقان), which emphasizes the importance of the Qur'an as a criterion for distinguishing between right and wrong, recited by Alafasy.</itunes:summary>
+  <itunes:author>Alquran</itunes:author>
+  <itunes:subtitle>Al-Furqan (الفرقان) - Recited by Alafasy</itunes:subtitle>
+  <itunes:date>2024-12-06</itunes:date>
+  <itunes:time>09:00:00</itunes:time>
+</item>
+
+<item>
+  <title>Surah Ash-Shu’ara Recitation</title>
+  <description>Recitation and explanation of Surah Ash-Shu’ara (Arabic: الشعراء, English: The Poets), by Alafasy.</description>
+  <pubDate>Thu, 06 Dec 2024 10:00:00 GMT</pubDate>
+  <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/75.mp3" length="2048000" type="audio/mpeg"/>
+  <itunes:duration>00:09:00</itunes:duration>
+  <itunes:episodeType>full</itunes:episodeType>
+  <itunes:explicit>no</itunes:explicit>
+  <itunes:summary>Recitation and explanation of Surah Ash-Shu’ara (الشعراء), which talks about the stories of various prophets, emphasizing the challenges they faced, recited by Alafasy.</itunes:summary>
+  <itunes:author>Alquran</itunes:author>
+  <itunes:subtitle>Ash-Shu’ara (الشعراء) - Recited by Alafasy</itunes:subtitle>
+  <itunes:date>2024-12-06</itunes:date>
+  <itunes:time>10:00:00</itunes:time>
+</item>
+
+<item>
+  <title>Surah An-Naml Recitation</title>
+  <description>Recitation and explanation of Surah An-Naml (Arabic: النمل, English: The Ant), by Alafasy.</description>
+  <pubDate>Thu, 06 Dec 2024 11:00:00 GMT</pubDate>
+  <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/76.mp3" length="2048000" type="audio/mpeg"/>
+  <itunes:duration>00:09:00</itunes:duration>
+  <itunes:episodeType>full</itunes:episodeType>
+  <itunes:explicit>no</itunes:explicit>
+  <itunes:summary>Recitation and explanation of Surah An-Naml (النمل), which contains the story of Prophet Sulaiman and the ant, recited by Alafasy.</itunes:summary>
+  <itunes:author>Alquran</itunes:author>
+  <itunes:subtitle>An-Naml (النمل) - Recited by Alafasy</itunes:subtitle>
+  <itunes:date>2024-12-06</itunes:date>
+  <itunes:time>11:00:00</itunes:time>
+</item>
 
   </channel>
 </rss>
