@@ -68,6 +68,7 @@
       <bitrate>128 kbps</bitrate>
     </item>
 
+    
     <!-- Episode 4 - Surah Al-Falaq -->
     <item>
       <title>Surah Al-Falaq (The Daybreak) - Arabic Recitation</title>
@@ -82,6 +83,114 @@
       <itunes:explicit>no</itunes:explicit>
       <itunes:subtitle>Surah Al-Falaq - Recitation</itunes:subtitle>
       <itunes:summary>Recitation of Surah Al-Falaq (The Daybreak), seeking protection from the evil of creation.</itunes:summary>
+      <itunes:author>Islamic Network</itunes:author>
+      <bitrate>128 kbps</bitrate>
+    </item>
+
+    <!-- Episode 5 - Surah An-Nas -->
+    <item>
+      <title>Surah An-Nas (The Mankind) - Arabic Recitation</title>
+      <description>Recitation of Surah An-Nas (The Mankind) with 6 verses. A Surah for seeking protection from evil whispers.</description>
+      <pubDate>Mon, 03 Dec 2024 14:00:00 GMT</pubDate>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/5.mp3" length="768000" type="audio/mpeg"/>
+      <guid>surah5</guid>
+      <category>Quran</category>
+      <author>Sheikh Mishary Alafasy</author>
+      <itunes:duration>00:02:30</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:subtitle>Surah An-Nas - Recitation</itunes:subtitle>
+      <itunes:summary>Recitation of Surah An-Nas (The Mankind), a supplication for protection from evil whispers and harm.</itunes:summary>
+      <itunes:author>Islamic Network</itunes:author>
+      <bitrate>128 kbps</bitrate>
+    </item>
+
+    <!-- Episode 6 - Surah Al-Ahzab -->
+    <item>
+      <title>Surah Al-Ahzab (The Confederates) - Arabic Recitation</title>
+      <description>Recitation of Surah Al-Ahzab (The Confederates) with 73 verses. It discusses the Battle of the Confederates and various laws.</description>
+      <pubDate>Mon, 03 Dec 2024 15:00:00 GMT</pubDate>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/6.mp3" length="1024000" type="audio/mpeg"/>
+      <guid>surah6</guid>
+      <category>Quran</category>
+      <author>Sheikh Mishary Alafasy</author>
+      <itunes:duration>00:25:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:subtitle>Surah Al-Ahzab - Recitation</itunes:subtitle>
+      <itunes:summary>Recitation of Surah Al-Ahzab (The Confederates), which discusses the Battle of the Confederates and various laws.</itunes:summary>
+      <itunes:author>Islamic Network</itunes:author>
+      <bitrate>128 kbps</bitrate>
+    </item>
+
+    <!-- Episode 7 - Surah Ya-Sin -->
+    <item>
+      <title>Surah Ya-Sin (The Heart of the Quran) - Arabic Recitation</title>
+      <description>Recitation of Surah Ya-Sin (The Heart of the Quran) with 83 verses. A Surah that provides comfort and solace for the believers.</description>
+      <pubDate>Mon, 03 Dec 2024 16:00:00 GMT</pubDate>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/7.mp3" length="1310720" type="audio/mpeg"/>
+      <guid>surah7</guid>
+      <category>Quran</category>
+      <author>Sheikh Mishary Alafasy</author>
+      <itunes:duration>00:45:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:subtitle>Surah Ya-Sin - Recitation</itunes:subtitle>
+      <itunes:summary>Recitation of Surah Ya-Sin (The Heart of the Quran), known for its great significance in providing comfort and blessings.</itunes:summary>
+      <itunes:author>Islamic Network</itunes:author>
+      <bitrate>128 kbps</bitrate>
+    </item>
+
+    <!-- Episode 8 - Surah Al-Mulk -->
+    <item>
+      <title>Surah Al-Mulk (The Sovereignty) - Arabic Recitation</title>
+      <description>Recitation of Surah Al-Mulk (The Sovereignty) with 30 verses. A Surah that emphasizes Allah's control over everything in the universe.</description>
+      <pubDate>Mon, 03 Dec 2024 17:00:00 GMT</pubDate>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/8.mp3" length="768000" type="audio/mpeg"/>
+      <guid>surah8</guid>
+      <category>Quran</category>
+      <author>Sheikh Mishary Alafasy</author>
+      <itunes:duration>00:25:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:subtitle>Surah Al-Mulk - Recitation</itunes:subtitle>
+      <itunes:summary>Recitation of Surah Al-Mulk (The Sovereignty), a Surah that underscores Allah's control over everything in the universe.</itunes:summary>
+      <itunes:author>Islamic Network</itunes:author>
+      <bitrate>128 kbps</bitrate>
+    </item>
+
+    <!-- Episode 9 - Surah Al-Kahf -->
+    <item>
+      <title>Surah Al-Kahf (The Cave) - Arabic Recitation</title>
+      <description>Recitation of Surah Al-Kahf (The Cave) with 110 verses. It includes stories of the people of the cave and other lessons for believers.</description>
+      <pubDate>Mon, 03 Dec 2024 18:00:00 GMT</pubDate>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/9.mp3" length="1792000" type="audio/mpeg"/>
+      <guid>surah9</guid>
+      <category>Quran</category>
+      <author>Sheikh Mishary Alafasy</author>
+      <itunes:duration>00:50:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:subtitle>Surah Al-Kahf - Recitation</itunes:subtitle>
+      <itunes:summary>Recitation of Surah Al-Kahf (The Cave), which narrates stories of the people of the cave and offers guidance to believers.</itunes:summary>
+      <itunes:author>Islamic Network</itunes:author>
+      <bitrate>128 kbps</bitrate>
+    </item>
+
+    <!-- Episode 10 - Surah Al-Mu’minun -->
+    <item>
+      <title>Surah Al-Mu’minun (The Believers) - Arabic Recitation</title>
+      <description>Recitation of Surah Al-Mu’minun (The Believers) with 118 verses. A Surah that outlines the qualities of the true believers.</description>
+      <pubDate>Mon, 03 Dec 2024 19:00:00 GMT</pubDate>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/10.mp3" length="1920000" type="audio/mpeg"/>
+      <guid>surah10</guid>
+      <category>Quran</category>
+      <author>Sheikh Mishary Alafasy</author>
+      <itunes:duration>00:55:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:subtitle>Surah Al-Mu’minun - Recitation</itunes:subtitle>
+      <itunes:summary>Recitation of Surah Al-Mu’minun (The Believers), which describes the attributes of the true believers.</itunes:summary>
       <itunes:author>Islamic Network</itunes:author>
       <bitrate>128 kbps</bitrate>
     </item>
