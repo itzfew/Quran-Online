@@ -2,46 +2,88 @@
 <rss version="2.0">
   <channel>
     <title>Quran Podcast</title>
-    <link>https://yourwebsite.com</link>
-    <description>A podcast that recites the Quran and explains its meanings.</description>
+    <link>https://quran-online.pages.dev/</link>
+    <description>A podcast that recites the Quran with beautiful recitations by Sheikh Mishary Alafasy.</description>
     <language>en</language>
-    <copyright>Copyright 2024 by YourName</copyright>
+    <copyright>Copyright 2024 by Alquran</copyright>
     <pubDate>Mon, 03 Dec 2024 10:00:00 GMT</pubDate>
     <lastBuildDate>Mon, 03 Dec 2024 10:00:00 GMT</lastBuildDate>
     <image>
-      <url>https://yourwebsite.com/images/quran-podcast-logo.jpg</url>
+      <url>https://quran-online.pages.dev/images/quranmp3.png</url>
       <title>Quran Podcast</title>
       <link>https://yourwebsite.com</link>
     </image>
-    
-    <!-- Episode 1 -->
+
+    <!-- Episode 1 - Surah Al-Fatiha -->
     <item>
-      <title>Surah Al-Fatiha Recitation</title>
-      <link>https://yourwebsite.com/podcast/episode1</link>
-      <description>In this episode, we recite and explain Surah Al-Fatiha.</description>
+      <title>Surah Al-Fatiha (The Opening) - Arabic Recitation</title>
+      <description>Recitation of Surah Al-Fatiha (The Opening) with 7 verses. This Surah is often recited in daily prayers.</description>
       <pubDate>Mon, 03 Dec 2024 10:00:00 GMT</pubDate>
-      <enclosure url="https://yourwebsite.com/podcast/episode1.mp3" length="1024000" type="audio/mpeg"/>
-      <guid>https://yourwebsite.com/podcast/episode1</guid>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/1.mp3" length="1024000" type="audio/mpeg"/>
+      <guid>surah1</guid>
+      <category>Quran</category>
+      <author>Sheikh Mishary Alafasy</author>
+      <itunes:duration>00:02:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:subtitle>Surah Al-Fatiha - Recitation</itunes:subtitle>
+      <itunes:summary>Listen to the beautiful recitation of Surah Al-Fatiha by Sheikh Mishary Alafasy, consisting of 7 verses.</itunes:summary>
+      <itunes:author>Islamic Network</itunes:author>
+      <bitrate>128 kbps</bitrate>
     </item>
 
-    <!-- Episode 2 -->
+    <!-- Episode 2 - Surah Al-Baqarah -->
     <item>
-      <title>Surah Al-Baqarah Recitation</title>
-      <link>https://yourwebsite.com/podcast/episode2</link>
-      <description>In this episode, we recite and explain Surah Al-Baqarah.</description>
+      <title>Surah Al-Baqarah (The Cow) - Arabic Recitation</title>
+      <description>Recitation of Surah Al-Baqarah (The Cow) with 286 verses. The longest Surah in the Quran.</description>
       <pubDate>Mon, 03 Dec 2024 11:00:00 GMT</pubDate>
-      <enclosure url="https://yourwebsite.com/podcast/episode2.mp3" length="2048000" type="audio/mpeg"/>
-      <guid>https://yourwebsite.com/podcast/episode2</guid>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/2.mp3" length="2048000" type="audio/mpeg"/>
+      <guid>surah2</guid>
+      <category>Quran</category>
+      <author>Sheikh Mishary Alafasy</author>
+      <itunes:duration>00:55:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:subtitle>Surah Al-Baqarah - Recitation</itunes:subtitle>
+      <itunes:summary>Recitation of Surah Al-Baqarah (The Cow), the longest Surah of the Quran, containing 286 verses. This Surah provides guidance and wisdom for all aspects of life.</itunes:summary>
+      <itunes:author>Islamic Network</itunes:author>
+      <bitrate>128 kbps</bitrate>
     </item>
 
-    <!-- Episode 3 -->
+    <!-- Episode 3 - Surah Al-Ikhlas -->
     <item>
-      <title>Surah Al-Ikhlas Recitation</title>
-      <link>https://yourwebsite.com/podcast/episode3</link>
-      <description>In this episode, we recite and explain Surah Al-Ikhlas.</description>
+      <title>Surah Al-Ikhlas (The Sincerity) - Arabic Recitation</title>
+      <description>Recitation of Surah Al-Ikhlas (The Sincerity) with 4 verses. A declaration of God's oneness.</description>
       <pubDate>Mon, 03 Dec 2024 12:00:00 GMT</pubDate>
-      <enclosure url="https://yourwebsite.com/podcast/episode3.mp3" length="512000" type="audio/mpeg"/>
-      <guid>https://yourwebsite.com/podcast/episode3</guid>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/3.mp3" length="512000" type="audio/mpeg"/>
+      <guid>surah3</guid>
+      <category>Quran</category>
+      <author>Sheikh Mishary Alafasy</author>
+      <itunes:duration>00:01:30</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:subtitle>Surah Al-Ikhlas - Recitation</itunes:subtitle>
+      <itunes:summary>Listen to the recitation of Surah Al-Ikhlas (The Sincerity) by Sheikh Mishary Alafasy. This Surah emphasizes the oneness of Allah.</itunes:summary>
+      <itunes:author>Islamic Network</itunes:author>
+      <bitrate>128 kbps</bitrate>
+    </item>
+
+    <!-- Episode 4 - Surah Al-Falaq -->
+    <item>
+      <title>Surah Al-Falaq (The Daybreak) - Arabic Recitation</title>
+      <description>Recitation of Surah Al-Falaq (The Daybreak) with 5 verses. A Surah that seeks protection from evil.</description>
+      <pubDate>Mon, 03 Dec 2024 13:00:00 GMT</pubDate>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/4.mp3" length="640000" type="audio/mpeg"/>
+      <guid>surah4</guid>
+      <category>Quran</category>
+      <author>Sheikh Mishary Alafasy</author>
+      <itunes:duration>00:02:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:subtitle>Surah Al-Falaq - Recitation</itunes:subtitle>
+      <itunes:summary>Recitation of Surah Al-Falaq (The Daybreak), seeking protection from the evil of creation.</itunes:summary>
+      <itunes:author>Islamic Network</itunes:author>
+      <bitrate>128 kbps</bitrate>
     </item>
 
   </channel>
