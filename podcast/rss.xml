@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+  <channel>
+    <title>Quran Podcast</title>
+    <link>https://yourwebsite.com</link>
+    <description>A podcast that recites the Quran and explains its meanings.</description>
+    <language>en</language>
+    <copyright>Copyright 2024 by YourName</copyright>
+    <pubDate>Mon, 03 Dec 2024 10:00:00 GMT</pubDate>
+    <lastBuildDate>Mon, 03 Dec 2024 10:00:00 GMT</lastBuildDate>
+    <image>
+      <url>https://yourwebsite.com/images/quran-podcast-logo.jpg</url>
+      <title>Quran Podcast</title>
+      <link>https://yourwebsite.com</link>
+    </image>
+    
+    <!-- Episode 1 -->
+    <item>
+      <title>Surah Al-Fatiha Recitation</title>
+      <link>https://yourwebsite.com/podcast/episode1</link>
+      <description>In this episode, we recite and explain Surah Al-Fatiha.</description>
+      <pubDate>Mon, 03 Dec 2024 10:00:00 GMT</pubDate>
+      <enclosure url="https://yourwebsite.com/podcast/episode1.mp3" length="1024000" type="audio/mpeg"/>
+      <guid>https://yourwebsite.com/podcast/episode1</guid>
+    </item>
+
+    <!-- Episode 2 -->
+    <item>
+      <title>Surah Al-Baqarah Recitation</title>
+      <link>https://yourwebsite.com/podcast/episode2</link>
+      <description>In this episode, we recite and explain Surah Al-Baqarah.</description>
+      <pubDate>Mon, 03 Dec 2024 11:00:00 GMT</pubDate>
+      <enclosure url="https://yourwebsite.com/podcast/episode2.mp3" length="2048000" type="audio/mpeg"/>
+      <guid>https://yourwebsite.com/podcast/episode2</guid>
+    </item>
+
+    <!-- Episode 3 -->
+    <item>
+      <title>Surah Al-Ikhlas Recitation</title>
+      <link>https://yourwebsite.com/podcast/episode3</link>
+      <description>In this episode, we recite and explain Surah Al-Ikhlas.</description>
+      <pubDate>Mon, 03 Dec 2024 12:00:00 GMT</pubDate>
+      <enclosure url="https://yourwebsite.com/podcast/episode3.mp3" length="512000" type="audio/mpeg"/>
+      <guid>https://yourwebsite.com/podcast/episode3</guid>
+    </item>
+
+  </channel>
+</rss>
