@@ -1,47 +1,65 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0">
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtd/podcast-1.0.dtd">
   <channel>
     <title>Quran Podcast</title>
-    <link>https://yourwebsite.com</link>
+    <link>https://quran-online.pages.dev</link>
     <description>A podcast that recites the Quran and explains its meanings.</description>
     <language>en</language>
-    <copyright>Copyright 2024 by YourName</copyright>
+    <copyright>Copyright 2024 by Alquran</copyright>
     <pubDate>Mon, 03 Dec 2024 10:00:00 GMT</pubDate>
     <lastBuildDate>Mon, 03 Dec 2024 10:00:00 GMT</lastBuildDate>
     <image>
-      <url>https://yourwebsite.com/images/quran-podcast-logo.jpg</url>
+      <url>https://quran-online.pages.dev/images/quranmp3.png</url>
       <title>Quran Podcast</title>
-      <link>https://yourwebsite.com</link>
+      <link>https://quran-online.pages.dev</link>
     </image>
-    
+
     <!-- Episode 1 -->
     <item>
       <title>Surah Al-Fatiha Recitation</title>
-      <link>https://yourwebsite.com/podcast/episode1</link>
-      <description>In this episode, we recite and explain Surah Al-Fatiha.</description>
+      <description>Recitation and explanation of Surah Al-Fatiha (Arabic: الفاتحة, English: The Opening), by Alafasy.</description>
       <pubDate>Mon, 03 Dec 2024 10:00:00 GMT</pubDate>
-      <enclosure url="https://yourwebsite.com/podcast/episode1.mp3" length="1024000" type="audio/mpeg"/>
-      <guid>https://yourwebsite.com/podcast/episode1</guid>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/1.mp3" length="1024000" type="audio/mpeg"/>
+      <itunes:duration>00:05:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:summary>Recitation and explanation of Surah Al-Fatiha (الفاتحة), the first chapter of the Quran, essential for daily prayers, recited by Alafasy.</itunes:summary>
+      <itunes:author>Alquran</itunes:author>
+      <itunes:subtitle>Al-Fatiha (الفاتحة) - Recited by Alafasy</itunes:subtitle>
+      <itunes:date>2024-12-03</itunes:date>
+      <itunes:time>10:00:00</itunes:time>
     </item>
 
     <!-- Episode 2 -->
     <item>
       <title>Surah Al-Baqarah Recitation</title>
-      <link>https://yourwebsite.com/podcast/episode2</link>
-      <description>In this episode, we recite and explain Surah Al-Baqarah.</description>
+      <description>Recitation and explanation of Surah Al-Baqarah (Arabic: البقرة, English: The Cow), by Alafasy.</description>
       <pubDate>Mon, 03 Dec 2024 11:00:00 GMT</pubDate>
-      <enclosure url="https://yourwebsite.com/podcast/episode2.mp3" length="2048000" type="audio/mpeg"/>
-      <guid>https://yourwebsite.com/podcast/episode2</guid>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/2.mp3" length="2048000" type="audio/mpeg"/>
+      <itunes:duration>01:00:00</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:summary>Recitation and explanation of Surah Al-Baqarah (البقرة), the longest Surah in the Quran, recited by Alafasy.</itunes:summary>
+      <itunes:author>Alquran</itunes:author>
+      <itunes:subtitle>Al-Baqarah (البقرة) - Recited by Alafasy</itunes:subtitle>
+      <itunes:date>2024-12-03</itunes:date>
+      <itunes:time>11:00:00</itunes:time>
     </item>
 
     <!-- Episode 3 -->
     <item>
       <title>Surah Al-Ikhlas Recitation</title>
-      <link>https://yourwebsite.com/podcast/episode3</link>
-      <description>In this episode, we recite and explain Surah Al-Ikhlas.</description>
+      <description>Recitation and explanation of Surah Al-Ikhlas (Arabic: الإخلاص, English: The Purity), by Alafasy.</description>
       <pubDate>Mon, 03 Dec 2024 12:00:00 GMT</pubDate>
-      <enclosure url="https://yourwebsite.com/podcast/episode3.mp3" length="512000" type="audio/mpeg"/>
-      <guid>https://yourwebsite.com/podcast/episode3</guid>
+      <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/3.mp3" length="512000" type="audio/mpeg"/>
+      <itunes:duration>00:02:30</itunes:duration>
+      <itunes:episodeType>full</itunes:episodeType>
+      <itunes:explicit>no</itunes:explicit>
+      <itunes:summary>Recitation and explanation of Surah Al-Ikhlas (الإخلاص), focusing on the oneness of Allah, recited by Alafasy.</itunes:summary>
+      <itunes:author>Alquran</itunes:author>
+      <itunes:subtitle>Al-Ikhlas (الإخلاص) - Recited by Alafasy</itunes:subtitle>
+      <itunes:date>2024-12-03</itunes:date>
+      <itunes:time>12:00:00</itunes:time>
     </item>
 
   </channel>
