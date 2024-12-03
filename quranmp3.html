@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quran Podcast</title>
+
+  <!-- Styling for the podcast page -->
+  <style>
+    /* General Body Styling */
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f7fa;
+      color: #333;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    header img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+    }
+
+    header h1 {
+      font-size: 2.5em;
+      margin-top: 10px;
+      color: #004d40;
+    }
+
+    header p {
+      font-size: 1.2em;
+      color: #555;
+    }
+
+    /* Podcast List */
+    #podcast-list {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .podcast-item {
+      padding: 20px;
+      border-bottom: 1px solid #e0e0e0;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+      background-color: #fafafa;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .podcast-item:hover {
+      background-color: #e0f2f1;
+      transform: translateX(10px);
+    }
+
+    .podcast-item .number {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background-image: url('https://quran-online.pages.dev/source/download.png');
+      background-size: cover;
+      background-position: center;
+      color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5em;
+      font-weight: bold;
+      margin-right: 20px;
+    }
+
+    .podcast-item h3 {
+      color: #00796b;
+      font-size: 1.8em;
+      margin: 0;
+    }
+
+    .podcast-item p {
+      color: #555;
+      font-size: 1em;
+    }
+
+    .podcast-item .pub-date {
+      color: #888;
+      font-size: 0.9em;
+    }
+
+    /* Detailed Podcast View */
+    #podcast-detail {
+      display: none;
+      text-align: center;
+    }
+
+    .detail-title {
+      font-size: 2.5em;
+      color: #004d40;
+      margin-bottom: 20px;
+    }
+
+    .detail-description {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      color: #444;
+    }
+
+    .detail-date {
+      font-size: 1em;
+      color: #888;
+      margin-bottom: 20px;
+    }
+
+    /* Audio Player Styling */
+    audio {
+      width: 80%;
+      margin-top: 10px;
+      border-radius: 8px;
+    }
+
+    /* Back Button */
+    button {
+      padding: 10px 20px;
+      font-size: 1.2em;
+      background-color: #00796b;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #004d40;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Header with podcast image and title -->
+    <header>
+      <img src="https://quran-online.pages.dev/images/quranmp3.png" alt="Quran Podcast">
+      <h1>Quran Podcast</h1>
+      <p>A podcast that recites the Quran and explains its meanings.</p>
+    </header>
+
+    <!-- List of Podcasts -->
+    <ul id="podcast-list"></ul>
+
+    <!-- Detailed Podcast View (Hidden by default) -->
+    <div id="podcast-detail">
+      <h2 class="detail-title" id="detail-title"></h2>
+      <p class="detail-description" id="detail-description"></p>
+      <p class="detail-date" id="detail-date"></p>
+      <audio controls id="detail-audio">
+        <source id="detail-audio-source" type="audio/mpeg">
+        Your browser does not support the audio element.
+      </audio>
+      <br>
+      <button onclick="goBack()">Back to List</button>
+    </div>
+  </div>
+
+  <script>
+    // URL of the podcast base URL (for dynamically generating audio URLs)
+    const baseAudioUrl = 'https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/';
+
+    // Function to fetch and display podcast data in a list format
+    async function fetchPodcastData() {
+      // Loop through 1 to 114 for the podcast files
+      for (let i = 1; i <= 114; i++) {
+        const audioUrl = `${baseAudioUrl}${i}.mp3`;
+        
+        // Using simple metadata for each episode
+        const title = `Surah ${getSurahName(i)} Recitation`;
+        const description = `Recitation and explanation of Surah ${getSurahName(i)} by Alafasy.`;
+        const pubDate = `Mon, 03 Dec 2024 ${i}:00:00 GMT`;
+
+        // Create podcast item element
+        const podcastItem = document.createElement('li');
+        podcastItem.classList.add('podcast-item');
+        podcastItem.innerHTML = `
+          <div class="number">${i}</div>
+          <div>
+            <h3>${title}</h3>
+            <p>${description}</p>
+            <p class="pub-date"><strong>Published:</strong> ${pubDate}</p>
+          </div>
+        `;
+
+        // Add click event to load detailed view of the selected podcast
+        podcastItem.addEventListener('click', () => {
+          showPodcastDetail(title, description, audioUrl, pubDate);
+        });
+
+        // Append the item to the list
+        document.getElementById('podcast-list').appendChild(podcastItem);
+      }
+    }
+
+    // Function to get the name of the Surah by its number
+    function getSurahName(surahNumber) {
+      const surahNames = [
+        "Al-Fatiha", "Al-Baqarah", "Aali Imran", "An-Nisa'", "Al-Ma'idah", "Al-An'am", 
+        "Al-A'raf", "Al-Anfal", "At-Tawbah", "Yunus", "Hud", "Yusuf", "Ibrahim", "Al-Hijr", 
+        "An-Nahl", "Al-Isra", "Al-Kahf", "Maryam", "Taha", "Al-Anbiya", "Al-Hajj", "Al-Mu'minun", 
+        "An-Nur", "Al-Furqan", "Ash-Shu'ara", "An-Naml", "Al-Ankabut", "Ar-Rum", "Luqman", 
+        "As-Sajda", "Al-Ahzab", "Ya-Sin", "Az-Zumar", "Fussilat", "Al-Ahqaf", "Muhammad", 
+        "Al-Fath", "Al-Hujurat", "Qamar", "Ar-Rahman", "Al-Waqi'a", "Al-Hadid", "Al-Mujadilah", 
+        "Al-Hashr", "Al-Mumtahina", "As-Saff", "Al-Jumu'ah", "Al-Munafiqun", "At-Taghabun", 
+        "At-Talaq", "At-Tahrim", "Al-Mulk", "Al-Qalam", "Al-Haqqah", "Al-Ma'arij", "Nuh", 
+        "Al-Jinn", "Al-Muzzammil", "Al-Muddaththir", "Al-Qiyamah", "Al-Insan", "Al-Mursalat", 
+        "An-Naba", "An-Nazi'at", "Abasa", "At-Takwir", "Al-Infitar", "Al-Mutaffifin", 
+        "Al-Inshiqaq", "Al-Buruj", "At-Tariq", "Al-A'la", "Al-Ghashiyah", "Al-Fajr", "Al-Balad", 
+        "Ash-Shams", "Al-Layl", "Adh-Dhuha", "Al-Sharh", "At-Tin", "Al-Alaq", "Al-Qadr", 
+        "Al-Bayyina", "Az-Zalzalah", "Al-Adiyat", "Al-Qari'ah", "At-Takathur", "Al-Asr", 
+        "Al-Humazah", "Al-Fil", "Quraish", "Al-Ma'un", "Al-Kawthar", "Al-Kafirun", 
+        "An-Nasr", "Al-Masad", "Al-Ikhlas", "Al-Falaq", "An-Nas"
+      ];
+
+      return surahNames[surahNumber - 1] || `Surah ${surahNumber}`;
+    }
+
+    // Function to show detailed view of the podcast on click
+    function showPodcastDetail(title, description, audioUrl, pubDate) {
+      // Hide the list
+      document.getElementById('podcast-list').style.display = 'none';
+
+      // Show the detailed view
+      document.getElementById('podcast-detail').style.display = 'block';
+
+      // Set the content of the detailed view
+      document.getElementById('detail-title').innerText = title;
+      document.getElementById('detail-description').innerText = description;
+      document.getElementById('detail-date').innerText = `Published on: ${pubDate}`;
+      document.getElementById('detail-audio-source').src = audioUrl;
+
+      // Reload the audio player to load the new source
+      const audioPlayer = document.getElementById('detail-audio');
+      audioPlayer.load();
+    }
+
+    // Function to go back to the podcast list
+    function goBack() {
+      // Show the list again
+      document.getElementById('podcast-list').style.display = 'block';
+
+      // Hide the detailed view
+      document.getElementById('podcast-detail').style.display = 'none';
+    }
+
+    // Fetch the podcast data when the page loads
+    fetchPodcastData();
+  </script>
+
+</body>
+</html>
