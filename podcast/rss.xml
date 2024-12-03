@@ -590,6 +590,36 @@
   <itunes:date>2024-12-04</itunes:date>
   <itunes:time>23:00:00</itunes:time>
 </item>
+    <item>
+  <title>Surah Az-Zumar Recitation</title>
+  <description>Recitation and explanation of Surah Az-Zumar (Arabic: الزمر, English: The Groups), by Alafasy.</description>
+  <pubDate>Mon, 09 Dec 2024 07:00:00 GMT</pubDate>
+  <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/39.mp3" length="1024000" type="audio/mpeg"/>
+  <itunes:duration>00:05:00</itunes:duration>
+  <itunes:episodeType>full</itunes:episodeType>
+  <itunes:explicit>no</itunes:explicit>
+  <itunes:summary>Recitation and explanation of Surah Az-Zumar (الزمر), which addresses the power of Allah and the importance of sincere worship, recited by Alafasy.</itunes:summary>
+  <itunes:author>Alquran</itunes:author>
+  <itunes:subtitle>Az-Zumar (الزمر) - Recited by Alafasy</itunes:subtitle>
+  <itunes:date>2024-12-09</itunes:date>
+  <itunes:time>07:00:00</itunes:time>
+</item>
+
+<item>
+  <title>Surah Sad Recitation</title>
+  <description>Recitation and explanation of Surah Sad (Arabic: ص, English: Sad), by Alafasy.</description>
+  <pubDate>Mon, 09 Dec 2024 08:00:00 GMT</pubDate>
+  <enclosure url="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/40.mp3" length="1024000" type="audio/mpeg"/>
+  <itunes:duration>00:05:00</itunes:duration>
+  <itunes:episodeType>full</itunes:episodeType>
+  <itunes:explicit>no</itunes:explicit>
+  <itunes:summary>Recitation and explanation of Surah Sad (ص), which discusses the story of Prophet David and the importance of sincerity in faith, recited by Alafasy.</itunes:summary>
+  <itunes:author>Alquran</itunes:author>
+  <itunes:subtitle>Sad (ص) - Recited by Alafasy</itunes:subtitle>
+  <itunes:date>2024-12-09</itunes:date>
+  <itunes:time>08:00:00</itunes:time>
+</item>
+
 <item>
   <title>Surah Al-Mulk Recitation</title>
   <description>Recitation and explanation of Surah Al-Mulk (Arabic: الملك, English: The Sovereignty), by Alafasy.</description>
