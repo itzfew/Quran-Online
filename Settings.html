@@ -6,6 +6,9 @@
     <title>Quran Kareem (Ar)</title>
     <!-- Use Amiri font for Arabic text -->
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
     <style>
         /* Base Styles */
         body {
@@ -17,6 +20,7 @@
             padding: 0;
         }
 
+        /* Button Styles */
         button {
             padding: 10px 20px;
             border: 1px solid black;
@@ -83,6 +87,51 @@
             }
         }
 
+        /* Language Dropdown Styling */
+        .language-dropdown {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            font-size: 1.2em;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .language-dropdown button {
+            background-color: #ffffff;
+            
+            color: black;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid black;
+            cursor: pointer;
+            font-size: 1.2em;
+        }
+
+        .language-dropdown-content {
+            display: none;
+            flex-direction: column;
+            margin-top: 10px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .language-dropdown-content label {
+            padding: 10px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .language-dropdown-content input {
+            margin-right: 10px;
+        }
+
+        .language-dropdown.open .language-dropdown-content {
+            display: flex;
+        }
+
         /* First Verse Styling */
         .first-verse {
             text-align: center;
@@ -94,13 +143,16 @@
 
         /* Verse Styling */
         .verse {
-            margin: 15px 0;
-            padding: 20px;
-            font-size: 1.2em;
-            direction: rtl;
+            margin: 1px 0;
+            padding: 10px;
+            font-size: 1.0em;
+            direction: ltr;
             text-align: right;
             cursor: pointer;
-            font-family: 'Amiri', serif; /* Using Amiri font for Arabic text */
+            font-family: 'Amiri', serif;
+            color: black; /* Black text */
+            background-color: white; /* White background */
+         
         }
 
         .verse-number {
@@ -135,11 +187,8 @@
             background-color: #0056b3;
         }
 
-        @media (max-width: 768px) {
-            .back-to-top {
-                font-size: 0.9em;
-                padding: 8px 12px;
-            }
+        /* Selected Verse */
+      
         }
 
         /* Simplified Verse Styling */
@@ -156,6 +205,22 @@
 </head>
 <body>
 
+    <!-- Language Dropdown -->
+    <div class="language-dropdown" id="languageDropdown">
+        <button><i class="fas fa-language"></i> Select Languages</button>
+        <div class="language-dropdown-content">
+            <label>
+                <input type="checkbox" name="language" value="arabic" onclick="updateLanguages()"> Arabic
+            </label>
+            <label>
+                <input type="checkbox" name="language" value="english" onclick="updateLanguages()"> English
+            </label>
+            <label>
+                <input type="checkbox" name="language" value="urdu" onclick="updateLanguages()"> Urdu
+            </label>
+        </div>
+    </div>
+
     <div class="header">
         <i class="fas fa-arrow-left arrow arrow-left" onclick="navigateSurah(-1)"></i>
         <div id="surah-heading" class="surah-heading" style="display: none;"></div>
@@ -164,19 +229,29 @@
     <div id="first-verse" class="first-verse" style="display: none;"></div>
     <div id="content"></div>
 
-    <button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
+    <!-- Back to Top Button -->
+    <button class="back-to-top" onclick="scrollToTop()">
+        <i class="fas fa-arrow-up"></i> Back to Top
+    </button>
 
     <script>
+        // Store selected languages
+        let selectedLanguages = JSON.parse(localStorage.getItem('selectedLanguages')) || ['arabic'];
+
+        // Fetch and display surah data
         document.addEventListener('DOMContentLoaded', () => {
             const index = getQueryParam('index');
             fetchSurah(index ? index : 1);
+            setInitialLanguageSelection();
         });
 
+        // Get query param from URL
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param);
         }
 
+        // Fetch Surah data
         async function fetchSurah(index) {
             const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
             const arabicData = await arabicResponse.json();
@@ -190,6 +265,26 @@
             displaySurah(arabicData, translationData, urduData);
         }
 
+        // Update the selected languages based on checkboxes
+        function updateLanguages() {
+            const checkboxes = document.querySelectorAll('input[name="language"]:checked');
+            selectedLanguages = Array.from(checkboxes).map(checkbox => checkbox.value);
+            localStorage.setItem('selectedLanguages', JSON.stringify(selectedLanguages)); // Save to localStorage
+            const index = getQueryParam('index');
+            fetchSurah(index ? index : 1);
+        }
+
+        // Set initial state of language selection based on stored preferences
+        function setInitialLanguageSelection() {
+            const checkboxes = document.querySelectorAll('input[name="language"]');
+            checkboxes.forEach(checkbox => {
+                if (selectedLanguages.includes(checkbox.value)) {
+                    checkbox.checked = true;
+                }
+            });
+        }
+
+        // Display Surah with selected languages
         function displaySurah(arabicData, translationData, urduData) {
             const surahHeading = document.getElementById('surah-heading');
             const firstVerse = document.getElementById('first-verse');
@@ -204,7 +299,7 @@
             content.innerHTML = ''; // Clear content
 
             surahHeading.innerText = arabicData.name;
-            firstVerse.innerText = arabicVerses['verse_0'];  // Display translation of verse_0 separately
+            firstVerse.innerText = arabicVerses['verse_0']; // Display translation of verse_0 separately
 
             // Loop through verses starting from verse_1
             for (let i = 1; i <= count; i++) {
@@ -216,18 +311,23 @@
                 verseDiv.classList.add('verse');
                 verseDiv.setAttribute('id', `verse-${i}`);
 
-                // Create Verse Content
-                const verseContent = `
+                let verseContent = '';
+                if (selectedLanguages.includes('arabic')) {
+                    verseContent += `<div class="arabic-text">${arabicVerse}</div>`;
+                }
+                if (selectedLanguages.includes('english')) {
+                    verseContent += `<div class="translation-text">${translatedVerse}</div>`;
+                }
+                if (selectedLanguages.includes('urdu')) {
+                    verseContent += `<div class="urdu-text">${urduVerse}</div>`;
+                }
+
+                verseDiv.innerHTML = `
                     <div class="verse-content">
-                        <div class="arabic-text">${arabicVerse}
-                            <span class="verse-number">${i}</span>
-                        </div>
-                        <div class="translation-text">${translatedVerse}</div>
-                        <div class="urdu-text">${urduVerse}</div>
+                        ${verseContent}
+                        <span class="verse-number">${i}</span>
                     </div>
                 `;
-
-                verseDiv.innerHTML = verseContent;
 
                 // Add Divider Line Between Verses
                 const dividerLine = document.createElement('div');
@@ -242,15 +342,25 @@
             }
         }
 
-        function navigateSurah(direction) {
-            const currentSurah = getQueryParam('index') || 1;
-            const newSurah = Math.max(1, Math.min(114, parseInt(currentSurah) + direction));
-            window.location.search = `index=${newSurah}`;
-        }
-
+        // Scroll to top functionality
         function scrollToTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        // Toggle language dropdown visibility
+        document.getElementById('languageDropdown').addEventListener('click', function (event) {
+            const dropdown = this;
+            if (!dropdown.classList.contains('open')) {
+                dropdown.classList.add('open');
+            } else {
+                // Close dropdown if clicked outside
+                window.addEventListener('click', (e) => {
+                    if (!dropdown.contains(e.target)) {
+                        dropdown.classList.remove('open');
+                    }
+                });
+            }
+        });
     </script>
 </body>
 </html>
