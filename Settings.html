@@ -234,32 +234,14 @@
                 verseDiv.classList.add('verse');
                 verseDiv.setAttribute('id', `verse-${i}`);
                 
-                let verseContent = '';
-
-                // Depending on the language mode, display only Arabic, English, Urdu, or both
-                if (localStorage.getItem('languageMode') === 'arabic') {
-                    verseContent = `
-                        <div class="arabic-text">${arabicVerse}
-                            <span class="verse-number">${i}</span>
-                        </div>`;
-                } else if (localStorage.getItem('languageMode') === 'english') {
-                    verseContent = `
-                        <div class="translation-text">${translatedVerse}
-                            <span class="verse-number">${i}</span>
-                        </div>`;
-                } else if (localStorage.getItem('languageMode') === 'urdu') {
-                    verseContent = `
-                        <div class="urdu-text">${urduVerse}
-                            <span class="verse-number">${i}</span>
-                        </div>`;
-                } else {
-                    verseContent = `
-                        <div class="arabic-text">${arabicVerse}
-                            <span class="verse-number">${i}</span>
-                        </div>
-                        <div class="translation-text">${translatedVerse}</div>
-                    `;
-                }
+                // Combine all content: Arabic, English Translation, and Urdu Translation
+                const verseContent = `
+                    <div class="arabic-text">${arabicVerse}
+                        <span class="verse-number">${i}</span>
+                    </div>
+                    <div class="translation-text">${translatedVerse}</div>
+                    <div class="urdu-text">${urduVerse}</div>
+                `;
 
                 verseDiv.innerHTML = verseContent;
 
