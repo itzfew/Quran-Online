@@ -4,32 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran Kareem (Ar)</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo&family=Scheherazade+New&display=swap" rel="stylesheet">
     <style>
         /* Base Styles */
         body {
-            font-size: 16px; /* Default font size */
-            font-family: Arial, sans-serif; /* Default font */
-            transition: background-color 0.3s, color 0.3s, font-size 0.3s; /* Smooth transition */
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            margin: 0;
+            padding: 0;
         }
 
         button {
             padding: 10px 20px;
             border: 1px solid black;
             background-color: transparent;
-            color: inherit; /* inherit color from parent */
+            color: inherit;
             font-size: 16px;
             cursor: pointer;
-            transition: all 0.3s ease;
         }
 
         button:hover {
-            background-color: #f0f0f0; /* Light hover effect */
+            background-color: #f0f0f0;
         }
 
         button:active {
-            background-color: #d0d0d0; /* Active button effect */
+            background-color: #d0d0d0;
         }
 
         /* Header Styling */
@@ -44,14 +45,14 @@
 
         .arrow {
             font-size: 2em;
-            color: #007bff;
+            color: black;
             cursor: pointer;
             transition: color 0.3s;
             padding: 0 20px;
         }
 
         .arrow:hover {
-            color: #0056b3;
+            color: #007bff;
         }
 
         .arrow-left {
@@ -67,8 +68,7 @@
         .surah-heading {
             font-size: 2.5em;
             font-weight: bold;
-            color: #333;
-            text-transform: uppercase;
+            color: black;
             margin: 0 50px;
         }
 
@@ -82,52 +82,46 @@
             }
         }
 
-        /* First Verse and Verse Styling */
+        /* First Verse Styling */
         .first-verse {
             text-align: center;
             font-size: 1.2em;
             margin: 10px 0;
             padding: 5px;
-            color: black;
             font-weight: bold;
         }
 
+        /* Verse Styling */
         .verse {
             margin: 15px 0;
             padding: 20px;
-            background-color: transparent;
-            color: black;
             font-size: 1.2em;
-            cursor: pointer;
             direction: rtl;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .verse:hover {
-            background-color: rgba(0, 0, 0, 0.1);
+            text-align: right;
+            cursor: pointer;
         }
 
         .verse-number {
-            font-size: 1.0em;
-            margin-top: 10px;
+            font-size: 1em;
             font-weight: bold;
-            background-image: url('https://quran-online.pages.dev/source/download.png');
-            background-size: cover;
-            background-position: center;
+            background-color: #f4f4f4;
             padding: 5px 10px;
-            border-radius: 8px;
-            color: black;
-            display: inline-block;
+            border-radius: 5px;
             margin-left: 10px;
         }
 
-        /* Selected Verse Styling */
+        /* Verse Divider Line */
+        .verse-divider {
+            border-top: 1px solid #000;
+            margin: 10px 0;
+        }
+
+        /* Selected Verse */
         .verse.selected {
             background-color: rgba(0, 123, 255, 0.1);
         }
 
-        /* Back to Top Button Styling */
+        /* Back to Top Button */
         .back-to-top {
             position: fixed;
             bottom: 10px;
@@ -138,8 +132,6 @@
             padding: 10px 15px;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s;
         }
 
         .back-to-top:hover {
@@ -153,36 +145,29 @@
             }
         }
 
-        /* Style for the verse container */
-        .verse {
-            position: relative;
-            padding: 20px 10px 40px 10px;
-            margin-bottom: 20px;
-            background-color: #f9f9f9;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        /* Simplified Verse Styling */
+        .verse-content {
+            padding: 10px 0;
         }
 
+        .arabic-text,
+        .translation-text,
+        .urdu-text {
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <!-- Previous Arrow -->
         <i class="fas fa-arrow-left arrow arrow-left" onclick="navigateSurah(-1)"></i>
-
-        <!-- Surah Name -->
         <div id="surah-heading" class="surah-heading" style="display: none;"></div>
-
-        <!-- Next Arrow -->
         <i class="fas fa-arrow-right arrow arrow-right" onclick="navigateSurah(1)"></i>
     </div>
     <div id="first-verse" class="first-verse" style="display: none;"></div>
     <div id="content"></div>
 
-    <button class="back-to-top" onclick="scrollToTop()">
-        <i class="fas fa-arrow-up"></i>
-    </button>
+    <button class="back-to-top" onclick="scrollToTop()">Back to Top</button>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -233,17 +218,24 @@
                 const verseDiv = document.createElement('div');
                 verseDiv.classList.add('verse');
                 verseDiv.setAttribute('id', `verse-${i}`);
-                
-                // Combine all content: Arabic, English Translation, and Urdu Translation
+
+                // Create Verse Content
                 const verseContent = `
-                    <div class="arabic-text">${arabicVerse}
-                        <span class="verse-number">${i}</span>
+                    <div class="verse-content">
+                        <div class="arabic-text">${arabicVerse}
+                            <span class="verse-number">${i}</span>
+                        </div>
+                        <div class="translation-text">${translatedVerse}</div>
+                        <div class="urdu-text">${urduVerse}</div>
                     </div>
-                    <div class="translation-text">${translatedVerse}</div>
-                    <div class="urdu-text">${urduVerse}</div>
                 `;
 
                 verseDiv.innerHTML = verseContent;
+
+                // Add Divider Line Between Verses
+                const dividerLine = document.createElement('div');
+                dividerLine.classList.add('verse-divider');
+                verseDiv.appendChild(dividerLine);
 
                 verseDiv.addEventListener('click', () => {
                     verseDiv.classList.toggle('selected');
