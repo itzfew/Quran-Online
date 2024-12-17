@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran Kareem (Ar)</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo&family=Scheherazade+New&display=swap" rel="stylesheet">
+    <!-- Use Amiri font for Arabic text -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
     <style>
         /* Base Styles */
         body {
@@ -99,6 +100,7 @@
             direction: rtl;
             text-align: right;
             cursor: pointer;
+            font-family: 'Amiri', serif; /* Using Amiri font for Arabic text */
         }
 
         .verse-number {
@@ -114,11 +116,6 @@
         .verse-divider {
             border-top: 1px solid #000;
             margin: 10px 0;
-        }
-
-        /* Selected Verse */
-        .verse.selected {
-            background-color: rgba(0, 123, 255, 0.1);
         }
 
         /* Back to Top Button */
