@@ -323,6 +323,7 @@
         if (book) {
             document.getElementById("bookTitle").textContent = book.english.title;
             document.getElementById("bookAuthor").textContent = book.english.author;
+            document.getElementById("bookdescription").textContent = book.english.description;
 
             const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
             fetch(chaptersUrl)
