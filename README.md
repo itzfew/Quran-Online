@@ -1,3 +1,30 @@
+# Quran Project
+
+This project contains a variety of resources related to the Quran, including its translations, Tafsir (interpretations), Hadith collections, Surah details, and much more. The project provides access to Islamic texts, Quranic content, and audio resources.
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Directory Structure](#directory-structure)
+- [How to Use](#how-to-use)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Project Overview
+
+This repository provides multiple resources:
+
+- **Quran APK**: APK file for accessing the Quran.
+- **Images**: Collection of Quran-related images (e.g., logos and borders).
+- **Lang**: Contains different language files (HTML files).
+- **Podcast**: RSS feed for podcast updates.
+- **Source**: Contains Hadiths, Surah data, Tafsir, and Translation in different formats like JSON.
+
+## Directory Structure
+
+Below is an overview of the directory structure of the project:
+
+```plaintext
 .
 ├── Apk/
 │   └── quran.apk
@@ -110,3 +137,4 @@
 │   ├── pic.png
 │   ├── surah.json
 │   └── surah.sources
+
