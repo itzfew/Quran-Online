@@ -110,4 +110,3 @@
 │   ├── pic.png
 │   ├── surah.json
 │   └── surah.sources
-├── 
