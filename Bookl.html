@@ -147,15 +147,15 @@
         }
 
         .chapter-item h3 {
-            font-size: 1.3rem;
-            color: #333;
-            margin-bottom: 5px;
-            padding-left: 30px; /* To add space for the image */
-            background-image: url('https://quran-online.pages.dev/source/download.png');
-            background-repeat: no-repeat;
-            background-size: 20px 20px; /* Adjust the size of the image */
-            background-position: left center;
-        }
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 5px;
+    padding-left: 30px; /* To add space for the image */
+    background-image: url('https://quran-online.pages.dev/source/download.png');
+    background-repeat: no-repeat;
+    background-size: 20px 20px; /* Adjust the size of the image */
+    background-position: left center;
+}
 
         .chapter-item p {
             font-size: 1rem;
@@ -315,7 +315,7 @@
                 route: { base: "darimi" }
             }
         ];
-        
+
         const urlParams = new URLSearchParams(window.location.search);
         const bookSlug = urlParams.get('book');
         const book = books.find(b => b.route.base === bookSlug);
