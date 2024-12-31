@@ -6,9 +6,6 @@ This project contains a variety of resources related to the Quran, including its
 
 - [Project Overview](#project-overview)
 - [Directory Structure](#directory-structure)
-- [How to Use](#how-to-use)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Project Overview
 
