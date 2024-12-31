@@ -315,7 +315,7 @@
                 route: { base: "darimi" }
             }
         ];
-
+        
         const urlParams = new URLSearchParams(window.location.search);
         const bookSlug = urlParams.get('book');
         const book = books.find(b => b.route.base === bookSlug);
