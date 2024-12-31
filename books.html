@@ -157,7 +157,6 @@
     background-position: left center;
 }
 
-
         .chapter-item p {
             font-size: 1rem;
             color: #777;
@@ -338,6 +337,7 @@
                         chapterElement.innerHTML = `
                             <h3>Chapter ${chapter.book_number}</h3>
                             <p>${chapter.book_name}</p>
+                            <p><strong>Hadith Range:</strong> ${chapter.hadith_range}</p>
                         `;
                         chapterList.appendChild(chapterElement);
                     });
