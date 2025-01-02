@@ -87,7 +87,7 @@
     <div id="hadithResult"></div>
 
     <script>
-        // Array to store all books information
+        // Array to store all books information with slugs
         const books = [
             { slug: 'bukhari', name: 'Sahih al-Bukhari' },
             { slug: 'muslim', name: 'Sahih Muslim' },
@@ -106,10 +106,12 @@
         function loadAllHadiths() {
             let loadedCount = 0;
 
+            // Loop through all books and fetch data
             books.forEach(book => {
                 fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book.slug}/books.json`)
                     .then(response => response.json())
                     .then(data => {
+                        // Loop through chapters in each book
                         data.collection.books.forEach(chapter => {
                             fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book.slug}/${chapter.book_number}.json`)
                                 .then(response => response.json())
