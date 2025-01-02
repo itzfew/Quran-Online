@@ -145,37 +145,37 @@
             background-color: #1a1a1a;  /* Dark background for Surah item */
             border: 1px solid #444;  /* Slightly darker border */
         }
-            body.dark-mode .numbering {
-color: white;  /* Dark background for Surah item */
-            }
+        body.dark-mode .numbering {
+            color: white;  /* Dark background for Surah item */
+        }
     </style>
 </head>
 <body>
     <!-- Settings Section at the top (Fixed) -->
     <div class="settings-container">
-    <!-- Dark/Light Mode Toggle -->
-    <div class="settings-item" onclick="toggleTheme()">
-        <i class="fas fa-adjust"></i> <!-- Dark/Light Mode toggle -->
-    </div>
+        <!-- Dark/Light Mode Toggle -->
+        <div class="settings-item" onclick="toggleTheme()">
+            <i class="fas fa-adjust"></i> <!-- Dark/Light Mode toggle -->
+        </div>
 
-    <!-- Install App -->
-    <div class="settings-item" onclick="installPWA()">
-        <i class="fas fa-download"></i> <!-- Install App -->
-    </div>
+        <!-- Install App -->
+        <div class="settings-item" onclick="installPWA()">
+            <i class="fas fa-download"></i> <!-- Install App -->
+        </div>
 
-    <!-- Hadith Link -->
-    <div class="settings-item">
-        <a href="hadith.html">
-            <i class="fas fa-book-open"></i> <!-- Hadith -->
-        </a>
-    </div>
+        <!-- Hadith Link -->
+        <div class="settings-item">
+            <a href="hadith.html">
+                <i class="fas fa-book-open"></i> <!-- Hadith -->
+            </a>
+        </div>
 
-    <!-- Tasbih Link -->
-    <div class="settings-item">
-        <a href="tasbih.html">
-            <i class="fas fa-pray"></i> <!-- Tasbih -->
-        </a>
-    </div>
+        <!-- Tasbih Link -->
+        <div class="settings-item">
+            <a href="tasbih.html">
+                <i class="fas fa-pray"></i> <!-- Tasbih -->
+            </a>
+        </div>
     </div>
 
     <h1>Hadith Books</h1>
@@ -188,55 +188,55 @@ color: white;  /* Dark background for Surah item */
                 id: 1,
                 arabic: { title: "صحيح البخاري", author: "الإمام محمد بن إسماعيل البخاري" },
                 english: { title: "Sahih al-Bukhari", author: "Imam Muhammad ibn Ismail al-Bukhari" },
-                route: { base: "bukhari", chapters: Array.from({ length: 97 }, (_, i) => (i + 1).toString()) }
+                route: { base: "bukhari" }
             },
             {
                 id: 2,
                 arabic: { title: "صحيح مسلم", author: "الإمام مسلم بن الحجاج القشيري النيسابوري" },
                 english: { title: "Sahih Muslim", author: "Imam Muslim ibn al-Hajjaj al-Naysaburi" },
-                route: { base: "muslim", chapters: ["introduction", ...Array.from({ length: 56 }, (_, i) => (i + 1).toString())] }
+                route: { base: "muslim" }
             },
             {
                 id: 3,
                 arabic: { title: "سنن النسائي", author: "الإمام أبو عبد الرحمن أحمد بن شعيب النسائي" },
                 english: { title: "Sunan al-Nasa'i", author: "Imam Ahmad ibn Shu'ayb al-Nasa'i" },
-                route: { base: "nasai", chapters: [...Array.from({ length: 51 }, (_, i) => (i + 1).toString()), "35b"] }
+                route: { base: "nasai" }
             },
             {
                 id: 4,
                 arabic: { title: "سنن أبي داود", author: "الإمام سليمان بن الأشعث أبو داود السجستاني" },
                 english: { title: "Sunan Abi Dawud", author: "Imam Sulayman ibn al-Ash'ath Abu Dawud al-Sijistani" },
-                route: { base: "abudawud", chapters: Array.from({ length: 43 }, (_, i) => (i + 1).toString()) }
+                route: { base: "abudawud" }
             },
             {
                 id: 5,
                 arabic: { title: "جامع الترمذي", author: "الإمام أبو عيسى محمد بن عيسى الترمذي" },
                 english: { title: "Jami' al-Tirmidhi", author: "Imam Abu Isa Muhammad ibn Isa al-Tirmidhi" },
-                route: { base: "tirmidhi", chapters: Array.from({ length: 49 }, (_, i) => (i + 1).toString()) }
+                route: { base: "tirmidhi" }
             },
             {
                 id: 6,
                 arabic: { title: "سنن ابن ماجه", author: "الإمام محمد بن يزيد بن ماجه القزويني" },
                 english: { title: "Sunan Ibn Majah", author: "Imam Muhammad ibn Yazid Ibn Majah al-Qazwini" },
-                route: { base: "ibnmajah", chapters: ["introduction", ...Array.from({ length: 37 }, (_, i) => (i + 1).toString())] }
+                route: { base: "ibnmajah" }
             },
             {
                 id: 7,
                 arabic: { title: "موطأ مالك", author: "الإمام مالك بن أنس" },
                 english: { title: "Muwatta Malik", author: "Imam Malik ibn Anas" },
-                route: { base: "malik", chapters: Array.from({ length: 61 }, (_, i) => (i + 1).toString()) }
+                route: { base: "malik" }
             },
             {
                 id: 8,
                 arabic: { title: "مسند الإمام أحمد بن حنبل", author: "الإمام أحمد بن حنبل" },
                 english: { title: "Musnad Ahmad ibn Hanbal", author: "Imam Ahmad ibn Hanbal" },
-                route: { base: "ahmed", chapters: [...Array.from({ length: 7 }, (_, i) => (i + 1).toString()), "31"] }
+                route: { base: "ahmed" }
             },
             {
                 id: 9,
                 arabic: { title: "سنن الدارمي", author: "الإمام أبو محمد عبد الرحمن بن عبد الله بن الدارمي" },
                 english: { title: "Sunan al-Darimi", author: "Imam Abu Muhammad Abd al-Rahman ibn Abd Allah ibn al-Darimi" },
-                route: { base: "darimi", chapters: ["introduction", ...Array.from({ length: 23 }, (_, i) => (i + 1).toString())] }
+                route: { base: "darimi" }
             }
         ];
 
@@ -252,60 +252,58 @@ color: white;  /* Dark background for Surah item */
                     <div class="numbering">${index + 1}</div>
                     <h3>${book.english.title}</h3>
                     <p><strong>Author:</strong> ${book.english.author}</p>
-                    <p><strong>Chapters:</strong> ${book.route.chapters.length}</p>
                 </a>
             `;
             
             bookList.appendChild(bookElement);
         });
 
-        
-    // Toggle Dark/Light Mode
-    function toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
-
-    // Set theme based on user preference
-    window.addEventListener('DOMContentLoaded', () => {
-        const savedTheme = localStorage.getItem('darkMode');
-        if (savedTheme === 'true') {
-            document.body.classList.add('dark-mode');
+        // Toggle Dark/Light Mode
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', isDark);
         }
-    });
 
-    // Function to handle PWA installation
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-    });
-
-    function installPWA() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('User accepted the A2HS prompt');
-                } else {
-                    console.log('User dismissed the A2HS prompt');
-                }
-            });
-            deferredPrompt = null;
-        }
-    }
-
-    // Register Service Worker for PWA functionality
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/service-worker.js')
-                .then((registration) => {
-                    console.log('Service Worker registered with scope:', registration.scope);
-                })
-                .catch((error) => {
-                    console.log('Service Worker registration failed:', error);
-                });
+        // Set theme based on user preference
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('darkMode');
+            if (savedTheme === 'true') {
+                document.body.classList.add('dark-mode');
+            }
         });
-    }
+
+        // Function to handle PWA installation
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the A2HS prompt');
+                    } else {
+                        console.log('User dismissed the A2HS prompt');
+                    }
+                });
+                deferredPrompt = null;
+            }
+        }
+
+        // Register Service Worker for PWA functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then((registration) => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Service Worker registration failed:', error);
+                    });
+            });
+        }
     </script>
 </body>
 </html>
