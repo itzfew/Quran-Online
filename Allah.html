@@ -103,9 +103,20 @@
 
         // Function to load all hadiths data from all books
         function loadAllHadiths() {
-            let loadedCount = 0;
+            const cachedData = localStorage.getItem('allHadithsData');
 
-            // Loop through all books and fetch data
+            if (cachedData) {
+                // If cached data exists, use it directly
+                allHadithsData = JSON.parse(cachedData);
+                document.getElementById('loading').style.display = 'none';
+                filterResultsFromURL();
+                return;
+            }
+
+            let loadedCount = 0;
+            const fetchPromises = [];
+
+            // Loop through all books and fetch data in parallel
             books.forEach(book => {
                 // Fetch all book-level data (collection of chapters)
                 fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book.slug}/books.json`)
@@ -114,10 +125,9 @@
                         // Loop through all chapters in the book
                         data.collection.books.forEach(chapter => {
                             // Fetch hadiths data for each chapter
-                            fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book.slug}/${chapter.book_number}.json`)
+                            const promise = fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book.slug}/${chapter.book_number}.json`)
                                 .then(response => response.json())
                                 .then(hadithData => {
-                                    // Add hadiths from the chapter to the global collection
                                     if (hadithData.hadiths && hadithData.hadiths.length > 0) {
                                         allHadithsData.push({
                                             book: book.name,
@@ -127,9 +137,9 @@
                                     }
 
                                     loadedCount++;
-
-                                    // Check if all books and chapters are loaded
                                     if (loadedCount === books.length * data.collection.books.length) {
+                                        // Save the fetched data to localStorage
+                                        localStorage.setItem('allHadithsData', JSON.stringify(allHadithsData));
                                         document.getElementById('loading').style.display = 'none';
                                         filterResultsFromURL();
                                     }
@@ -137,11 +147,17 @@
                                 .catch(error => {
                                     console.error(`Error fetching chapter ${chapter.book_number} hadiths for book ${book.name}:`, error);
                                 });
+                            fetchPromises.push(promise);
                         });
                     })
                     .catch(error => {
                         console.error(`Error fetching books data for ${book.slug}:`, error);
                     });
+            });
+
+            // Wait for all fetch requests to complete
+            Promise.all(fetchPromises).catch(error => {
+                console.error("Error in fetching all hadiths:", error);
             });
         }
 
@@ -169,7 +185,6 @@
 
                     // Check if the search query matches any part of the hadiths in either language
                     if (isPartialMatch(englishText, searchQuery) || isPartialMatch(arabicText, searchQuery)) {
-                        // Push matched hadith data with search query highlighted
                         searchResults.push({
                             book: bookData.book,
                             chapter: bookData.chapter,
