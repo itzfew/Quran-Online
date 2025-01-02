@@ -222,7 +222,7 @@
             { slug: 'darimi', name: 'Sunan al-Darimi' }
         ];
 
-        let bookNumberData = [];
+        let chaptersData = [];
 
         document.addEventListener('DOMContentLoaded', () => {
             const darkMode = localStorage.getItem('darkMode') === 'true';
@@ -241,7 +241,7 @@
 
             const { book } = getURLParams();
             if (book) {
-                fetchbookNumberData(book);
+                fetchChaptersData(book);
             }
         });
 
@@ -273,27 +273,27 @@
         function getURLParams() {
             const urlParams = new URLSearchParams(window.location.search);
             const book = urlParams.get('book');
-            const bookNumber = urlParams.get('bookNumber');
-            return { book, bookNumber };
+            const chapter = urlParams.get('chapter');
+            return { book, chapter };
         }
 
-        function fetchbookNumberData(bookSlug) {
-            const bookNumberUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/bookNumber.json`;
-            fetch(bookNumberUrl)
+        function fetchChaptersData(bookSlug) {
+            const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
+            fetch(chaptersUrl)
                 .then(response => response.json())
                 .then(data => {
-                    bookNumberData = data.collection.books;
+                    chaptersData = data.collection.books;
                     initializeViewer(bookSlug);
                 })
                 .catch(error => {
-                    console.error('Error fetching bookNumber data:', error);
-                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load bookNumber data for this book. Please try again later.</p>';
+                    console.error('Error fetching chapters data:', error);
+                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load chapters data for this book. Please try again later.</p>';
                     document.getElementById('loading').style.display = 'none';
                 });
         }
 
-        function fetchHadiths(bookSlug, bookNumberNumber) {
-            const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/${bookNumberNumber}.json`;
+        function fetchHadiths(bookSlug, chapterNumber) {
+            const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/${chapterNumber}.json`;
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -301,7 +301,7 @@
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
-                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load Hadiths for this bookNumber. Please try again later.</p>';
+                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load Hadiths for this chapter. Please try again later.</p>';
                     document.getElementById('loading').style.display = 'none';
                 });
         }
@@ -316,7 +316,7 @@
             if (data.hadiths && data.hadiths.length > 0) {
                 let htmlContent = `
                     <div class="header-meta">
-                        <h2>${bookName} <span style="font-size: 18px;">(bookNumber: ${data.metadata.english.introduction})</span></h2>
+                        <h2>${bookName} <span style="font-size: 18px;">(Chapter: ${data.metadata.english.introduction})</span></h2>
                         <p><strong>Author:</strong> ${data.metadata.english.author}</p>
                         <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
                     </div>
@@ -332,7 +332,7 @@
                 });
                 hadithResult.innerHTML = htmlContent;
             } else {
-                hadithResult.innerHTML = '<p>No Hadiths found for this bookNumber.</p>';
+                hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
             }
         }
 
@@ -347,12 +347,12 @@
         }
 
         function initializeViewer(bookSlug) {
-            const { book, bookNumber } = getURLParams();
-            if (book && bookNumber) {
-                fetchHadiths(book, bookNumber);
+            const { book, chapter } = getURLParams();
+            if (book && chapter) {
+                fetchHadiths(book, chapter);
             } else {
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and bookNumber number in the URL (e.g., ?book=bukhari&bookNumber=10).</p>';
+                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and chapter number in the URL (e.g., ?book=bukhari&chapter=10).</p>';
             }
         }
 
