@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadith Viewer</title>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Google Fonts for Arabic fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade+New&family=Cairo&family=Lalezar&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s, font-size 0.3s;
+            font-size: 18px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-top: 20px;
+        }
+
+        .settings-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-bottom: 2px solid #3498db;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+
+        .settings-item {
+            margin-right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .settings-item:hover {
+            color: #2980b9;
+            transform: scale(1.1);
+        }
+
+        .hadith {
+            margin: 20px;
+            padding: 10px;
+            background-color: #fafafa;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .hadith.selected {
+            border-color: #3498db;
+            background-color: #eaf6fb;
+        }
+
+        .hadith:hover {
+            background-color: #f1f1f1;
+        }
+
+        .hadith h3 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #16a085;
+        }
+
+        .hadith p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #34495e;
+        }
+
+        .loading,
+        .error {
+            text-align: center;
+            font-size: 20px;
+            color: #3498db;
+        }
+
+        .error {
+            color: red;
+        }
+
+        #hadithResult {
+            margin-top: 30px;
+        }
+
+        .header-meta {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .header-meta strong {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Settings Section at the top (Fixed) -->
+    <div class="settings-container">
+        <div class="settings-item">
+            <label for="bookSelect">Select Book: </label>
+            <select id="bookSelect" onchange="loadBookChapters()">
+                <option value="">--Select a Book--</option>
+                <!-- Dynamic Book Options will be populated here -->
+            </select>
+        </div>
+        
+        <div class="settings-item">
+            <label for="chapterSelect">Select Chapter: </label>
+            <select id="chapterSelect" onchange="fetchHadiths()">
+                <option value="">--Select a Chapter--</option>
+                <!-- Dynamic Chapter Options will be populated here -->
+            </select>
+        </div>
+    </div>
+
+    <div id="loading" class="loading">Loading...</div>
+    <div id="hadithResult"></div>
+
+    <script>
+        const books = [
+            { slug: 'bukhari', name: 'Sahih al-Bukhari' },
+            { slug: 'muslim', name: 'Sahih Muslim' },
+            { slug: 'tirmidhi', name: 'Jami` at-Tirmidhi' },
+            { slug: 'nasa', name: 'Sunan al-Nasa\'i' },
+            { slug: 'ibnmajah', name: 'Sunan Ibn Majah' },
+            { slug: 'abudawud', name: 'Sunan Abu Dawud' },
+            { slug: 'malik', name: 'Muwatta Malik' },
+            { slug: 'ahmed', name: 'Musnad Ahmad ibn Hanbal' },
+            { slug: 'darimi', name: 'Sunan al-Darimi' }
+        ];
+
+        let chaptersData = [];
+
+        // Load books into the dropdown
+        function loadBooks() {
+            const bookSelect = document.getElementById('bookSelect');
+            books.forEach(book => {
+                const option = document.createElement('option');
+                option.value = book.slug;
+                option.textContent = book.name;
+                bookSelect.appendChild(option);
+            });
+        }
+
+        // Load chapters for the selected book
+        function loadBookChapters() {
+            const bookSlug = document.getElementById('bookSelect').value;
+            const chapterSelect = document.getElementById('chapterSelect');
+            chapterSelect.innerHTML = '<option value="">--Select a Chapter--</option>'; // Reset chapter select
+
+            if (bookSlug) {
+                fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/books.json`)
+                    .then(response => response.json())
+                    .then(data => {
+                        chaptersData = data.collection.books;
+                        chaptersData.forEach(chapter => {
+                            const option = document.createElement('option');
+                            option.value = chapter.book_number;
+                            option.textContent = chapter.book_name;
+                            chapterSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching chapters data:', error);
+                    });
+            }
+        }
+
+        // Fetch Hadiths for the selected book and chapter
+        function fetchHadiths() {
+            const bookSlug = document.getElementById('bookSelect').value;
+            const bookNumber = document.getElementById('chapterSelect').value;
+
+            if (bookSlug && bookNumber) {
+                fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/${bookNumber}.json`)
+                    .then(response => response.json())
+                    .then(data => {
+                        displayHadiths(data, bookSlug);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching Hadiths:', error);
+                    });
+            }
+        }
+
+        // Display the Hadiths
+        function displayHadiths(data, bookSlug) {
+            const hadithResult = document.getElementById('hadithResult');
+            const loading = document.getElementById('loading');
+            loading.style.display = 'none';
+
+            const bookName = books.find(b => b.slug === bookSlug)?.name || 'Unknown Book';
+
+            if (data.hadiths && data.hadiths.length > 0) {
+                let htmlContent = `
+                    <div class="header-meta">
+                        <h2>${bookName} <span style="font-size: 18px;">(Book Number: ${data.metadata.english.introduction})</span></h2>
+                        <p><strong>Author:</strong> ${data.metadata.english.author}</p>
+                        <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
+                    </div>
+                `;
+                data.hadiths.forEach(hadith => {
+                    htmlContent += `
+                        <div class="hadith" onclick="selectHadith(event)">
+                            <h3>Hadith #${hadith.id}</h3>
+                            <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
+                            <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
+                        </div>
+                    `;
+                });
+                hadithResult.innerHTML = htmlContent;
+            } else {
+                hadithResult.innerHTML = '<p>No Hadiths found for this chapter.</p>';
+            }
+        }
+
+        // Highlight the selected hadith
+        function selectHadith(event) {
+            const allHadiths = document.querySelectorAll('.hadith');
+            allHadiths.forEach(hadith => hadith.classList.remove('selected'));
+
+            const selectedHadith = event.currentTarget;
+            selectedHadith.classList.add('selected');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadBooks();
+        });
+    </script>
+
+</body>
+</html>
