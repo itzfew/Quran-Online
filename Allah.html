@@ -159,7 +159,7 @@
                     const arabicText = hadith.arabic.toLowerCase();
 
                     // Check if the search query matches any part of the hadiths in either language
-                    if (englishText.includes(searchQuery) || arabicText.includes(searchQuery)) {
+                    if (isPartialMatch(englishText, searchQuery) || isPartialMatch(arabicText, searchQuery)) {
                         // Push matched hadith data with search query highlighted
                         searchResults.push({
                             book: bookData.book,
@@ -173,6 +173,12 @@
             });
 
             displaySearchResults(searchResults, searchQuery);
+        }
+
+        // Function to check for partial matches
+        function isPartialMatch(text, searchQuery) {
+            const words = searchQuery.split(' ');
+            return words.every(word => text.includes(word)); // All words must be present
         }
 
         // Function to highlight all occurrences of search terms in the text
