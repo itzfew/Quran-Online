@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Islamic Hijri Calendar with Holidays</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <style>
     * {
       margin: 0;
@@ -13,7 +14,8 @@
 
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      background-color: #fff;
+      color: #000;
       display: flex;
       justify-content: center;
       align-items: flex-start;
@@ -23,12 +25,13 @@
     }
 
     .calendar-container {
-      background-color: #fff;
+      background-color: #f9f9f9;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       border-radius: 10px;
       overflow: hidden;
       width: 100%;
       max-width: 800px;
+      border: 1px solid #ddd;
     }
 
     .calendar-header {
@@ -36,37 +39,47 @@
       justify-content: space-between;
       align-items: center;
       padding: 10px;
-      background-color: #3e8e41;
-      color: white;
+      background-color: #000;
+      color: #fff;
     }
 
-    #calendar-month-year,
-    #calendar-hijri-month-year {
-      font-size: 18px;
-      font-weight: bold;
+    .calendar-header h2 {
+      margin: 5px 0;
     }
 
     button {
       background-color: #fff;
-      border: 1px solid #3e8e41;
+      border: 1px solid #000;
       padding: 5px 10px;
       cursor: pointer;
     }
 
     button:hover {
-      background-color: #3e8e41;
-      color: white;
+      background-color: #000;
+      color: #fff;
     }
 
     .calendar-body {
       padding: 10px;
     }
 
-    /* Islamic Weekdays (Arabic) */
-    .calendar-hijri-weekdays,
+    #calendar-hijri-month-year {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #000;
+    }
+
+    #calendar-month-year {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
     .calendar-weekdays {
       display: grid;
-      grid-template-columns: repeat(7, 1fr); /* Force 7 columns */
+      grid-template-columns: repeat(7, 1fr);
       text-align: center;
       margin-bottom: 10px;
       font-weight: bold;
@@ -74,16 +87,18 @@
       padding: 10px 0;
     }
 
-    .calendar-hijri-weekdays div,
-    .calendar-weekdays div {
-      font-size: 1rem;
-      color: #333;
-      cursor: pointer;
+    .hijri-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      font-size: 0.8rem;
+      margin-bottom: 5px;
+      color: #555;
     }
 
     .calendar-days {
       display: grid;
-      grid-template-columns: repeat(7, 1fr); /* Force 7 columns */
+      grid-template-columns: repeat(7, 1fr);
       gap: 5px;
     }
 
@@ -92,12 +107,9 @@
       text-align: center;
       cursor: pointer;
       position: relative;
-    }
-
-    /* Remove the hover effect on the days */
-    .calendar-days div:hover {
-      background-color: transparent;
-      color: inherit;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #fff;
     }
 
     .holiday-dot {
@@ -106,15 +118,8 @@
       right: 5px;
       width: 8px;
       height: 8px;
-      background-color: green;
+      background-color: yellow;
       border-radius: 50%;
-    }
-
-    .calendar-day-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
     }
 
     .gregorian-date {
@@ -127,68 +132,20 @@
       padding: 10px;
       background-color: #f1f1f1;
       margin-top: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
       font-size: 14px;
       display: none;
     }
 
-    /* Popup Style */
-    .popup {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      padding: 20px;
-      background-color: white;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-      border-radius: 8px;
-      z-index: 1000;
-    }
-
-    .popup-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.3);
-      z-index: 999;
-      display: none;
-    }
-
-    .popup button {
-      background-color: #3e8e41;
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-
-    .popup button:hover {
-      background-color: #357a38;
-    }
-
     /* Responsive Design */
     @media (max-width: 768px) {
-      .calendar-header {
-        padding: 8px;
-      }
-
-      #calendar-month-year,
-      #calendar-hijri-month-year {
-        font-size: 16px;
-      }
-
-      button {
-        font-size: 0.9rem;
-        padding: 4px 8px;
-        border: 1px solid #3e8e41;
-      }
-
-      .calendar-hijri-weekdays div,
       .calendar-weekdays div {
         font-size: 0.9rem;
+      }
+
+      .hijri-weekdays div {
+        font-size: 0.7rem;
       }
 
       .calendar-days div {
@@ -206,24 +163,14 @@
       .calendar-header {
         flex-direction: column;
         text-align: center;
-        padding: 6px;
       }
 
-      #calendar-month-year,
-      #calendar-hijri-month-year {
-        font-size: 14px;
-      }
-
-      button {
-        font-size: 0.8rem;
-        padding: 3px 6px;
-        border: 1px solid #3e8e41;
-      }
-
-      .calendar-hijri-weekdays div,
       .calendar-weekdays div {
         font-size: 0.8rem;
-        padding: 5px;
+      }
+
+      .hijri-weekdays div {
+        font-size: 0.6rem;
       }
 
       .calendar-days div {
@@ -241,114 +188,93 @@
 <body>
   <div class="calendar-container">
     <div class="calendar-header">
-      <button id="prev-month">Prev</button>
-      <h2 id="calendar-month-year"></h2>
-      <button id="next-month">Next</button>
+      <button id="prev-month"><i class="fas fa-chevron-left"></i></button>
+      <div>
+        <h2 id="calendar-hijri-month-year"></h2>
+        <h2 id="calendar-month-year"></h2>
+      </div>
+      <button id="next-month"><i class="fas fa-chevron-right"></i></button>
     </div>
     <div class="calendar-body">
-      <!-- Islamic Month and Year -->
-      <div id="calendar-hijri-month-year"></div>
-      
-      <!-- Islamic Weekdays -->
-      <div class="calendar-hijri-weekdays">
-        <div data-fullname="الأحد">Ah</div>
-        <div data-fullname="الإثنين">Mo</div>
-        <div data-fullname="الثلاثاء">Tu</div>
-        <div data-fullname="الأربعاء">We</div>
-        <div data-fullname="الخميس">Th</div>
-        <div data-fullname="الجمعة">Fr</div>
-        <div data-fullname="السبت">Sa</div>
+      <div class="hijri-weekdays" id="hijri-weekdays">
+        <!-- Hijri weekdays will be dynamically generated -->
       </div>
-
-      <!-- Gregorian Weekdays -->
-      <div class="calendar-weekdays">
-        <div data-fullname="Sunday">Sun</div>
-        <div data-fullname="Monday">Mon</div>
-        <div data-fullname="Tuesday">Tue</div>
-        <div data-fullname="Wednesday">Wed</div>
-        <div data-fullname="Thursday">Thu</div>
-        <div data-fullname="Friday">Fri</div>
-        <div data-fullname="Saturday">Sat</div>
+      <div class="calendar-weekdays" id="weekdays">
+        <!-- Gregorian weekdays will be dynamically generated -->
       </div>
-
-      <!-- Calendar Days -->
       <div id="calendar-days" class="calendar-days"></div>
     </div>
     <div id="holiday-info"></div>
-  </div>
-
-  <!-- Popup -->
-  <div class="popup-overlay" id="popup-overlay"></div>
-  <div class="popup" id="popup">
-    <p id="popup-content"></p>
-    <button id="close-popup">Close</button>
   </div>
 
   <script>
     const calendarMonthYear = document.getElementById('calendar-month-year');
     const calendarHijriMonthYear = document.getElementById('calendar-hijri-month-year');
     const calendarDays = document.getElementById('calendar-days');
+    const weekdays = document.getElementById('weekdays');
+    const hijriWeekdays = document.getElementById('hijri-weekdays');
     const prevMonthButton = document.getElementById('prev-month');
     const nextMonthButton = document.getElementById('next-month');
     const holidayInfo = document.getElementById('holiday-info');
 
-    const popup = document.getElementById('popup');
-    const popupOverlay = document.getElementById('popup-overlay');
-    const popupContent = document.getElementById('popup-content');
-    const closePopupButton = document.getElementById('close-popup');
+    let currentMonth = new Date().getMonth() + 1;
+    let currentYear = new Date().getFullYear();
 
-    let currentMonth = new Date().getMonth() + 1; // Current month in Gregorian (1-12)
-    let currentYear = new Date().getFullYear(); // Current year in Gregorian
-
-    // Function to fetch Hijri calendar data
     async function fetchHijriCalendar(month, year) {
       const response = await fetch(`https://api.aladhan.com/v1/gToHCalendar/${month}/${year}`);
       const data = await response.json();
       return data.data;
     }
 
-    // Function to render the calendar
     async function renderCalendar() {
+      const hijriData = await fetchHijriCalendar(currentMonth, currentYear);
+
       const gregorianMonth = new Date(currentYear, currentMonth - 1).toLocaleString('default', { month: 'long' });
-      const hijriMonth = await fetchHijriCalendar(currentMonth, currentYear);
-
       calendarMonthYear.textContent = `${gregorianMonth} ${currentYear}`;
-      calendarHijriMonthYear.textContent = `${hijriMonth[0].hijri.month.en} ${hijriMonth[0].hijri.year}`;
+      calendarHijriMonthYear.textContent = `${hijriData[0].hijri.month.en} ${hijriData[0].hijri.year}`;
 
-      // Clear previous calendar days
-      calendarDays.innerHTML = '';
+      const weekdaysList = window.innerWidth > 480 ? ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      const hijriWeekdaysList = window.innerWidth > 480 ? ['Al-Aḥad', 'Al-Ithnayn', 'Ath-Thulāthāʾ', 'Al-Arbiʿāʾ', 'Al-Khamīs', 'Al-Jumuʿah', 'As-Sabt'] : ['Aḥd', 'Ith', 'Thl', 'Arb', 'Khm', 'Jum', 'Sbt'];
 
-      hijriMonth.forEach((dayData) => {
-        const dayContainer = document.createElement('div');
+      hijriWeekdays.innerHTML = '';
+      hijriWeekdaysList.forEach((day) => {
         const dayElement = document.createElement('div');
-        const gregorianElement = document.createElement('span');
-        const holidayElement = document.createElement('div');
+        dayElement.textContent = day;
+        hijriWeekdays.appendChild(dayElement);
+      });
 
-        // Hijri Day
-        dayElement.textContent = dayData.hijri.day;
+      weekdays.innerHTML = '';
+      weekdaysList.forEach((day) => {
+        const dayElement = document.createElement('div');
+        dayElement.textContent = day;
+        weekdays.appendChild(dayElement);
+      });
 
-        // Gregorian Day (Subscripted)
-        gregorianElement.classList.add('gregorian-date');
-        gregorianElement.textContent = dayData.gregorian.day;
+      calendarDays.innerHTML = '';
+      hijriData.forEach((dayData) => {
+        const dayContainer = document.createElement('div');
+        const hijriDay = document.createElement('div');
+        const gregorianDay = document.createElement('span');
 
-        // Green dot for holidays
+        hijriDay.textContent = dayData.hijri.day;
+        gregorianDay.textContent = dayData.gregorian.day;
+        gregorianDay.classList.add('gregorian-date');
+
         if (dayData.hijri.holidays && dayData.hijri.holidays.length > 0) {
           const holidayDot = document.createElement('div');
           holidayDot.classList.add('holiday-dot');
           dayContainer.appendChild(holidayDot);
         }
 
-        // Combine both Hijri and Gregorian
-        dayContainer.classList.add('calendar-day-container');
-        dayContainer.appendChild(dayElement);
-        dayContainer.appendChild(gregorianElement);
+        dayContainer.appendChild(hijriDay);
+        dayContainer.appendChild(gregorianDay);
 
-        // Add event listener for click to show holidays below
         dayContainer.addEventListener('click', () => {
           if (dayData.hijri.holidays && dayData.hijri.holidays.length > 0) {
-            holidayInfo.textContent = `Holiday(s) on ${dayData.hijri.date}: ${dayData.hijri.holidays.join(", ")}`;
+            holidayInfo.textContent = `Holiday(s) on ${dayData.hijri.date}: ${dayData.hijri.holidays.join(', ')}`;
             holidayInfo.style.display = 'block';
           } else {
+            holidayInfo.textContent = '';
             holidayInfo.style.display = 'none';
           }
         });
@@ -357,51 +283,24 @@
       });
     }
 
-    // Add event listener to show full weekday names in a popup
-    const weekdayElements = document.querySelectorAll('.calendar-weekdays div, .calendar-hijri-weekdays div');
-    weekdayElements.forEach((element) => {
-      element.addEventListener('click', () => {
-        const fullName = element.getAttribute('data-fullname');
-        popupContent.textContent = fullName;
-        popup.style.display = 'block';
-        popupOverlay.style.display = 'block';
-      });
-    });
-
-    // Close popup when clicking the close button or overlay
-    closePopupButton.addEventListener('click', () => {
-      popup.style.display = 'none';
-      popupOverlay.style.display = 'none';
-    });
-
-    popupOverlay.addEventListener('click', () => {
-      popup.style.display = 'none';
-      popupOverlay.style.display = 'none';
-    });
-
-    // Function to handle the "Prev" button click
     prevMonthButton.addEventListener('click', () => {
-      if (currentMonth === 1) {
+      currentMonth--;
+      if (currentMonth < 1) {
         currentMonth = 12;
         currentYear--;
-      } else {
-        currentMonth--;
       }
       renderCalendar();
     });
 
-    // Function to handle the "Next" button click
     nextMonthButton.addEventListener('click', () => {
-      if (currentMonth === 12) {
+      currentMonth++;
+      if (currentMonth > 12) {
         currentMonth = 1;
         currentYear++;
-      } else {
-        currentMonth++;
       }
       renderCalendar();
     });
 
-    // Initial render of the calendar
     renderCalendar();
   </script>
 </body>
