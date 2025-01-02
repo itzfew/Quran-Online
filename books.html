@@ -62,7 +62,7 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Settings Section (Fixed) */
+        /* Settings Section */
         .settings-container {
             display: flex;
             justify-content: flex-start;
@@ -73,22 +73,29 @@
             left: 0;
             width: 100%;
             z-index: 1000;
-            background-color: #f0f0f0;
+            background-color: #BEBEBE;
         }
 
         .settings-item {
             margin-right: 20px;
-            font-size: 24px;
             cursor: pointer;
-            color: black; /* Default color for settings items */
+            font-size: 1.5rem;
+            position: relative;
         }
 
+        /* Dark Mode Settings Section */
         .settings-container.dark-mode {
-            background-color: #333;
+            background-color: #1a1a1a;
         }
 
-        .settings-item.dark-mode {
-            color: white;
+        .settings-item img {
+            width: 24px; /* Set the icon size */
+            height: 24px; /* Set the icon size */
+            object-fit: contain;
+        }
+
+        .settings-item.dark-mode img {
+            filter: brightness(1.2); /* Brighter icons in dark mode */
         }
 
         .book-details {
@@ -176,7 +183,31 @@
         body.dark-mode .book-item p {
             color: #bbb;
         }
+/* Tooltip styles */
+        .tooltip {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 5px;
+            font-size: 12px;
+            visibility: hidden;
+        }
 
+        /* PWA Install Button */
+        .install-pwa {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #3498db;
+        }
+
+        /* Tooltip visibility on hover */
+        .settings-item:hover .tooltip {
+            visibility: visible;
+        }
         /* Responsive Design */
         @media (max-width: 768px) {
             .book-list {
@@ -226,28 +257,59 @@
 </head>
 
 <body>
-    <!-- Settings Section at the top (Fixed) -->
-    <div class="settings-container">
-        <div class="settings-item" onclick="toggleTheme()">
-            <i class="fas fa-adjust"></i> <!-- Dark/Light Mode toggle -->
-        </div>
-
-        <div class="settings-item" onclick="installPWA()">
-            <i class="fas fa-download"></i> <!-- Install App -->
-        </div>
-
-        <div class="settings-item">
-            <a href="hadith.html">
-                <i class="fas fa-book-open"></i> <!-- Hadith -->
-            </a>
-        </div>
-
-        <div class="settings-item">
-            <a href="tasbih.html">
-                <i class="fas fa-pray"></i> <!-- Tasbih -->
-            </a>
-        </div>
+<!-- Settings Section at the top (Fixed) -->
+<div class="settings-container">
+    <!-- Dark/Light Mode Toggle -->
+    <div class="settings-item" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+        <div class="tooltip">Dark Mode</div>
     </div>
+
+    <!-- Hadith Link -->
+    <div class="settings-item">
+        <a href="index.html">
+            <i class="fas fa-home"></i> <!-- Home -->
+        </a>
+        <div class="tooltip">Home</div>
+    </div>
+<!-- Kalima Link -->
+<div class="settings-item">
+    <a href="kalima.html">
+        <i class="fas fa-hand-point-right"></i> <!-- Kalima -->
+    </a>
+    <div class="tooltip">Kalima</div>
+</div>
+
+    <!-- Tasbih Link -->
+    <div class="settings-item">
+        <a href="tasbih.html">
+            <i class="fas fa-praying-hands"></i> <!-- Tasbih -->
+        </a>
+        <div class="tooltip">Tasbih</div>
+    </div>
+
+    <!-- 99 Names Link -->
+    <div class="settings-item">
+        <a href="99-names.html">
+            <i class="fas fa-mosque"></i> <!-- 99 Names -->
+        </a>
+        <div class="tooltip">99 Names</div>
+    </div>
+
+    <!-- Prayer Link -->
+    <div class="settings-item">
+        <a href="prayer.html">
+            <i class="fas fa-pray"></i> <!-- Prayer -->
+        </a>
+        <div class="tooltip">Prayer</div>
+    </div>
+
+    <!-- PWA Install Button -->
+    <div class="settings-item install-pwa" onclick="installPWA()">
+        <i class="fas fa-download"></i> <!-- Install PWA -->
+        <div class="tooltip">Install PWA</div>
+    </div>
+</div>
 
     <h1>Books List</h1>
 
