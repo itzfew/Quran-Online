@@ -1,7 +1,7 @@
 {
-  "title": "Sahih al-Bukhari",
-  "author": "Imam Muhammad al-Bukhari (d. 256 AH / 870 AD)",
   "collection": {
+  "name": "Sahih al-Bukhari",
+  "compiled_by": "Imam Muhammad al-Bukhari (d. 256 AH / 870 AD)",
     "description": "Sahih al-Bukhari is a collection of hadith compiled by Imam Muhammad al-Bukhari (rahimahullah). His collection is recognized by the overwhelming majority of the Muslim world to be the most authentic collection of reports of the Sunnah of the Prophet Muhammad (ﷺ).",
     "total_hadith": 7500,
     "books": [
