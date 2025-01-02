@@ -64,10 +64,6 @@
             border-radius: 5px;
         }
 
-        .method-select {
-            margin: 20px 0;
-        }
-
         #method-select {
             font-size: 16px;
             padding: 8px;
@@ -79,17 +75,6 @@
             cursor: pointer;
             width: auto;
             max-width: 250px;
-            word-wrap: break-word;
-            white-space: normal;
-        }
-
-        #method-select option {
-            word-wrap: break-word;
-        }
-
-        #method-select:focus {
-            outline: none;
-            border-color: #004d40;
         }
 
         .prayer-time-row:hover {
@@ -101,42 +86,33 @@
 <body>
 
     <div id="location-info">Fetching your location...</div>
-    
-    <!-- Method Selection Dropdown -->
-<div class="method-select">
-    <label for="method-select">Select Calculation Method:</label>
-    <select id="method-select" onchange="getPrayerTimes()">
-        <option value="0">Jafari / Shia Ithna-Ashari</option>
-        <option value="1">University of Islamic Sciences, Karachi</option>
-        <option value="2">Islamic Society of North America</option>
-        <option value="3" selected>Muslim World League</option>
-        <option value="4">Umm Al-Qura University, Makkah</option>
-        <option value="5">Egyptian General Authority of Survey</option>
-        <option value="7">Institute of Geophysics, University of Tehran</option>
-        <option value="8">Gulf Region</option>
-        <option value="9">Kuwait</option>
-        <option value="10">Qatar</option>
-        <option value="12">Majlis Ugama Islam Singapura, Singapore</option>
-        <option value="12">Union Organization Islamic de France</option>
-        <option value="13">Diyanet İşleri Başkanlığı, Turkey</option>
-        <option value="14">Spiritual Administration of Muslims of Russia</option>
-        <option value="15">Moonsighting Committee Worldwide (requires Shafaq parameter)</option>
-        <option value="16">Dubai (experimental)</option>
-        <option value="17">Jabatan Kemajuan Islam Malaysia (JAKIM)</option>
-        <option value="18">Tunisia</option>
-        <option value="19">Algeria</option>
-        <option value="20">KEMENAG - Kementerian Agama Republik Indonesia</option>
-        <option value="21">Morocco</option>
-        <option value="22">Comunidade Islamica de Lisboa</option>
-        <option value="23">Ministry of Awqaf, Islamic Affairs and Holy Places, Jordan</option>
-    </select>
 
+    <!-- Method Selection Dropdown -->
+    <div>
+        <label for="method-select">Select Calculation Method:</label>
+        <select id="method-select" onchange="getPrayerTimes()">
+            <option value="0">Jafari / Shia Ithna-Ashari</option>
+            <option value="1">University of Islamic Sciences, Karachi</option>
+            <option value="2">Islamic Society of North America</option>
+            <option value="3" selected>Muslim World League</option>
+            <option value="4">Umm Al-Qura University, Makkah</option>
+            <option value="5">Egyptian General Authority of Survey</option>
+            <option value="7">Institute of Geophysics, University of Tehran</option>
+            <option value="8">Gulf Region</option>
+            <option value="9">Kuwait</option>
+            <option value="10">Qatar</option>
+            <option value="12">Majlis Ugama Islam Singapura, Singapore</option>
+            <option value="12">Union Organization Islamic de France</option>
+            <option value="13">Diyanet İşleri Başkanlığı, Turkey</option>
+            <option value="14">Spiritual Administration of Muslims of Russia</option>
+            <option value="15">Moonsighting Committee Worldwide</option>
+        </select>
     </div>
 
     <div id="date-info"></div>
 
     <div id="prayer-times">
-        <h2>Prayer Times:</h2>
+        <h2>Prayer Times (Daily):</h2>
         <table>
             <thead>
                 <tr>
@@ -150,6 +126,25 @@
         </table>
     </div>
 
+    <div id="monthly-prayer-times">
+        <h2>Prayer Times (Monthly):</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Fajr</th>
+                    <th>Dhuhr</th>
+                    <th>Asr</th>
+                    <th>Maghrib</th>
+                    <th>Isha</th>
+                </tr>
+            </thead>
+            <tbody id="monthly-times-list">
+                <!-- Monthly prayer times will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+
     <script>
         // Automatically fetch prayer times when the page loads
         window.onload = function() {
@@ -157,7 +152,6 @@
         };
 
         function getPrayerTimes() {
-            // Get the selected method from the dropdown
             const method = document.getElementById("method-select").value;
 
             // Check if geolocation is available
@@ -175,7 +169,7 @@
                             const address = locationData.locality || 'Address not available';
                             document.getElementById('location-info').innerHTML = `Your Location: ${address}, Latitude: ${latitude.toFixed(2)}, Longitude: ${longitude.toFixed(2)}`;
 
-                            // Get prayer times using the latitude and longitude
+                            // Get prayer times for today
                             const prayerTimesUrl = `https://api.aladhan.com/v1/timings/${date}?latitude=${latitude}&longitude=${longitude}&method=${method}`;
 
                             fetch(prayerTimesUrl)
@@ -188,6 +182,25 @@
                                         displayPrayerTimes(timings);
                                     } else {
                                         alert('Error fetching prayer times. Please try again.');
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    alert('An error occurred. Please try again.');
+                                });
+
+                            // Get monthly prayer times
+                            const currentMonth = new Date().getMonth() + 1; // Current month (1-12)
+                            const currentYear = new Date().getFullYear(); // Current year
+                            const monthlyPrayerTimesUrl = `https://api.aladhan.com/v1/calendar/${currentYear}/${currentMonth}?latitude=${latitude}&longitude=${longitude}&method=${method}`;
+
+                            fetch(monthlyPrayerTimesUrl)
+                                .then(response => response.json())
+                                .then(monthlyData => {
+                                    if (monthlyData.code === 200) {
+                                        displayMonthlyPrayerTimes(monthlyData.data);
+                                    } else {
+                                        alert('Error fetching monthly prayer times. Please try again.');
                                     }
                                 })
                                 .catch(error => {
@@ -209,18 +222,10 @@
 
             const gregorianDateStr = `${gregorianDate.day} ${gregorianDate.month.en} ${gregorianDate.year} (${gregorianDate.weekday.en})`;
             const hijriDateStr = `${hijriDate.day} ${hijriDate.month.en} ${hijriDate.year} (${hijriDate.weekday.en})`;
-            const hijriDateAr = `${hijriDate.day} ${hijriDate.month.ar} ${hijriDate.year} (${hijriDate.weekday.ar})`;
-
-            let holidays = hijriDate.holidays.length > 0 ? `<br>Holidays: ${hijriDate.holidays.join(', ')}` : '';
 
             document.getElementById('date-info').innerHTML = `
-                <strong>${gregorianDateStr}</strong>
-           <br>
-           <strong></strong> ${hijriDateStr}
-                
-                <br>
-                ${hijriDateAr}<br>
-                ${holidays}
+                <strong>${gregorianDateStr}</strong><br>
+                <strong></strong> ${hijriDateStr}
             `;
         }
 
@@ -240,12 +245,6 @@
                     const prayerRow = `<td>${prayer}</td><td>${prayerTime}</td>`;
                     row.innerHTML = prayerRow;
 
-                    // Check if current prayer time is ongoing
-                    if (isCurrentPrayer(currentTime, prayerTime)) {
-                        row.classList.add('current-prayer');
-                        currentPrayer = prayer;
-                    }
-
                     timesList.appendChild(row);
                 }
             }
@@ -253,14 +252,28 @@
             document.getElementById('prayer-times').style.display = 'block';
         }
 
-        function isCurrentPrayer(currentTime, prayerTime) {
-            const [currentHour, currentMinute] = currentTime.split(':').map(Number);
-            const [prayerHour, prayerMinute] = prayerTime.split(':').map(Number);
+        function displayMonthlyPrayerTimes(data) {
+            const monthlyTimesList = document.getElementById('monthly-times-list');
+            monthlyTimesList.innerHTML = '';
 
-            if (currentHour === prayerHour && currentMinute === prayerMinute) {
-                return true;
-            }
-            return false;
+            data.forEach(day => {
+                const row = document.createElement('tr');
+                const date = day.date.readable;
+                const timings = day.timings;
+
+                const rowData = `
+                    <td>${date}</td>
+                    <td>${timings.Fajr}</td>
+                    <td>${timings.Dhuhr}</td>
+                    <td>${timings.Asr}</td>
+                    <td>${timings.Maghrib}</td>
+                    <td>${timings.Isha}</td>
+                `;
+                row.innerHTML = rowData;
+                monthlyTimesList.appendChild(row);
+            });
+
+            document.getElementById('monthly-prayer-times').style.display = 'block';
         }
     </script>
 
