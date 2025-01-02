@@ -222,7 +222,7 @@
             { slug: 'darimi', name: 'Sunan al-Darimi' }
         ];
 
-        let bookNumbersData = [];
+        let bookNumberData = [];
 
         document.addEventListener('DOMContentLoaded', () => {
             const darkMode = localStorage.getItem('darkMode') === 'true';
@@ -241,7 +241,7 @@
 
             const { book } = getURLParams();
             if (book) {
-                fetchbookNumbersData(book);
+                fetchbookNumberData(book);
             }
         });
 
@@ -277,17 +277,17 @@
             return { book, bookNumber };
         }
 
-        function fetchbookNumbersData(bookSlug) {
-            const bookNumbersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/bookNumbers.json`;
-            fetch(bookNumbersUrl)
+        function fetchbookNumberData(bookSlug) {
+            const bookNumberUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/bookNumber.json`;
+            fetch(bookNumberUrl)
                 .then(response => response.json())
                 .then(data => {
-                    bookNumbersData = data.collection.books;
+                    bookNumberData = data.collection.books;
                     initializeViewer(bookSlug);
                 })
                 .catch(error => {
-                    console.error('Error fetching bookNumbers data:', error);
-                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load bookNumbers data for this book. Please try again later.</p>';
+                    console.error('Error fetching bookNumber data:', error);
+                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load bookNumber data for this book. Please try again later.</p>';
                     document.getElementById('loading').style.display = 'none';
                 });
         }
