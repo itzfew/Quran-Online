@@ -129,13 +129,13 @@
                                     loadedCount++;
 
                                     // Check if all books and chapters are loaded
-                                    if (loadedCount === books.length) {
+                                    if (loadedCount === books.length * data.collection.books.length) {
                                         document.getElementById('loading').style.display = 'none';
                                         filterResultsFromURL();
                                     }
                                 })
                                 .catch(error => {
-                                    console.error(`Error fetching chapter ${chapter.book_number} hadiths:`, error);
+                                    console.error(`Error fetching chapter ${chapter.book_number} hadiths for book ${book.name}:`, error);
                                 });
                         });
                     })
