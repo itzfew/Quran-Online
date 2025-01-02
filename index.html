@@ -178,12 +178,14 @@
             margin-right: 20px;
             cursor: pointer;
             font-size: 1.5rem;
+            position: relative;
         }
 
         /* Dark Mode Settings Section */
         .settings-container.dark-mode {
             background-color: #1a1a1a;
         }
+
         .settings-item img {
             width: 24px; /* Set the icon size */
             height: 24px; /* Set the icon size */
@@ -215,6 +217,31 @@
             color: white; /* White text in dark mode */
         }
 
+        /* Tooltip styles */
+        .tooltip {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            border-radius: 5px;
+            font-size: 12px;
+            visibility: hidden;
+        }
+
+        /* PWA Install Button */
+        .install-pwa {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #3498db;
+        }
+
+        /* Tooltip visibility on hover */
+        .settings-item:hover .tooltip {
+            visibility: visible;
+        }
     </style>
 </head>
 <body>
@@ -223,39 +250,50 @@
 <div class="settings-container">
     <!-- Dark/Light Mode Toggle -->
     <div class="settings-item" onclick="toggleTheme()">
-        <i class="fas fa-moon"></i> <!-- Dark/Light Mode icon -->
+        <i class="fas fa-moon"></i>
+        <div class="tooltip">Dark Mode</div>
     </div>
 
     <!-- Hadith Link -->
     <div class="settings-item">
         <a href="hadith.html">
-            <img src="images/hadith.png" alt="Hadith" class="icon" /> <!-- Hadith -->
+            <i class="fas fa-book"></i> <!-- Hadith -->
         </a>
+        <div class="tooltip">Hadith</div>
     </div>
 
     <!-- Tasbih Link -->
     <div class="settings-item">
         <a href="tasbih.html">
-            <img src="images/tasbih.png" alt="Tasbih" class="icon" /> <!-- Tasbih -->
+            <i class="fas fa-praying-hands"></i> <!-- Tasbih -->
         </a>
+        <div class="tooltip">Tasbih</div>
     </div>
 
     <!-- 99 Names Link -->
     <div class="settings-item">
         <a href="99-names.html">
-            <img src="images/99-names.png" alt="99 Names" class="icon" /> <!-- 99 Names -->
+            <i class="fas fa-users"></i> <!-- 99 Names -->
         </a>
+        <div class="tooltip">99 Names</div>
     </div>
 
     <!-- Prayer Link -->
     <div class="settings-item">
         <a href="prayer.html">
-            <img src="images/prayer.png" alt="Prayer" class="icon" /> <!-- Prayer -->
+            <i class="fas fa-prayer"></i> <!-- Prayer -->
         </a>
+        <div class="tooltip">Prayer</div>
+    </div>
+
+    <!-- PWA Install Button -->
+    <div class="settings-item install-pwa" onclick="installPWA()">
+        <i class="fas fa-download"></i> <!-- Install PWA -->
+        <div class="tooltip">Install PWA</div>
     </div>
 </div>
 
-<!-- Search Input for Surahs (Moved below buttons) -->
+<!-- Search Input for Surahs -->
 <div class="controls">
     <input type="text" id="search-input" placeholder="Search Surahs..." oninput="filterSurahs()">
 </div>
@@ -285,36 +323,29 @@
         listElement.innerHTML = '';  // Clear the previous list
 
         surahList.forEach(surah => {
-            // Create the anchor link that wraps the entire Surah item
             const surahLink = document.createElement('a');
-            surahLink.href = `surah?index=${parseInt(surah.index)}`;  // Remove leading zeros from index
-            surahLink.classList.add('surah-link'); // Add class for styling
-            surahLink.style.textDecoration = 'none';  // Remove default underline from anchor tag
+            surahLink.href = `surah?index=${parseInt(surah.index)}`;
+            surahLink.classList.add('surah-link');
+            surahLink.style.textDecoration = 'none';
 
-            // Create the Surah item element
             const surahItem = document.createElement('div');
             surahItem.classList.add('surah-item');
 
-            // Setting the inner HTML of the Surah item
             surahItem.innerHTML = `
-                <div class="surah-number">${parseInt(surah.index)}</div>  <!-- Surah Number with Background -->
+                <div class="surah-number">${parseInt(surah.index)}</div>
                 <div class="surah-title">${surah.title}</div>
                 <div class="surah-arabic">${surah.titleAr}</div>
                 <div class="surah-meta">
-                    <p>${surah.type}</p> <!-- Type -->
-                    <p>${surah.count}</p> <!-- Verse Count -->
+                    <p>${surah.type}</p>
+                    <p>${surah.count}</p>
                 </div>
             `;
 
-            // Append the Surah item to the anchor tag
             surahLink.appendChild(surahItem);
-
-            // Append the anchor link (which wraps the Surah item) to the list
             listElement.appendChild(surahLink);
         });
     }
 
-    // Function to filter Surahs
     function filterSurahs() {
         const searchTerm = document.getElementById("search-input").value.toLowerCase();
         const filteredSurahs = surahData.filter(surah => 
@@ -322,16 +353,14 @@
             surah.titleAr.toLowerCase().includes(searchTerm) ||
             surah.type.toLowerCase().includes(searchTerm)
         );
-        renderSurahs(filteredSurahs);  // Re-render filtered Surahs
+        renderSurahs(filteredSurahs);
     }
 
-    // Toggle Dark/Light Mode
     function toggleTheme() {
         const isDark = document.body.classList.toggle('dark-mode');
         localStorage.setItem('darkMode', isDark);
     }
 
-    // Set theme based on user preference
     window.addEventListener('DOMContentLoaded', () => {
         const savedTheme = localStorage.getItem('darkMode');
         if (savedTheme === 'true') {
@@ -339,7 +368,6 @@
         }
     });
 
-    // Function to handle PWA installation
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
@@ -350,28 +378,14 @@
             deferredPrompt.prompt();
             deferredPrompt.userChoice.then((choiceResult) => {
                 if (choiceResult.outcome === 'accepted') {
-                    console.log('User accepted the A2HS prompt');
+                    console.log("User accepted the A2HS prompt");
                 } else {
-                    console.log('User dismissed the A2HS prompt');
+                    console.log("User dismissed the A2HS prompt");
                 }
+                deferredPrompt = null;
             });
-            deferredPrompt = null;
         }
     }
-
-    // Register Service Worker for PWA functionality
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/service-worker.js')
-                .then((registration) => {
-                    console.log('Service Worker registered with scope:', registration.scope);
-                })
-                .catch((error) => {
-                    console.log('Service Worker registration failed:', error);
-                });
-        });
-    }
 </script>
-
 </body>
 </html>
