@@ -105,45 +105,50 @@
         function loadAllHadiths() {
             let loadedCount = 0;
 
-            // Loop through all books and fetch data
-            books.forEach(book => {
-                // Fetch all book-level data (collection of chapters)
-                fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book.slug}/books.json`)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Loop through all chapters in the book
-                        data.collection.books.forEach(chapter => {
-                            // Fetch hadiths data for each chapter
-                            fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book.slug}/${chapter.book_number}.json`)
-                                .then(response => response.json())
-                                .then(hadithData => {
-                                    // Add hadiths from the chapter to the global collection
-                                    if (hadithData.hadiths && hadithData.hadiths.length > 0) {
-                                        allHadithsData.push({
-                                            book: book.name,
-                                            chapter: chapter.book_name,
-                                            hadiths: hadithData.hadiths
-                                        });
-                                    }
+// Function to load all hadiths data from all books
+function loadAllHadiths() {
+    let totalBooks = books.length;
+    let completedBooks = 0; // Track number of books fully loaded
 
-                                    loadedCount++;
-
-                                    // Check if all books and chapters are loaded
-                                    if (loadedCount === books.length) {
-                                        document.getElementById('loading').style.display = 'none';
-                                        filterResultsFromURL();
-                                    }
-                                })
-                                .catch(error => {
-                                    console.error(`Error fetching chapter ${chapter.book_number} hadiths:`, error);
+    // Loop through all books and fetch data
+    books.forEach(book => {
+        // Fetch all book-level data (collection of chapters)
+        fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book.slug}/books.json`)
+            .then(response => response.json())
+            .then(data => {
+                // Loop through all chapters in the book
+                data.collection.books.forEach(chapter => {
+                    // Fetch hadiths data for each chapter
+                    fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book.slug}/${chapter.book_number}.json`)
+                        .then(response => response.json())
+                        .then(hadithData => {
+                            // Add hadiths from the chapter to the global collection
+                            if (hadithData.hadiths && hadithData.hadiths.length > 0) {
+                                allHadithsData.push({
+                                    book: book.name,
+                                    chapter: chapter.book_name,
+                                    hadiths: hadithData.hadiths
                                 });
+                            }
+
+                            // Check if all chapters of the current book have been loaded
+                            completedBooks++;
+                            if (completedBooks === totalBooks) {
+                                // All books are fully loaded, display the results
+                                document.getElementById('loading').style.display = 'none';
+                                filterResultsFromURL();
+                            }
+                        })
+                        .catch(error => {
+                            console.error(`Error fetching chapter ${chapter.book_number} hadiths:`, error);
                         });
-                    })
-                    .catch(error => {
-                        console.error(`Error fetching books data for ${book.slug}:`, error);
-                    });
+                });
+            })
+            .catch(error => {
+                console.error(`Error fetching books data for ${book.slug}:`, error);
             });
-        }
+    });
+}
 
         // Function to get the search term from URL query string
         function getSearchQuery() {
