@@ -27,14 +27,6 @@
             text-align: center;
         }
 
-        .search-input {
-            width: 100%;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
         .hadith {
             margin: 20px;
             padding: 10px;
@@ -85,11 +77,6 @@
 
 <body>
 
-    <!-- Search Section -->
-    <div class="settings-container">
-        <input type="text" id="searchInput" class="search-input" placeholder="Search Hadiths..." oninput="searchHadiths()">
-    </div>
-
     <div id="loading" class="loading">Loading...</div>
     <div id="hadithResult"></div>
 
@@ -129,6 +116,7 @@
                                     loadedCount++;
                                     if (loadedCount === books.length) {
                                         document.getElementById('loading').style.display = 'none';
+                                        filterResultsFromURL();
                                     }
                                 })
                                 .catch(error => {
@@ -142,11 +130,17 @@
             });
         }
 
-        // Function to search through all hadiths
-        function searchHadiths() {
-            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+        // Function to get the search term from URL query string
+        function getSearchQuery() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('search') || '';
+        }
+
+        // Function to filter the results based on the search query
+        function filterResultsFromURL() {
+            const searchQuery = getSearchQuery().toLowerCase();
             if (searchQuery === '') {
-                document.getElementById('hadithResult').innerHTML = '';
+                document.getElementById('hadithResult').innerHTML = 'Please provide a search term in the URL, e.g., ?search=Allah';
                 return;
             }
 
