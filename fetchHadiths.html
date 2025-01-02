@@ -13,6 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade+New&family=Cairo&family=Lalezar&display=swap" rel="stylesheet">
 
     <style>
+        /* Same styles as before */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f4f4;
@@ -165,6 +166,10 @@
                 option.textContent = book.name;
                 bookSelect.appendChild(option);
             });
+
+            // Set default selection for initial load (e.g., Sahih al-Bukhari)
+            bookSelect.value = 'bukhari';
+            loadBookChapters();
         }
 
         // Load chapters for the selected book
@@ -184,6 +189,10 @@
                             option.textContent = chapter.book_name;
                             chapterSelect.appendChild(option);
                         });
+
+                        // Set default chapter for initial load
+                        chapterSelect.value = chaptersData[0]?.book_number || '';
+                        fetchHadiths();
                     })
                     .catch(error => {
                         console.error('Error fetching chapters data:', error);
