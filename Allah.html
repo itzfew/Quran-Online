@@ -62,6 +62,12 @@
             color: #3498db;
         }
 
+        .highlight {
+            background-color: yellow;
+            color: red;
+            font-weight: bold;
+        }
+
         .header-meta {
             background-color: #ecf0f1;
             padding: 10px;
@@ -164,22 +170,31 @@
                 });
             });
 
-            displaySearchResults(searchResults);
+            displaySearchResults(searchResults, searchQuery);
         }
 
-        // Display the search results
-        function displaySearchResults(results) {
+        // Function to highlight the search term in the text
+        function highlightText(text, searchQuery) {
+            const regex = new RegExp(`(${searchQuery})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        // Display the search results with highlighted text
+        function displaySearchResults(results, searchQuery) {
             const hadithResult = document.getElementById('hadithResult');
             if (results.length > 0) {
                 let htmlContent = '';
                 results.forEach(result => {
+                    const highlightedArabic = highlightText(result.arabic, searchQuery);
+                    const highlightedEnglish = highlightText(result.english, searchQuery);
+
                     htmlContent += `
                         <div class="hadith">
                             <h3>Hadith #${result.id}</h3>
                             <p><strong>Book:</strong> ${result.book}</p>
                             <p><strong>Chapter:</strong> ${result.chapter}</p>
-                            <p class="arabic-text"><strong>Arabic:</strong> ${result.arabic}</p>
-                            <p class="english-text"><strong>English:</strong> ${result.english}</p>
+                            <p class="arabic-text"><strong>Arabic:</strong> ${highlightedArabic}</p>
+                            <p class="english-text"><strong>English:</strong> ${highlightedEnglish}</p>
                         </div>
                     `;
                 });
