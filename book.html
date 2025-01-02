@@ -278,7 +278,7 @@
         }
 
         function fetchChaptersData(bookSlug) {
-            const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
+            const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/books.json`;
             fetch(chaptersUrl)
                 .then(response => response.json())
                 .then(data => {
