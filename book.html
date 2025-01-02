@@ -247,7 +247,31 @@
         document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and book number in the URL (e.g., ?book=bukhari&bookNumber=1).</p>';
     }
 });
+function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-mode');
+            localStorage.setItem('darkMode', isDark);
+        }
 
+        function changeTextSize(increment) {
+            const currentSize = parseInt(window.getComputedStyle(document.body).fontSize);
+            const newSize = currentSize + increment;
+            document.body.style.fontSize = newSize + 'px';
+            localStorage.setItem('textSize', newSize);
+        }
+
+        function changeFont() {
+            const selectedFont = document.getElementById('fontSelect').value;
+            document.body.style.fontFamily = selectedFont;
+            localStorage.setItem('selectedFont', selectedFont);
+        }
+
+        function resetPreferences() {
+            localStorage.removeItem('darkMode');
+            localStorage.removeItem('textSize');
+            localStorage.removeItem('selectedFont');
+            location.reload();
+        }
+        
 // Function to retrieve the book and bookNumber parameters from the URL
 function getURLParams() {
     const urlParams = new URLSearchParams(window.location.search);
