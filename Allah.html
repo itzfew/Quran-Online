@@ -158,7 +158,9 @@
                     const englishText = hadith.english.text.toLowerCase();
                     const arabicText = hadith.arabic.toLowerCase();
 
+                    // Check if the search query matches any part of the hadiths in either language
                     if (englishText.includes(searchQuery) || arabicText.includes(searchQuery)) {
+                        // Push matched hadith data with search query highlighted
                         searchResults.push({
                             book: bookData.book,
                             chapter: bookData.chapter,
@@ -173,7 +175,7 @@
             displaySearchResults(searchResults, searchQuery);
         }
 
-        // Function to highlight the search term in the text
+        // Function to highlight all occurrences of search terms in the text
         function highlightText(text, searchQuery) {
             const regex = new RegExp(`(${searchQuery})`, 'gi');
             return text.replace(regex, '<span class="highlight">$1</span>');
@@ -193,9 +195,8 @@
                             <h3>Hadith #${result.id}</h3>
                             <p><strong>Book:</strong> ${result.book}</p>
                             <p><strong>Chapter:</strong> ${result.chapter}</p>
-                            <p><strong>Hadith Number:</strong> ${result.id}</p>
-                            <p class="arabic-text"><strong>Arabic:</strong> ${highlightedArabic}</p>
-                            <p class="english-text"><strong>English:</strong> ${highlightedEnglish}</p>
+                            <p><strong>Arabic:</strong> ${highlightedArabic}</p>
+                            <p><strong>English:</strong> ${highlightedEnglish}</p>
                         </div>
                     `;
                 });
