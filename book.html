@@ -63,149 +63,134 @@
         let chaptersData = [];
 
         document.addEventListener('DOMContentLoaded', () => {
-            const darkMode = localStorage.getItem('darkMode') === 'true';
-            const textSize = localStorage.getItem('textSize') || '18';
-            const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
+    const darkMode = localStorage.getItem('darkMode') === 'true';
+    const textSize = localStorage.getItem('textSize') || '18';
+    const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
 
-            if (darkMode) {
-                document.body.classList.add('dark-mode');
-            }
+    if (darkMode) {
+        document.body.classList.add('dark-mode');
+    }
 
-            // Set font size directly on the body
-            document.body.style.fontSize = textSize + 'px';
-            document.body.style.fontFamily = selectedFont;
+    // Set font size directly on the body
+    document.body.style.fontSize = textSize + 'px';
+    document.body.style.fontFamily = selectedFont;
 
-            document.getElementById('fontSelect').value = selectedFont;
+    document.getElementById('fontSelect').value = selectedFont;
 
-            const { bookNumber } = getURLParams();
-            if (bookNumber) {
-                fetchChaptersData(bookNumber);
-            }
+    const { bookSlug, bookNumber } = getURLParams();
+    if (bookSlug && bookNumber) {
+        fetchChaptersData(bookSlug);
+    } else {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and book number in the URL (e.g., ?book=bukhari&bookNumber=1).</p>';
+    }
+});
+
+// Function to retrieve the book and bookNumber parameters from the URL
+function getURLParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const bookSlug = urlParams.get('book');  // Get the 'book' parameter
+    const bookNumber = urlParams.get('bookNumber');  // Get the 'bookNumber' parameter
+    return { bookSlug, bookNumber };
+}
+
+// Function to fetch chapter data for the book
+function fetchChaptersData(bookSlug) {
+    const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/books.json`;
+    fetch(chaptersUrl)
+        .then(response => response.json())
+        .then(data => {
+            chaptersData = data.collection.books;
+            initializeViewer(bookSlug);
+        })
+        .catch(error => {
+            console.error('Error fetching chapters data:', error);
+            document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load chapters data for this book. Please try again later.</p>';
+            document.getElementById('loading').style.display = 'none';
         });
+}
 
-        function toggleTheme() {
-            const isDark = document.body.classList.toggle('dark-mode');
-            localStorage.setItem('darkMode', isDark);
+// Function to fetch the Hadiths for the given book and book number
+function fetchHadiths(bookSlug, bookNumber) {
+    const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/${bookNumber}.json`;
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            displayHadiths(data, bookSlug);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+            document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load Hadiths for this book. Please try again later.</p>';
+            document.getElementById('loading').style.display = 'none';
+        });
+}
+
+// Function to display the Hadiths on the page
+function displayHadiths(data, bookSlug) {
+    const hadithResult = document.getElementById('hadithResult');
+    const loading = document.getElementById('loading');
+    loading.style.display = 'none';
+
+    const bookName = books.find(b => b.slug === bookSlug)?.name || 'Unknown Book';
+
+    if (data.hadiths && data.hadiths.length > 0) {
+        let htmlContent = `
+            <div class="header-meta">
+                <h2>${bookName} <span style="font-size: 18px;">(Book Number: ${data.metadata.english.introduction})</span></h2>
+                <p><strong>Author:</strong> ${data.metadata.english.author}</p>
+                <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
+            </div>
+        `;
+        data.hadiths.forEach(hadith => {
+            htmlContent += `
+                <div class="hadith" onclick="selectHadith(event)">
+                    <h3>Hadith #${hadith.id}</h3>
+                    <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
+                    <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
+                </div>
+            `;
+        });
+        hadithResult.innerHTML = htmlContent;
+    } else {
+        hadithResult.innerHTML = '<p>No Hadiths found for this book number.</p>';
+    }
+}
+
+// Function to highlight the selected Hadith
+function selectHadith(event) {
+    const allHadiths = document.querySelectorAll('.hadith');
+    allHadiths.forEach(hadith => hadith.classList.remove('selected'));
+
+    const selectedHadith = event.currentTarget;
+    selectedHadith.classList.add('selected');
+}
+
+// Function to initialize the viewer and fetch Hadith data
+function initializeViewer(bookSlug) {
+    const { bookNumber } = getURLParams();
+    if (bookSlug && bookNumber) {
+        fetchHadiths(bookSlug, bookNumber);  
+    } else {
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and book number in the URL (e.g., ?book=bukhari&bookNumber=1).</p>';
+    }
+}
+
+// Search function to filter verses based on user input
+function searchVerse() {
+    const searchQuery = document.getElementById('verseSearch').value.toLowerCase();
+    const allHadiths = document.querySelectorAll('.hadith');
+    allHadiths.forEach(hadith => {
+        const englishText = hadith.querySelector('.english-text').textContent.toLowerCase();
+        const arabicText = hadith.querySelector('.arabic-text').textContent.toLowerCase();
+        if (englishText.includes(searchQuery) || arabicText.includes(searchQuery)) {
+            hadith.style.display = 'block';
+        } else {
+            hadith.style.display = 'none';
         }
-
-        function changeTextSize(increment) {
-            const currentSize = parseInt(window.getComputedStyle(document.body).fontSize);
-            const newSize = currentSize + increment;
-            document.body.style.fontSize = newSize + 'px';
-            localStorage.setItem('textSize', newSize);
-        }
-
-        function changeFont() {
-            const selectedFont = document.getElementById('fontSelect').value;
-            document.body.style.fontFamily = selectedFont;
-            localStorage.setItem('selectedFont', selectedFont);
-        }
-
-        function resetPreferences() {
-            localStorage.removeItem('darkMode');
-            localStorage.removeItem('textSize');
-            localStorage.removeItem('selectedFont');
-            location.reload();
-        }
-
-        function getURLParams() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const bookNumber = urlParams.get('bookNumber');  // Changed from 'book' to 'bookNumber'
-            return { bookNumber };
-        }
-
-        function fetchChaptersData(bookSlug) {
-            const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/books.json`;
-            fetch(chaptersUrl)
-                .then(response => response.json())
-                .then(data => {
-                    chaptersData = data.collection.books;
-                    initializeViewer(bookSlug);
-                })
-                .catch(error => {
-                    console.error('Error fetching chapters data:', error);
-                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load chapters data for this book. Please try again later.</p>';
-                    document.getElementById('loading').style.display = 'none';
-                });
-        }
-
-        function fetchHadiths(bookSlug, bookNumber) {
-            const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/${bookNumber}.json`;  // Changed from chapter to bookNumber
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    displayHadiths(data, bookSlug);
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                    document.getElementById('hadithResult').innerHTML = '<p class="error">Failed to load Hadiths for this book. Please try again later.</p>';
-                    document.getElementById('loading').style.display = 'none';
-                });
-        }
-
-        function displayHadiths(data, bookSlug) {
-            const hadithResult = document.getElementById('hadithResult');
-            const loading = document.getElementById('loading');
-            loading.style.display = 'none';
-
-            const bookName = books.find(b => b.slug === bookSlug)?.name || 'Unknown Book';
-
-            if (data.hadiths && data.hadiths.length > 0) {
-                let htmlContent = `
-                    <div class="header-meta">
-                        <h2>${bookName} <span style="font-size: 18px;">(Book Number: ${data.metadata.english.introduction})</span></h2>
-                        <p><strong>Author:</strong> ${data.metadata.english.author}</p>
-                        <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
-                    </div>
-                `;
-                data.hadiths.forEach(hadith => {
-                    htmlContent += `
-                        <div class="hadith" onclick="selectHadith(event)">
-                            <h3>Hadith #${hadith.id}</h3>
-                            <p class="arabic-text"><strong>Arabic:</strong> ${hadith.arabic}</p>
-                            <p class="english-text"><strong>English:</strong> ${hadith.english.text}</p>
-                        </div>
-                    `;
-                });
-                hadithResult.innerHTML = htmlContent;
-            } else {
-                hadithResult.innerHTML = '<p>No Hadiths found for this book number.</p>';
-            }
-        }
-
-        function selectHadith(event) {
-            // Deselect all hadiths first
-            const allHadiths = document.querySelectorAll('.hadith');
-            allHadiths.forEach(hadith => hadith.classList.remove('selected'));
-
-            // Select the clicked hadith
-            const selectedHadith = event.currentTarget;
-            selectedHadith.classList.add('selected');
-        }
-
-        function initializeViewer(bookSlug) {
-            const { bookNumber } = getURLParams();
-            if (bookSlug && bookNumber) {
-                fetchHadiths(bookSlug, bookNumber);  // Changed to use bookNumber
-            } else {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('hadithResult').innerHTML = '<p class="error">Please specify both the book and book number in the URL (e.g., ?bookNumber=bukhari&bookNumber=10).</p>';
-            }
-        }
-
-        function searchVerse() {
-            const searchQuery = document.getElementById('verseSearch').value.toLowerCase();
-            const allHadiths = document.querySelectorAll('.hadith');
-            allHadiths.forEach(hadith => {
-                const englishText = hadith.querySelector('.english-text').textContent.toLowerCase();
-                const arabicText = hadith.querySelector('.arabic-text').textContent.toLowerCase();
-                if (englishText.includes(searchQuery) || arabicText.includes(searchQuery)) {
-                    hadith.style.display = 'block';
-                } else {
-                    hadith.style.display = 'none';
-                }
-            });
-        }
+    });
+}  
+                
     </script>
 </body>
 
