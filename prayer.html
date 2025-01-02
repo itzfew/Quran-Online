@@ -61,7 +61,7 @@
             border-radius: 5px;
         }
 
-        #method-select {
+        #method-select, #time-format-select {
             font-size: 16px;
             padding: 8px;
             margin: 20px 0;
@@ -85,7 +85,7 @@
                 font-size: 14px;
             }
 
-            #method-select {
+            #method-select, #time-format-select {
                 width: 100%;
                 max-width: 100%;
             }
@@ -118,7 +118,7 @@
                 font-size: 12px;
             }
 
-            #method-select {
+            #method-select, #time-format-select {
                 padding: 6px;
             }
 
@@ -168,6 +168,15 @@
         </select>
     </div>
 
+    <!-- Time Format Selection Dropdown -->
+    <div>
+        <label for="time-format-select">Select Time Format:</label>
+        <select id="time-format-select" onchange="updateTimeFormat()">
+            <option value="12" selected>12-hour</option>
+            <option value="24">24-hour</option>
+        </select>
+    </div>
+
     <div id="date-info"></div>
 
     <div id="prayer-times">
@@ -205,6 +214,8 @@
     </div>
 
     <script>
+        let timeFormat = 12; // Default time format (12-hour)
+
         // Automatically fetch prayer times when the page loads
         window.onload = function() {
             getPrayerTimes();
@@ -283,59 +294,74 @@
             const hijriDateStr = `${hijriDate.day} ${hijriDate.month.en} ${hijriDate.year} (${hijriDate.weekday.en})`;
 
             document.getElementById('date-info').innerHTML = `
-                <strong>${gregorianDateStr}</strong><br>
-                <strong></strong> ${hijriDateStr}
+                <strong>Gregorian Date:</strong> ${gregorianDateStr}<br>
+                <strong>Hijri Date:</strong> ${hijriDateStr}
             `;
         }
 
         function displayPrayerTimes(timings) {
             const timesList = document.getElementById('times-list');
-            timesList.innerHTML = '';
+            timesList.innerHTML = ''; // Clear previous times
 
-            const currentTime = new Date().toLocaleTimeString('en-US', { hour12: false }).slice(0, 5); // Current time in HH:MM format
-            let currentPrayer = null;
+            const prayers = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+            prayers.forEach(prayer => {
+                const time = timings[prayer];
+                const formattedTime = timeFormat === 12 ? convertTo12Hour(time) : time;
 
-            for (let prayer in timings) {
-                if (timings.hasOwnProperty(prayer)) {
-                    const row = document.createElement('tr');
-                    row.classList.add('prayer-time-row');
-                    
-                    const prayerTime = timings[prayer];
-                    const prayerRow = `<td>${prayer}</td><td>${prayerTime}</td>`;
-                    row.innerHTML = prayerRow;
-
-                    timesList.appendChild(row);
-                }
-            }
-
-            document.getElementById('prayer-times').style.display = 'block';
+                const row = document.createElement('tr');
+                row.classList.add('prayer-time-row');
+                row.innerHTML = `<td>${prayer}</td><td>${formattedTime}</td>`;
+                timesList.appendChild(row);
+            });
         }
 
-        function displayMonthlyPrayerTimes(data) {
+        function displayMonthlyPrayerTimes(monthlyData) {
             const monthlyTimesList = document.getElementById('monthly-times-list');
-            monthlyTimesList.innerHTML = '';
+            monthlyTimesList.innerHTML = ''; // Clear previous monthly times
 
-            data.forEach(day => {
+            monthlyData.forEach(item => {
+                const date = item.date.gregorian.date;
+                const fajr = item.timings.Fajr;
+                const dhuhr = item.timings.Dhuhr;
+                const asr = item.timings.Asr;
+                const maghrib = item.timings.Maghrib;
+                const isha = item.timings.Isha;
+
+                const formattedFajr = timeFormat === 12 ? convertTo12Hour(fajr) : fajr;
+                const formattedDhuhr = timeFormat === 12 ? convertTo12Hour(dhuhr) : dhuhr;
+                const formattedAsr = timeFormat === 12 ? convertTo12Hour(asr) : asr;
+                const formattedMaghrib = timeFormat === 12 ? convertTo12Hour(maghrib) : maghrib;
+                const formattedIsha = timeFormat === 12 ? convertTo12Hour(isha) : isha;
+
                 const row = document.createElement('tr');
-                const date = day.date.readable;
-                const timings = day.timings;
-
-                const rowData = `
+                row.classList.add('prayer-time-row');
+                row.innerHTML = `
                     <td>${date}</td>
-                    <td>${timings.Fajr}</td>
-                    <td>${timings.Dhuhr}</td>
-                    <td>${timings.Asr}</td>
-                    <td>${timings.Maghrib}</td>
-                    <td>${timings.Isha}</td>
+                    <td>${formattedFajr}</td>
+                    <td>${formattedDhuhr}</td>
+                    <td>${formattedAsr}</td>
+                    <td>${formattedMaghrib}</td>
+                    <td>${formattedIsha}</td>
                 `;
-                row.innerHTML = rowData;
                 monthlyTimesList.appendChild(row);
             });
+        }
 
-            document.getElementById('monthly-prayer-times').style.display = 'block';
+        function convertTo12Hour(time) {
+            let [hour, minute] = time.split(':');
+            hour = parseInt(hour, 10);
+            const suffix = hour >= 12 ? 'PM' : 'AM';
+            if (hour > 12) hour -= 12;
+            if (hour === 0) hour = 12;
+
+            return `${hour}:${minute} ${suffix}`;
+        }
+
+        function updateTimeFormat() {
+            timeFormat = document.getElementById("time-format-select").value;
+            getPrayerTimes();
         }
     </script>
 
 </body>
 </html>
- 
