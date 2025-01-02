@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadith Search</title>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Google Fonts for Arabic fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Scheherazade+New&family=Cairo&family=Lalezar&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            font-size: 18px;
+        }
+
+        .settings-container {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .hadith {
+            margin: 20px;
+            padding: 10px;
+            background-color: #fafafa;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .hadith:hover {
+            background-color: #f1f1f1;
+        }
+
+        .hadith h3 {
+            margin-top: 0;
+            font-size: 20px;
+            color: #16a085;
+        }
+
+        .hadith p {
+            margin: 10px 0;
+            font-size: 16px;
+            color: #34495e;
+        }
+
+        #hadithResult {
+            margin-top: 30px;
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 20px;
+            color: #3498db;
+        }
+
+        .header-meta {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .header-meta strong {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Search Section -->
+    <div class="settings-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="Search Hadiths..." oninput="searchHadiths()">
+    </div>
+
+    <div id="loading" class="loading">Loading...</div>
+    <div id="hadithResult"></div>
+
+    <script>
+        const books = [
+            { slug: 'bukhari', name: 'Sahih al-Bukhari' },
+            { slug: 'muslim', name: 'Sahih Muslim' },
+            { slug: 'tirmidhi', name: 'Jami` at-Tirmidhi' },
+            { slug: 'nasa', name: 'Sunan al-Nasa\'i' },
+            { slug: 'ibnmajah', name: 'Sunan Ibn Majah' },
+            { slug: 'abudawud', name: 'Sunan Abu Dawud' },
+            { slug: 'malik', name: 'Muwatta Malik' },
+            { slug: 'ahmed', name: 'Musnad Ahmad ibn Hanbal' },
+            { slug: 'darimi', name: 'Sunan al-Darimi' }
+        ];
+
+        let allHadithsData = []; // Store all hadiths data across all books
+
+        // Function to load all hadiths data from all books
+        function loadAllHadiths() {
+            let loadedCount = 0;
+
+            books.forEach(book => {
+                fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book.slug}/books.json`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.collection.books.forEach(chapter => {
+                            fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${book.slug}/${chapter.book_number}.json`)
+                                .then(response => response.json())
+                                .then(hadithData => {
+                                    allHadithsData.push({
+                                        book: book.name,
+                                        chapter: chapter.book_name,
+                                        hadiths: hadithData.hadiths
+                                    });
+
+                                    loadedCount++;
+                                    if (loadedCount === books.length) {
+                                        document.getElementById('loading').style.display = 'none';
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching chapter hadiths:', error);
+                                });
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching books data:', error);
+                    });
+            });
+        }
+
+        // Function to search through all hadiths
+        function searchHadiths() {
+            const searchQuery = document.getElementById('searchInput').value.toLowerCase();
+            if (searchQuery === '') {
+                document.getElementById('hadithResult').innerHTML = '';
+                return;
+            }
+
+            let searchResults = [];
+
+            // Loop through all hadiths data
+            allHadithsData.forEach(bookData => {
+                bookData.hadiths.forEach(hadith => {
+                    const englishText = hadith.english.text.toLowerCase();
+                    const arabicText = hadith.arabic.toLowerCase();
+
+                    if (englishText.includes(searchQuery) || arabicText.includes(searchQuery)) {
+                        searchResults.push({
+                            book: bookData.book,
+                            chapter: bookData.chapter,
+                            id: hadith.id,
+                            arabic: hadith.arabic,
+                            english: hadith.english.text
+                        });
+                    }
+                });
+            });
+
+            displaySearchResults(searchResults);
+        }
+
+        // Display the search results
+        function displaySearchResults(results) {
+            const hadithResult = document.getElementById('hadithResult');
+            if (results.length > 0) {
+                let htmlContent = '';
+                results.forEach(result => {
+                    htmlContent += `
+                        <div class="hadith">
+                            <h3>Hadith #${result.id}</h3>
+                            <p><strong>Book:</strong> ${result.book}</p>
+                            <p><strong>Chapter:</strong> ${result.chapter}</p>
+                            <p class="arabic-text"><strong>Arabic:</strong> ${result.arabic}</p>
+                            <p class="english-text"><strong>English:</strong> ${result.english}</p>
+                        </div>
+                    `;
+                });
+                hadithResult.innerHTML = htmlContent;
+            } else {
+                hadithResult.innerHTML = '<p>No matching results found.</p>';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadAllHadiths();
+        });
+    </script>
+
+</body>
+
+</html>
