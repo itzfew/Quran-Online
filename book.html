@@ -292,7 +292,7 @@
         }
 
         function fetchHadiths(bookSlug) {
-            const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/books.json`;
+            const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/hadiths.json`;
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -316,8 +316,6 @@
                 let htmlContent = `
                     <div class="header-meta">
                         <h2>${bookName}</h2>
-                        <p><strong>Author:</strong> ${data.metadata.english.author}</p>
-                        <p><strong>Introduction:</strong> ${data.metadata.english.introduction}</p>
                     </div>
                 `;
                 data.hadiths.forEach(hadith => {
