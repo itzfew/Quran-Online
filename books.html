@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="manifest.json">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <title>Chapters List</title>
+    <title>Books List</title>
 
     <style>
         /* General Reset */
@@ -120,8 +120,8 @@
             color: #ddd; /* Lighter text color for dark mode */
         }
 
-        /* List for Chapters */
-        .chapter-list {
+        /* List for Books */
+        .book-list {
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
@@ -129,7 +129,7 @@
             list-style-type: none;
         }
 
-        .chapter-item {
+        .book-item {
             display: block;
             background-color: #fff;
             padding: 20px;
@@ -141,12 +141,12 @@
             text-decoration: none;
         }
 
-        .chapter-item:hover {
+        .book-item:hover {
             background-color: #f1f1f1;
             transform: scale(1.02);
         }
 
-        .chapter-item h3 {
+        .book-item h3 {
             font-size: 1.3rem;
             color: #333;
             margin-bottom: 5px;
@@ -157,29 +157,29 @@
             background-position: left center;
         }
 
-        .chapter-item p {
+        .book-item p {
             font-size: 1rem;
             color: #777;
             margin: 5px 0;
         }
 
-        /* Dark Mode for Chapter Items */
-        body.dark-mode .chapter-item {
+        /* Dark Mode for Book Items */
+        body.dark-mode .book-item {
             background-color: #333;
             border: 1px solid #444;
         }
 
-        body.dark-mode .chapter-item h3 {
+        body.dark-mode .book-item h3 {
             color: #ddd;
         }
 
-        body.dark-mode .chapter-item p {
+        body.dark-mode .book-item p {
             color: #bbb;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .chapter-list {
+            .book-list {
                 padding: 10px;
             }
 
@@ -196,29 +196,29 @@
                 font-size: 0.9rem;
             }
 
-            .chapter-item {
+            .book-item {
                 padding: 15px;
             }
 
-            .chapter-item h3 {
+            .book-item h3 {
                 font-size: 1.1rem;
             }
 
-            .chapter-item p {
+            .book-item p {
                 font-size: 0.9rem;
             }
         }
 
         @media (max-width: 480px) {
-            .chapter-item h3 {
+            .book-item h3 {
                 font-size: 1rem;
             }
 
-            .chapter-item p {
+            .book-item p {
                 font-size: 0.9rem;
             }
 
-            .chapter-item a {
+            .book-item a {
                 font-size: 1rem;
             }
         }
@@ -249,7 +249,7 @@
         </div>
     </div>
 
-    <h1>Chapters List</h1>
+    <h1>Books List</h1>
 
     <div class="book-details">
         <h2 id="bookTitle"></h2>
@@ -257,7 +257,7 @@
         <p id="bookDescription"></p> <!-- Added for description -->
     </div>
 
-    <ul class="chapter-list" id="chapterList"></ul>
+    <ul class="book-list" id="bookList"></ul>
 
     <script>
         const books = [
@@ -335,30 +335,30 @@
             document.getElementById("bookAuthor").textContent = book.english.author;
             document.getElementById("bookDescription").textContent = book.description;  // Display book description
 
-            const chaptersUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/chapters.json`;
-            fetch(chaptersUrl)
+            const booksUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/hadiths/${bookSlug}/books.json`;
+            fetch(booksUrl)
                 .then(response => response.json())
                 .then(data => {
-                    const chapterList = document.getElementById("chapterList");
+                    const bookList = document.getElementById("bookList");
 
-                    data.collection.books.forEach(chapter => {
-                        const chapterElement = document.createElement('a');
-                        chapterElement.href = `chapter.html?book=${bookSlug}&chapter=${chapter.book_number}`;
-                        chapterElement.classList.add('chapter-item');
-                        chapterElement.innerHTML = `
-                            <h3>Chapter ${chapter.book_number}</h3>
-                            <p>${chapter.book_name}</p>
-                            <p><strong>Hadith Range:</strong> ${chapter.hadith_range}</p>
+                    data.collection.books.forEach(bookItem => {
+                        const bookElement = document.createElement('a');
+                        bookElement.href = `book.html?book=${bookSlug}&bookNumber=${bookItem.book_number}`;
+                        bookElement.classList.add('book-item');
+                        bookElement.innerHTML = `
+                            <h3>Book ${bookItem.book_number}</h3>
+                            <p>${bookItem.book_name}</p>
+                            <p><strong>Hadith Range:</strong> ${bookItem.hadith_range}</p>
                         `;
-                        chapterList.appendChild(chapterElement);
+                        bookList.appendChild(bookElement);
                     });
                 })
                 .catch(error => {
-                    console.error('Error fetching chapter data:', error);
-                    document.getElementById("chapterList").innerHTML = "<p>Could not load chapters at this time.</p>";
+                    console.error('Error fetching book data:', error);
+                    document.getElementById("bookList").innerHTML = "<p>Could not load books at this time.</p>";
                 });
         } else {
-            document.getElementById("chapterList").innerHTML = "<p>No chapters found for this book.</p>";
+            document.getElementById("bookList").innerHTML = "<p>No books found for this collection.</p>";
         }
 
         // Toggle Dark/Light Mode
