@@ -24,9 +24,6 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
         table, th, td {
@@ -80,6 +77,68 @@
         .prayer-time-row:hover {
             background-color: #c8e6c9;
             cursor: pointer;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            #location-info {
+                font-size: 14px;
+            }
+
+            #method-select {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            #date-info {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            table, th, td {
+                padding: 8px;
+                font-size: 14px;
+            }
+
+            table {
+                margin-top: 10px;
+            }
+
+            th {
+                font-size: 16px;
+            }
+
+            td {
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #location-info {
+                font-size: 12px;
+            }
+
+            #method-select {
+                padding: 6px;
+            }
+
+            #date-info {
+                font-size: 12px;
+                padding: 8px;
+            }
+
+            table, th, td {
+                padding: 6px;
+                font-size: 12px;
+            }
+
+            th {
+                font-size: 14px;
+            }
+
+            td {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
