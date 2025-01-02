@@ -152,31 +152,58 @@
 </head>
 <body>
     <!-- Settings Section at the top (Fixed) -->
-    <div class="settings-container">
-        <!-- Dark/Light Mode Toggle -->
-        <div class="settings-item" onclick="toggleTheme()">
-            <i class="fas fa-adjust"></i> <!-- Dark/Light Mode toggle -->
-        </div>
-
-        <!-- Install App -->
-        <div class="settings-item" onclick="installPWA()">
-            <i class="fas fa-download"></i> <!-- Install App -->
-        </div>
-
-        <!-- Hadith Link -->
-        <div class="settings-item">
-            <a href="hadith.html">
-                <i class="fas fa-book-open"></i> <!-- Hadith -->
-            </a>
-        </div>
-
-        <!-- Tasbih Link -->
-        <div class="settings-item">
-            <a href="tasbih.html">
-                <i class="fas fa-pray"></i> <!-- Tasbih -->
-            </a>
-        </div>
+<div class="settings-container">
+    <!-- Dark/Light Mode Toggle -->
+    <div class="settings-item" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+        <div class="tooltip">Dark Mode</div>
     </div>
+
+    <!-- Hadith Link -->
+    <div class="settings-item">
+        <a href="hadith.html">
+            <i class="fas fa-kaaba"></i> <!-- Hadith -->
+        </a>
+        <div class="tooltip">Hadith</div>
+    </div>
+<!-- Kalima Link -->
+<div class="settings-item">
+    <a href="kalima.html">
+        <i class="fas fa-hand-point-right"></i> <!-- Kalima -->
+    </a>
+    <div class="tooltip">Kalima</div>
+</div>
+
+    <!-- Tasbih Link -->
+    <div class="settings-item">
+        <a href="tasbih.html">
+            <i class="fas fa-praying-hands"></i> <!-- Tasbih -->
+        </a>
+        <div class="tooltip">Tasbih</div>
+    </div>
+
+    <!-- 99 Names Link -->
+    <div class="settings-item">
+        <a href="99-names.html">
+            <i class="fas fa-mosque"></i> <!-- 99 Names -->
+        </a>
+        <div class="tooltip">99 Names</div>
+    </div>
+
+    <!-- Prayer Link -->
+    <div class="settings-item">
+        <a href="prayer.html">
+            <i class="fas fa-pray"></i> <!-- Prayer -->
+        </a>
+        <div class="tooltip">Prayer</div>
+    </div>
+
+    <!-- PWA Install Button -->
+    <div class="settings-item install-pwa" onclick="installPWA()">
+        <i class="fas fa-download"></i> <!-- Install PWA -->
+        <div class="tooltip">Install PWA</div>
+    </div>
+</div>
 
     <h1>Hadith Books</h1>
 
