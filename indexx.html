@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quran Surahs</title>
+
+    <!-- Link to PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Internal CSS -->
+    <style>
+        /* Styles omitted for brevity (use your existing CSS) */
+    </style>
+</head>
+<body>
+
+<!-- Settings Section -->
+<div class="settings-container">
+    <!-- Dark Mode Toggle -->
+    <div class="settings-item" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+        <div class="tooltip">Dark Mode</div>
+    </div>
+
+    <!-- Other settings items (Hadith, Kalima, etc.) -->
+</div>
+
+<!-- Search Input for Surahs -->
+<div class="controls">
+    <input type="text" id="search-input" placeholder="Search Surahs..." oninput="filterSurahs()">
+</div>
+
+<!-- Surah List -->
+<div id="surah-list">
+    <!-- Surah items will be dynamically populated here -->
+</div>
+
+<script>
+    let surahData = [];
+    let deferredPrompt;
+
+    // Fetch Surah data
+    fetch('https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah.json')
+        .then(response => response.json())
+        .then(data => {
+            surahData = data;
+            renderSurahs(surahData);
+        })
+        .catch(error => console.error("Error loading Surah data:", error));
+
+    // Render Surahs
+    function renderSurahs(surahList) {
+        const listElement = document.getElementById("surah-list");
+        listElement.innerHTML = ''; // Clear the list
+
+        surahList.forEach(surah => {
+            const progress = getSurahProgress(surah.index);
+
+            const surahLink = document.createElement('a');
+            surahLink.href = `surah?index=${parseInt(surah.index)}`;
+            surahLink.classList.add('surah-link');
+            surahLink.style.textDecoration = 'none';
+
+            const surahItem = document.createElement('div');
+            surahItem.classList.add('surah-item');
+
+            surahItem.innerHTML = `
+                <div class="surah-number">${parseInt(surah.index)}</div>
+                <div class="surah-title">${surah.title}</div>
+                <div class="surah-arabic">${surah.titleAr}</div>
+                <div class="surah-meta">
+                    <p>${surah.type}</p>
+                    <p>${surah.count}</p>
+                    <p class="progress-text">Progress: ${progress}%</p>
+                </div>
+            `;
+
+            surahLink.appendChild(surahItem);
+            listElement.appendChild(surahLink);
+        });
+    }
+
+    // Filter Surahs
+    function filterSurahs() {
+        const searchTerm = document.getElementById("search-input").value.toLowerCase();
+        const filteredSurahs = surahData.filter(surah =>
+            surah.title.toLowerCase().includes(searchTerm) ||
+            surah.titleAr.toLowerCase().includes(searchTerm) ||
+            surah.type.toLowerCase().includes(searchTerm)
+        );
+        renderSurahs(filteredSurahs);
+    }
+
+    // Get Surah progress from localStorage
+    function getSurahProgress(index) {
+        const progress = localStorage.getItem(`surah-progress-${index}`);
+        return progress ? parseInt(progress, 10) : 0; // Default to 0% if no progress found
+    }
+
+    // Save Surah progress to localStorage
+    function setSurahProgress(index, percentage) {
+        localStorage.setItem(`surah-progress-${index}`, percentage);
+    }
+
+    // Toggle Dark/Light Mode
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', isDark);
+    }
+
+    // Initialize theme and PWA install prompt
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('darkMode');
+        if (savedTheme === 'true') {
+            document.body.classList.add('dark-mode');
+        }
+    });
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+    });
+
+    function installPWA() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log("User accepted the A2HS prompt");
+                } else {
+                    console.log("User dismissed the A2HS prompt");
+                }
+                deferredPrompt = null;
+            });
+        }
+    }
+</script>
+</body>
+</html>
