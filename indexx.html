@@ -99,122 +99,34 @@
             white-space: nowrap; /* Prevent text wrapping */
         }
 
+        /* Surah Progress Indicator */
+        .progress-bar {
+            width: 100px;
+            height: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            margin-left: 10px;
+        }
+
+        .progress-bar span {
+            display: block;
+            height: 100%;
+            background-color: #3498db;
+            border-radius: 5px;
+        }
+
         /* Dark Mode Surah Card */
         body.dark-mode .surah-item {
             background-color: #333;  /* Dark background for Surah item */
             border: 1px solid #444;  /* Slightly darker border */
         }
 
-        /* Surah Title */
-        .surah-title,
-        .surah-arabic,
-        .surah-meta {
+        .surah-title, .surah-arabic, .surah-meta {
             font-size: 1em;
             text-overflow: ellipsis; /* Add ellipsis if the text overflows */
             overflow: hidden; /* Ensure text is truncated */
             white-space: nowrap; /* Prevent text wrapping */
             max-width: 200px; /* Limit the width to avoid excessive overflow */
-        }
-
-        .surah-title {
-            font-weight: bold;
-            color: #2c3e50;
-            margin-right: 20px;
-        }
-
-        .surah-arabic {
-            font-family: 'Amiri', serif;
-            color: #e74c3c;
-            margin-right: 20px;
-        }
-
-        /* Surah Meta Information */
-        .surah-meta p {
-            margin: 0;
-            color: #7f8c8d;
-            font-size: 0.9em;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        /* Dark Mode Text */
-        body.dark-mode .surah-title, 
-        body.dark-mode .surah-arabic,
-        body.dark-mode .surah-meta p {
-            color: #fff; /* White text in dark mode */
-        }
-
-        /* Dark Mode Adjustments for Controls */
-        body.dark-mode .controls input,
-        body.dark-mode .controls select {
-            background-color: #444;
-            color: white;
-            border: 1px solid #666;
-        }
-
-        /* Dark Mode Input Focus */
-        body.dark-mode .controls input:focus,
-        body.dark-mode .controls select:focus {
-            background-color: #555;
-            outline: none;
-        }
-
-        /* Settings Section */
-        .settings-container {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            padding: 10px 20px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            background-color: #BEBEBE;
-        }
-
-        .settings-item {
-            margin-right: 20px;
-            cursor: pointer;
-            font-size: 1.5rem;
-            position: relative;
-        }
-
-        /* Dark Mode Settings Section */
-        .settings-container.dark-mode {
-            background-color: #1a1a1a;
-        }
-
-        .settings-item img {
-            width: 24px; /* Set the icon size */
-            height: 24px; /* Set the icon size */
-            object-fit: contain;
-        }
-
-        .settings-item.dark-mode img {
-            filter: brightness(1.2); /* Brighter icons in dark mode */
-        }
-
-        /* Surah Number Styling with Background Image */
-        .surah-number {
-            display: inline-block;
-            width: 50px;
-            height: 50px;
-            background-image: url('https://quran-online.pages.dev/source/download.png');
-            background-size: cover;
-            background-position: center;
-            text-align: center;
-            line-height: 50px;
-            color: black; /* Default to black text in light mode */
-            font-weight: bold;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
-
-        /* Change text color to white in dark mode */
-        body.dark-mode .surah-number {
-            color: white; /* White text in dark mode */
         }
 
         /* Tooltip styles */
@@ -231,14 +143,6 @@
             visibility: hidden;
         }
 
-        /* PWA Install Button */
-        .install-pwa {
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #3498db;
-        }
-
-        /* Tooltip visibility on hover */
         .settings-item:hover .tooltip {
             visibility: visible;
         }
@@ -246,15 +150,13 @@
 </head>
 <body>
 
-<!-- Settings Section -->
+<!-- Settings Section at the top (Fixed) -->
 <div class="settings-container">
-    <!-- Dark Mode Toggle -->
+    <!-- Dark/Light Mode Toggle -->
     <div class="settings-item" onclick="toggleTheme()">
         <i class="fas fa-moon"></i>
         <div class="tooltip">Dark Mode</div>
     </div>
-
-    <!-- Other settings items (Hadith, Kalima, etc.) -->
 </div>
 
 <!-- Search Input for Surahs -->
@@ -275,19 +177,24 @@
     fetch('https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah.json')
         .then(response => response.json())
         .then(data => {
-            surahData = data;
-            renderSurahs(surahData);
+            surahData = data; 
+            renderSurahs(surahData); 
         })
-        .catch(error => console.error("Error loading Surah data:", error));
+        .catch(error => {
+            console.error("Error loading Surah data:", error);
+        });
 
-    // Render Surahs
+    // Store progress in localStorage for each Surah
+    function updateProgress(surahIndex, progress) {
+        localStorage.setItem(`surah_${surahIndex}_progress`, progress);
+    }
+
+    // Render Surahs with progress
     function renderSurahs(surahList) {
         const listElement = document.getElementById("surah-list");
-        listElement.innerHTML = ''; // Clear the list
+        listElement.innerHTML = '';  // Clear the previous list
 
         surahList.forEach(surah => {
-            const progress = getSurahProgress(surah.index);
-
             const surahLink = document.createElement('a');
             surahLink.href = `surah?index=${parseInt(surah.index)}`;
             surahLink.classList.add('surah-link');
@@ -296,6 +203,8 @@
             const surahItem = document.createElement('div');
             surahItem.classList.add('surah-item');
 
+            const progress = localStorage.getItem(`surah_${surah.index}_progress`) || 0;
+
             surahItem.innerHTML = `
                 <div class="surah-number">${parseInt(surah.index)}</div>
                 <div class="surah-title">${surah.title}</div>
@@ -303,69 +212,47 @@
                 <div class="surah-meta">
                     <p>${surah.type}</p>
                     <p>${surah.count}</p>
-                    <p class="progress-text">Progress: ${progress}%</p>
+                </div>
+                <div class="progress-bar">
+                    <span style="width: ${progress}%"></span>
                 </div>
             `;
+
+            // Click event to update progress
+            surahItem.addEventListener('click', () => {
+                let newProgress = parseInt(progress) + 10; // Increment progress
+                if (newProgress > 100) newProgress = 100; // Limit to 100%
+                updateProgress(surah.index, newProgress);
+                renderSurahs(surahData); // Re-render to update progress
+            });
 
             surahLink.appendChild(surahItem);
             listElement.appendChild(surahLink);
         });
     }
 
-    // Filter Surahs
+    // Filter Surahs based on search input
     function filterSurahs() {
         const searchTerm = document.getElementById("search-input").value.toLowerCase();
-        const filteredSurahs = surahData.filter(surah =>
-            surah.title.toLowerCase().includes(searchTerm) ||
+        const filteredSurahs = surahData.filter(surah => 
+            surah.title.toLowerCase().includes(searchTerm) || 
             surah.titleAr.toLowerCase().includes(searchTerm) ||
             surah.type.toLowerCase().includes(searchTerm)
         );
         renderSurahs(filteredSurahs);
     }
 
-    // Get Surah progress from localStorage
-    function getSurahProgress(index) {
-        const progress = localStorage.getItem(`surah-progress-${index}`);
-        return progress ? parseInt(progress, 10) : 0; // Default to 0% if no progress found
-    }
-
-    // Save Surah progress to localStorage
-    function setSurahProgress(index, percentage) {
-        localStorage.setItem(`surah-progress-${index}`, percentage);
-    }
-
-    // Toggle Dark/Light Mode
     function toggleTheme() {
         const isDark = document.body.classList.toggle('dark-mode');
         localStorage.setItem('darkMode', isDark);
     }
 
-    // Initialize theme and PWA install prompt
     window.addEventListener('DOMContentLoaded', () => {
         const savedTheme = localStorage.getItem('darkMode');
         if (savedTheme === 'true') {
             document.body.classList.add('dark-mode');
         }
     });
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-    });
-
-    function installPWA() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log("User accepted the A2HS prompt");
-                } else {
-                    console.log("User dismissed the A2HS prompt");
-                }
-                deferredPrompt = null;
-            });
-        }
-    }
 </script>
 </body>
 </html>
