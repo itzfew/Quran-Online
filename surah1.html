@@ -54,14 +54,20 @@
     document.addEventListener('DOMContentLoaded', () => {
         const darkMode = localStorage.getItem('darkMode') === 'true';
         const textSize = localStorage.getItem('textSize') || '18';
+        const lastReadVerse = localStorage.getItem('lastReadVerse');
+        
         if (darkMode) {
             document.body.classList.add('dark-mode');
         }
 
         document.body.style.fontSize = textSize + 'px';
-
-        const index = getQueryParam('index');
-        fetchSurah(index ? index : 1);
+        
+        if (lastReadVerse) {
+            const [index, verse] = lastReadVerse.split('-');
+            fetchSurah(index, verse);
+        } else {
+            fetchSurah(1);
+        }
     });
 
     function getQueryParam(param) {
@@ -69,7 +75,7 @@
         return urlParams.get(param);
     }
 
-    async function fetchSurah(index) {
+    async function fetchSurah(index, lastReadVerse = 0) {
         const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
         const arabicData = await arabicResponse.json();
 
@@ -79,10 +85,10 @@
         const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(index).padStart(3, '0')}.json`);
         const urduData = await urduResponse.json();
 
-        displaySurah(arabicData, translationData, urduData);
+        displaySurah(arabicData, translationData, urduData, lastReadVerse);
     }
 
-    function displaySurah(arabicData, translationData, urduData) {
+    function displaySurah(arabicData, translationData, urduData, lastReadVerse) {
         const surahHeading = document.getElementById('surah-heading');
         const firstVerse = document.getElementById('first-verse');
         const content = document.getElementById('content');
@@ -97,11 +103,6 @@
 
         surahHeading.innerText = arabicData.name;
         firstVerse.innerText = arabicVerses['verse_0'];
-
-        // Check if the user has a saved progress
-        const savedProgress = localStorage.getItem('progress');
-        const currentProgress = savedProgress ? JSON.parse(savedProgress) : {};
-        const currentSurahIndex = arabicData.index;
 
         for (let i = 1; i <= count; i++) {
             const arabicVerse = arabicVerses[`verse_${i}`];
@@ -124,11 +125,13 @@
 
             verseDiv.innerHTML = verseContent;
 
-            verseDiv.onclick = () => toggleHighlight(i);
+            verseDiv.onclick = () => {
+                toggleHighlight(i);
+                saveProgress(i, index); // Save the last read verse
+            };
 
-            // Check if this verse is part of saved progress and highlight it
-            if (currentProgress[currentSurahIndex] && currentProgress[currentSurahIndex] >= i) {
-                verseDiv.classList.add('selected');
+            if (i <= lastReadVerse) {
+                verseDiv.classList.add('read');
             }
 
             content.appendChild(verseDiv);
@@ -151,15 +154,22 @@
         const viewButton = verseElement.querySelector('.view-btn');
         if (shareButton) shareButton.style.display = 'inline-block';
         if (viewButton) viewButton.style.display = 'inline-block';
-
-        saveProgress(verseId);
     }
 
-    function saveProgress(verseId) {
-        const currentSurahIndex = getQueryParam('index');
-        const progress = JSON.parse(localStorage.getItem('progress') || '{}');
-        progress[currentSurahIndex] = verseId;
-        localStorage.setItem('progress', JSON.stringify(progress));
+    function saveProgress(verseId, surahIndex) {
+        const lastReadVerse = `${surahIndex}-${verseId}`;
+        localStorage.setItem('lastReadVerse', lastReadVerse);
+        updateReadingProgress();
+    }
+
+    function updateReadingProgress() {
+        const lastReadVerse = localStorage.getItem('lastReadVerse');
+        if (lastReadVerse) {
+            const [index, verse] = lastReadVerse.split('-');
+            const totalVerses = 604; // Total number of verses in Quran
+            const progress = (verse / totalVerses) * 100;
+            console.log(`Reading Progress: ${Math.round(progress)}%`);
+        }
     }
 
     function scrollToTop() {
@@ -180,7 +190,7 @@
     function resetPreferences() {
         localStorage.removeItem('darkMode');
         localStorage.removeItem('textSize');
-        localStorage.removeItem('progress');
+        localStorage.removeItem('lastReadVerse');
         location.reload();
     }
 
