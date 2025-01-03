@@ -6,6 +6,8 @@
     <title>Quran Surah Viewer</title>
     <!-- Add Arabic font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Scheherazade&display=swap" rel="stylesheet">
+    <!-- Add FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -28,20 +30,15 @@
         .verses {
             line-height: 1.8;
             text-align: right; /* Right align Arabic text */
-            font-size: 18px;
+            font-size: 35px;
             color: #555;
             font-family: 'Scheherazade', serif; /* Apply new Arabic font */
         }
 
         .verse-number {
-            font-size: 1.0em;
-            margin-left: 10px;
+            font-size: 1.2em;
             font-weight: bold;
-            background-image: url('https://quran-online.pages.dev/source/download.png');
-            background-size: cover;
-            background-position: center;
-            padding: 5px 10px;
-            border-radius: 8px;
+            margin-left: 10px;
             color: black;
             display: inline-block;
         }
@@ -60,6 +57,7 @@
             display: flex;
             justify-content: center;
             margin-top: 20px;
+            margin-bottom: 20px;
         }
 
         .button {
@@ -71,24 +69,36 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .button i {
+            margin-right: 5px;
         }
 
         .button:disabled {
             background-color: #ccc;
             cursor: not-allowed;
         }
+
+        hr {
+            border: 1px solid #ccc;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
+    <div class="navigation">
+        <button id="prev-button" class="button" disabled><i class="fas fa-chevron-left"></i> Previous</button>
+        <button id="next-button" class="button"><i class="fas fa-chevron-right"></i> Next</button>
+    </div>
+
     <div class="surah-info">
         <h2 id="surah-name">Loading...</h2>
         <p id="verse-count"></p>
     </div>
     <div class="verses" id="verses">Please wait...</div>
-    <div class="navigation">
-        <button id="prev-button" class="button" disabled>Previous</button>
-        <button id="next-button" class="button">Next</button>
-    </div>
 
     <script>
         const surahBaseURL = "https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_";
@@ -99,6 +109,12 @@
         const versesEl = document.getElementById("verses");
         const prevButton = document.getElementById("prev-button");
         const nextButton = document.getElementById("next-button");
+
+        // Function to convert English numbers to Arabic numerals
+        function convertToArabicNumerals(number) {
+            const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+            return number.toString().split('').map(digit => arabicNumerals[parseInt(digit)]).join('');
+        }
 
         const fetchSurah = async (surahNumber) => {
             try {
@@ -118,35 +134,69 @@
             surahNameEl.textContent = `${data.index} - ${data.name}`;
             verseCountEl.textContent = `Number of Verses: ${data.count}`;
 
-            // Display verse_0 as heading and start counting from verse 1
-            const verses = Object.entries(data.verse).map(([key, verse], index) => {
+            // Number of verses per page (set to 6 verses per page)
+            const versesPerPage = 6;
+            
+            let versesHTML = "";
+            let verseCounter = 1; // Start counting from 1
+
+            Object.entries(data.verse).forEach(([key, verse], index) => {
                 if (key === "verse_0") {
-                    return `<div class="verse-heading">${verse}</div>`; // Centered heading for verse_0
+                    versesHTML += `<div class="verse-heading">${verse}</div>`; // Centered heading for verse_0
+                } else {
+                    // Convert the verse number to Arabic numerals and display it after the verse text
+                    const arabicVerseNumber = convertToArabicNumerals(verseCounter);
+                    versesHTML += `${verse} <span class="verse-number">(${arabicVerseNumber})</span>`;
+                    verseCounter++;
+
+                    // Insert a horizontal line after every 6 verses
+                    if (verseCounter % versesPerPage === 0) {
+                        versesHTML += "<hr>";
+                    }
                 }
-                return `${verse}<span class="verse-number">${index}</span>`; // Start count from 1
-            }).join(' ');
-            versesEl.innerHTML = verses;
+            });
+
+            versesEl.innerHTML = versesHTML;
 
             prevButton.disabled = currentSurah === 1;
             nextButton.disabled = currentSurah === 114;
         };
 
+        // Update the Surah based on the query parameter in the URL
+        const getSurahFromURL = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const surahIndex = urlParams.get('index');
+            if (surahIndex && !isNaN(surahIndex) && surahIndex >= 1 && surahIndex <= 114) {
+                currentSurah = parseInt(surahIndex);
+            }
+            fetchSurah(currentSurah);
+        };
+
+        // Event listeners for the buttons
         prevButton.addEventListener("click", () => {
             if (currentSurah > 1) {
                 currentSurah--;
-                fetchSurah(currentSurah);
+                updateURLAndFetch();
             }
         });
 
         nextButton.addEventListener("click", () => {
             if (currentSurah < 114) {
                 currentSurah++;
-                fetchSurah(currentSurah);
+                updateURLAndFetch();
             }
         });
 
-        // Initial fetch
-        fetchSurah(currentSurah);
+        // Function to update URL without reloading the page
+        const updateURLAndFetch = () => {
+            const newURL = new URL(window.location);
+            newURL.searchParams.set('index', currentSurah);
+            window.history.pushState({}, '', newURL);
+            fetchSurah(currentSurah);
+        };
+
+        // Initial fetch based on the URL
+        getSurahFromURL();
     </script>
 </body>
 </html>
