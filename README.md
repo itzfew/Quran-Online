@@ -31,12 +31,6 @@ Below is an overview of the directory structure of the project:
 │   ├── download.png
 │   ├── golden-islamic-border-free-png.png
 │   └── pic.png
-├── lang/
-│   ├── home.html
-│   ├── surah-details-ar.html
-│   ├── surah-details-ea.html
-│   ├── surah-details-en.html
-│   └── index.html
 ├── podcast/
 │   └── rss.xml
 ├── source/
