@@ -25,6 +25,7 @@
         .surah-info {
             text-align: center;
             margin-bottom: 20px;
+            position: relative;
         }
 
         .verses {
@@ -54,32 +55,31 @@
 
         /* Additional styling for buttons */
         .navigation {
+            position: absolute;
+            top: 0;
+            width: 100%;
             display: flex;
-            justify-content: center;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
         }
 
         .button {
-            padding: 10px 20px;
-            font-size: 16px;
-            margin: 5px;
-            background-color: #4CAF50;
-            color: white;
+            padding: 10px;
+            font-size: 20px;
+            background-color: transparent;
+            color: #333;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-        }
-
-        .button i {
-            margin-right: 5px;
         }
 
         .button:disabled {
-            background-color: #ccc;
+            color: #ccc;
             cursor: not-allowed;
+        }
+
+        .button i {
+            font-size: 25px; /* Increase icon size */
         }
 
         hr {
@@ -89,13 +89,14 @@
     </style>
 </head>
 <body>
-    <div class="navigation">
-        <button id="prev-button" class="button" disabled><i class="fas fa-chevron-left"></i> Previous</button>
-        <button id="next-button" class="button"><i class="fas fa-chevron-right"></i> Next</button>
-    </div>
-
     <div class="surah-info">
-        <h2 id="surah-name">Loading...</h2>
+        <!-- Buttons for navigation will be placed here -->
+        <div class="navigation">
+            <button id="prev-button" class="button" disabled><i class="fas fa-chevron-left"></i></button>
+            <h2 id="surah-name">Loading...</h2>
+            <button id="next-button" class="button"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        
         <p id="verse-count"></p>
     </div>
     <div class="verses" id="verses">Please wait...</div>
