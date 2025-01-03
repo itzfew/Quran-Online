@@ -169,7 +169,8 @@
         };
 
         const displaySurah = (data) => {
-            surahNameEl.textContent = `${data.index} - ${data.name}`;
+            const verseCount = Object.keys(data.verse).length; // Get the total number of verses
+            surahNameEl.textContent = `${data.name} (${verseCount} verses)`; // Show name and verse count
             
             // Number of verses per page (set to 6 verses per page)
             const versesPerPage = 6;
