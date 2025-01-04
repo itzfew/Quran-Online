@@ -11,7 +11,7 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #fff; /* Clean white background */
+            background-color: #fff;
         }
 
         h1, h2 {
@@ -80,7 +80,7 @@
             font-weight: bold;
             margin-bottom: 15px;
             text-align: center;
-            color: #2980b9; /* Blue color for headings */
+            color: #2980b9;
         }
 
         .page-number {
@@ -105,7 +105,6 @@
             color: #2980b9;
         }
 
-        /* Responsive design for smaller screens */
         @media (max-width: 768px) {
             .verses {
                 font-size: 28px;
@@ -154,7 +153,7 @@
 
     <div id="verses" class="verses">Please wait...</div>
 
-    <div id="page-number" class="page-number">Page 1</div> <!-- Page number at the bottom, centered -->
+    <div id="page-number" class="page-number">Page 1</div>
 
     <script>
         const surahBaseURL = "https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_";
@@ -184,6 +183,7 @@
                 }
                 surahDetails = await response.json();
                 displaySurahInfo(currentSurah);
+                fetchSurah(currentSurah);
             } catch (error) {
                 console.error(error);
             }
@@ -194,8 +194,10 @@
             const surah = surahDetails.find(item => item.index === surahIndex.toString().padStart(3, '0'));
             if (surah) {
                 surahNameEl.textContent = `${surah.title}`; // Show only the Surah name
+                return surah.count;
             } else {
                 surahNameEl.textContent = "Surah details not found.";
+                return 0;
             }
         };
 
@@ -216,9 +218,9 @@
 
         // Display Surah verses on the page
         const displaySurah = (data) => {
-            const verseCount = Object.keys(data.verse).length;
+            const verseCount = displaySurahInfo(currentSurah); // Get the verse count dynamically
             const versesPerPage = 6;
-            const totalPages = Math.ceil(verseCount / versesPerPage);
+            const totalPages = Math.ceil(verseCount / versesPerPage); // Total pages based on verse count
             const startIndex = (currentPage - 1) * versesPerPage;
             const endIndex = Math.min(startIndex + versesPerPage, verseCount);
 
@@ -236,7 +238,7 @@
             });
 
             versesEl.innerHTML = versesHTML;
-            pageNumberEl.textContent = `Page ${currentPage}`; // Centered page number at the bottom
+            pageNumberEl.textContent = `Page ${currentPage}`;
 
             prevButton.disabled = currentPage === 1;
             nextButton.disabled = currentPage === totalPages;
@@ -252,7 +254,6 @@
                 currentPage = parseInt(page);
             }
             fetchSurahDetails(); // Fetch Surah details when loading
-            fetchSurah(currentSurah);
         };
 
         // Event listeners for navigation buttons
@@ -264,7 +265,8 @@
         });
 
         nextButton.addEventListener("click", () => {
-            const totalPages = Math.ceil(36 / 6); // Assuming default verses per Surah
+            const verseCount = displaySurahInfo(currentSurah); // Get the verse count dynamically
+            const totalPages = Math.ceil(verseCount / 6); // Calculate total pages
             if (currentPage < totalPages) {
                 currentPage++;
                 updateURLAndFetch();
@@ -279,7 +281,7 @@
             fetchSurah(currentSurah);
         };
 
-        getSurahFromURL();
+        getSurahFromURL(); // Initialize and load the Surah when the page is loaded
     </script>
 </body>
 </html>
