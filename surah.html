@@ -203,9 +203,12 @@
     }
 
     function navigateToRead() {
-        const surahIndex = getQueryParam('index') || currentSurahIndex;
-        window.location.href = `read?index=${surahIndex}`;
-    }
+    const surahIndex = getQueryParam('index') || currentSurahIndex;
+    const surahNumber = surahIndex.split('/')[0]; // Extract the Surah number
+    const pageNumber = 1; // Always go to page 1
+    window.location.href = `read?index=${surahNumber}/${pageNumber}`;
+}
+
 </script>
 
 </body>
