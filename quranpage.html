@@ -11,49 +11,26 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f9f9f9;
+            background-color: #fff; /* Clean white background */
         }
+
         h1, h2 {
             text-align: center;
             color: #333;
             font-family: 'Scheherazade', serif;
+            margin-bottom: 20px;
         }
-        .surah-info {
-            text-align: center;
-            margin-bottom: 60px;
-            position: relative;
-        }
-        .verses {
-            line-height: 1.8;
-            text-align: right;
-            font-size: 35px;
-            color: #555;
-            font-family: 'Scheherazade', serif;
-        }
-        .verse-number {
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-left: 10px;
-            color: black;
-            display: inline-block;
-        }
-        .verse-heading {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 15px;
-            text-align: center;
-            color: #333;
-            font-family: 'Scheherazade', serif;
-        }
+
         .navigation {
-            position: absolute;
-            top: 0;
+            position: fixed;
+            top: 20px;
             width: 100%;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            padding: 10px 20px;
+            z-index: 100;
         }
+
         .button {
             padding: 10px;
             font-size: 20px;
@@ -62,42 +39,105 @@
             border: none;
             cursor: pointer;
         }
+
         .button:disabled {
             color: #ccc;
             cursor: not-allowed;
         }
+
         .button i {
             font-size: 25px;
         }
-        hr {
-            border: 1px solid #ccc;
-            margin: 20px 0;
+
+        .prev-button {
+            position: absolute;
+            left: 20px;
         }
+
+        .next-button {
+            position: absolute;
+            right: 20px;
+        }
+
+        .verses {
+            line-height: 1.8;
+            text-align: right;
+            font-size: 35px;
+            color: #333;
+            font-family: 'Scheherazade', serif;
+            margin-top: 60px;
+        }
+
+        .verse-number {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-left: 10px;
+            color: #333;
+        }
+
+        .verse-heading {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #2980b9; /* Blue color for headings */
+        }
+
+        .page-number {
+            font-size: 1.2em;
+            text-align: center;
+            font-weight: bold;
+            color: #2980b9;
+            margin-top: 20px;
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+        }
+
+        .surah-details {
+            font-size: 1.2em;
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .surah-details strong {
+            color: #2980b9;
+        }
+
+        /* Responsive design for smaller screens */
         @media (max-width: 768px) {
             .verses {
                 font-size: 28px;
             }
+
             .verse-heading {
-                font-size: 1.2em;
-            }
-            h2 {
                 font-size: 1.5em;
             }
+
+            h2 {
+                font-size: 1.4em;
+            }
+
             .button {
                 font-size: 18px;
                 padding: 8px;
             }
         }
+
         @media (max-width: 480px) {
             .verses {
                 font-size: 24px;
             }
+
             .verse-heading {
-                font-size: 1em;
+                font-size: 1.3em;
             }
+
             h2 {
                 font-size: 1.2em;
             }
+
             .button {
                 font-size: 16px;
                 padding: 6px;
@@ -106,31 +146,60 @@
     </style>
 </head>
 <body>
-    <div class="surah-info">
-        <div class="navigation">
-            <button id="prev-button" class="button" disabled><i class="fas fa-chevron-left"></i></button>
-            <h2 id="surah-name">Loading...</h2>
-            <button id="next-button" class="button"><i class="fas fa-chevron-right"></i></button>
-        </div>
+    <div class="navigation">
+        <button id="prev-button" class="button prev-button" disabled><i class="fas fa-chevron-left"></i></button>
+        <h2 id="surah-name">Loading...</h2>
+        <button id="next-button" class="button next-button"><i class="fas fa-chevron-right"></i></button>
     </div>
-    
-    <div class="verses" id="verses">Please wait...</div>
+
+    <div id="verses" class="verses">Please wait...</div>
+
+    <div id="page-number" class="page-number">Page 1</div> <!-- Page number at the bottom, centered -->
 
     <script>
         const surahBaseURL = "https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_";
+        const surahDetailsURL = "https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah.json";
         let currentSurah = 1;
         let currentPage = 1;
+        let surahDetails = [];
 
         const surahNameEl = document.getElementById("surah-name");
         const versesEl = document.getElementById("verses");
         const prevButton = document.getElementById("prev-button");
         const nextButton = document.getElementById("next-button");
+        const pageNumberEl = document.getElementById("page-number");
 
+        // Convert numbers to Arabic numerals
         function convertToArabicNumerals(number) {
             const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
             return number.toString().split('').map(digit => arabicNumerals[parseInt(digit)]).join('');
         }
 
+        // Fetch surah details
+        const fetchSurahDetails = async () => {
+            try {
+                const response = await fetch(surahDetailsURL);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch Surah details.");
+                }
+                surahDetails = await response.json();
+                displaySurahInfo(currentSurah);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        // Display Surah information like title, verses count, etc.
+        const displaySurahInfo = (surahIndex) => {
+            const surah = surahDetails.find(item => item.index === surahIndex.toString().padStart(3, '0'));
+            if (surah) {
+                surahNameEl.textContent = `${surah.title}`; // Show only the Surah name
+            } else {
+                surahNameEl.textContent = "Surah details not found.";
+            }
+        };
+
+        // Fetch Surah verses
         const fetchSurah = async (surahNumber) => {
             try {
                 const response = await fetch(`${surahBaseURL}${surahNumber}.json`);
@@ -145,10 +214,9 @@
             }
         };
 
+        // Display Surah verses on the page
         const displaySurah = (data) => {
             const verseCount = Object.keys(data.verse).length;
-            surahNameEl.textContent = `${data.name} (${verseCount} verses)`;
-            
             const versesPerPage = 6;
             const totalPages = Math.ceil(verseCount / versesPerPage);
             const startIndex = (currentPage - 1) * versesPerPage;
@@ -168,11 +236,13 @@
             });
 
             versesEl.innerHTML = versesHTML;
+            pageNumberEl.textContent = `Page ${currentPage}`; // Centered page number at the bottom
 
             prevButton.disabled = currentPage === 1;
             nextButton.disabled = currentPage === totalPages;
         };
 
+        // Update Surah and Page from the URL
         const getSurahFromURL = () => {
             const urlParams = new URLSearchParams(window.location.search);
             const surahIndex = urlParams.get('index');
@@ -181,9 +251,11 @@
                 currentSurah = parseInt(surah);
                 currentPage = parseInt(page);
             }
+            fetchSurahDetails(); // Fetch Surah details when loading
             fetchSurah(currentSurah);
         };
 
+        // Event listeners for navigation buttons
         prevButton.addEventListener("click", () => {
             if (currentPage > 1) {
                 currentPage--;
@@ -192,13 +264,14 @@
         });
 
         nextButton.addEventListener("click", () => {
-            const totalPages = Math.ceil(36 / 6);  // Assuming a default number of verses per surah
+            const totalPages = Math.ceil(36 / 6); // Assuming default verses per Surah
             if (currentPage < totalPages) {
                 currentPage++;
                 updateURLAndFetch();
             }
         });
 
+        // Update the URL and fetch the new Surah
         const updateURLAndFetch = () => {
             const newURL = new URL(window.location);
             newURL.searchParams.set('index', `${currentSurah}/${currentPage}`);
