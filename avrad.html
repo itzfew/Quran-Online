@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avrad Fatiha Verses</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Scheherazade New', serif;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            direction: rtl;
+        }
+
+        h1 {
+            font-size: 2em;
+            color: #003366;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            font-size: 1.5em;
+            color: #660000;
+            margin-bottom: 20px;
+        }
+
+        .verse {
+            font-size: 1.4em;
+            line-height: 2;
+            color: #444;
+            margin: 10px 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .verse:last-child {
+            border-bottom: none;
+        }
+
+        .highlight-1 {
+            color: #008000;
+        }
+
+        .highlight-32 {
+            color: #0000FF;
+        }
+
+        .highlight-44 {
+            color: #FFA500;
+        }
+
+        .highlight-54 {
+            color: #800080;
+        }
+
+        .highlight-72 {
+            color: #FF4500;
+        }
+
+        .highlight-145 {
+            color: #2E8B57;
+        }
+
+        .highlight-292 {
+            color: #DAA520;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="bookName">...</h1>
+    <h2 id="writer">...</h2>
+    <div id="verses">
+        <!-- Verses will be injected here dynamically -->
+    </div>
+
+    <footer>
+        &copy; 2025 Quran Online
+    </footer>
+
+    <script>
+        // Fetch JSON data and render it dynamically
+        const url = "https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/avrad-fatiha.json";
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                // Set book name and writer
+                const bookNameElement = document.getElementById('bookName');
+                bookNameElement.textContent = data.book_name;
+                bookNameElement.style.color = '#003366';
+
+                const writerElement = document.getElementById('writer');
+                writerElement.textContent = `By: ${data.writer}`;
+                writerElement.style.color = '#660000';
+
+                // Render verses
+                const versesContainer = document.getElementById('verses');
+                Object.keys(data.verses).forEach(key => {
+                    const verseElement = document.createElement('div');
+                    verseElement.className = 'verse';
+                    verseElement.textContent = data.verses[key];
+
+                    // Apply specific colors to highlighted verses
+                    if (['1', '32', '44', '54', '72', '145', '292'].includes(key)) {
+                        verseElement.classList.add(`highlight-${key}`);
+                    }
+
+                    versesContainer.appendChild(verseElement);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching the data:', error);
+            });
+    </script>
+</body>
+</html>
