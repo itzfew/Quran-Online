@@ -19,7 +19,7 @@
             color: #111; /* Darker text */
             font-family: 'Scheherazade', serif;
             margin-bottom: 20px;
-            font-weight: bold; /* Bold text */
+            font-weight: normal; /* Reduced font weight */
         }
 
         .navigation {
@@ -39,7 +39,7 @@
             color: #111; /* Darker text */
             border: none;
             cursor: pointer;
-            font-weight: bold; /* Bold text */
+            font-weight: normal; /* Reduced font weight */
         }
 
         .button:disabled {
@@ -53,12 +53,14 @@
 
         .prev-button {
             position: absolute;
-            left: 20px;
+            right: 0; /* Extreme right */
+            margin-right: 20px; /* Added margin to ensure spacing */
         }
 
         .next-button {
             position: absolute;
-            right: 20px;
+            left: 0; /* Extreme left */
+            margin-left: 20px; /* Added margin to ensure spacing */
         }
 
         .verses {
@@ -68,19 +70,19 @@
             color: #111; /* Darker text */
             font-family: 'Scheherazade', serif;
             margin-top: 60px;
-            font-weight: bold; /* Bold text */
+            font-weight: normal; /* Reduced font weight */
         }
 
         .verse-number {
             font-size: 1.2em;
-            font-weight: bold;
+            font-weight: normal; /* Reduced font weight */
             margin-left: 10px;
             color: #111; /* Darker text */
         }
 
         .verse-heading {
             font-size: 1.8em;
-            font-weight: bold; /* Bold text */
+            font-weight: normal; /* Reduced font weight */
             margin-bottom: 15px;
             text-align: center;
             color: #2980b9;
@@ -89,7 +91,7 @@
         .page-number {
             font-size: 1.2em;
             text-align: center;
-            font-weight: bold;
+            font-weight: normal; /* Reduced font weight */
             color: #2980b9;
             margin-top: 20px;
             position: fixed;
@@ -102,7 +104,7 @@
             text-align: center;
             margin-top: 20px;
             color: #111; /* Darker text */
-            font-weight: bold; /* Bold text */
+            font-weight: normal; /* Reduced font weight */
         }
 
         .surah-details strong {
@@ -150,9 +152,9 @@
 </head>
 <body>
     <div class="navigation">
-        <button id="prev-button" class="button prev-button" disabled><i class="fas fa-chevron-left"></i></button>
+        <button id="next-button" class="button next-button"><i class="fas fa-chevron-left"></i></button>
         <h2 id="surah-name">Loading...</h2>
-        <button id="next-button" class="button next-button"><i class="fas fa-chevron-right"></i></button>
+        <button id="prev-button" class="button prev-button" disabled><i class="fas fa-chevron-right"></i></button>
     </div>
 
     <div id="verses" class="verses">Please wait...</div>
