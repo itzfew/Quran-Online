@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quran Surah Viewer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Scheherazade&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+            font-family: 'Scheherazade', serif;
+        }
+        .surah-info {
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+        }
+        .verses {
+            line-height: 1.8;
+            text-align: right;
+            font-size: 35px;
+            color: #555;
+            font-family: 'Scheherazade', serif;
+        }
+        .verse-number {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-left: 10px;
+            color: black;
+            display: inline-block;
+        }
+        .verse-heading {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #333;
+            font-family: 'Scheherazade', serif;
+        }
+        .navigation {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+        .button {
+            padding: 10px;
+            font-size: 20px;
+            background-color: transparent;
+            color: #333;
+            border: none;
+            cursor: pointer;
+        }
+        .button:disabled {
+            color: #ccc;
+            cursor: not-allowed;
+        }
+        .button i {
+            font-size: 25px;
+        }
+        hr {
+            border: 1px solid #ccc;
+            margin: 20px 0;
+        }
+        @media (max-width: 768px) {
+            .verses {
+                font-size: 28px;
+            }
+            .verse-heading {
+                font-size: 1.2em;
+            }
+            h2 {
+                font-size: 1.5em;
+            }
+            .button {
+                font-size: 18px;
+                padding: 8px;
+            }
+        }
+        @media (max-width: 480px) {
+            .verses {
+                font-size: 24px;
+            }
+            .verse-heading {
+                font-size: 1em;
+            }
+            h2 {
+                font-size: 1.2em;
+            }
+            .button {
+                font-size: 16px;
+                padding: 6px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="surah-info">
+        <div class="navigation">
+            <button id="prev-button" class="button" disabled><i class="fas fa-chevron-left"></i></button>
+            <h2 id="surah-name">Loading...</h2>
+            <button id="next-button" class="button"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+    
+    <div class="verses" id="verses">Please wait...</div>
+
+    <script>
+        const surahBaseURL = "https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_";
+        let currentSurah = 1;
+        let currentPage = 1;
+
+        const surahNameEl = document.getElementById("surah-name");
+        const versesEl = document.getElementById("verses");
+        const prevButton = document.getElementById("prev-button");
+        const nextButton = document.getElementById("next-button");
+
+        function convertToArabicNumerals(number) {
+            const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+            return number.toString().split('').map(digit => arabicNumerals[parseInt(digit)]).join('');
+        }
+
+        const fetchSurah = async (surahNumber) => {
+            try {
+                const response = await fetch(`${surahBaseURL}${surahNumber}.json`);
+                if (!response.ok) {
+                    throw new Error("Failed to fetch Surah.");
+                }
+                const surahData = await response.json();
+                displaySurah(surahData);
+            } catch (error) {
+                surahNameEl.textContent = "Error loading Surah";
+                versesEl.textContent = error.message;
+            }
+        };
+
+        const displaySurah = (data) => {
+            const verseCount = Object.keys(data.verse).length;
+            surahNameEl.textContent = `${data.name} (${verseCount} verses)`;
+            
+            const versesPerPage = 6;
+            const totalPages = Math.ceil(verseCount / versesPerPage);
+            const startIndex = (currentPage - 1) * versesPerPage;
+            const endIndex = Math.min(startIndex + versesPerPage, verseCount);
+
+            let versesHTML = "";
+            let verseCounter = startIndex + 1;
+
+            Object.entries(data.verse).slice(startIndex, endIndex).forEach(([key, verse]) => {
+                if (key === "verse_0") {
+                    versesHTML += `<div class="verse-heading">${verse}</div>`;
+                } else {
+                    const arabicVerseNumber = convertToArabicNumerals(verseCounter);
+                    versesHTML += `${verse} <span class="verse-number">(${arabicVerseNumber})</span>`;
+                    verseCounter++;
+                }
+            });
+
+            versesEl.innerHTML = versesHTML;
+
+            prevButton.disabled = currentPage === 1;
+            nextButton.disabled = currentPage === totalPages;
+        };
+
+        const getSurahFromURL = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const surahIndex = urlParams.get('index');
+            if (surahIndex) {
+                const [surah, page] = surahIndex.split('/');
+                currentSurah = parseInt(surah);
+                currentPage = parseInt(page);
+            }
+            fetchSurah(currentSurah);
+        };
+
+        prevButton.addEventListener("click", () => {
+            if (currentPage > 1) {
+                currentPage--;
+                updateURLAndFetch();
+            }
+        });
+
+        nextButton.addEventListener("click", () => {
+            const totalPages = Math.ceil(36 / 6);  // Assuming a default number of verses per surah
+            if (currentPage < totalPages) {
+                currentPage++;
+                updateURLAndFetch();
+            }
+        });
+
+        const updateURLAndFetch = () => {
+            const newURL = new URL(window.location);
+            newURL.searchParams.set('index', `${currentSurah}/${currentPage}`);
+            window.history.pushState({}, '', newURL);
+            fetchSurah(currentSurah);
+        };
+
+        getSurahFromURL();
+    </script>
+</body>
+</html>
