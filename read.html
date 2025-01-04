@@ -16,10 +16,10 @@
 
         h1, h2 {
             text-align: center;
-            color: #111; /* Darker text */
+            color: #111;
             font-family: 'Scheherazade', serif;
             margin-bottom: 20px;
-            font-weight: normal; /* Reduced font weight */
+            font-weight: normal;
         }
 
         .navigation {
@@ -36,10 +36,10 @@
             padding: 10px;
             font-size: 20px;
             background-color: transparent;
-            color: #111; /* Darker text */
+            color: #111;
             border: none;
             cursor: pointer;
-            font-weight: normal; /* Reduced font weight */
+            font-weight: normal;
         }
 
         .button:disabled {
@@ -51,38 +51,61 @@
             font-size: 25px;
         }
 
-        .prev-button {
-            position: absolute;
-            right: 0; /* Extreme right */
-            margin-right: 20px; /* Added margin to ensure spacing */
+        .back-button-left,
+        .back-button-right {
+            position: fixed;
+            top: 10px;
+            font-size: 20px;
+            color: #2980b9;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 101;
         }
 
+        .back-button-left {
+            left: 10px;
+        }
+
+        .back-button-right {
+            right: 10px;
+        }
+
+        /* Fixed position for Next and Previous buttons at the bottom */
         .next-button {
-            position: absolute;
-            left: 0; /* Extreme left */
-            margin-left: 20px; /* Added margin to ensure spacing */
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            margin-left: 20px;
+        }
+
+        .prev-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            margin-right: 20px;
         }
 
         .verses {
             line-height: 1.8;
             text-align: right;
             font-size: 35px;
-            color: #111; /* Darker text */
+            color: #111;
             font-family: 'Scheherazade', serif;
             margin-top: 60px;
-            font-weight: normal; /* Reduced font weight */
+            font-weight: normal;
         }
 
         .verse-number {
             font-size: 1.2em;
-            font-weight: normal; /* Reduced font weight */
+            font-weight: normal;
             margin-left: 10px;
-            color: #111; /* Darker text */
+            color: #111;
         }
 
         .verse-heading {
             font-size: 1.8em;
-            font-weight: normal; /* Reduced font weight */
+            font-weight: normal;
             margin-bottom: 15px;
             text-align: center;
             color: #2980b9;
@@ -91,11 +114,11 @@
         .page-number {
             font-size: 1.2em;
             text-align: center;
-            font-weight: normal; /* Reduced font weight */
+            font-weight: normal;
             color: #2980b9;
             margin-top: 20px;
             position: fixed;
-            bottom: 20px;
+            bottom: 60px;
             width: 100%;
         }
 
@@ -103,8 +126,8 @@
             font-size: 1.2em;
             text-align: center;
             margin-top: 20px;
-            color: #111; /* Darker text */
-            font-weight: normal; /* Reduced font weight */
+            color: #111;
+            font-weight: normal;
         }
 
         .surah-details strong {
@@ -151,15 +174,20 @@
     </style>
 </head>
 <body>
+    <button id="back-button-left" class="back-button-left"><i class="fas fa-arrow-left"></i> Back</button>
+    <button id="back-button-right" class="back-button-right"><i class="fas fa-home"></i> Home</button>
+
     <div class="navigation">
-        <button id="next-button" class="button next-button"><i class="fas fa-chevron-left"></i></button>
         <h2 id="surah-name">Loading...</h2>
-        <button id="prev-button" class="button prev-button" disabled><i class="fas fa-chevron-right"></i></button>
     </div>
 
     <div id="verses" class="verses">Please wait...</div>
 
     <div id="page-number" class="page-number">Page 1</div>
+
+    <!-- Position buttons fixed at the bottom -->
+    <button id="prev-button" class="button prev-button" disabled><i class="fas fa-chevron-right"></i></button>
+    <button id="next-button" class="button next-button"><i class="fas fa-chevron-left"></i></button>
 
     <script>
         const surahBaseURL = "https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_";
@@ -173,6 +201,8 @@
         const prevButton = document.getElementById("prev-button");
         const nextButton = document.getElementById("next-button");
         const pageNumberEl = document.getElementById("page-number");
+        const backButtonLeft = document.getElementById("back-button-left");
+        const backButtonRight = document.getElementById("back-button-right");
 
         // Convert numbers to Arabic numerals
         function convertToArabicNumerals(number) {
@@ -199,7 +229,7 @@
         const displaySurahInfo = (surahIndex) => {
             const surah = surahDetails.find(item => item.index === surahIndex.toString().padStart(3, '0'));
             if (surah) {
-                surahNameEl.textContent = `${surah.title}`; // Show only the Surah name
+                surahNameEl.textContent = `${surah.title}`;
                 return surah.count;
             } else {
                 surahNameEl.textContent = "Surah details not found.";
@@ -224,9 +254,9 @@
 
         // Display Surah verses on the page
         const displaySurah = (data) => {
-            const verseCount = displaySurahInfo(currentSurah); // Get the verse count dynamically
+            const verseCount = displaySurahInfo(currentSurah);
             const versesPerPage = 6;
-            const totalPages = Math.ceil(verseCount / versesPerPage); // Total pages based on verse count
+            const totalPages = Math.ceil(verseCount / versesPerPage);
             const startIndex = (currentPage - 1) * versesPerPage;
             const endIndex = Math.min(startIndex + versesPerPage, verseCount);
 
@@ -271,8 +301,8 @@
         });
 
         nextButton.addEventListener("click", () => {
-            const verseCount = displaySurahInfo(currentSurah); // Get the verse count dynamically
-            const totalPages = Math.ceil(verseCount / 6); // Calculate total pages
+            const verseCount = displaySurahInfo(currentSurah);
+            const totalPages = Math.ceil(verseCount / 6);
             if (currentPage < totalPages) {
                 currentPage++;
                 updateURLAndFetch();
@@ -286,6 +316,18 @@
             window.history.pushState({}, '', newURL);
             fetchSurah(currentSurah);
         };
+
+        // Back button event listeners
+        backButtonLeft.addEventListener("click", () => {
+            if (currentSurah > 1) {
+                currentSurah--;
+                updateURLAndFetch();
+            }
+        });
+
+        backButtonRight.addEventListener("click", () => {
+            window.location.href = "index.html"; // Redirect to home page
+        });
 
         getSurahFromURL(); // Initialize and load the Surah when the page is loaded
     </script>
