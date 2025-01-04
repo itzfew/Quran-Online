@@ -6,6 +6,7 @@
     <title>Avrad Fatiha Verses</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
 
         body {
             font-family: 'Scheherazade New', serif;
@@ -14,6 +15,7 @@
             padding: 20px;
             text-align: center;
             direction: rtl;
+            position: relative;
         }
 
         h1 {
@@ -69,6 +71,27 @@
             color: #DAA520;
         }
 
+        .controls {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .controls button {
+            font-size: 1.2em;
+            margin: 0 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #333;
+        }
+
         footer {
             margin-top: 20px;
             font-size: 0.9em;
@@ -77,6 +100,13 @@
     </style>
 </head>
 <body>
+    <div class="controls">
+        <button id="playPause"><i class="fa fa-play"></i></button>
+        <button id="speedDown"><i class="fa fa-minus"></i></button>
+        <span id="speedDisplay">Speed: 1x</span>
+        <button id="speedUp"><i class="fa fa-plus"></i></button>
+    </div>
+
     <h1 id="bookName">...</h1>
     <h2 id="writer">...</h2>
     <div id="verses">
@@ -88,29 +118,23 @@
     </footer>
 
     <script>
-        // Fetch JSON data and render it dynamically
         const url = "https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/avrad-fatiha.json";
+        const versesContainer = document.getElementById('verses');
+        let scrollInterval;
+        let scrollSpeed = 50; // Initial scroll speed
 
+        // Fetch and render verses
         fetch(url)
             .then(response => response.json())
             .then(data => {
-                // Set book name and writer
-                const bookNameElement = document.getElementById('bookName');
-                bookNameElement.textContent = data.book_name;
-                bookNameElement.style.color = '#003366';
+                document.getElementById('bookName').textContent = data.book_name;
+                document.getElementById('writer').textContent = `By: ${data.writer}`;
 
-                const writerElement = document.getElementById('writer');
-                writerElement.textContent = `By: ${data.writer}`;
-                writerElement.style.color = '#660000';
-
-                // Render verses
-                const versesContainer = document.getElementById('verses');
                 Object.keys(data.verses).forEach(key => {
                     const verseElement = document.createElement('div');
                     verseElement.className = 'verse';
                     verseElement.textContent = data.verses[key];
 
-                    // Apply specific colors to highlighted verses
                     if (['1', '32', '44', '54', '72', '145', '292'].includes(key)) {
                         verseElement.classList.add(`highlight-${key}`);
                     }
@@ -118,9 +142,51 @@
                     versesContainer.appendChild(verseElement);
                 });
             })
-            .catch(error => {
-                console.error('Error fetching the data:', error);
-            });
+            .catch(error => console.error('Error fetching the data:', error));
+
+        // Auto-scroll functionality
+        const startScroll = () => {
+            if (scrollInterval) return;
+
+            scrollInterval = setInterval(() => {
+                window.scrollBy(0, 1);
+                if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+                    clearInterval(scrollInterval);
+                    scrollInterval = null;
+                }
+            }, scrollSpeed);
+        };
+
+        const stopScroll = () => {
+            clearInterval(scrollInterval);
+            scrollInterval = null;
+        };
+
+        // Control buttons
+        const playPauseButton = document.getElementById('playPause');
+        const speedDisplay = document.getElementById('speedDisplay');
+        const speedUpButton = document.getElementById('speedUp');
+        const speedDownButton = document.getElementById('speedDown');
+
+        playPauseButton.addEventListener('click', () => {
+            if (scrollInterval) {
+                stopScroll();
+                playPauseButton.innerHTML = '<i class="fa fa-play"></i>';
+            } else {
+                startScroll();
+                playPauseButton.innerHTML = '<i class="fa fa-pause"></i>';
+            }
+        });
+
+        speedUpButton.addEventListener('click', () => {
+            if (scrollSpeed > 10) scrollSpeed -= 10;
+            speedDisplay.textContent = `Speed: ${(50 / scrollSpeed).toFixed(1)}x`;
+        });
+
+        speedDownButton.addEventListener('click', () => {
+            scrollSpeed += 10;
+            speedDisplay.textContent = `Speed: ${(50 / scrollSpeed).toFixed(1)}x`;
+        });
     </script>
 </body>
 </html>
