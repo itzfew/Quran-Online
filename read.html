@@ -318,14 +318,13 @@
         };
 // Back button event listeners
 backButtonLeft.addEventListener("click", () => {
-    if (currentSurah > 1) {
-        currentSurah--; // Go to the previous Surah
-        const newURL = new URL(window.location);
-        newURL.pathname = '/surah'; // Change the path to `/surah`
-        newURL.searchParams.set('index', `${currentSurah}`); // Set the new Surah index
-        window.location.href = newURL.toString(); // Redirect to the new URL
-    }
+    const surahIndex = currentSurah; // Keep the current Surah
+    const newURL = new URL(window.location);
+    newURL.pathname = '/surah'; // Change path to `/surah`
+    newURL.searchParams.set('index', `${surahIndex}`); // Set the Surah index without the page parameter
+    window.location.href = newURL.toString(); // Redirect to the new URL
 });
+
 
         backButtonRight.addEventListener("click", () => {
             window.location.href = "index.html"; // Redirect to home page
