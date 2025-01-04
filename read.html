@@ -318,12 +318,15 @@
         };
 
         // Back button event listeners
-        backButtonLeft.addEventListener("click", () => {
-            if (currentSurah > 1) {
-                currentSurah--;
-                updateURLAndFetch();
-            }
-        });
+backButtonLeft.addEventListener("click", () => {
+    if (currentSurah > 1) {
+        currentSurah--; // Move to the previous Surah
+        currentPage = 1; // Reset to the first page of the previous Surah
+        const newURL = new URL(window.location);
+        newURL.searchParams.set('surah', `${currentSurah}`); // Set the new Surah and page (page 1)
+        window.location.href = newURL.toString(); // Redirect to the new URL
+    }
+});
 
         backButtonRight.addEventListener("click", () => {
             window.location.href = "index.html"; // Redirect to home page
