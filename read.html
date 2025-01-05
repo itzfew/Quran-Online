@@ -8,11 +8,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #fff;
-        }
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #fff;
+    overflow-y: auto;  /* Allow body to scroll when content overflows */
+    height: 100vh;  /* Ensure full page height */
+    box-sizing: border-box; /* Include padding in height calculations */
+}
+
 
         h1, h2 {
             text-align: center;
@@ -86,15 +90,17 @@
             margin-right: 20px;
         }
 
-        .verses {
-            line-height: 1.8;
-            text-align: right;
-            font-size: 35px;
-            color: #111;
-            font-family: 'Scheherazade', serif;
-            margin-top: 60px;
-            font-weight: normal;
-        }
+#verses {
+    line-height: 1.8;
+    text-align: right;
+    font-size: 35px;
+    color: #111;
+    font-family: 'Scheherazade', serif;
+    margin-top: 60px;
+    font-weight: normal;
+    max-height: calc(100vh - 140px); /* Allow verses container to be scrollable */
+    overflow-y: auto;  /* Enable scrolling within verses */
+}
 
         .verse-number {
             font-size: 1.2em;
