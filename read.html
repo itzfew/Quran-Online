@@ -360,11 +360,6 @@
             }
         });
 
-        // Optional: Disable text selection while swiping
-        document.addEventListener('touchmove', (e) => {
-            e.preventDefault(); // Prevent default scrolling while swiping
-        }, { passive: false });
-
         getSurahFromURL(); // Initialize and load the Surah when the page is loaded
     </script>
 </body>
