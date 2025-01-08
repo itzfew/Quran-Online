@@ -141,7 +141,10 @@
             for (const [wordId, meta] of Object.entries(metadata)) {
                 if (meta.surah === surahNumber) {
                     if (!surahData[meta.ayah]) surahData[meta.ayah] = [];
-                    surahData[meta.ayah].push(words[wordId]);
+                    surahData[meta.ayah].push({
+                        word: words[wordId],
+                        ayah: meta.ayah,
+                    });
                 }
             }
 
@@ -162,16 +165,18 @@
                 ayahHeader.textContent = `Ayah ${ayah}`;
                 ayahDiv.appendChild(ayahHeader);
 
-                const verseText = ayahWords.join(' ');
-                const translationText = englishTranslations.verse[`verse_${ayah}`];
-
-                const verseDiv = document.createElement('div');
-                verseDiv.textContent = verseText;
-                ayahDiv.appendChild(verseDiv);
+                ayahWords.forEach(wordData => {
+                    const wordSpan = document.createElement('span');
+                    wordSpan.className = 'word';
+                    wordSpan.innerHTML = `
+                        <span>${wordData.word}</span>
+                    `;
+                    ayahDiv.appendChild(wordSpan);
+                });
 
                 const translationDiv = document.createElement('div');
                 translationDiv.className = 'translation';
-                translationDiv.textContent = translationText;
+                translationDiv.textContent = englishTranslations.verse[`verse_${ayah}`];
                 ayahDiv.appendChild(translationDiv);
 
                 ayahDiv.addEventListener('click', () => saveLastRead(surahNumber, parseInt(ayah, 10)));
