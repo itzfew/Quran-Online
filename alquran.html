@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Amiri Quran', serif;
@@ -16,6 +17,24 @@
         h1 {
             text-align: center;
             margin-bottom: 20px;
+        }
+        #controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .nav-button {
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .nav-button:hover {
+            background-color: #f0f0f0;
         }
         #quran {
             margin-top: 20px;
@@ -113,6 +132,12 @@
 
     <h1 id="surah-name">Loading...</h1>
 
+    <div id="controls">
+        <i id="previous-surah" class="fas fa-arrow-left nav-button"></i>
+        <span id="current-surah">Surah 1</span>
+        <i id="next-surah" class="fas fa-arrow-right nav-button"></i>
+    </div>
+
     <div id="last-read-container">
         <div id="last-read">
             <!-- Last viewed buttons will be dynamically added here -->
@@ -156,6 +181,7 @@
             // Update Surah name
             const surahName = `Surah ${surahNumber}`;
             document.getElementById('surah-name').textContent = surahName;
+            document.getElementById('current-surah').textContent = surahName;
 
             // Display "Bismillah" for every Surah except Surah 1
             if (surahNumber !== 1) {
@@ -286,6 +312,20 @@
                 await renderSurah(1, 1); // Default to Surah 1, Ayah 1
             }
         }
+
+        document.getElementById('previous-surah').addEventListener('click', async () => {
+            const currentSurah = parseInt(document.getElementById('current-surah').textContent.split(' ')[1], 10);
+            if (currentSurah > 1) {
+                await renderSurah(currentSurah - 1);
+            }
+        });
+
+        document.getElementById('next-surah').addEventListener('click', async () => {
+            const currentSurah = parseInt(document.getElementById('current-surah').textContent.split(' ')[1], 10);
+            if (currentSurah < 114) {
+                await renderSurah(currentSurah + 1);
+            }
+        });
 
         initialize();
     </script>
