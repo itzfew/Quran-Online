@@ -52,11 +52,49 @@
             font-family: 'Jameel Noori Nastaleeq', serif;
             direction: rtl;
         }
+        #last-read-container {
+            margin-bottom: 20px;
+        }
+        #last-read {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        #last-read button {
+            flex: 0 0 auto;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            white-space: nowrap;
+            background-color: #fff;
+            cursor: pointer;
+        }
+        #last-read button:hover {
+            background-color: #f0f0f0;
+        }
+        #last-read .date {
+            display: block;
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
 
     <h1 id="surah-name">Loading...</h1>
+
+    <div id="last-read-container">
+        <div id="last-read">
+            <!-- Last viewed buttons will be dynamically added here -->
+        </div>
+    </div>
+
     <div id="quran">
         <!-- Quranic verses will be dynamically displayed here -->
     </div>
@@ -76,6 +114,39 @@
                 console.error(error);
                 alert(`Error loading data: ${error.message}`);
             }
+        }
+
+        function saveLastRead(surah, ayah) {
+            const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
+            const currentDate = new Date().toLocaleDateString();
+
+            const newEntry = { surah, ayah, date: currentDate };
+            const updatedLastReads = [newEntry, ...lastReads.filter(item => item.surah !== surah || item.ayah !== ayah)];
+            localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 5))); // Limit to 5 entries
+        }
+
+        function getLastReads() {
+            return JSON.parse(localStorage.getItem('lastReads')) || [];
+        }
+
+        function displayLastReads() {
+            const lastReadContainer = document.getElementById('last-read');
+            const lastReads = getLastReads();
+
+            lastReadContainer.innerHTML = '';
+
+            lastReads.forEach(({ surah, ayah, date }) => {
+                const button = document.createElement('button');
+                button.textContent = `Surah ${surah}, Ayah ${ayah}`;
+                button.onclick = () => renderSurah(surah, ayah);
+
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'date';
+                dateDiv.textContent = date;
+
+                button.appendChild(dateDiv);
+                lastReadContainer.appendChild(button);
+            });
         }
 
         async function renderSurah(surahNumber, highlightAyah = null) {
@@ -141,7 +212,7 @@
                     ayahDiv.appendChild(wordSpan);
                 });
 
-                ayahDiv.addEventListener('click', () => console.log(`Surah ${surahNumber}, Ayah ${ayah} clicked.`));
+                ayahDiv.addEventListener('click', () => saveLastRead(surahNumber, parseInt(ayah, 10)));
 
                 quranContainer.appendChild(ayahDiv);
             }
@@ -151,9 +222,11 @@
                     scrollToElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 500);
             }
+
+            saveLastRead(surahNumber, highlightAyah || 1);
+            displayLastReads();
         }
 
-        // Parse ?index=x#y from URL
         function parseUrlParams() {
             const params = new URLSearchParams(window.location.search);
             const hash = window.location.hash.substring(1);
@@ -164,10 +237,15 @@
 
         async function initialize() {
             const { surah, ayah } = parseUrlParams();
+            const lastReads = getLastReads();
+
             if (surah && ayah) {
                 await renderSurah(surah, ayah);
+            } else if (lastReads.length > 0) {
+                const { surah: lastSurah, ayah: lastAyah } = lastReads[0];
+                await renderSurah(lastSurah, lastAyah);
             } else {
-                alert('Invalid or missing parameters in URL.');
+                await renderSurah(1, 1); // Default to Surah 1, Ayah 1
             }
         }
 
