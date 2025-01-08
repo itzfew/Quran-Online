@@ -1,4 +1,4 @@
-When user types ?index=1#3 open surah 1 verse 3 ... if ?index=4#20 open/refer verse 20 of Surah 4... and so on...<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -121,7 +121,6 @@ When user types ?index=1#3 open surah 1 verse 3 ... if ?index=4#20 open/refer ve
         const englishTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/en-quranwbw.json';
         const urduTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/ur-quranwbw.json';
 
-        // Fetch full translation file
         async function fetchFullTranslation(surahNumber) {
             const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahNumber}.json`;
             return await fetchData(url);
@@ -141,11 +140,9 @@ When user types ?index=1#3 open surah 1 verse 3 ... if ?index=4#20 open/refer ve
         function saveLastRead(surah, ayah) {
             const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
             const currentDate = new Date().toLocaleDateString();
-
             const newEntry = { surah, ayah, date: currentDate };
-
             const updatedLastReads = [newEntry, ...lastReads.filter(item => item.surah !== surah || item.ayah !== ayah)];
-            localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 5))); // Limit to 5 entries
+            localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 5)));
         }
 
         function getLastReads() {
@@ -155,18 +152,14 @@ When user types ?index=1#3 open surah 1 verse 3 ... if ?index=4#20 open/refer ve
         function displayLastReads() {
             const lastReadContainer = document.getElementById('last-read');
             const lastReads = getLastReads();
-
             lastReadContainer.innerHTML = '';
-
             lastReads.forEach(({ surah, ayah, date }) => {
                 const button = document.createElement('button');
                 button.textContent = `Surah ${surah}, Ayah ${ayah}`;
                 button.onclick = () => renderSurah(surah, ayah);
-
                 const dateDiv = document.createElement('div');
                 dateDiv.className = 'date';
                 dateDiv.textContent = date;
-
                 button.appendChild(dateDiv);
                 lastReadContainer.appendChild(button);
             });
@@ -184,7 +177,6 @@ When user types ?index=1#3 open surah 1 verse 3 ... if ?index=4#20 open/refer ve
             const quranContainer = document.getElementById('quran');
             quranContainer.innerHTML = '';
 
-            // Display "Bismillah" for every Surah except Surah 1
             if (surahNumber !== 1) {
                 const bismillah = document.createElement('div');
                 bismillah.className = 'ayah';
@@ -207,12 +199,12 @@ When user types ?index=1#3 open surah 1 verse 3 ... if ?index=4#20 open/refer ve
             let scrollToElement = null;
 
             for (const [ayah, words] of Object.entries(surahData)) {
-                if (ayah === '0') continue; // Skip Verse 0
+                if (ayah === '0') continue;
 
                 const ayahDiv = document.createElement('div');
                 ayahDiv.className = 'ayah';
                 if (highlightAyah && parseInt(ayah, 10) === highlightAyah) {
-                    ayahDiv.style.backgroundColor = '#dff0d8'; // Highlight color
+                    ayahDiv.style.backgroundColor = '#dff0d8';
                     scrollToElement = ayahDiv;
                 }
 
@@ -232,7 +224,6 @@ When user types ?index=1#3 open surah 1 verse 3 ... if ?index=4#20 open/refer ve
                     ayahDiv.appendChild(wordSpan);
                 });
 
-                // Add full English translation for this ayah.
                 if (fullTranslation && fullTranslation.verse[`verse_${ayah}`]) {
                     const fullEnglishTranslation = document.createElement('div');
                     fullEnglishTranslation.className = 'translation';
@@ -243,7 +234,6 @@ When user types ?index=1#3 open surah 1 verse 3 ... if ?index=4#20 open/refer ve
                 }
 
                 ayahDiv.addEventListener('click', () => saveLastRead(surahNumber, parseInt(ayah, 10)));
-
                 quranContainer.appendChild(ayahDiv);
             }
 
@@ -255,6 +245,16 @@ When user types ?index=1#3 open surah 1 verse 3 ... if ?index=4#20 open/refer ve
 
             saveLastRead(surahNumber, highlightAyah || 1);
             displayLastReads();
+        }
+
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            const index = params.get('index');
+            if (index) {
+                const [surah, ayah] = index.split('#').map(Number);
+                return { surah, ayah };
+            }
+            return null;
         }
 
         async function populateSurahSelector() {
@@ -294,7 +294,17 @@ When user types ?index=1#3 open surah 1 verse 3 ... if ?index=4#20 open/refer ve
             displayLastReads();
         }
 
-        populateSurahSelector();
+        async function initializeViewer() {
+            const queryParams = getQueryParams();
+            if (queryParams && queryParams.surah && queryParams.ayah) {
+                await renderSurah(queryParams.surah, queryParams.ayah);
+                document.getElementById('surah').value = queryParams.surah;
+            } else {
+                populateSurahSelector();
+            }
+        }
+
+        initializeViewer();
     </script>
 </body>
 </html>
