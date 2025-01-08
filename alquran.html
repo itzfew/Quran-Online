@@ -61,7 +61,8 @@
         document.body.style.fontSize = textSize + 'px';
 
         const index = getQueryParam('index');
-        fetchSurah(index ? index : 1);
+        currentSurahIndex = index ? parseInt(index) : 1; // Default to Surah 1
+        fetchSurah(currentSurahIndex);
     });
 
     function getQueryParam(param) {
@@ -129,18 +130,10 @@
         const allVerses = document.querySelectorAll('.verse');
         allVerses.forEach(verse => {
             verse.classList.remove('selected');
-            const shareButton = verse.querySelector('.share-btn');
-            const viewButton = verse.querySelector('.view-btn');
-            if (shareButton) shareButton.style.display = 'none';
-            if (viewButton) viewButton.style.display = 'none';
         });
 
         const verseElement = document.getElementById(`verse-${verseId}`);
         verseElement.classList.add('selected');
-        const shareButton = verseElement.querySelector('.share-btn');
-        const viewButton = verseElement.querySelector('.view-btn');
-        if (shareButton) shareButton.style.display = 'inline-block';
-        if (viewButton) viewButton.style.display = 'inline-block';
     }
 
     function scrollToTop() {
@@ -169,43 +162,21 @@
             currentSurahIndex = 114;
         }
 
-        const newUrl = `https://quran-online.pages.dev/surah?index=${currentSurahIndex}`;
+        const newUrl = `surah.html?index=${currentSurahIndex}`;
         window.history.pushState({ path: newUrl }, '', newUrl);
         window.location.reload();
     }
 
-    function shareVerse(verseId) {
-        const verseText = document.getElementById(`verse-${verseId}`).innerText;
-        if (navigator.share) {
-            navigator.share({
-                title: 'Quran Verse',
-                text: verseText,
-                url: window.location.href
-            }).catch((error) => console.log('Error sharing: ', error));
-        } else {
-            navigator.clipboard.writeText(verseText).then(() => {
-                alert('Verse copied to clipboard!');
-            }).catch((error) => {
-                console.log('Error copying to clipboard: ', error);
-            });
+    function navigateToWordToWord() {
+        if (currentSurahIndex) {
+            window.location.href = `wordtoword.html?index=${currentSurahIndex}`;
         }
     }
 
-    function viewVerse(verseId) {
-        const surahIndex = getQueryParam('index') || 1;
-        window.location.href = `verse.html?surah=${surahIndex}&verse=${verseId}`;
-    }
-
-    function navigateToWordToWord() {
-        const surahIndex = getQueryParam('index') || currentSurahIndex;
-        window.location.href = `wordtoword.html?index=${currentSurahIndex}`;
-    }
-
     function navigateToRead() {
-        const surahIndex = getQueryParam('index') || currentSurahIndex;
-        const surahNumber = surahIndex.split('/')[0];
+        const surahNumber = currentSurahIndex || 1;
         const pageNumber = 1;
-        window.location.href = `read?index=${surahNumber}/${pageNumber}`;
+        window.location.href = `read.html?index=${surahNumber}/${pageNumber}`;
     }
 </script>
 
