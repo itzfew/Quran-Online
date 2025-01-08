@@ -29,8 +29,8 @@
     <div class="settings-item" onclick="changeTextSize(-1)">
         <i class="fas fa-minus"></i>
     </div>
-    <div class="settings-item" onclick="resetPreferences()">
-        <i class="fas fa-undo"></i>
+    <div class="settings-item" onclick="navigateToWordToWord()">
+        <i class="fas fa-language"></i>
     </div>
     <div class="settings-item" onclick="navigateToRead()">
         <i class="fas fa-book-open"></i>
@@ -158,12 +158,6 @@
         localStorage.setItem('textSize', newSize);
     }
 
-    function resetPreferences() {
-        localStorage.removeItem('darkMode');
-        localStorage.removeItem('textSize');
-        location.reload();
-    }
-
     let currentSurahIndex = 1;
 
     function navigateSurah(direction) {
@@ -202,13 +196,17 @@
         window.location.href = `verse.html?surah=${surahIndex}&verse=${verseId}`;
     }
 
-    function navigateToRead() {
-    const surahIndex = getQueryParam('index') || currentSurahIndex;
-    const surahNumber = surahIndex.split('/')[0]; // Extract the Surah number
-    const pageNumber = 1; // Always go to page 1
-    window.location.href = `read?index=${surahNumber}/${pageNumber}`;
-}
+    function navigateToWordToWord() {
+        const surahIndex = getQueryParam('index') || currentSurahIndex;
+        window.location.href = `wordtoword.html?index=${surahIndex}`;
+    }
 
+    function navigateToRead() {
+        const surahIndex = getQueryParam('index') || currentSurahIndex;
+        const surahNumber = surahIndex.split('/')[0];
+        const pageNumber = 1;
+        window.location.href = `read?index=${surahNumber}/${pageNumber}`;
+    }
 </script>
 
 </body>
