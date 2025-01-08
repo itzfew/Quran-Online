@@ -64,6 +64,13 @@
             text-align: center;
             margin-bottom: 20px;
         }
+        #last-read ul {
+            list-style: none;
+            padding: 0;
+        }
+        #last-read li {
+            margin: 5px 0;
+        }
         #last-read button {
             padding: 5px;
             font-size: 14px;
@@ -73,12 +80,10 @@
 <body>
     <h1>عرض القرآن - السورة</h1>
 
-    <!-- Section to display the last read Surah and Ayah -->
+    <!-- Section to display the last viewed Surahs and Ayahs -->
     <div id="last-read">
-        <span id="last-read-label" style="display: none;">
-            آخر قراءة: <span id="last-read-surah"></span> <span id="last-read-ayah"></span>
-            <button id="go-to-last-read">اذهب</button>
-        </span>
+        <span>آخر المشاهدات:</span>
+        <ul id="last-read-list"></ul>
     </div>
 
     <div class="surah-selector">
@@ -109,30 +114,34 @@
         }
 
         function saveLastRead(surah, ayah) {
-            const lastRead = { surah, ayah };
-            localStorage.setItem('lastRead', JSON.stringify(lastRead));
+            const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
+            const newEntry = { surah, ayah };
+
+            // Add the new entry to the beginning of the list
+            const updatedLastReads = [newEntry, ...lastReads.filter(item => item.surah !== surah || item.ayah !== ayah)];
+
+            // Limit to the last 3 entries
+            localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 3)));
         }
 
-        function getLastRead() {
-            const lastRead = localStorage.getItem('lastRead');
-            return lastRead ? JSON.parse(lastRead) : null;
+        function getLastReads() {
+            return JSON.parse(localStorage.getItem('lastReads')) || [];
         }
 
-        function displayLastRead() {
-            const lastRead = getLastRead();
-            const lastReadLabel = document.getElementById('last-read-label');
-            const lastReadSurah = document.getElementById('last-read-surah');
-            const lastReadAyah = document.getElementById('last-read-ayah');
-            const goToLastReadButton = document.getElementById('go-to-last-read');
+        function displayLastReads() {
+            const lastReadList = document.getElementById('last-read-list');
+            const lastReads = getLastReads();
 
-            if (lastRead) {
-                lastReadLabel.style.display = 'block';
-                lastReadSurah.textContent = `سورة ${lastRead.surah}`;
-                lastReadAyah.textContent = `آية ${lastRead.ayah}`;
-                goToLastReadButton.onclick = () => renderSurah(lastRead.surah, lastRead.ayah);
-            } else {
-                lastReadLabel.style.display = 'none';
-            }
+            lastReadList.innerHTML = '';
+
+            lastReads.forEach(({ surah, ayah }, index) => {
+                const listItem = document.createElement('li');
+                const button = document.createElement('button');
+                button.textContent = `سورة ${surah}, آية ${ayah}`;
+                button.onclick = () => renderSurah(surah, ayah);
+                listItem.appendChild(button);
+                lastReadList.appendChild(listItem);
+            });
         }
 
         async function renderSurah(surahNumber, highlightAyah = null) {
@@ -158,11 +167,14 @@
                 }
             }
 
+            let scrollToElement = null;
+
             for (const [ayah, words] of Object.entries(surahData)) {
                 const ayahDiv = document.createElement('div');
                 ayahDiv.className = 'ayah';
                 if (highlightAyah && parseInt(ayah, 10) === highlightAyah) {
                     ayahDiv.style.backgroundColor = '#dff0d8'; // Highlight color
+                    scrollToElement = ayahDiv;
                 }
 
                 const ayahHeader = document.createElement('div');
@@ -186,8 +198,14 @@
                 quranContainer.appendChild(ayahDiv);
             }
 
+            if (scrollToElement) {
+                setTimeout(() => {
+                    scrollToElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 500);
+            }
+
             saveLastRead(surahNumber, highlightAyah || 1);
-            displayLastRead();
+            displayLastReads();
         }
 
         async function populateSurahSelector() {
@@ -213,17 +231,18 @@
                 renderSurah(surahNumber);
             });
 
-            const lastRead = getLastRead();
-            if (lastRead) {
-                renderSurah(lastRead.surah, lastRead.ayah);
-                surahSelector.value = lastRead.surah;
+            const lastReads = getLastReads();
+            if (lastReads.length > 0) {
+                const { surah, ayah } = lastReads[0];
+                renderSurah(surah, ayah);
+                surahSelector.value = surah;
             } else if (surahs.size > 0) {
                 const firstSurah = [...surahs][0];
                 surahSelector.value = firstSurah;
                 renderSurah(firstSurah);
             }
 
-            displayLastRead();
+            displayLastReads();
         }
 
         populateSurahSelector();
