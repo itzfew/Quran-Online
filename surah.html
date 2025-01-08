@@ -196,9 +196,22 @@
         window.location.href = `verse.html?surah=${surahIndex}&verse=${verseId}`;
     }
 
-    function navigateToWordToWord() {
+function navigateToWordToWord() {
+    // Check if the current URL has an index parameter
     const surahIndex = getQueryParam('index') || currentSurahIndex;
-    window.location.href = `wordtoword.html?index=${surahIndex}`;
+
+    // Navigate to the Word-to-Word page with the correct Surah number
+    if (surahIndex) {
+        window.location.href = `wordtoword.html?index=${surahIndex}`;
+    } else {
+        console.error("Unable to determine Surah index.");
+    }
+}
+
+// Function to get query parameters
+function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
 }
 
 
