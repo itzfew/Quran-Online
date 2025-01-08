@@ -17,16 +17,6 @@
             text-align: center;
             margin-bottom: 20px;
         }
-        .surah-selector {
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        select {
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
         #quran {
             margin-top: 20px;
         }
@@ -62,55 +52,11 @@
             font-family: 'Jameel Noori Nastaleeq', serif;
             direction: rtl;
         }
-        #last-read-container {
-            margin-bottom: 20px;
-        }
-        #last-read {
-            display: flex;
-            overflow-x: auto;
-            gap: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-        #last-read button {
-            flex: 0 0 auto;
-            padding: 10px;
-            font-size: 14px;
-            border: 1px solid #aaa;
-            border-radius: 5px;
-            white-space: nowrap;
-            background-color: #fff;
-            cursor: pointer;
-        }
-        #last-read button:hover {
-            background-color: #f0f0f0;
-        }
-        #last-read .date {
-            display: block;
-            font-size: 0.8em;
-            color: #666;
-            margin-top: 5px;
-        }
     </style>
 </head>
 <body>
 
-    <h1>Quran Viewer</h1>
-
-    <div id="last-read-container">
-        <div id="last-read">
-            <!-- Last viewed buttons will be dynamically added here -->
-        </div>
-    </div>
-
-    <div class="surah-selector">
-        <label for="surah">Select Surah:</label>
-        <select id="surah">
-            <!-- Surah options will be dynamically populated -->
-        </select>
-    </div>
+    <h1 id="surah-name">Loading...</h1>
     <div id="quran">
         <!-- Quranic verses will be dynamically displayed here -->
     </div>
@@ -120,11 +66,6 @@
         const wordsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/nastaliq-quranwbw.json';
         const englishTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/en-quranwbw.json';
         const urduTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/ur-quranwbw.json';
-
-        async function fetchFullTranslation(surahNumber) {
-            const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahNumber}.json`;
-            return await fetchData(url);
-        }
 
         async function fetchData(url) {
             try {
@@ -137,46 +78,22 @@
             }
         }
 
-        function saveLastRead(surah, ayah) {
-            const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
-            const currentDate = new Date().toLocaleDateString();
-            const newEntry = { surah, ayah, date: currentDate };
-            const updatedLastReads = [newEntry, ...lastReads.filter(item => item.surah !== surah || item.ayah !== ayah)];
-            localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 5)));
-        }
-
-        function getLastReads() {
-            return JSON.parse(localStorage.getItem('lastReads')) || [];
-        }
-
-        function displayLastReads() {
-            const lastReadContainer = document.getElementById('last-read');
-            const lastReads = getLastReads();
-            lastReadContainer.innerHTML = '';
-            lastReads.forEach(({ surah, ayah, date }) => {
-                const button = document.createElement('button');
-                button.textContent = `Surah ${surah}, Ayah ${ayah}`;
-                button.onclick = () => renderSurah(surah, ayah);
-                const dateDiv = document.createElement('div');
-                dateDiv.className = 'date';
-                dateDiv.textContent = date;
-                button.appendChild(dateDiv);
-                lastReadContainer.appendChild(button);
-            });
-        }
-
         async function renderSurah(surahNumber, highlightAyah = null) {
             const metadata = await fetchData(metadataUrl);
             const words = await fetchData(wordsUrl);
             const englishTranslations = await fetchData(englishTranslationsUrl);
             const urduTranslations = await fetchData(urduTranslationsUrl);
-            const fullTranslation = await fetchFullTranslation(surahNumber);
 
-            if (!metadata || !words || !englishTranslations || !urduTranslations || !fullTranslation) return;
+            if (!metadata || !words || !englishTranslations || !urduTranslations) return;
 
             const quranContainer = document.getElementById('quran');
             quranContainer.innerHTML = '';
 
+            // Update Surah name
+            const surahName = `Surah ${surahNumber}`;
+            document.getElementById('surah-name').textContent = surahName;
+
+            // Display "Bismillah" for every Surah except Surah 1
             if (surahNumber !== 1) {
                 const bismillah = document.createElement('div');
                 bismillah.className = 'ayah';
@@ -199,12 +116,12 @@
             let scrollToElement = null;
 
             for (const [ayah, words] of Object.entries(surahData)) {
-                if (ayah === '0') continue;
+                if (ayah === '0') continue; // Skip Verse 0
 
                 const ayahDiv = document.createElement('div');
                 ayahDiv.className = 'ayah';
                 if (highlightAyah && parseInt(ayah, 10) === highlightAyah) {
-                    ayahDiv.style.backgroundColor = '#dff0d8';
+                    ayahDiv.style.backgroundColor = '#dff0d8'; // Highlight color
                     scrollToElement = ayahDiv;
                 }
 
@@ -224,16 +141,8 @@
                     ayahDiv.appendChild(wordSpan);
                 });
 
-                if (fullTranslation && fullTranslation.verse[`verse_${ayah}`]) {
-                    const fullEnglishTranslation = document.createElement('div');
-                    fullEnglishTranslation.className = 'translation';
-                    fullEnglishTranslation.style.marginTop = '10px';
-                    fullEnglishTranslation.style.fontStyle = 'italic';
-                    fullEnglishTranslation.textContent = `English: ${fullTranslation.verse[`verse_${ayah}`]}`;
-                    ayahDiv.appendChild(fullEnglishTranslation);
-                }
+                ayahDiv.addEventListener('click', () => console.log(`Surah ${surahNumber}, Ayah ${ayah} clicked.`));
 
-                ayahDiv.addEventListener('click', () => saveLastRead(surahNumber, parseInt(ayah, 10)));
                 quranContainer.appendChild(ayahDiv);
             }
 
@@ -242,69 +151,27 @@
                     scrollToElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }, 500);
             }
-
-            saveLastRead(surahNumber, highlightAyah || 1);
-            displayLastReads();
         }
 
-        function getQueryParams() {
+        // Parse ?index=x#y from URL
+        function parseUrlParams() {
             const params = new URLSearchParams(window.location.search);
-            const index = params.get('index');
-            if (index) {
-                const [surah, ayah] = index.split('#').map(Number);
-                return { surah, ayah };
-            }
-            return null;
+            const hash = window.location.hash.substring(1);
+            const surah = parseInt(params.get('index'), 10);
+            const ayah = parseInt(hash, 10);
+            return { surah, ayah };
         }
 
-        async function populateSurahSelector() {
-            const metadata = await fetchData(metadataUrl);
-            if (!metadata) return;
-
-            const surahSelector = document.getElementById('surah');
-
-            const surahs = new Set();
-            for (const meta of Object.values(metadata)) {
-                surahs.add(meta.surah);
-            }
-
-            [...surahs].sort((a, b) => a - b).forEach(surah => {
-                const option = document.createElement('option');
-                option.value = surah;
-                option.textContent = `Surah ${surah}`;
-                surahSelector.appendChild(option);
-            });
-
-            surahSelector.addEventListener('change', (e) => {
-                const surahNumber = parseInt(e.target.value, 10);
-                renderSurah(surahNumber);
-            });
-
-            const lastReads = getLastReads();
-            if (lastReads.length > 0) {
-                const { surah, ayah } = lastReads[0];
-                renderSurah(surah, ayah);
-                surahSelector.value = surah;
-            } else if (surahs.size > 0) {
-                const firstSurah = [...surahs][0];
-                surahSelector.value = firstSurah;
-                renderSurah(firstSurah);
-            }
-
-            displayLastReads();
-        }
-
-        async function initializeViewer() {
-            const queryParams = getQueryParams();
-            if (queryParams && queryParams.surah && queryParams.ayah) {
-                await renderSurah(queryParams.surah, queryParams.ayah);
-                document.getElementById('surah').value = queryParams.surah;
+        async function initialize() {
+            const { surah, ayah } = parseUrlParams();
+            if (surah && ayah) {
+                await renderSurah(surah, ayah);
             } else {
-                populateSurahSelector();
+                alert('Invalid or missing parameters in URL.');
             }
         }
 
-        initializeViewer();
+        initialize();
     </script>
 </body>
 </html>
