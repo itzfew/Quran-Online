@@ -183,14 +183,6 @@
             document.getElementById('surah-name').textContent = surahName;
             document.getElementById('current-surah').textContent = surahName;
 
-            // Display "Bismillah" for every Surah except Surah 1
-            if (surahNumber !== 1) {
-                const bismillah = document.createElement('div');
-                bismillah.className = 'ayah';
-                bismillah.innerHTML = `<span class="ayah-header">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>`;
-                quranContainer.appendChild(bismillah);
-            }
-
             const surahData = {};
             for (const [wordId, meta] of Object.entries(metadata)) {
                 if (meta.surah === surahNumber) {
@@ -204,12 +196,32 @@
             }
 
             let scrollToElement = null;
+            let isSurahOne = surahNumber === 1;
+            let verseCounter = 1;
+
+            if (isSurahOne) {
+                const verseZeroDiv = document.createElement('div');
+                verseZeroDiv.className = 'ayah';
+
+                const ayahHeader = document.createElement('div');
+                ayahHeader.className = 'ayah-header';
+                ayahHeader.textContent = `Verse ${verseCounter}`;
+
+                verseZeroDiv.appendChild(ayahHeader);
+                const fullTranslationDiv = document.createElement('div');
+                fullTranslationDiv.className = 'full-translation';
+                fullTranslationDiv.textContent = fullTranslation.verse[`verse_0`] || '';
+
+                verseZeroDiv.appendChild(fullTranslationDiv);
+                quranContainer.appendChild(verseZeroDiv);
+
+                verseCounter++;
+            }
 
             for (const [ayah, words] of Object.entries(surahData)) {
-                if (ayah === '0') continue; // Skip Verse 0
-
                 const ayahDiv = document.createElement('div');
                 ayahDiv.className = 'ayah';
+
                 if (highlightAyah && parseInt(ayah, 10) === highlightAyah) {
                     ayahDiv.style.backgroundColor = '#dff0d8'; // Highlight color
                     scrollToElement = ayahDiv;
@@ -217,9 +229,9 @@
 
                 const ayahHeader = document.createElement('div');
                 ayahHeader.className = 'ayah-header';
-                ayahHeader.textContent = `Ayah ${ayah}`;
-                ayahDiv.appendChild(ayahHeader);
+                ayahHeader.textContent = `Verse ${verseCounter}`;
 
+                ayahDiv.appendChild(ayahHeader);
                 words.forEach(wordData => {
                     const wordSpan = document.createElement('span');
                     wordSpan.className = 'word';
@@ -236,15 +248,16 @@
                     ayahDiv.appendChild(wordSpan);
                 });
 
-                // Add full English translation for this Ayah
                 const fullTranslationDiv = document.createElement('div');
                 fullTranslationDiv.className = 'full-translation';
                 fullTranslationDiv.textContent = fullTranslation.verse[`verse_${ayah}`] || '';
-                ayahDiv.appendChild(fullTranslationDiv);
 
+                ayahDiv.appendChild(fullTranslationDiv);
                 ayahDiv.addEventListener('click', () => saveLastRead(surahNumber, parseInt(ayah, 10)));
 
                 quranContainer.appendChild(ayahDiv);
+
+                verseCounter++;
             }
 
             if (scrollToElement) {
