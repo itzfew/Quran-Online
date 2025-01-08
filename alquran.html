@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عرض القرآن - السورة</title>
+    <title>Quran Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Amiri Quran', serif;
             line-height: 1.8;
             margin: 20px;
-            text-align: right;
-            direction: rtl;
+            text-align: left;
+            direction: ltr;
         }
         h1 {
             text-align: center;
@@ -61,33 +61,33 @@
             direction: rtl;
         }
         #last-read {
-            text-align: center;
+            display: flex;
+            overflow-x: auto;
             margin-bottom: 20px;
-        }
-        #last-read ul {
-            list-style: none;
-            padding: 0;
-        }
-        #last-read li {
-            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            white-space: nowrap;
         }
         #last-read button {
-            padding: 5px;
+            padding: 5px 10px;
+            margin-right: 10px;
             font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <h1>عرض القرآن - السورة</h1>
+    <h1>Quran Viewer</h1>
 
     <!-- Section to display the last viewed Surahs and Ayahs -->
-    <div id="last-read">
-        <span>آخر المشاهدات:</span>
-        <ul id="last-read-list"></ul>
-    </div>
+    <div id="last-read"></div>
 
     <div class="surah-selector">
-        <label for="surah">اختر السورة:</label>
+        <label for="surah">Select Surah:</label>
         <select id="surah">
             <!-- Surah options will be dynamically populated -->
         </select>
@@ -117,11 +117,8 @@
             const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
             const newEntry = { surah, ayah };
 
-            // Add the new entry to the beginning of the list
             const updatedLastReads = [newEntry, ...lastReads.filter(item => item.surah !== surah || item.ayah !== ayah)];
-
-            // Limit to the last 3 entries
-            localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 3)));
+            localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 5))); // Limit to 5
         }
 
         function getLastReads() {
@@ -129,18 +126,16 @@
         }
 
         function displayLastReads() {
-            const lastReadList = document.getElementById('last-read-list');
+            const lastReadContainer = document.getElementById('last-read');
             const lastReads = getLastReads();
 
-            lastReadList.innerHTML = '';
+            lastReadContainer.innerHTML = '';
 
-            lastReads.forEach(({ surah, ayah }, index) => {
-                const listItem = document.createElement('li');
+            lastReads.forEach(({ surah, ayah }) => {
                 const button = document.createElement('button');
-                button.textContent = `سورة ${surah}, آية ${ayah}`;
+                button.textContent = `Surah ${surah}, Ayah ${ayah}`;
                 button.onclick = () => renderSurah(surah, ayah);
-                listItem.appendChild(button);
-                lastReadList.appendChild(listItem);
+                lastReadContainer.appendChild(button);
             });
         }
 
@@ -179,7 +174,7 @@
 
                 const ayahHeader = document.createElement('div');
                 ayahHeader.className = 'ayah-header';
-                ayahHeader.textContent = ayah;
+                ayahHeader.textContent = `Ayah ${ayah}`;
                 ayahDiv.appendChild(ayahHeader);
 
                 words.forEach(wordData => {
@@ -222,7 +217,7 @@
             [...surahs].sort((a, b) => a - b).forEach(surah => {
                 const option = document.createElement('option');
                 option.value = surah;
-                option.textContent = `سورة ${surah}`;
+                option.textContent = `Surah ${surah}`;
                 surahSelector.appendChild(option);
             });
 
