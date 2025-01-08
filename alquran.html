@@ -165,7 +165,7 @@
             }
         }
 
-        async function renderSurah(surahNumber, highlightAyah = null) {
+async function renderSurah(surahNumber, highlightAyah = null) {
     const metadata = await fetchData(metadataUrl);
     const words = await fetchData(wordsUrl);
     const englishTranslations = await fetchData(englishTranslationsUrl);
@@ -196,7 +196,7 @@
     }
 
     let scrollToElement = null;
-    let verseCounter = 1;
+    let verseCounter = 0; // Verse counter starts from 0 for Surah 1
 
     for (const [ayah, words] of Object.entries(surahData)) {
         const ayahDiv = document.createElement('div');
@@ -209,7 +209,7 @@
 
         const ayahHeader = document.createElement('div');
         ayahHeader.className = 'ayah-header';
-        ayahHeader.textContent = `Verse ${verseCounter}`;
+        ayahHeader.textContent = `Verse ${ayah}`;
 
         ayahDiv.appendChild(ayahHeader);
         words.forEach(wordData => {
@@ -228,9 +228,10 @@
             ayahDiv.appendChild(wordSpan);
         });
 
+        const translationKey = surahNumber === 1 ? `verse_${verseCounter}` : `verse_${ayah}`;
         const fullTranslationDiv = document.createElement('div');
         fullTranslationDiv.className = 'full-translation';
-        fullTranslationDiv.textContent = fullTranslation.verse[`verse_${ayah}`] || '';
+        fullTranslationDiv.textContent = fullTranslation.verse[translationKey] || '';
 
         ayahDiv.appendChild(fullTranslationDiv);
         ayahDiv.addEventListener('click', () => saveLastRead(surahNumber, parseInt(ayah, 10)));
