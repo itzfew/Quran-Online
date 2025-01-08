@@ -363,7 +363,9 @@
         lastReads.forEach(({ surah, ayah, date }) => {
             const button = document.createElement('button');
             button.textContent = `Surah ${surah}, Ayah ${ayah}`;
-            button.onclick = () => alert(`Open Surah ${surah} at Ayah ${ayah}`);
+            button.onclick = () => {
+                window.location.href = `wordtoword?index=${surah}#${ayah}`;
+            };
 
             const dateDiv = document.createElement('div');
             dateDiv.className = 'date';
