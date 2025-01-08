@@ -52,6 +52,11 @@
             font-family: 'Jameel Noori Nastaleeq', serif;
             direction: rtl;
         }
+        .full-translation {
+            margin-top: 10px;
+            font-style: italic;
+            color: #444;
+        }
         #last-read-container {
             margin-bottom: 20px;
         }
@@ -102,7 +107,8 @@
     <script>
         const metadataUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/word.json';
         const wordsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/nastaliq-quranwbw.json';
-        const englishTranslationsUrlBase = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_';
+        const englishTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/en-quranwbw.json';
+        const urduTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/ur-quranwbw.json';
 
         async function fetchData(url) {
             try {
@@ -118,9 +124,12 @@
         async function renderSurah(surahNumber, highlightAyah = null) {
             const metadata = await fetchData(metadataUrl);
             const words = await fetchData(wordsUrl);
-            const englishTranslations = await fetchData(`${englishTranslationsUrlBase}${surahNumber}.json`);
+            const englishTranslations = await fetchData(englishTranslationsUrl);
+            const urduTranslations = await fetchData(urduTranslationsUrl);
+            const fullTranslationUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahNumber}.json`;
+            const fullTranslation = await fetchData(fullTranslationUrl);
 
-            if (!metadata || !words || !englishTranslations) return;
+            if (!metadata || !words || !englishTranslations || !urduTranslations || !fullTranslation) return;
 
             const quranContainer = document.getElementById('quran');
             quranContainer.innerHTML = '';
@@ -143,14 +152,15 @@
                     if (!surahData[meta.ayah]) surahData[meta.ayah] = [];
                     surahData[meta.ayah].push({
                         word: words[wordId],
-                        ayah: meta.ayah,
+                        englishTranslation: englishTranslations[wordId],
+                        urduTranslation: urduTranslations[wordId]
                     });
                 }
             }
 
             let scrollToElement = null;
 
-            for (const [ayah, ayahWords] of Object.entries(surahData)) {
+            for (const [ayah, words] of Object.entries(surahData)) {
                 if (ayah === '0') continue; // Skip Verse 0
 
                 const ayahDiv = document.createElement('div');
@@ -165,19 +175,22 @@
                 ayahHeader.textContent = `Ayah ${ayah}`;
                 ayahDiv.appendChild(ayahHeader);
 
-                ayahWords.forEach(wordData => {
+                words.forEach(wordData => {
                     const wordSpan = document.createElement('span');
                     wordSpan.className = 'word';
                     wordSpan.innerHTML = `
                         <span>${wordData.word}</span>
+                        <span class="translation">${wordData.englishTranslation}</span>
+                        <span class="translation urdu">${wordData.urduTranslation}</span>
                     `;
                     ayahDiv.appendChild(wordSpan);
                 });
 
-                const translationDiv = document.createElement('div');
-                translationDiv.className = 'translation';
-                translationDiv.textContent = englishTranslations.verse[`verse_${ayah}`];
-                ayahDiv.appendChild(translationDiv);
+                // Add full English translation for this Ayah
+                const fullTranslationDiv = document.createElement('div');
+                fullTranslationDiv.className = 'full-translation';
+                fullTranslationDiv.textContent = fullTranslation.verse[`verse_${ayah}`] || '';
+                ayahDiv.appendChild(fullTranslationDiv);
 
                 ayahDiv.addEventListener('click', () => saveLastRead(surahNumber, parseInt(ayah, 10)));
 
@@ -194,11 +207,60 @@
             displayLastReads();
         }
 
+        function saveLastRead(surah, ayah) {
+            const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
+            const currentDate = new Date().toLocaleDateString();
+
+            const newEntry = { surah, ayah, date: currentDate };
+            const updatedLastReads = [newEntry, ...lastReads.filter(item => item.surah !== surah || item.ayah !== ayah)];
+            localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 5))); // Limit to 5 entries
+
+            updateUrlHash(surah, ayah);
+        }
+
+        function updateUrlHash(surah, ayah) {
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('index', surah);
+            currentUrl.hash = `#${ayah}`;
+            history.replaceState({}, '', currentUrl);
+        }
+
+        function displayLastReads() {
+            const lastReadContainer = document.getElementById('last-read');
+            const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
+
+            lastReadContainer.innerHTML = '';
+
+            lastReads.forEach(({ surah, ayah, date }) => {
+                const button = document.createElement('button');
+                button.textContent = `Surah ${surah}, Ayah ${ayah}`;
+                button.onclick = () => renderSurah(surah, ayah);
+
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'date';
+                dateDiv.textContent = date;
+
+                button.appendChild(dateDiv);
+                lastReadContainer.appendChild(button);
+            });
+        }
+
         async function initialize() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const surah = parseInt(urlParams.get('index'), 10) || 1;
-            const ayah = parseInt(window.location.hash.substring(1), 10) || 1;
-            await renderSurah(surah, ayah);
+            const params = new URLSearchParams(window.location.search);
+            const hash = window.location.hash.substring(1);
+            const surah = parseInt(params.get('index'), 10);
+            const ayah = parseInt(hash, 10);
+
+            const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
+
+            if (surah && ayah) {
+                await renderSurah(surah, ayah);
+            } else if (lastReads.length > 0) {
+                const { surah: lastSurah, ayah: lastAyah } = lastReads[0];
+                await renderSurah(lastSurah, lastAyah);
+            } else {
+                await renderSurah(1, 1); // Default to Surah 1, Ayah 1
+            }
         }
 
         initialize();
