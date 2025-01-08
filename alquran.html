@@ -1,928 +1,195 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quran Kareem (Ar)</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
+    <title>عرض القرآن - السورة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
     <style>
-/* Base Styles */
-body {
-    font-size: 16px; /* Default font size */
-    font-family: Arial, sans-serif; /* Default font */
-    transition: background-color 0.3s, color 0.3s, font-size 0.3s; /* Smooth transition */
-}
-
-/* Light Mode (Default) */
-body:not(.dark-mode) {
-    background-color: white;
-    color: black;
-}
-
-button {
-    padding: 10px 20px;
-    border: 1px solid black;
-    background-color: transparent;
-    color: inherit; /* inherit color from parent */
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-button:hover {
-    background-color: #f0f0f0; /* Light hover effect */
-}
-
-button:active {
-    background-color: #d0d0d0; /* Active button effect */
-}
-
-/* Dark Mode */
-body.dark-mode {
-    background-color: #121212;
-    color: white;
-}
-
-body.dark-mode button {
-    border: 1px solid white;
-    color: white;
-}
-
-body.dark-mode button:hover {
-    background-color: #333333; /* Dark hover effect */
-}
-
-body.dark-mode button:active {
-    background-color: #444444; /* Active button effect in dark mode */
-}
-
-/* Add transition for smooth color changes */
-button {
-    transition: color 0.3s, background-color 0.3s;
-}
-
-/* Header Styling */
-.header {
-    text-align: center;
-    margin-top: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-
-.arrow {
-    font-size: 2em;
-    color: #007bff;
-    cursor: pointer;
-    transition: color 0.3s;
-    padding: 0 20px;
-}
-
-.arrow:hover {
-    color: #0056b3;
-}
-
-.arrow-left {
-    position: absolute;
-    left: 0;
-}
-
-.arrow-right {
-    position: absolute;
-    right: 0;
-}
-
-.surah-heading {
-    font-size: 2.5em;
-    font-weight: bold;
-    color: #333;
-    text-transform: uppercase;
-    margin: 0 50px;
-}
-
-@media (max-width: 768px) {
-    .arrow {
-        font-size: 1.5em;
-    }
-
-    .surah-heading {
-        font-size: 1.8em;
-    }
-}
-
-/* Settings Container Styling */
-.settings-container {
-    display: flex;
-    justify-content: flex-start;  /* Align items to the start */
-    align-items: center;
-    padding: 10px 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    background-color: #f0f0f0;
-    border-bottom: 2px solid #ccc;
-    overflow-x: auto;  /* Allow horizontal scrolling */
-    white-space: nowrap;  /* Prevent wrapping of settings items */
-}
-
-/* Settings Item Styling */
-.settings-item {
-    font-size: 24px;
-    cursor: pointer;
-    color: black;
-    padding: 5px;
-    transition: all 0.3s;
-    margin-right: 15px; /* Space between items */
-    display: inline-block; /* Keep them in a horizontal row */
-}
-
-.settings-item:hover {
-    color: #007bff;
-}
-
-@media (max-width: 768px) {
-    .settings-container {
-        padding: 8px 15px;
-        justify-content: flex-start;
-    }
-
-    .settings-item {
-        font-size: 20px;
-        margin-right: 15px; /* Maintain space between settings items */
-    }
-}
-
-/* First Verse and Verse Styling */
-.first-verse {
-    text-align: center;
-    font-size: 1.2em;
-    margin: 10px 0;
-    padding: 5px;
-    color: black;
-    font-weight: bold;
-}
-
-.verse {
-    margin: 15px 0;
-    padding: 20px;
-    background-color: transparent;
-    color: black;
-    font-size: 1.2em;
-    cursor: pointer;
-    direction: rtl;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-}
-
-.verse:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-.verse-number {
-    font-size: 1.0em;
-    margin-top: 10px;
-    font-weight: bold;
-    background-image: url('https://quran-online.pages.dev/source/download.png');
-    background-size: cover;
-    background-position: center;
-    padding: 5px 10px;
-    border-radius: 8px;
-    color: black;
-    display: inline-block;
-    margin-left: 10px;
-}
-
-/* Dark Mode Styling */
-.dark-mode {
-    background-color: #121212;
-    color: white;
-}
-
-.dark-mode .verse {
-    background-color: rgba(255, 255, 255, 0.05);
-    color: white;
-}
-
-.dark-mode .first-verse,
-.dark-mode .surah-heading {
-    color: white;
-}
-
-.dark-mode .settings-item {
-    color: white;
-}
-
-.dark-mode .settings-container {
-    background-color: #333;
-    border-bottom: 2px solid #444;
-}
-
-.dark-mode .verse-number {
-    color: white;
-}
-
-/* Selected Verse Styling */
-.verse.selected {
-    background-color: rgba(0, 123, 255, 0.1);
-}
-
-/* Back to Top Button Styling */
-.back-to-top {
-    position: fixed;
-    bottom: 10px;
-    right: 15px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s;
-}
-
-.back-to-top:hover {
-    background-color: #0056b3;
-}
-
-@media (max-width: 768px) {
-    .back-to-top {
-        font-size: 0.9em;
-        padding: 8px 12px;
-    }
-}
-
-/* Language Select Dropdown Styling */
-#languageSelect {
-    font-size: 16px;
-    padding: 8px 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    color: #333;
-    display: inline-block;
-    cursor: pointer;
-    transition: 0.3s ease;
-    width: auto;
-}
-
-#languageSelect:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-#languageSelect:hover {
-    border-color: #007bff;
-}
-
-#languageSelect option {
-    font-family: 'Amiri', serif;
-    font-size: 16px;
-    padding: 10px;
-}
-
-.dark-mode #languageSelect {
-    background-color: #333;
-    color: white;
-    border-color: #444;
-}
-
-.dark-mode #languageSelect:focus {
-    border-color: #00b0ff;
-    box-shadow: 0 0 5px rgba(0, 183, 255, 0.5);
-}
-
-.dark-mode #languageSelect option {
-    color: white;
-    background-color: #333;
-}
-
-.dark-mode #languageSelect:hover {
-    border-color: #00b0ff;
-}
-
-@media (max-width: 768px) {
-    #languageSelect {
-        font-size: 14px;
-        padding: 6px 12px;
-    }
-}
-
-/* Font Select Dropdown Styling */
-#fontSelect {
-    font-size: 16px;
-    padding: 8px 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-    color: #333;
-    display: inline-block;
-    cursor: pointer;
-    transition: 0.3s ease;
-    width: auto;
-    margin-right: 20px;
-}
-
-#fontSelect:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
-}
-
-#fontSelect:hover {
-    border-color: #007bff;
-}
-
-#fontSelect option {
-    font-family: 'Amiri', serif;
-    font-size: 16px;
-    padding: 10px;
-}
-
-.dark-mode #fontSelect {
-    background-color: #333;
-    color: white;
-    border-color: #444;
-}
-
-.dark-mode #fontSelect:focus {
-    border-color: #00b0ff;
-    box-shadow: 0 0 5px rgba(0, 183, 255, 0.5);
-}
-
-.dark-mode #fontSelect option {
-    color: white;
-    background-color: #333;
-}
-
-.dark-mode #fontSelect:hover {
-    border-color: #00b0ff;
-}
-
-@media (max-width: 768px) {
-    #fontSelect {
-        font-size: 14px;
-        padding: 6px 12px;
-    }
-}
-
-/* Additional Styles (new) */
-
-/* For dark mode toggle button */
-#darkModeToggle {
-    background-color: #333;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s;
-}
-
-#darkModeToggle:hover {
-    background-color: #00b0ff;
-}
-
-/* For active selection of verses */
-.verse.selected {
-    background-color: rgba(0, 123, 255, 0.1);
-    color: #007bff;
-}
-
-/* Add smooth transition effects for all main sections */
-.surah-heading, .first-verse, .verse {
-    transition: all 0.3s ease;
-}
-
-@media (max-width: 768px) {
-    .surah-heading {
-        font-size: 1.8em;
-    }
-}
-
-   /* Style for the verse container */
-.verse {
-    position: relative; /* Allow absolute positioning for child elements like buttons */
-    padding: 20px 10px 40px 10px; /* Padding at the bottom to create space for buttons */
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Style for the Share and View buttons */
-button.share-btn, button.view-btn {
-    position: absolute;
-    bottom: 3px;  /* Positioned 10px from the bottom of the verse container */
-    left: 10px;    /* Positioned 10px from the left of the verse container */
-    padding: 8px 16px;
-    font-size: 14px;
-    border: none;
-    border-radius: 5px;
-    background-color: #007bff;  /* Primary blue color */
-    border: 1px solid black;
-    background-color: transparent;
-    color: inherit; /* inherit color from parent */
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-    display: none; /* Initially hide the buttons */
-}
-
-/* Separate the buttons horizontally by adding margin-left */
-button.share-btn {
-    left: 10px;    /* 10px from the left */
-}
-
-button.view-btn {
-    left: 120px;   /* Make space for the share button, you can adjust as needed */
-}
-
-/* Hover Effects */
-button.share-btn:hover, button.view-btn:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);
-}
-
-button.shre-btn:active, button.view-btn:active {
-    background-color: #003366;
-    transform: scale(0.95);
-}
-
-/* Style for the selected verse */
-.verse.selected {
-    background-color: #f0f8ff;
-    border: 0px solid #007bff;
-}
-
+        body {
+            font-family: 'Amiri Quran', serif;
+            line-height: 1.8;
+            margin: 20px;
+            text-align: right;
+            direction: rtl;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .surah-selector {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        select {
+            padding: 5px;
+            font-size: 16px;
+        }
+        #quran {
+            margin-top: 20px;
+        }
+        .ayah {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .ayah-header {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .word {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            text-align: center;
+        }
+        .word span {
+            display: block;
+        }
+        .translation {
+            font-size: 0.8em;
+            color: #555;
+        }
+        .translation.urdu {
+            font-family: 'Jameel Noori Nastaleeq', serif;
+            direction: rtl;
+        }
     </style>
 </head>
 <body>
-
-<div class="settings-container">
-    <div class="settings-item" onclick="toggleTheme()">
-        <i class="fas fa-adjust"></i>
-    </div>
-    <div class="settings-item" onclick="changeTextSize(1)">
-        <i class="fas fa-plus"></i>
-    </div>
-    <div class="settings-item" onclick="changeTextSize(-1)">
-        <i class="fas fa-minus"></i>
-    </div>
-    <div class="settings-item">
-        <select id="fontSelect" onchange="changeFont()">
-            <option value="Amiri">Amiri</option>
-            <option value="Cairo">Cairo</option>
-            <option value="El Messiri">El Messiri</option>
-            <option value="Harmattan">Harmattan</option>
-            <option value="Lateef">Lateef</option>
-            <option value="Scheherazade New">Scheherazade New</option>
+    <h1>عرض القرآن - السورة</h1>
+    <div class="surah-selector">
+        <label for="surah">اختر السورة:</label>
+        <select id="surah">
+            <!-- Surah options will be dynamically populated -->
         </select>
     </div>
-    <div class="settings-item" onclick="resetPreferences()">
-        <i class="fas fa-undo"></i>
+    <div id="quran">
+        <!-- Quranic verses will be dynamically displayed here -->
     </div>
-    <div class="settings-item">
-      <div class="language-selector">
-        <select id="languageSelect" onchange="changeLanguage()">
-            <option value="both">Both</option>
-            <option value="arabic">Arabic</option>
-            <option value="english">English</option>
-            <option value="urdu">Urdu</option> <!-- Added Urdu option -->
-        </select>
-    </div>
-  </div>
-</div>
 
-<div class="header">
-        <!-- Previous Arrow -->
-    <i class="fas fa-arrow-left arrow arrow-left" onclick="navigateSurah(-1)"></i>
+    <script>
+        // URLs for fetching the data
+        const metadataUrl = 'https://raw.githubusercontent.com/hablullah/data-quran/refs/heads/master/word/word.json';
+        const wordsUrl = 'https://raw.githubusercontent.com/hablullah/data-quran/refs/heads/master/word-text/nastaliq-quranwbw.json';
+        const englishTranslationsUrl = 'https://raw.githubusercontent.com/hablullah/data-quran/refs/heads/master/word-translation/en-quranwbw.json';
+        const urduTranslationsUrl = 'https://raw.githubusercontent.com/hablullah/data-quran/refs/heads/master/word-translation/ur-quranwbw.json';
 
-    <!-- Surah Name -->
-    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
-
-    <!-- Next Arrow -->
-    <i class="fas fa-arrow-right arrow arrow-right" onclick="navigateSurah(1)"></i>
-</div>
-<div id="first-verse" class="first-verse" style="display: none;"></div>
-<div id="content"></div>
-
-<button class="back-to-top" onclick="scrollToTop()">
-    <i class="fas fa-arrow-up"></i>
-</button>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const darkMode = localStorage.getItem('darkMode') === 'true';
-        const textSize = localStorage.getItem('textSize') || '18';
-        const selectedFont = localStorage.getItem('selectedFont') || 'Amiri';
-        const languageMode = localStorage.getItem('languageMode') || 'both'; // Default to both Arabic and English
-
-        if (darkMode) {
-            document.body.classList.add('dark-mode');
+        /**
+         * Fetch data from a given URL.
+         * @param {string} url - The URL to fetch data from.
+         * @returns {Promise<object>} - The fetched JSON data.
+         */
+        async function fetchData(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Failed to fetch: ${url}`);
+                return response.json();
+            } catch (error) {
+                console.error(error);
+                alert(`Error loading data: ${error.message}`);
+            }
         }
 
-        document.body.style.fontSize = textSize + 'px';
-        document.body.style.fontFamily = selectedFont;
+        /**
+         * Render the Quranic verses for a specific Surah.
+         * @param {number} surahNumber - The Surah number to render.
+         */
+        async function renderSurah(surahNumber) {
+            const metadata = await fetchData(metadataUrl);
+            const words = await fetchData(wordsUrl);
+            const englishTranslations = await fetchData(englishTranslationsUrl);
+            const urduTranslations = await fetchData(urduTranslationsUrl);
 
-        document.getElementById('fontSelect').value = selectedFont;
-        document.getElementById('languageSelect').value = languageMode;
-        setLanguageMode(languageMode);
+            if (!metadata || !words || !englishTranslations || !urduTranslations) return;
 
-        const index = getQueryParam('index');
-        fetchSurah(index ? index : 1);
-    });
+            const quranContainer = document.getElementById('quran');
+            quranContainer.innerHTML = '';
 
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
-
-    async function fetchSurah(index) {
-        const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
-        const arabicData = await arabicResponse.json();
-
-        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(1, '0')}.json`);
-        const translationData = await translationResponse.json();
-
-        // Fetch Urdu translation data from the provided URL
-        const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(index).padStart(3, '0')}.json`);
-        const urduData = await urduResponse.json();
-
-        displaySurah(arabicData, translationData, urduData);
-    }
-
-    function setLanguageMode(languageMode) {
-        localStorage.setItem('languageMode', languageMode);
-        if (languageMode === 'arabic') {
-            document.body.classList.add('arabic-only');
-            document.body.classList.remove('english-only', 'urdu-only');
-        } else if (languageMode === 'english') {
-            document.body.classList.add('english-only');
-            document.body.classList.remove('arabic-only', 'urdu-only');
-        } else if (languageMode === 'urdu') {
-            document.body.classList.add('urdu-only');
-            document.body.classList.remove('arabic-only', 'english-only');
-        } else {
-            document.body.classList.remove('english-only', 'arabic-only', 'urdu-only');
-        }
-    }
-
-    function displaySurah(arabicData, translationData, urduData) {
-        const surahHeading = document.getElementById('surah-heading');
-        const firstVerse = document.getElementById('first-verse');
-        const content = document.getElementById('content');
-        const count = arabicData.count;
-        const arabicVerses = arabicData.verse;
-        const translationVerses = translationData.verse;
-        const urduVerses = urduData.data;
-
-        surahHeading.style.display = 'block';
-        firstVerse.style.display = 'block';
-        content.innerHTML = ''; // Clear content
-
-        surahHeading.innerText = arabicData.name;
-        firstVerse.innerText = arabicVerses['verse_0'];  // Display translation of verse_0 separately
-
-        // Loop through verses starting from verse_1
-        for (let i = 1; i <= count; i++) {
-            const arabicVerse = arabicVerses[`verse_${i}`];
-            const translatedVerse = translationVerses[`verse_${i}`];
-            const urduVerse = urduVerses.find(v => v.aya == i.toString())?.text || ''; // Find corresponding Urdu translation
-
-            const verseDiv = document.createElement('div');
-            verseDiv.classList.add('verse');
-            verseDiv.setAttribute('id', `verse-${i}`);
-            
-            let verseContent = '';
-
-            // Depending on the language mode, display only Arabic, English, Urdu, or both
-            if (localStorage.getItem('languageMode') === 'arabic') {
-                verseContent = `
-                    <div class="arabic-text">${arabicVerse}
-                        <span class="verse-number">${i}</span>
-                    </div>`;
-            } else if (localStorage.getItem('languageMode') === 'english') {
-                verseContent = `
-                    <div class="translation-text">${translatedVerse}
-                        <span class="verse-number">${i}</span>
-                    </div>`;
-            } else if (localStorage.getItem('languageMode') === 'urdu') {
-                verseContent = `
-                    <div class="urdu-text">${urduVerse}
-                        <span class="verse-number">${i}</span>
-                    </div>`;
-            } else {
-                verseContent = `
-                    <div class="arabic-text">${arabicVerse}
-                        <span class="verse-number">${i}</span>
-                    </div>
-                    <div class="translation-text">${translatedVerse}</div>
-                    <div class="urdu-text">${urduVerse}</div>`;
+            // Filter data for the selected Surah
+            const surahData = {};
+            for (const [wordId, meta] of Object.entries(metadata)) {
+                if (meta.surah === surahNumber) {
+                    if (!surahData[meta.ayah]) surahData[meta.ayah] = [];
+                    surahData[meta.ayah].push({
+                        word: words[wordId],
+                        englishTranslation: englishTranslations[wordId],
+                        urduTranslation: urduTranslations[wordId]
+                    });
+                }
             }
 
-            verseDiv.innerHTML = verseContent;
+            // Render data for the selected Surah
+            for (const [ayah, words] of Object.entries(surahData)) {
+                const ayahDiv = document.createElement('div');
+                ayahDiv.className = 'ayah';
 
-            // Add event listener to highlight verse
-            verseDiv.onclick = () => toggleHighlight(i);
+                // Ayah number as part of the layout
+                const ayahHeader = document.createElement('div');
+                ayahHeader.className = 'ayah-header';
+                ayahHeader.textContent = ayah;
+                ayahDiv.appendChild(ayahHeader);
 
-            content.appendChild(verseDiv);
+                words.forEach(wordData => {
+                    const wordSpan = document.createElement('span');
+                    wordSpan.className = 'word';
+                    wordSpan.innerHTML = `
+                        <span>${wordData.word}</span>
+                        <span class="translation">${wordData.englishTranslation}</span>
+                        <span class="translation urdu">${wordData.urduTranslation}</span>
+                    `;
+                    ayahDiv.appendChild(wordSpan);
+                });
+
+                quranContainer.appendChild(ayahDiv);
+            }
         }
-    }
 
-    function toggleHighlight(verseId) {
-        // Remove highlight from all verses
-        const allVerses = document.querySelectorAll('.verse');
-        allVerses.forEach(verse => {
-            verse.classList.remove('selected');
-        });
+        /**
+         * Populate the Surah selector with available Surahs.
+         */
+        async function populateSurahSelector() {
+            const metadata = await fetchData(metadataUrl);
+            if (!metadata) return;
 
-        // Add highlight to clicked verse
-        const verseElement = document.getElementById(`verse-${verseId}`);
-        verseElement.classList.add('selected');
-    }
+            const surahSelector = document.getElementById('surah');
 
-    function changeLanguage() {
-        const selectedLanguage = document.getElementById('languageSelect').value;
-        setLanguageMode(selectedLanguage);
-        fetchSurah(getQueryParam('index') || 1); // Reload the surah with the updated language mode
-    }
+            // Collect unique Surah numbers
+            const surahs = new Set();
+            for (const meta of Object.values(metadata)) {
+                surahs.add(meta.surah);
+            }
 
-    function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
-
-    function changeTextSize(increment) {
-        const newSize = parseInt(document.body.style.fontSize) + increment;
-        document.body.style.fontSize = newSize + 'px';
-        localStorage.setItem('textSize', newSize);
-    }
-
-    function changeFont() {
-        const selectedFont = document.getElementById('fontSelect').value;
-        document.body.style.fontFamily = selectedFont;
-        localStorage.setItem('selectedFont', selectedFont);
-    }
-
-    function resetPreferences() {
-        localStorage.removeItem('darkMode');
-        localStorage.removeItem('textSize');
-        localStorage.removeItem('selectedFont');
-        localStorage.removeItem('languageMode');
-        location.reload();
-    }
-
-    let currentSurahIndex = 1;  // Starting surah index
-
-// Update the Surah by navigating to the next or previous surah
-function navigateSurah(direction) {
-    currentSurahIndex += direction;  // Change the index based on arrow clicked
-
-    // Make sure the surah index stays within the valid range (1 to 114)
-    if (currentSurahIndex < 1) {
-        currentSurahIndex = 1;
-    } else if (currentSurahIndex > 114) {
-        currentSurahIndex = 114;
-    }
-
-    // Change the URL without refreshing the page
-    const newUrl = `https://quran-online.pages.dev/surah?index=${currentSurahIndex}`;
-    window.history.pushState({ path: newUrl }, '', newUrl);
-
-    // Refresh the page to reload the surah content
-    window.location.reload();  // Refresh the page after updating the URL
-}
-
-// Load Surah based on the current index
-function loadSurah(index) {
-    fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(3, '0')}.json`)
-        .then(response => response.json())
-        .then(data => {
-            const surahData = data;
-            const surahHeading = document.getElementById('surah-heading');
-            const content = document.getElementById('content');
-
-            // Display the Surah Name
-            surahHeading.textContent = surahData.name;
-            surahHeading.style.display = 'block';
-
-            // Load the surah content (verses)
-            content.innerHTML = '';
-            surahData.verse.forEach((verse, index) => {
-                const verseDiv = document.createElement('div');
-                verseDiv.classList.add('verse');
-                verseDiv.textContent = verse;
-
-                const verseNumber = document.createElement('span');
-                verseNumber.classList.add('verse-number');
-                verseNumber.textContent = `Verse ${index + 1}`;
-                verseDiv.appendChild(verseNumber);
-
-                content.appendChild(verseDiv);
+            // Populate the dropdown
+            [...surahs].sort((a, b) => a - b).forEach(surah => {
+                const option = document.createElement('option');
+                option.value = surah;
+                option.textContent = `سورة ${surah}`;
+                surahSelector.appendChild(option);
             });
-        })
-        .catch(error => {
-            console.error('Error loading surah:', error);
-        });
-}
 
-// Initialize by getting the current index from the URL
-function initializeSurahFromUrl() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const index = parseInt(urlParams.get('index')) || 1;  // Default to 1 if no index is present
-    currentSurahIndex = index;
-
-    loadSurah(currentSurahIndex);
-}
-
-// Run the initialization function on page load
-document.addEventListener('DOMContentLoaded', () => {
-    initializeSurahFromUrl();
-});
-
-    async function fetchSurah(index) {
-        const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
-        const arabicData = await arabicResponse.json();
-
-        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(1, '0')}.json`);
-        const translationData = await translationResponse.json();
-
-        const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(index).padStart(3, '0')}.json`);
-        const urduData = await urduResponse.json();
-
-        displaySurah(arabicData, translationData, urduData);
-    }
-
-    function displaySurah(arabicData, translationData, urduData) {
-    const surahHeading = document.getElementById('surah-heading');
-    const firstVerse = document.getElementById('first-verse');
-    const content = document.getElementById('content');
-    const count = arabicData.count;
-    const arabicVerses = arabicData.verse;
-    const translationVerses = translationData.verse;
-    const urduVerses = urduData.data;
-
-    surahHeading.style.display = 'block';
-    firstVerse.style.display = 'block';
-    content.innerHTML = ''; // Clear content
-
-    surahHeading.innerText = arabicData.name;
-    firstVerse.innerText = arabicVerses['verse_0'];  // Display translation of verse_0 separately
-
-    // Loop through verses starting from verse_1
-    for (let i = 1; i <= count; i++) {
-        const arabicVerse = arabicVerses[`verse_${i}`];
-        const translatedVerse = translationVerses[`verse_${i}`];
-        const urduVerse = urduVerses.find(v => v.aya == i.toString())?.text || ''; // Find corresponding Urdu translation
-
-        const verseDiv = document.createElement('div');
-        verseDiv.classList.add('verse');
-        verseDiv.setAttribute('id', `verse-${i}`);
-        
-        let verseContent = '';
-
-        // Depending on the language mode, display only Arabic, English, Urdu, or both
-        if (localStorage.getItem('languageMode') === 'arabic') {
-            verseContent = `
-                <div class="arabic-text">${arabicVerse}
-                    <span class="verse-number">${i}</span>
-                </div>`;
-        } else if (localStorage.getItem('languageMode') === 'english') {
-            verseContent = `
-                <div class="translation-text">${translatedVerse}
-                    <span class="verse-number">${i}</span>
-                </div>`;
-        } else if (localStorage.getItem('languageMode') === 'urdu') {
-            verseContent = `
-                <div class="urdu-text">${urduVerse}
-                    <span class="verse-number">${i}</span>
-                </div>`;
-        } else {
-            verseContent = `
-                <div class="arabic-text">${arabicVerse}
-                    <span class="verse-number">${i}</span>
-                </div>
-                <div class="translation-text">${translatedVerse}</div>
-                <div class="urdu-text">${urduVerse}</div>`;
-        }
-
-        verseDiv.innerHTML = verseContent;
-
-        // Add the share and view buttons, but hide them by default
-        verseDiv.innerHTML += `
-            <button class="share-btn" onclick="shareVerse(${i})" style="display: none;">Share</button>
-            <button class="view-btn" onclick="viewVerse(${i})" style="display: none;">View</button>
-        `;
-
-        // Add event listener to highlight verse and show the buttons
-        verseDiv.onclick = () => toggleHighlight(i);
-
-        content.appendChild(verseDiv);
-    }
-}
-
-function toggleHighlight(verseId) {
-    // Remove highlight from all verses
-    const allVerses = document.querySelectorAll('.verse');
-    allVerses.forEach(verse => {
-        verse.classList.remove('selected');
-        // Hide all buttons
-        const shareButton = verse.querySelector('.share-btn');
-        const viewButton = verse.querySelector('.view-btn');
-        if (shareButton) shareButton.style.display = 'none';
-        if (viewButton) viewButton.style.display = 'none';
-    });
-
-    // Add highlight to clicked verse
-    const verseElement = document.getElementById(`verse-${verseId}`);
-    verseElement.classList.add('selected');
-    // Show the buttons for the selected verse
-    const shareButton = verseElement.querySelector('.share-btn');
-    const viewButton = verseElement.querySelector('.view-btn');
-    if (shareButton) shareButton.style.display = 'inline-block';
-    if (viewButton) viewButton.style.display = 'inline-block';
-}
-
-    // Share functionality
-    function shareVerse(verseId) {
-        const verseText = document.getElementById(`verse-${verseId}`).innerText;
-        if (navigator.share) {
-            // Mobile share using the Web Share API
-            navigator.share({
-                title: 'Quran Verse',
-                text: verseText,
-                url: window.location.href
-            }).catch((error) => console.log('Error sharing: ', error));
-        } else {
-            // For desktop, copy to clipboard
-            navigator.clipboard.writeText(verseText).then(() => {
-                alert('Verse copied to clipboard!');
-            }).catch((error) => {
-                console.log('Error copying to clipboard: ', error);
+            // Attach event listener to render the selected Surah
+            surahSelector.addEventListener('change', (e) => {
+                const surahNumber = parseInt(e.target.value, 10);
+                renderSurah(surahNumber);
             });
+
+            // Render the first Surah by default
+            if (surahs.size > 0) {
+                const firstSurah = [...surahs][0];
+                surahSelector.value = firstSurah;
+                renderSurah(firstSurah);
+            }
         }
-    }
 
-    // View functionality
-    function viewVerse(verseId) {
-        const surahIndex = getQueryParam('index') || 1; // Current surah index
-        window.location.href = `verse.html?surah=${surahIndex}&verse=${verseId}`;
-    }
-
-    // Helper function to get query parameters
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
-
-    // Scroll to top functionality
-    function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // Dark mode toggle
-    function toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
-
-    // Text size change
-    function changeTextSize(increment) {
-        const newSize = parseInt(document.body.style.fontSize) + increment;
-        document.body.style.fontSize = newSize + 'px';
-        localStorage.setItem('textSize', newSize);
-    }
-
-    // Font change
-    function changeFont() {
-        const selectedFont = document.getElementById('fontSelect').value;
-        document.body.style.fontFamily = selectedFont;
-        localStorage.setItem('selectedFont', selectedFont);
-    }
-
-    // Reset preferences
-    function resetPreferences() {
-        localStorage.removeItem('darkMode');
-        localStorage.removeItem('textSize');
-        localStorage.removeItem('selectedFont');
-        localStorage.removeItem('languageMode');
-        location.reload();
-    }
-
-
-</script>
-
+        // Initialize the application
+        populateSurahSelector();
+    </script>
 </body>
 </html>
