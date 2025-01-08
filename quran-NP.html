@@ -1,240 +1,300 @@
-<!DOCTYPE html>
-<html lang="en">
+When user types ?index=1#3 open surah 1 verse 3 ... if ?index=4#20 open/refer verse 20 of Surah 4... and so on...<!DOCTYPE html>
+<html lang="en" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quran Surah Viewer</title>
-    <!-- Add Arabic font from Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Scheherazade&display=swap" rel="stylesheet">
-    <!-- Add FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Quran Viewer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
+            font-family: 'Amiri Quran', serif;
+            line-height: 1.8;
+            margin: 20px;
+            text-align: right;
+            direction: rtl;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .surah-selector {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        #quran {
+            margin-top: 20px;
+        }
+        .ayah {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
             background-color: #f9f9f9;
         }
-
-        h1, h2 {
-            text-align: center;
-            color: #333;
-            font-family: 'Scheherazade', serif; /* Apply new Arabic font */
-        }
-
-        .surah-info {
-            text-align: center;
-            margin-bottom: 60px;
-            position: relative;
-        }
-
-        .verses {
-            line-height: 1.8;
-            text-align: right; /* Right align Arabic text */
-            font-size: 35px;
-            color: #555;
-            font-family: 'Scheherazade', serif; /* Apply new Arabic font */
-        }
-
-        .verse-number {
+        .ayah-header {
             font-size: 1.2em;
             font-weight: bold;
-            margin-left: 10px;
-            color: black;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .word {
             display: inline-block;
-        }
-
-        .verse-heading {
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-bottom: 15px;
+            margin: 5px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
             text-align: center;
-            color: #333;
-            font-family: 'Scheherazade', serif;
         }
-
-        /* Additional styling for buttons */
-        .navigation {
-            position: absolute;
-            top: 0;
-            width: 100%;
+        .word span {
+            display: block;
+        }
+        .translation {
+            font-size: 0.8em;
+            color: #555;
+        }
+        .translation.urdu {
+            font-family: 'Jameel Noori Nastaleeq', serif;
+            direction: rtl;
+        }
+        #last-read-container {
+            margin-bottom: 20px;
+        }
+        #last-read {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-        }
-
-        .button {
+            overflow-x: auto;
+            gap: 10px;
             padding: 10px;
-            font-size: 20px;
-            background-color: transparent;
-            color: #333;
-            border: none;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        #last-read button {
+            flex: 0 0 auto;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            white-space: nowrap;
+            background-color: #fff;
             cursor: pointer;
         }
-
-        .button:disabled {
-            color: #ccc;
-            cursor: not-allowed;
+        #last-read button:hover {
+            background-color: #f0f0f0;
         }
-
-        .button i {
-            font-size: 25px; /* Increase icon size */
-        }
-
-        hr {
-            border: 1px solid #ccc;
-            margin: 20px 0;
-        }
-
-        /* Responsive design for smaller screens */
-        @media (max-width: 768px) {
-            .verses {
-                font-size: 28px;
-            }
-
-            .verse-heading {
-                font-size: 1.2em;
-            }
-
-            h2 {
-                font-size: 1.5em;
-            }
-
-            .button {
-                font-size: 18px;
-                padding: 8px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .verses {
-                font-size: 24px;
-            }
-
-            .verse-heading {
-                font-size: 1em;
-            }
-
-            h2 {
-                font-size: 1.2em;
-            }
-
-            .button {
-                font-size: 16px;
-                padding: 6px;
-            }
+        #last-read .date {
+            display: block;
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
-    <div class="surah-info">
-        <!-- Buttons for navigation will be placed here -->
-        <div class="navigation">
-            <button id="prev-button" class="button" disabled><i class="fas fa-chevron-left"></i></button>
-            <h2 id="surah-name">Loading...</h2>
-            <button id="next-button" class="button"><i class="fas fa-chevron-right"></i></button>
+
+    <h1>Quran Viewer</h1>
+
+    <div id="last-read-container">
+        <div id="last-read">
+            <!-- Last viewed buttons will be dynamically added here -->
         </div>
     </div>
-    
-    <div class="verses" id="verses">Please wait...</div>
+
+    <div class="surah-selector">
+        <label for="surah">Select Surah:</label>
+        <select id="surah">
+            <!-- Surah options will be dynamically populated -->
+        </select>
+    </div>
+    <div id="quran">
+        <!-- Quranic verses will be dynamically displayed here -->
+    </div>
 
     <script>
-        const surahBaseURL = "https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_";
-        let currentSurah = 1;
+        const metadataUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/word.json';
+        const wordsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/nastaliq-quranwbw.json';
+        const englishTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/en-quranwbw.json';
+        const urduTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/ur-quranwbw.json';
 
-        const surahNameEl = document.getElementById("surah-name");
-        const versesEl = document.getElementById("verses");
-        const prevButton = document.getElementById("prev-button");
-        const nextButton = document.getElementById("next-button");
-
-        // Function to convert English numbers to Arabic numerals
-        function convertToArabicNumerals(number) {
-            const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
-            return number.toString().split('').map(digit => arabicNumerals[parseInt(digit)]).join('');
+        // Fetch full translation file
+        async function fetchFullTranslation(surahNumber) {
+            const url = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahNumber}.json`;
+            return await fetchData(url);
         }
 
-        const fetchSurah = async (surahNumber) => {
+        async function fetchData(url) {
             try {
-                const response = await fetch(`${surahBaseURL}${surahNumber}.json`);
-                if (!response.ok) {
-                    throw new Error("Failed to fetch Surah.");
-                }
-                const surahData = await response.json();
-                displaySurah(surahData);
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Failed to fetch: ${url}`);
+                return response.json();
             } catch (error) {
-                surahNameEl.textContent = "Error loading Surah";
-                versesEl.textContent = error.message;
+                console.error(error);
+                alert(`Error loading data: ${error.message}`);
             }
-        };
+        }
 
-        const displaySurah = (data) => {
-            const verseCount = Object.keys(data.verse).length; // Get the total number of verses
-            surahNameEl.textContent = `${data.name} (${verseCount} verses)`; // Show name and verse count
-            
-            // Number of verses per page (set to 6 verses per page)
-            const versesPerPage = 6;
-            
-            let versesHTML = "";
-            let verseCounter = 1; // Start counting from 1
+        function saveLastRead(surah, ayah) {
+            const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
+            const currentDate = new Date().toLocaleDateString();
 
-            Object.entries(data.verse).forEach(([key, verse], index) => {
-                if (key === "verse_0") {
-                    versesHTML += `<div class="verse-heading">${verse}</div>`; // Centered heading for verse_0
-                } else {
-                    // Convert the verse number to Arabic numerals and display it after the verse text
-                    const arabicVerseNumber = convertToArabicNumerals(verseCounter);
-                    versesHTML += `${verse} <span class="verse-number">(${arabicVerseNumber})</span>`;
-                    verseCounter++;
+            const newEntry = { surah, ayah, date: currentDate };
 
-                    // Insert a horizontal line after every 6 verses
-                    if (verseCounter % versesPerPage === 0) {
-                        versesHTML += "<hr>";
-                    }
+            const updatedLastReads = [newEntry, ...lastReads.filter(item => item.surah !== surah || item.ayah !== ayah)];
+            localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 5))); // Limit to 5 entries
+        }
+
+        function getLastReads() {
+            return JSON.parse(localStorage.getItem('lastReads')) || [];
+        }
+
+        function displayLastReads() {
+            const lastReadContainer = document.getElementById('last-read');
+            const lastReads = getLastReads();
+
+            lastReadContainer.innerHTML = '';
+
+            lastReads.forEach(({ surah, ayah, date }) => {
+                const button = document.createElement('button');
+                button.textContent = `Surah ${surah}, Ayah ${ayah}`;
+                button.onclick = () => renderSurah(surah, ayah);
+
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'date';
+                dateDiv.textContent = date;
+
+                button.appendChild(dateDiv);
+                lastReadContainer.appendChild(button);
+            });
+        }
+
+        async function renderSurah(surahNumber, highlightAyah = null) {
+            const metadata = await fetchData(metadataUrl);
+            const words = await fetchData(wordsUrl);
+            const englishTranslations = await fetchData(englishTranslationsUrl);
+            const urduTranslations = await fetchData(urduTranslationsUrl);
+            const fullTranslation = await fetchFullTranslation(surahNumber);
+
+            if (!metadata || !words || !englishTranslations || !urduTranslations || !fullTranslation) return;
+
+            const quranContainer = document.getElementById('quran');
+            quranContainer.innerHTML = '';
+
+            // Display "Bismillah" for every Surah except Surah 1
+            if (surahNumber !== 1) {
+                const bismillah = document.createElement('div');
+                bismillah.className = 'ayah';
+                bismillah.innerHTML = `<span class="ayah-header">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</span>`;
+                quranContainer.appendChild(bismillah);
+            }
+
+            const surahData = {};
+            for (const [wordId, meta] of Object.entries(metadata)) {
+                if (meta.surah === surahNumber) {
+                    if (!surahData[meta.ayah]) surahData[meta.ayah] = [];
+                    surahData[meta.ayah].push({
+                        word: words[wordId],
+                        englishTranslation: englishTranslations[wordId],
+                        urduTranslation: urduTranslations[wordId]
+                    });
                 }
+            }
+
+            let scrollToElement = null;
+
+            for (const [ayah, words] of Object.entries(surahData)) {
+                if (ayah === '0') continue; // Skip Verse 0
+
+                const ayahDiv = document.createElement('div');
+                ayahDiv.className = 'ayah';
+                if (highlightAyah && parseInt(ayah, 10) === highlightAyah) {
+                    ayahDiv.style.backgroundColor = '#dff0d8'; // Highlight color
+                    scrollToElement = ayahDiv;
+                }
+
+                const ayahHeader = document.createElement('div');
+                ayahHeader.className = 'ayah-header';
+                ayahHeader.textContent = `Ayah ${ayah}`;
+                ayahDiv.appendChild(ayahHeader);
+
+                words.forEach(wordData => {
+                    const wordSpan = document.createElement('span');
+                    wordSpan.className = 'word';
+                    wordSpan.innerHTML = `
+                        <span>${wordData.word}</span>
+                        <span class="translation">${wordData.englishTranslation}</span>
+                        <span class="translation urdu">${wordData.urduTranslation}</span>
+                    `;
+                    ayahDiv.appendChild(wordSpan);
+                });
+
+                // Add full English translation for this ayah.
+                if (fullTranslation && fullTranslation.verse[`verse_${ayah}`]) {
+                    const fullEnglishTranslation = document.createElement('div');
+                    fullEnglishTranslation.className = 'translation';
+                    fullEnglishTranslation.style.marginTop = '10px';
+                    fullEnglishTranslation.style.fontStyle = 'italic';
+                    fullEnglishTranslation.textContent = `English: ${fullTranslation.verse[`verse_${ayah}`]}`;
+                    ayahDiv.appendChild(fullEnglishTranslation);
+                }
+
+                ayahDiv.addEventListener('click', () => saveLastRead(surahNumber, parseInt(ayah, 10)));
+
+                quranContainer.appendChild(ayahDiv);
+            }
+
+            if (scrollToElement) {
+                setTimeout(() => {
+                    scrollToElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 500);
+            }
+
+            saveLastRead(surahNumber, highlightAyah || 1);
+            displayLastReads();
+        }
+
+        async function populateSurahSelector() {
+            const metadata = await fetchData(metadataUrl);
+            if (!metadata) return;
+
+            const surahSelector = document.getElementById('surah');
+
+            const surahs = new Set();
+            for (const meta of Object.values(metadata)) {
+                surahs.add(meta.surah);
+            }
+
+            [...surahs].sort((a, b) => a - b).forEach(surah => {
+                const option = document.createElement('option');
+                option.value = surah;
+                option.textContent = `Surah ${surah}`;
+                surahSelector.appendChild(option);
             });
 
-            versesEl.innerHTML = versesHTML;
+            surahSelector.addEventListener('change', (e) => {
+                const surahNumber = parseInt(e.target.value, 10);
+                renderSurah(surahNumber);
+            });
 
-            prevButton.disabled = currentSurah === 1;
-            nextButton.disabled = currentSurah === 114;
-        };
-
-        // Update the Surah based on the query parameter in the URL
-        const getSurahFromURL = () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const surahIndex = urlParams.get('index');
-            if (surahIndex && !isNaN(surahIndex) && surahIndex >= 1 && surahIndex <= 114) {
-                currentSurah = parseInt(surahIndex);
+            const lastReads = getLastReads();
+            if (lastReads.length > 0) {
+                const { surah, ayah } = lastReads[0];
+                renderSurah(surah, ayah);
+                surahSelector.value = surah;
+            } else if (surahs.size > 0) {
+                const firstSurah = [...surahs][0];
+                surahSelector.value = firstSurah;
+                renderSurah(firstSurah);
             }
-            fetchSurah(currentSurah);
-        };
 
-        // Event listeners for the buttons
-        prevButton.addEventListener("click", () => {
-            if (currentSurah > 1) {
-                currentSurah--;
-                updateURLAndFetch();
-            }
-        });
+            displayLastReads();
+        }
 
-        nextButton.addEventListener("click", () => {
-            if (currentSurah < 114) {
-                currentSurah++;
-                updateURLAndFetch();
-            }
-        });
-
-        // Function to update URL without reloading the page
-        const updateURLAndFetch = () => {
-            const newURL = new URL(window.location);
-            newURL.searchParams.set('index', currentSurah);
-            window.history.pushState({}, '', newURL);
-            fetchSurah(currentSurah);
-        };
-
-        // Initial fetch based on the URL
-        getSurahFromURL();
+        populateSurahSelector();
     </script>
 </body>
 </html>
