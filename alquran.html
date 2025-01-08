@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -61,22 +61,22 @@
             direction: rtl;
         }
         #last-read {
-            text-align: center;
-            margin-bottom: 20px;
             display: flex;
-            justify-content: center;
             gap: 10px;
-            flex-wrap: wrap;
+            overflow-x: auto;
+            padding: 10px;
+            white-space: nowrap;
         }
         #last-read button {
             padding: 10px;
             font-size: 14px;
             text-align: left;
-            display: inline-block;
-            position: relative;
             border: 1px solid #aaa;
             border-radius: 5px;
             min-width: 150px;
+            flex: 0 0 auto;
+            position: relative;
+            background: #fff;
         }
         #last-read .date, #last-read .time {
             display: block;
