@@ -17,6 +17,14 @@
             text-align: center;
             margin-bottom: 20px;
         }
+        .last-read {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            color: #0066cc;
+            cursor: pointer;
+            text-decoration: underline;
+        }
         .surah-selector {
             margin-bottom: 20px;
             text-align: center;
@@ -64,6 +72,7 @@
 </head>
 <body>
     <h1>عرض القرآن - السورة</h1>
+    <div id="last-read-label" class="last-read" style="display: none;"></div>
     <div class="surah-selector">
         <label for="surah">اختر السورة:</label>
         <select id="surah">
@@ -80,6 +89,8 @@
         const wordsUrl = 'https://raw.githubusercontent.com/hablullah/data-quran/refs/heads/master/word-text/nastaliq-quranwbw.json';
         const englishTranslationsUrl = 'https://raw.githubusercontent.com/hablullah/data-quran/refs/heads/master/word-translation/en-quranwbw.json';
         const urduTranslationsUrl = 'https://raw.githubusercontent.com/hablullah/data-quran/refs/heads/master/word-translation/ur-quranwbw.json';
+
+        const LAST_READ_KEY = 'lastRead';
 
         /**
          * Fetch data from a given URL.
@@ -98,10 +109,45 @@
         }
 
         /**
+         * Save the last-read Surah and Ayah in local storage.
+         * @param {number} surah - The Surah number.
+         * @param {number} ayah - The Ayah number.
+         */
+        function saveLastRead(surah, ayah) {
+            const lastRead = { surah, ayah, timestamp: new Date().toISOString() };
+            localStorage.setItem(LAST_READ_KEY, JSON.stringify(lastRead));
+        }
+
+        /**
+         * Retrieve the last-read Surah and Ayah from local storage.
+         * @returns {object|null} - The last-read data or null if none is saved.
+         */
+        function getLastRead() {
+            const lastRead = localStorage.getItem(LAST_READ_KEY);
+            return lastRead ? JSON.parse(lastRead) : null;
+        }
+
+        /**
+         * Display the last-read label and make it clickable.
+         */
+        function displayLastReadLabel() {
+            const lastRead = getLastRead();
+            const lastReadLabel = document.getElementById('last-read-label');
+            if (lastRead) {
+                lastReadLabel.style.display = 'block';
+                lastReadLabel.textContent = `آخر قراءة: سورة ${lastRead.surah}, آية ${lastRead.ayah}`;
+                lastReadLabel.onclick = () => renderSurah(lastRead.surah, lastRead.ayah);
+            } else {
+                lastReadLabel.style.display = 'none';
+            }
+        }
+
+        /**
          * Render the Quranic verses for a specific Surah.
          * @param {number} surahNumber - The Surah number to render.
+         * @param {number} [highlightAyah] - The Ayah number to highlight.
          */
-        async function renderSurah(surahNumber) {
+        async function renderSurah(surahNumber, highlightAyah = null) {
             const metadata = await fetchData(metadataUrl);
             const words = await fetchData(wordsUrl);
             const englishTranslations = await fetchData(englishTranslationsUrl);
@@ -129,6 +175,9 @@
             for (const [ayah, words] of Object.entries(surahData)) {
                 const ayahDiv = document.createElement('div');
                 ayahDiv.className = 'ayah';
+                if (highlightAyah && highlightAyah == ayah) {
+                    ayahDiv.style.backgroundColor = '#ffefcc';
+                }
 
                 // Ayah number as part of the layout
                 const ayahHeader = document.createElement('div');
@@ -148,6 +197,7 @@
                 });
 
                 quranContainer.appendChild(ayahDiv);
+                saveLastRead(surahNumber, ayah);
             }
         }
 
@@ -180,8 +230,12 @@
                 renderSurah(surahNumber);
             });
 
-            // Render the first Surah by default
-            if (surahs.size > 0) {
+            // Render the first Surah or last-read Surah by default
+            const lastRead = getLastRead();
+            if (lastRead) {
+                surahSelector.value = lastRead.surah;
+                renderSurah(lastRead.surah, lastRead.ayah);
+            } else if (surahs.size > 0) {
                 const firstSurah = [...surahs][0];
                 surahSelector.value = firstSurah;
                 renderSurah(firstSurah);
@@ -189,7 +243,10 @@
         }
 
         // Initialize the application
-        populateSurahSelector();
+        document.addEventListener('DOMContentLoaded', () => {
+            displayLastReadLabel();
+            populateSurahSelector();
+        });
     </script>
 </body>
 </html>
