@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,8 +22,10 @@
             text-align: center;
         }
         select {
-            padding: 5px;
+            padding: 10px;
             font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
         }
         #quran {
             margin-top: 20px;
@@ -60,43 +62,46 @@
             font-family: 'Jameel Noori Nastaleeq', serif;
             direction: rtl;
         }
+        #last-read-container {
+            margin-bottom: 20px;
+        }
         #last-read {
             display: flex;
-            gap: 10px;
             overflow-x: auto;
+            gap: 10px;
             padding: 10px;
-            white-space: nowrap;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
         }
         #last-read button {
+            flex: 0 0 auto;
             padding: 10px;
             font-size: 14px;
-            text-align: left;
             border: 1px solid #aaa;
             border-radius: 5px;
-            min-width: 150px;
-            flex: 0 0 auto;
-            position: relative;
-            background: #fff;
+            white-space: nowrap;
+            background-color: #fff;
+            cursor: pointer;
         }
-        #last-read .date, #last-read .time {
+        #last-read button:hover {
+            background-color: #f0f0f0;
+        }
+        #last-read .date {
             display: block;
             font-size: 0.8em;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 2px 5px;
+            color: #666;
             margin-top: 5px;
-            background-color: #f1f1f1;
-            color: #555;
-            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>Quran Viewer</h1>
 
-    <!-- Section to display the last viewed Surahs and Ayahs -->
-    <div id="last-read">
-        <!-- Last viewed buttons will be dynamically added here -->
+    <div id="last-read-container">
+        <span>Last Read:</span>
+        <div id="last-read">
+            <!-- Last viewed buttons will be dynamically added here -->
+        </div>
     </div>
 
     <div class="surah-selector">
@@ -128,14 +133,12 @@
 
         function saveLastRead(surah, ayah) {
             const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
-            const currentDate = new Date();
-            const date = currentDate.toLocaleDateString();
-            const time = currentDate.toLocaleTimeString();
+            const currentDate = new Date().toLocaleDateString();
 
-            const newEntry = { surah, ayah, date, time };
+            const newEntry = { surah, ayah, date: currentDate };
 
             const updatedLastReads = [newEntry, ...lastReads.filter(item => item.surah !== surah || item.ayah !== ayah)];
-            localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 4))); // Limit to 4 entries
+            localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 5))); // Limit to 5 entries
         }
 
         function getLastReads() {
@@ -148,7 +151,7 @@
 
             lastReadContainer.innerHTML = '';
 
-            lastReads.forEach(({ surah, ayah, date, time }) => {
+            lastReads.forEach(({ surah, ayah, date }) => {
                 const button = document.createElement('button');
                 button.textContent = `Surah ${surah}, Ayah ${ayah}`;
                 button.onclick = () => renderSurah(surah, ayah);
@@ -157,13 +160,7 @@
                 dateDiv.className = 'date';
                 dateDiv.textContent = date;
 
-                const timeDiv = document.createElement('div');
-                timeDiv.className = 'time';
-                timeDiv.textContent = time;
-
                 button.appendChild(dateDiv);
-                button.appendChild(timeDiv);
-
                 lastReadContainer.appendChild(button);
             });
         }
