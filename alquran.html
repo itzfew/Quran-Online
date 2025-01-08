@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,8 +10,8 @@
             font-family: 'Amiri Quran', serif;
             line-height: 1.8;
             margin: 20px;
-            text-align: left;
-            direction: ltr;
+            text-align: right;
+            direction: rtl;
         }
         h1 {
             text-align: center;
@@ -61,22 +61,33 @@
             direction: rtl;
         }
         #last-read {
-            display: flex;
-            overflow-x: auto;
+            text-align: center;
             margin-bottom: 20px;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            white-space: nowrap;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
         }
         #last-read button {
-            padding: 5px 10px;
-            margin-right: 10px;
+            padding: 10px;
             font-size: 14px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            cursor: pointer;
+            text-align: left;
+            display: inline-block;
+            position: relative;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            min-width: 150px;
+        }
+        #last-read .date, #last-read .time {
+            display: block;
+            font-size: 0.8em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 2px 5px;
+            margin-top: 5px;
+            background-color: #f1f1f1;
+            color: #555;
+            text-align: center;
         }
     </style>
 </head>
@@ -84,7 +95,9 @@
     <h1>Quran Viewer</h1>
 
     <!-- Section to display the last viewed Surahs and Ayahs -->
-    <div id="last-read"></div>
+    <div id="last-read">
+        <!-- Last viewed buttons will be dynamically added here -->
+    </div>
 
     <div class="surah-selector">
         <label for="surah">Select Surah:</label>
@@ -115,10 +128,14 @@
 
         function saveLastRead(surah, ayah) {
             const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
-            const newEntry = { surah, ayah };
+            const currentDate = new Date();
+            const date = currentDate.toLocaleDateString();
+            const time = currentDate.toLocaleTimeString();
+
+            const newEntry = { surah, ayah, date, time };
 
             const updatedLastReads = [newEntry, ...lastReads.filter(item => item.surah !== surah || item.ayah !== ayah)];
-            localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 5))); // Limit to 5
+            localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 4))); // Limit to 4 entries
         }
 
         function getLastReads() {
@@ -131,10 +148,22 @@
 
             lastReadContainer.innerHTML = '';
 
-            lastReads.forEach(({ surah, ayah }) => {
+            lastReads.forEach(({ surah, ayah, date, time }) => {
                 const button = document.createElement('button');
                 button.textContent = `Surah ${surah}, Ayah ${ayah}`;
                 button.onclick = () => renderSurah(surah, ayah);
+
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'date';
+                dateDiv.textContent = date;
+
+                const timeDiv = document.createElement('div');
+                timeDiv.className = 'time';
+                timeDiv.textContent = time;
+
+                button.appendChild(dateDiv);
+                button.appendChild(timeDiv);
+
                 lastReadContainer.appendChild(button);
             });
         }
@@ -174,7 +203,7 @@
 
                 const ayahHeader = document.createElement('div');
                 ayahHeader.className = 'ayah-header';
-                ayahHeader.textContent = `Ayah ${ayah}`;
+                ayahHeader.textContent = ayah;
                 ayahDiv.appendChild(ayahHeader);
 
                 words.forEach(wordData => {
