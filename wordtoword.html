@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quran Viewer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Amiri Quran', serif;
+            line-height: 1.8;
+            margin: 20px;
+            text-align: right;
+            direction: rtl;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .nav-button {
+            font-size: 1.2em;
+            cursor: pointer;
+            padding: 5px 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .nav-button:hover {
+            background-color: #f0f0f0;
+        }
+        #quran {
+            margin-top: 20px;
+        }
+        .ayah {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .ayah-header {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .word {
+            display: inline-block;
+            margin: 5px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+        }
+        .word span {
+            display: block;
+        }
+        .word-popup {
+            display: none;
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            z-index: 100;
+            white-space: nowrap;
+        }
+        .word:hover .word-popup {
+            display: block;
+        }
+        .translation {
+            font-size: 0.8em;
+            color: #555;
+        }
+        .translation.urdu {
+            font-family: 'Jameel Noori Nastaleeq', serif;
+            direction: rtl;
+        }
+        .full-translation {
+            margin-top: 10px;
+            font-style: italic;
+            color: #444;
+        }
+        #last-read-container {
+            margin-bottom: 20px;
+        }
+        #last-read {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        #last-read button {
+            flex: 0 0 auto;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #aaa;
+            border-radius: 5px;
+            white-space: nowrap;
+            background-color: #fff;
+            cursor: pointer;
+        }
+        #last-read button:hover {
+            background-color: #f0f0f0;
+        }
+        #last-read .date {
+            display: block;
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 id="surah-name">Loading...</h1>
+
+    <div id="controls">
+        <i id="next-surah" class="fas fa-arrow-right nav-button">next</i>
+        <span id="current-surah"></span>
+        <i id="previous-surah" class="fas fa-arrow-left nav-button">previous</i>
+    </div>
+
+    <div id="last-read-container">
+        <div id="last-read">
+            <!-- Last viewed buttons will be dynamically added here -->
+        </div>
+    </div>
+
+    <div id="quran">
+        <!-- Quranic verses will be dynamically displayed here -->
+    </div>
+
+    <script>
+        const metadataUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/word.json';
+        const wordsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/nastaliq-quranwbw.json';
+        const englishTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/en-quranwbw.json';
+        const urduTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/ur-quranwbw.json';
+
+        async function fetchData(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Failed to fetch: ${url}`);
+                return response.json();
+            } catch (error) {
+                console.error(error);
+                alert(`Error loading data: ${error.message}`);
+            }
+        }
+
+async function renderSurah(surahNumber, highlightAyah = null) {
+    const metadata = await fetchData(metadataUrl);
+    const words = await fetchData(wordsUrl);
+    const englishTranslations = await fetchData(englishTranslationsUrl);
+    const urduTranslations = await fetchData(urduTranslationsUrl);
+    const fullTranslationUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahNumber}.json`;
+    const fullTranslation = await fetchData(fullTranslationUrl);
+
+    if (!metadata || !words || !englishTranslations || !urduTranslations || !fullTranslation) return;
+
+    const quranContainer = document.getElementById('quran');
+    quranContainer.innerHTML = '';
+
+    // Update Surah name
+    const surahName = `Surah ${surahNumber}`;
+    document.getElementById('surah-name').textContent = surahName;
+    document.getElementById('current-surah').textContent = surahName;
+
+    const surahData = {};
+    for (const [wordId, meta] of Object.entries(metadata)) {
+        if (meta.surah === surahNumber && meta.ayah > 0) { // Exclude verse zero
+            if (!surahData[meta.ayah]) surahData[meta.ayah] = [];
+            surahData[meta.ayah].push({
+                word: words[wordId],
+                englishTranslation: englishTranslations[wordId],
+                urduTranslation: urduTranslations[wordId]
+            });
+        }
+    }
+
+    let scrollToElement = null;
+    let verseCounter = 0; // Verse counter starts from 0 for Surah 1
+
+    for (const [ayah, words] of Object.entries(surahData)) {
+        const ayahDiv = document.createElement('div');
+        ayahDiv.className = 'ayah';
+
+        if (highlightAyah && parseInt(ayah, 10) === highlightAyah) {
+            ayahDiv.style.backgroundColor = '#dff0d8'; // Highlight color
+            scrollToElement = ayahDiv;
+        }
+
+        const ayahHeader = document.createElement('div');
+        ayahHeader.className = 'ayah-header';
+        ayahHeader.textContent = `Verse ${ayah}`;
+
+        ayahDiv.appendChild(ayahHeader);
+        words.forEach(wordData => {
+            const wordSpan = document.createElement('span');
+            wordSpan.className = 'word';
+            wordSpan.innerHTML = `
+                <span>${wordData.word}</span>
+                <span class="translation">${wordData.englishTranslation}</span>
+                <span class="translation urdu">${wordData.urduTranslation}</span>
+                <div class="word-popup">
+                    <div><strong>Word:</strong> ${wordData.word}</div>
+                    <div><strong>English:</strong> ${wordData.englishTranslation}</div>
+                    <div><strong>Urdu:</strong> ${wordData.urduTranslation}</div>
+                </div>
+            `;
+            ayahDiv.appendChild(wordSpan);
+        });
+
+        const translationKey = surahNumber === 1 ? `verse_${verseCounter}` : `verse_${ayah}`;
+        const fullTranslationDiv = document.createElement('div');
+        fullTranslationDiv.className = 'full-translation';
+        fullTranslationDiv.textContent = fullTranslation.verse[translationKey] || '';
+
+        ayahDiv.appendChild(fullTranslationDiv);
+        ayahDiv.addEventListener('click', () => saveLastRead(surahNumber, parseInt(ayah, 10)));
+
+        quranContainer.appendChild(ayahDiv);
+
+        verseCounter++;
+    }
+
+    if (scrollToElement) {
+        setTimeout(() => {
+            scrollToElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 500);
+    }
+
+    saveLastRead(surahNumber, highlightAyah || 1);
+    displayLastReads();
+}
+
+
+        function saveLastRead(surah, ayah) {
+            const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
+            const currentDate = new Date().toLocaleDateString();
+
+            const newEntry = { surah, ayah, date: currentDate };
+            const updatedLastReads = [newEntry, ...lastReads.filter(item => item.surah !== surah || item.ayah !== ayah)];
+            localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 5))); // Limit to 5 entries
+
+            updateUrlHash(surah, ayah);
+        }
+
+        function updateUrlHash(surah, ayah) {
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('index', surah);
+            currentUrl.hash = `#${ayah}`;
+            history.replaceState({}, '', currentUrl);
+        }
+
+        function displayLastReads() {
+            const lastReadContainer = document.getElementById('last-read');
+            const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
+
+            lastReadContainer.innerHTML = '';
+
+            lastReads.forEach(({ surah, ayah, date }) => {
+                const button = document.createElement('button');
+                button.textContent = `Surah ${surah}, Ayah ${ayah}`;
+                button.onclick = () => renderSurah(surah, ayah);
+
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'date';
+                dateDiv.textContent = date;
+
+                button.appendChild(dateDiv);
+                lastReadContainer.appendChild(button);
+            });
+        }
+
+        async function initialize() {
+            const params = new URLSearchParams(window.location.search);
+            const hash = window.location.hash.substring(1);
+            const surah = parseInt(params.get('index'), 10);
+            const ayah = parseInt(hash, 10);
+
+            const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
+
+            if (surah && ayah) {
+                await renderSurah(surah, ayah);
+            } else if (lastReads.length > 0) {
+                const { surah: lastSurah, ayah: lastAyah } = lastReads[0];
+                await renderSurah(lastSurah, lastAyah);
+            } else {
+                await renderSurah(1, 1); // Default to Surah 1, Ayah 1
+            }
+        }
+
+        document.getElementById('previous-surah').addEventListener('click', async () => {
+            const currentSurah = parseInt(document.getElementById('current-surah').textContent.split(' ')[1], 10);
+            if (currentSurah > 1) {
+                await renderSurah(currentSurah - 1);
+            }
+        });
+
+        document.getElementById('next-surah').addEventListener('click', async () => {
+            const currentSurah = parseInt(document.getElementById('current-surah').textContent.split(' ')[1], 10);
+            if (currentSurah < 114) {
+                await renderSurah(currentSurah + 1);
+            }
+        });
+
+        initialize();
+    </script>
+</body>
+</html>
