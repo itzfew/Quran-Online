@@ -123,6 +123,16 @@
             const newEntry = { surah, ayah, date: currentDate };
             const updatedLastReads = [newEntry, ...lastReads.filter(item => item.surah !== surah || item.ayah !== ayah)];
             localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 5))); // Limit to 5 entries
+
+            // Update the URL hash with the last read Ayah
+            updateUrlHash(surah, ayah);
+        }
+
+        function updateUrlHash(surah, ayah) {
+            const currentUrl = new URL(window.location);
+            currentUrl.searchParams.set('index', surah);
+            currentUrl.hash = `#${ayah}`;
+            history.replaceState({}, '', currentUrl);
         }
 
         function getLastReads() {
