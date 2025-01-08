@@ -153,8 +153,71 @@
         }
 
         async function fetchWordToWordDetails() {
-            // Code for fetching and displaying word-to-word details (same as before)
-        }
+    const metadataUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/word.json';
+    const wordsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/nastaliq-quranwbw.json';
+    const englishTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/en-quranwbw.json';
+    const urduTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/ur-quranwbw.json';
+
+    try {
+        // Fetch all required data
+        const [metadataResponse, wordsResponse, englishTranslationsResponse, urduTranslationsResponse] = await Promise.all([
+            fetch(metadataUrl),
+            fetch(wordsUrl),
+            fetch(englishTranslationsUrl),
+            fetch(urduTranslationsUrl)
+        ]);
+
+        const metadata = await metadataResponse.json();
+        const words = await wordsResponse.json();
+        const englishTranslations = await englishTranslationsResponse.json();
+        const urduTranslations = await urduTranslationsResponse.json();
+
+        // Filter metadata for the current surah and verse
+        const verseMetadata = Object.values(metadata).filter(
+            item => item.surah == surahIndex && item.ayah == verseId
+        );
+
+        // Generate word-to-word table content
+        let wordContent = `
+            <table class="word-table">
+                <thead>
+                    <tr>
+                        <th>Arabic Word</th>
+                        <th>English Translation</th>
+                        <th>Urdu Translation</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        verseMetadata.forEach(word => {
+            const wordText = words[word.position];
+            const englishTranslation = englishTranslations[word.position];
+            const urduTranslation = urduTranslations[word.position];
+
+            wordContent += `
+                <tr>
+                    <td>${wordText}</td>
+                    <td>${englishTranslation}</td>
+                    <td>${urduTranslation}</td>
+                </tr>
+            `;
+        });
+
+        wordContent += `
+                </tbody>
+            </table>
+        `;
+
+        // Display the word-to-word table
+        document.getElementById('word-content').innerHTML = wordContent;
+
+    } catch (error) {
+        console.error('Error fetching word-to-word details:', error);
+        document.getElementById('word-content').innerHTML = '<p>Unable to load word-to-word details.</p>';
+    }
+}
+
 
         async function fetchTafsir() {
             try {
