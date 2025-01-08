@@ -40,8 +40,27 @@
             border: 1px solid #ddd;
             border-radius: 3px;
             text-align: center;
+            cursor: pointer;
+            position: relative;
         }
         .word span {
+            display: block;
+        }
+        .word-popup {
+            display: none;
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            z-index: 100;
+            white-space: nowrap;
+        }
+        .word:hover .word-popup {
             display: block;
         }
         .translation {
@@ -182,6 +201,11 @@
                         <span>${wordData.word}</span>
                         <span class="translation">${wordData.englishTranslation}</span>
                         <span class="translation urdu">${wordData.urduTranslation}</span>
+                        <div class="word-popup">
+                            <div><strong>Word:</strong> ${wordData.word}</div>
+                            <div><strong>English:</strong> ${wordData.englishTranslation}</div>
+                            <div><strong>Urdu:</strong> ${wordData.urduTranslation}</div>
+                        </div>
                     `;
                     ayahDiv.appendChild(wordSpan);
                 });
