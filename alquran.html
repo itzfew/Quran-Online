@@ -1,354 +1,149 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Quran Surahs</title>
-
-    <!-- Link to PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-
-    <!-- Font Awesome CDN for icons -->
+    <title>Quran Kareem (Ar)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-<!-- Link to external CSS -->
-<link rel="stylesheet" href="main/css/index.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="main/style.css">
+    <style>
+        .share-btn, .view-btn {
+            display: none;
+            margin-top: 10px;
+        }
+        .selected .share-btn, .selected .view-btn {
+            display: inline-block;
+        }
+        .history-container {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .history-item {
+            margin: 5px 0;
+        }
+        .history-item a {
+            text-decoration: none;
+            color: #007bff;
+        }
+    </style>
 </head>
 <body>
 
-
 <div class="settings-container">
     <div class="settings-item" onclick="toggleTheme()">
-        <i class="fas fa-moon"></i>
-        <div class="tooltip">Dark Mode</div>
+        <i class="fas fa-adjust"></i>
     </div>
-
-    <div class="settings-item">
-        <a href="hadith.html">
-            <i class="fas fa-kaaba"></i>
-        </a>
-        <div class="tooltip">Hadith</div>
+    <div class="settings-item" onclick="changeTextSize(1)">
+        <i class="fas fa-plus"></i>
     </div>
-
-    <div class="settings-item">
-        <a href="kalima.html">
-            <i class="fas fa-hand-point-right"></i>
-        </a>
-        <div class="tooltip">Kalima</div>
+    <div class="settings-item" onclick="changeTextSize(-1)">
+        <i class="fas fa-minus"></i>
     </div>
-
-    <div class="settings-item">
-        <a href="tasbih.html">
-            <i class="fas fa-praying-hands"></i>
-        </a>
-        <div class="tooltip">Tasbih</div>
+    <div class="settings-item" onclick="navigateToWordToWord()">
+        <i class="fas fa-brands fa-fire"></i>
     </div>
-
-    <div class="settings-item">
-        <a href="99-names.html">
-            <i class="fas fa-mosque"></i>
-        </a>
-        <div class="tooltip">99 Names</div>
-    </div>
-
-    <div class="settings-item">
-        <a href="prayer.html">
-            <i class="fas fa-pray"></i>
-        </a>
-        <div class="tooltip">Prayer</div>
-    </div>
-
-    <div class="settings-item install-pwa" onclick="installPWA()">
-        <i class="fas fa-download"></i>
-        <div class="tooltip">Install PWA</div>
+    <div class="settings-item" onclick="navigateToRead()">
+        <i class="fas fa-book-open"></i>
     </div>
 </div>
 
-<div id="last-read-container">
-    <a href="wordtoword.html" style="margin-bottom: 10px; display: inline-block; text-decoration: none; font-size: 1.2em; color: #3498db;">
-        Word to Word <i class="fas fa-arrow-right"></i>
-    </a>
-    <div id="last-read"></div>
+<!-- Last Surah Read Section -->
+<div class="history-container">
+    <h3>Last Read Surahs</h3>
+    <div id="history-list"></div>
 </div>
 
-<div class="controls">
-    <input type="text" id="search-input" placeholder="Search Surahs..." oninput="filterSurahs()">
+<div class="header">
+    <i class="fas fa-arrow-left arrow arrow-left" onclick="navigateSurah(-1)"></i>
+    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
+    <i class="fas fa-arrow-right arrow arrow-right" onclick="navigateSurah(1)"></i>
 </div>
 
-<div id="surah-list"></div>
+<div id="first-verse" class="first-verse" style="display: none;"></div>
+<div id="content"></div>
 
-                <script>
-    let surahData = [];
-    let deferredPrompt;
+<button class="back-to-top" onclick="scrollToTop()">
+    <i class="fas fa-arrow-up"></i>
+</button>
 
-    fetch('https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah.json')
-        .then(response => response.json())
-        .then(data => {
-            surahData = data;
-            renderSurahs(surahData);
-        })
-        .catch(error => {
-            console.error("Error loading Surah data:", error);
-        });
-
-    function renderSurahs(surahList) {
-        const listElement = document.getElementById("surah-list");
-        listElement.innerHTML = '';
-
-        surahList.forEach(surah => {
-            const surahLink = document.createElement('div'); // Changed to div
-            surahLink.classList.add('surah-link');
-            surahLink.style.textDecoration = 'none';
-
-            const surahItem = document.createElement('div');
-            surahItem.classList.add('surah-item');
-
-            surahItem.innerHTML = `
-                <div class="surah-number">${parseInt(surah.index)}</div>
-                <div class="surah-title">${surah.title}</div>
-                <div class="surah-arabic">${surah.titleAr}</div>
-                <div class="surah-meta">
-                    <p>${surah.type}</p>
-                    <p>${surah.count}</p>
-                </div>
-            `;
-
-            surahItem.onclick = () => showSurahOptions(parseInt(surah.index));
-
-            surahLink.appendChild(surahItem);
-            listElement.appendChild(surahLink);
-        });
-    }
-
-    function showSurahOptions(surahIndex) {
-    const surah = surahData.find(s => parseInt(s.index) === surahIndex);
-    const surahName = surah ? surah.title : 'Unknown Surah';
-
-    const modal = document.createElement('div');
-    modal.classList.add('modal');
-
-    modal.innerHTML = `
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal()">
-                <i class="fas fa-times"></i>
-            </button>
-            <h2>${surahName}</h2>
-            <div class="modal-buttons">
-                <div class="button-row">
-                    <button onclick="window.location.href='surah?index=${surahIndex}'">
-                        <i class="fas fa-book"></i> Open Surah
-                    </button>
-                    <button onclick="window.location.href='read?index=${surahIndex}'">
-                        <i class="fas fa-book-reader"></i> Open Read
-                    </button>
-                </div>
-                <button onclick="openWordToWord(${surahIndex})">
-                    <i class="fas fa-language"></i> Open Word to Word
-                </button>
-            </div>
-        </div>
-    `;
-
-    document.body.appendChild(modal);
-
-    const overlay = document.createElement('div');
-    overlay.classList.add('overlay');
-    overlay.onclick = closeModal;
-    document.body.appendChild(overlay);
-}
-
-
-    function openWordToWord(surahIndex) {
-        const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
-        const lastReadForSurah = lastReads.find(read => read.surah === surahIndex);
-        const lastAyah = lastReadForSurah ? lastReadForSurah.ayah : 1;
-        window.location.href = `wordtoword?index=${surahIndex}#${lastAyah}`;
-    }
-
-    function closeModal() {
-        const modal = document.querySelector('.modal');
-        const overlay = document.querySelector('.overlay');
-        if (modal) modal.remove();
-        if (overlay) overlay.remove();
-    }
-
-    function saveLastRead(surahIndex) {
-        const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
-        const currentDate = new Date().toLocaleString();
-
-        const newRead = {
-            surah: surahIndex,
-            ayah: 1, // Default ayah for now
-            date: currentDate
-        };
-
-        lastReads.unshift(newRead);
-        localStorage.setItem('lastReads', JSON.stringify(lastReads.slice(0, 5))); // Keep only the last 5 reads
-        displayLastReads();
-    }
-
-    function displayLastReads() {
-        const lastReadContainer = document.getElementById('last-read');
-        const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
-
-        lastReadContainer.innerHTML = '';
-
-        lastReads.forEach(({ surah, ayah, date }) => {
-            const button = document.createElement('button');
-            button.textContent = `Surah ${surah}, Ayah ${ayah}`;
-            button.onclick = () => {
-                window.location.href = `wordtoword?index=${surah}#${ayah}`;
-            };
-
-            const dateDiv = document.createElement('div');
-            dateDiv.className = 'date';
-            dateDiv.textContent = date;
-
-            button.appendChild(dateDiv);
-            lastReadContainer.appendChild(button);
-        });
-    }
-
-    function filterSurahs() {
-        const searchTerm = document.getElementById("search-input").value.toLowerCase();
-        const filteredSurahs = surahData.filter(surah => 
-            surah.title.toLowerCase().includes(searchTerm) || 
-            surah.titleAr.toLowerCase().includes(searchTerm) ||
-            surah.type.toLowerCase().includes(searchTerm)
-        );
-        renderSurahs(filteredSurahs);
-    }
-
-    function toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        const savedTheme = localStorage.getItem('darkMode');
-        if (savedTheme === 'true') {
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const darkMode = localStorage.getItem('darkMode') === 'true';
+        const textSize = localStorage.getItem('textSize') || '18';
+        if (darkMode) {
             document.body.classList.add('dark-mode');
         }
-        displayLastReads();
+
+        document.body.style.fontSize = textSize + 'px';
+
+        const index = getQueryParam('index');
+        fetchSurah(index ? index : 1);
+
+        displayHistory(); // Display the saved history on page load
     });
 
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-    });
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
 
-    function installPWA() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log("User accepted the A2HS prompt");
-                } else {
-                    console.log("User dismissed the A2HS prompt");
-                }
-                deferredPrompt = null;
-            });
+    async function fetchSurah(index) {
+        saveToHistory(index); // Save the Surah to history before fetching
+        const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
+        const arabicData = await arabicResponse.json();
+
+        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(1, '0')}.json`);
+        const translationData = await translationResponse.json();
+
+        const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(index).padStart(3, '0')}.json`);
+        const urduData = await urduResponse.json();
+
+        displaySurah(arabicData, translationData, urduData);
+    }
+
+    function saveToHistory(index) {
+        const history = JSON.parse(localStorage.getItem('surahHistory')) || [];
+        const currentSurah = {
+            index: index,
+            link: `surah?index=${index}`,
+            name: `Surah ${index}` // Placeholder, replace with actual Surah name if available
+        };
+
+        // Remove existing entry if it already exists
+        const existingIndex = history.findIndex(item => item.index === index);
+        if (existingIndex !== -1) {
+            history.splice(existingIndex, 1);
         }
+
+        history.unshift(currentSurah); // Add the current Surah to the beginning
+
+        // Keep only the last 5 entries
+        if (history.length > 5) {
+            history.pop();
+        }
+
+        localStorage.setItem('surahHistory', JSON.stringify(history));
     }
+
+    function displayHistory() {
+        const history = JSON.parse(localStorage.getItem('surahHistory')) || [];
+        const historyList = document.getElementById('history-list');
+        historyList.innerHTML = '';
+
+        history.forEach(item => {
+            const div = document.createElement('div');
+            div.classList.add('history-item');
+            div.innerHTML = `<a href="${item.link}">${item.name}</a>`;
+            historyList.appendChild(div);
+        });
+    }
+
+    // Rest of your code (toggleHighlight, scrollToTop, toggleTheme, changeTextSize, navigateSurah, etc.)
 </script>
-<style>
-    /* Modal container styles */
-    .modal {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        width: 90%;
-        max-width: 400px;
-        z-index: 1001;
-        padding: 20px;
-        text-align: center;
-    }
-
-    /* Modal overlay background */
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.4);
-        z-index: 1000;
-    }
-
-    /* Close button at top-right corner */
-    .close-modal {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: none;
-        border: none;
-        color: #e74c3c;
-        font-size: 1.2em;
-        cursor: pointer;
-        transition: color 0.3s ease;
-    }
-
-    .close-modal:hover {
-        color: #c0392b;
-    }
-
-    /* Modal heading */
-    .modal-content h2 {
-        margin-bottom: 20px;
-        font-size: 1.5em;
-        color: #333;
-        text-transform: capitalize;
-    }
-
-    /* Button styles */
-    .modal-buttons {
-        margin-top: 20px;
-    }
-
-    .button-row {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-bottom: 10px;
-    }
-
-    .modal-buttons button {
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        border: 1px solid #333;
-        background-color: transparent;
-        color: #333;
-        padding: 10px 15px;
-        font-size: 0.9em;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-    }
-
-    .modal-buttons button:hover {
-        background-color: #f0f0f0;
-        border-color: #000;
-    }
-
-    .modal-buttons button i {
-        font-size: 1em;
-    }
-
-    /* Word to Word button at the bottom */
-    .modal-buttons button:nth-child(3) {
-        width: 100%;
-        justify-content: center;
-    }
-</style>
-
 
 </body>
 </html>
