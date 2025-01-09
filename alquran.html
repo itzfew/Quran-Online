@@ -6,7 +6,7 @@
     <title>Quran Kareem (Ar)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="main/style.css">
+    <link rel="stylesheet" href="main/css/surah.css">
     <style>
         .share-btn, .view-btn {
             display: none;
@@ -15,14 +15,18 @@
         .selected .share-btn, .selected .view-btn {
             display: inline-block;
         }
-            .history-container {
-    margin: 10px;
+ 
+
+.history-container {
+    margin-top: 80px; /* Adjust for the settings container's height */
     padding: 20px 10px 10px; /* Top padding adjusted for the h3 */
     border: 1px solid #ddd;
     background: #f9f9f9;
     border-radius: 5px;
     position: relative; /* Enable absolute positioning for child elements */
+    z-index: 5; /* Lower z-index than the settings container */
 }
+
 .history-container h3 {
     margin: 0; /* Remove default margins */
     padding: 0px 1px; /* Add some padding */
