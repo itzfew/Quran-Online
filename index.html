@@ -11,10 +11,13 @@
 
     <!-- Font Awesome CDN for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 <!-- Link to external CSS -->
 <link rel="stylesheet" href="main/css/index.css">
+
 </head>
 <body>
+
 
 <div class="settings-container">
     <div class="settings-item" onclick="toggleTheme()">
@@ -63,23 +66,20 @@
     </div>
 </div>
 
-    
 <div id="last-read-container">
     <a href="wordtoword.html" style="margin-bottom: 10px; display: inline-block; text-decoration: none; font-size: 1.2em; color: #3498db;">
         Word to Word <i class="fas fa-arrow-right"></i>
     </a>
-    <div id="last-read">
-    </div>
+    <div id="last-read"></div>
 </div>
 
 <div class="controls">
     <input type="text" id="search-input" placeholder="Search Surahs..." oninput="filterSurahs()">
 </div>
 
-<div id="surah-list">
-</div>
+<div id="surah-list"></div>
 
-<script>
+                <script>
     let surahData = [];
     let deferredPrompt;
 
@@ -98,8 +98,7 @@
         listElement.innerHTML = '';
 
         surahList.forEach(surah => {
-            const surahLink = document.createElement('a');
-            surahLink.href = `surah?index=${parseInt(surah.index)}`;
+            const surahLink = document.createElement('div'); // Changed to div
             surahLink.classList.add('surah-link');
             surahLink.style.textDecoration = 'none';
 
@@ -116,11 +115,63 @@
                 </div>
             `;
 
-            surahItem.onclick = () => saveLastRead(parseInt(surah.index));
+            surahItem.onclick = () => showSurahOptions(parseInt(surah.index));
 
             surahLink.appendChild(surahItem);
             listElement.appendChild(surahLink);
         });
+    }
+
+    function showSurahOptions(surahIndex) {
+    const surah = surahData.find(s => parseInt(s.index) === surahIndex);
+    const surahName = surah ? surah.title : 'Unknown Surah';
+
+    const modal = document.createElement('div');
+    modal.classList.add('modal');
+
+    modal.innerHTML = `
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2>${surahName}</h2>
+            <div class="modal-buttons">
+                <div class="button-row">
+                    <button onclick="window.location.href='surah?index=${surahIndex}'">
+                        <i class="fas fa-book"></i> Read Surah
+                    </button>
+                    <button onclick="window.location.href='read?index=${surahIndex}'">
+                        <i class="fas fa-book-reader"></i> Read Quran
+                    </button>
+                </div>
+                <button onclick="openWordToWord(${surahIndex})">
+                    <i class="fas fa-language"></i> Read Word to Word
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    const overlay = document.createElement('div');
+    overlay.classList.add('overlay');
+    overlay.onclick = closeModal;
+    document.body.appendChild(overlay);
+}
+
+
+    function openWordToWord(surahIndex) {
+        const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
+        const lastReadForSurah = lastReads.find(read => read.surah === surahIndex);
+        const lastAyah = lastReadForSurah ? lastReadForSurah.ayah : 1;
+        window.location.href = `wordtoword?index=${surahIndex}#${lastAyah}`;
+    }
+
+    function closeModal() {
+        const modal = document.querySelector('.modal');
+        const overlay = document.querySelector('.overlay');
+        if (modal) modal.remove();
+        if (overlay) overlay.remove();
     }
 
     function saveLastRead(surahIndex) {
@@ -202,5 +253,102 @@
         }
     }
 </script>
+<style>
+    /* Modal container styles */
+    .modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        width: 90%;
+        max-width: 400px;
+        z-index: 1001;
+        padding: 20px;
+        text-align: center;
+    }
+
+    /* Modal overlay background */
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 1000;
+    }
+
+    /* Close button at top-right corner */
+    .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        color: #e74c3c;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .close-modal:hover {
+        color: #c0392b;
+    }
+
+    /* Modal heading */
+    .modal-content h2 {
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        color: #333;
+        text-transform: capitalize;
+    }
+
+    /* Button styles */
+    .modal-buttons {
+        margin-top: 20px;
+    }
+
+    .button-row {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .modal-buttons button {
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 1px solid #333;
+        background-color: transparent;
+        color: #333;
+        padding: 10px 15px;
+        font-size: 0.9em;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+    }
+
+    .modal-buttons button:hover {
+        background-color: #f0f0f0;
+        border-color: #000;
+    }
+
+    .modal-buttons button i {
+        font-size: 1em;
+    }
+
+    /* Word to Word button at the bottom */
+    .modal-buttons button:nth-child(3) {
+        width: 100%;
+        justify-content: center;
+    }
+</style>
+
+
 </body>
 </html>
