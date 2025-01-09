@@ -35,7 +35,7 @@
 
 <div id="surah-list"></div>
 
-<script>
+                <script>
     let surahData = [];
     let deferredPrompt;
 
@@ -54,52 +54,65 @@
         listElement.innerHTML = '';
 
         surahList.forEach(surah => {
-            const surahNumber = parseInt(surah.index);
-            const lastReadData = getLastReadAyah(surahNumber);
+            const surahLink = document.createElement('div'); // Changed to div
+            surahLink.classList.add('surah-link');
+            surahLink.style.textDecoration = 'none';
 
             const surahItem = document.createElement('div');
             surahItem.classList.add('surah-item');
 
             surahItem.innerHTML = `
-                <div class="surah-number">${surahNumber}</div>
+                <div class="surah-number">${parseInt(surah.index)}</div>
                 <div class="surah-title">${surah.title}</div>
                 <div class="surah-arabic">${surah.titleAr}</div>
                 <div class="surah-meta">
                     <p>${surah.type}</p>
                     <p>${surah.count}</p>
                 </div>
-                <div class="surah-actions">
-    <button class="action-btn" data-tooltip="Word to Word" onclick="openWordToWord(surahIndex, ayahIndex)">
-        <i class="fas fa-book"></i>
-    </button>
-    <button class="action-btn" data-tooltip="Surah" onclick="openSurah(surahIndex)">
-        <i class="fas fa-quran"></i>
-    </button>
-    <button class="action-btn" data-tooltip="Read" onclick="openRead(surahIndex)">
-        <i class="fas fa-eye"></i>
-    </button>
-</div>
             `;
 
-            surahItem.onclick = () => saveLastRead(surahNumber);
-            listElement.appendChild(surahItem);
+            surahItem.onclick = () => showSurahOptions(parseInt(surah.index));
+
+            surahLink.appendChild(surahItem);
+            listElement.appendChild(surahLink);
         });
     }
 
-    function openWordToWord(surahIndex, ayahIndex) {
-    const url = `wordtoword?index=${surahIndex}#${ayahIndex}`;
-    window.location.href = url;
-}
+    function showSurahOptions(surahIndex) {
+        const modal = document.createElement('div');
+        modal.classList.add('modal');
 
-function openSurah(surahIndex) {
-    const url = `surah?index=${surahIndex}`;
-    window.location.href = url;
-}
+        modal.innerHTML = `
+            <div class="modal-content">
+                <button onclick="window.location.href='surah?index=${surahIndex}'">Open Surah</button>
+                <button onclick="window.location.href='read?index=${surahIndex}'">Open Read</button>
+                <button onclick="openWordToWord(${surahIndex})">Open Word to Word</button>
+                <button onclick="closeModal()">Close</button>
+            </div>
+        `;
 
-function openRead(surahIndex) {
-    const url = `read?index=${surahIndex}`;
-    window.location.href = url;
-}
+        document.body.appendChild(modal);
+
+        // Add overlay
+        const overlay = document.createElement('div');
+        overlay.classList.add('overlay');
+        overlay.onclick = closeModal;
+        document.body.appendChild(overlay);
+    }
+
+    function openWordToWord(surahIndex) {
+        const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
+        const lastReadForSurah = lastReads.find(read => read.surah === surahIndex);
+        const lastAyah = lastReadForSurah ? lastReadForSurah.ayah : 1;
+        window.location.href = `wordtoword?index=${surahIndex}#${lastAyah}`;
+    }
+
+    function closeModal() {
+        const modal = document.querySelector('.modal');
+        const overlay = document.querySelector('.overlay');
+        if (modal) modal.remove();
+        if (overlay) overlay.remove();
+    }
 
     function saveLastRead(surahIndex) {
         const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
@@ -114,12 +127,6 @@ function openRead(surahIndex) {
         lastReads.unshift(newRead);
         localStorage.setItem('lastReads', JSON.stringify(lastReads.slice(0, 5))); // Keep only the last 5 reads
         displayLastReads();
-    }
-
-    function getLastReadAyah(surahIndex) {
-        const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
-        const lastRead = lastReads.find(read => read.surah === surahIndex);
-        return lastRead ? lastRead.ayah : 1;
     }
 
     function displayLastReads() {
@@ -186,5 +193,33 @@ function openRead(surahIndex) {
         }
     }
 </script>
+
+<style>
+    .modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 20px;
+        z-index: 1001;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+    }
+    .modal-content button {
+        display: block;
+        margin: 10px 0;
+    }
+</style>
+
 </body>
 </html>
