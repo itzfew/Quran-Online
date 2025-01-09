@@ -15,20 +15,6 @@
         .selected .share-btn, .selected .view-btn {
             display: inline-block;
         }
-        .history-container {
-            margin: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            background: #f9f9f9;
-            border-radius: 5px;
-        }
-        .history-item {
-            margin: 5px 0;
-        }
-        .history-item a {
-            text-decoration: none;
-            color: #007bff;
-        }
     </style>
 </head>
 <body>
@@ -50,13 +36,11 @@
         <i class="fas fa-book-open"></i>
     </div>
 </div>
-
 <!-- Last Surah Read Section -->
 <div class="history-container">
     <h3>Last Read Surahs</h3>
     <div id="history-list"></div>
-</div>
-
+</div> 
 <div class="header">
     <i class="fas fa-arrow-left arrow arrow-left" onclick="navigateSurah(-1)"></i>
     <div id="surah-heading" class="surah-heading" style="display: none;"></div>
@@ -82,7 +66,6 @@
 
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
-
         displayHistory(); // Display the saved history on page load
     });
 
@@ -92,7 +75,6 @@
     }
 
     async function fetchSurah(index) {
-        saveToHistory(index); // Save the Surah to history before fetching
         const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
         const arabicData = await arabicResponse.json();
 
@@ -104,7 +86,6 @@
 
         displaySurah(arabicData, translationData, urduData);
     }
-
     function saveToHistory(index) {
         const history = JSON.parse(localStorage.getItem('surahHistory')) || [];
         const currentSurah = {
@@ -142,7 +123,138 @@
         });
     }
 
-    // Rest of your code (toggleHighlight, scrollToTop, toggleTheme, changeTextSize, navigateSurah, etc.)
+
+    function displaySurah(arabicData, translationData, urduData) {
+        const surahHeading = document.getElementById('surah-heading');
+        const firstVerse = document.getElementById('first-verse');
+        const content = document.getElementById('content');
+        const count = arabicData.count;
+        const arabicVerses = arabicData.verse;
+        const translationVerses = translationData.verse;
+        const urduVerses = urduData.data;
+
+        surahHeading.style.display = 'block';
+        firstVerse.style.display = 'block';
+        content.innerHTML = '';
+
+        surahHeading.innerText = arabicData.name;
+        firstVerse.innerText = arabicVerses['verse_0'];
+
+        for (let i = 1; i <= count; i++) {
+            const arabicVerse = arabicVerses[`verse_${i}`];
+            const translatedVerse = translationVerses[`verse_${i}`];
+            const urduVerse = urduVerses.find(v => v.aya == i.toString())?.text || '';
+
+            const verseDiv = document.createElement('div');
+            verseDiv.classList.add('verse');
+            verseDiv.setAttribute('id', `verse-${i}`);
+
+            let verseContent = `
+                <div class="arabic-text">${arabicVerse}
+                    <span class="verse-number">${i}</span>
+                </div>
+                <div class="translation-text">${translatedVerse}</div>
+                <div class="urdu-text">${urduVerse}</div>
+                <button class="share-btn" onclick="shareVerse(${i})">Share</button>
+                <button class="view-btn" onclick="viewVerse(${i})">View</button>
+            `;
+
+            verseDiv.innerHTML = verseContent;
+
+            verseDiv.onclick = () => toggleHighlight(i);
+
+            content.appendChild(verseDiv);
+        }
+    }
+
+    function toggleHighlight(verseId) {
+        const allVerses = document.querySelectorAll('.verse');
+        allVerses.forEach(verse => {
+            verse.classList.remove('selected');
+            const shareButton = verse.querySelector('.share-btn');
+            const viewButton = verse.querySelector('.view-btn');
+            if (shareButton) shareButton.style.display = 'none';
+            if (viewButton) viewButton.style.display = 'none';
+        });
+
+        const verseElement = document.getElementById(`verse-${verseId}`);
+        verseElement.classList.add('selected');
+        const shareButton = verseElement.querySelector('.share-btn');
+        const viewButton = verseElement.querySelector('.view-btn');
+        if (shareButton) shareButton.style.display = 'inline-block';
+        if (viewButton) viewButton.style.display = 'inline-block';
+    }
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', isDark);
+    }
+
+    function changeTextSize(increment) {
+        const newSize = parseInt(document.body.style.fontSize) + increment;
+        document.body.style.fontSize = newSize + 'px';
+        localStorage.setItem('textSize', newSize);
+    }
+
+    let currentSurahIndex = 1;
+
+    function navigateSurah(direction) {
+        currentSurahIndex += direction;
+
+        if (currentSurahIndex < 1) {
+            currentSurahIndex = 1;
+        } else if (currentSurahIndex > 114) {
+            currentSurahIndex = 114;
+        }
+
+        const newUrl = `https://quran-online.pages.dev/surah?index=${currentSurahIndex}`;
+        window.history.pushState({ path: newUrl }, '', newUrl);
+        window.location.reload();
+    }
+
+    function shareVerse(verseId) {
+        const verseText = document.getElementById(`verse-${verseId}`).innerText;
+        if (navigator.share) {
+            navigator.share({
+                title: 'Quran Verse',
+                text: verseText,
+                url: window.location.href
+            }).catch((error) => console.log('Error sharing: ', error));
+        } else {
+            navigator.clipboard.writeText(verseText).then(() => {
+                alert('Verse copied to clipboard!');
+            }).catch((error) => {
+                console.log('Error copying to clipboard: ', error);
+            });
+        }
+    }
+
+    function viewVerse(verseId) {
+        const surahIndex = getQueryParam('index') || 1;
+        window.location.href = `verse.html?surah=${surahIndex}&verse=${verseId}`;
+    }
+
+function navigateToWordToWord() {
+    // Get the current Surah index from the query parameter or fallback to the default
+    const surahIndex = getQueryParam('index') || currentSurahIndex;
+
+    // Navigate to the Word-to-Word page with the correct Surah number and append #1
+    if (surahIndex) {
+        window.location.href = `wordtoword.html?index=${surahIndex}#1`;
+    } else {
+        console.error("Unable to determine Surah index.");
+    }
+}
+    function navigateToRead() {
+        const surahIndex = getQueryParam('index') || currentSurahIndex;
+        const surahNumber = surahIndex.split('/')[0];
+        const pageNumber = 1;
+        window.location.href = `read?index=${surahNumber}/${pageNumber}`;
+    }
 </script>
 
 </body>
