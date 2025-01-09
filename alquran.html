@@ -15,6 +15,55 @@
         .selected .share-btn, .selected .view-btn {
             display: inline-block;
         }
+            .history-container {
+        margin: 10px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        background: #f9f9f9;
+        border-radius: 5px;
+    }
+
+    .history-list {
+        display: flex;
+        gap: 10px; /* Space between items */
+        overflow-x: auto; /* Enable horizontal scrolling */
+        padding-bottom: 10px;
+        scrollbar-width: thin; /* For Firefox */
+        scrollbar-color: #ccc #f9f9f9; /* For Firefox */
+    }
+
+    .history-list::-webkit-scrollbar {
+        height: 8px; /* Scrollbar height */
+    }
+
+    .history-list::-webkit-scrollbar-thumb {
+        background: #ccc; /* Scrollbar thumb color */
+        border-radius: 5px;
+    }
+
+    .history-list::-webkit-scrollbar-track {
+        background: #f9f9f9; /* Scrollbar track color */
+    }
+
+    .history-item {
+        flex: 0 0 auto; /* Prevent shrinking and set width automatically */
+        border: 1px solid #ccc; /* Border around each item */
+        border-radius: 5px;
+        padding: 5px 10px;
+        text-align: center;
+        background: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .history-item a {
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+    }
+
+    .history-item a:hover {
+        text-decoration: underline;
+    }
     </style>
 </head>
 <body>
@@ -36,11 +85,11 @@
         <i class="fas fa-book-open"></i>
     </div>
 </div>
-<!-- Last Surah Read Section -->
 <div class="history-container">
     <h3>Last Read Surahs</h3>
-    <div id="history-list"></div>
-</div> 
+    <div id="history-list" class="history-list"></div>
+</div>
+    
 <div class="header">
     <i class="fas fa-arrow-left arrow arrow-left" onclick="navigateSurah(-1)"></i>
     <div id="surah-heading" class="surah-heading" style="display: none;"></div>
