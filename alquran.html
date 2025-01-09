@@ -79,26 +79,39 @@
     }
 
     function showSurahOptions(surahIndex) {
-        const modal = document.createElement('div');
-        modal.classList.add('modal');
+    const surah = surahData.find(s => parseInt(s.index) === surahIndex);
+    const surahName = surah ? surah.title : 'Unknown Surah';
 
-        modal.innerHTML = `
-            <div class="modal-content">
-                <button onclick="window.location.href='surah?index=${surahIndex}'">Open Surah</button>
-                <button onclick="window.location.href='read?index=${surahIndex}'">Open Read</button>
-                <button onclick="openWordToWord(${surahIndex})">Open Word to Word</button>
-                <button onclick="closeModal()">Close</button>
+    const modal = document.createElement('div');
+    modal.classList.add('modal');
+
+    modal.innerHTML = `
+        <div class="modal-content">
+            <h2>${surahName}</h2>
+            <div class="modal-buttons">
+                <button onclick="window.location.href='surah?index=${surahIndex}'">
+                    <i class="fas fa-book"></i> Open Surah
+                </button>
+                <button onclick="window.location.href='read?index=${surahIndex}'">
+                    <i class="fas fa-book-reader"></i> Open Read
+                </button>
+                <button onclick="openWordToWord(${surahIndex})">
+                    <i class="fas fa-language"></i> Open Word to Word
+                </button>
             </div>
-        `;
+            <button class="close-modal" onclick="closeModal()">
+                <i class="fas fa-times"></i> Close
+            </button>
+        </div>
+    `;
 
-        document.body.appendChild(modal);
+    document.body.appendChild(modal);
 
-        // Add overlay
-        const overlay = document.createElement('div');
-        overlay.classList.add('overlay');
-        overlay.onclick = closeModal;
-        document.body.appendChild(overlay);
-    }
+    const overlay = document.createElement('div');
+    overlay.classList.add('overlay');
+    overlay.onclick = closeModal;
+    document.body.appendChild(overlay);
+}
 
     function openWordToWord(surahIndex) {
         const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
@@ -195,31 +208,98 @@
 </script>
 
 <style>
+    /* Modal container styles */
     .modal {
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background-color: white;
-        border: 1px solid #ccc;
-        padding: 20px;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        width: 90%;
+        max-width: 400px;
         z-index: 1001;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        padding: 20px;
+        animation: fadeIn 0.3s ease;
     }
+
+    /* Modal overlay background */
     .overlay {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.5);
+        background: rgba(0, 0, 0, 0.6);
         z-index: 1000;
     }
-    .modal-content button {
-        display: block;
+
+    /* Modal heading */
+    .modal-content h2 {
+        margin-bottom: 20px;
+        font-size: 1.5em;
+        color: #2c3e50;
+        text-transform: capitalize;
+    }
+
+    /* Buttons in modal */
+    .modal-buttons button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        padding: 10px 15px;
+        font-size: 1em;
         margin: 10px 0;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+    }
+
+    .modal-buttons button:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+    }
+
+    .modal-buttons button i {
+        font-size: 1.2em;
+    }
+
+    /* Close button */
+    .close-modal {
+        background: none;
+        color: #e74c3c;
+        font-weight: bold;
+        font-size: 1em;
+        border: none;
+        margin-top: 20px;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .close-modal:hover {
+        color: #c0392b;
+    }
+
+    /* Modal animation */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -40%);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
     }
 </style>
+
 
 </body>
 </html>
