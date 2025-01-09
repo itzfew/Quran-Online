@@ -6,7 +6,7 @@
     <title>Quran Kareem (Ar)</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="main/style.css">
+    <link rel="stylesheet" href="main/css/surah.css">
     <style>
         .share-btn, .view-btn {
             display: none;
@@ -15,6 +15,72 @@
         .selected .share-btn, .selected .view-btn {
             display: inline-block;
         }
+ 
+
+.history-container {
+    margin-top: 60px; /* Adjust for the settings container's height */
+    padding: 20px 10px 10px; /* Top padding adjusted for the h3 */
+    border: 1px solid #ddd;
+    background: #f9f9f9;
+    border-radius: 5px;
+    position: relative; /* Enable absolute positioning for child elements */
+    z-index: 5; /* Lower z-index than the settings container */
+}
+
+.history-container h3 {
+    margin: 0; /* Remove default margins */
+    padding: 0px 1px; /* Add some padding */
+    font-size: 12px; /* Make the text smaller */
+    font-weight: normal; /* Use normal weight for a subtle appearance */
+    color: #555; /* Set a muted color */
+    position: absolute; /* Position it absolutely within the container */
+    top: 5px; /* Adjust vertical position */
+    left: 10px; /* Adjust horizontal position */
+    background: #f9f9f9; /* Match container background for blending */
+    z-index: 1; /* Ensure it stays above content */
+}
+
+    .history-list {
+        display: flex;
+        gap: 10px; /* Space between items */
+        overflow-x: auto; /* Enable horizontal scrolling */
+        padding-bottom: 10px;
+        scrollbar-width: thin; /* For Firefox */
+        scrollbar-color: #ccc #f9f9f9; /* For Firefox */
+    }
+
+    .history-list::-webkit-scrollbar {
+        height: 8px; /* Scrollbar height */
+    }
+
+    .history-list::-webkit-scrollbar-thumb {
+        background: #ccc; /* Scrollbar thumb color */
+        border-radius: 5px;
+    }
+
+    .history-list::-webkit-scrollbar-track {
+        background: #f9f9f9; /* Scrollbar track color */
+    }
+
+    .history-item {
+        flex: 0 0 auto; /* Prevent shrinking and set width automatically */
+        border: 1px solid #ccc; /* Border around each item */
+        border-radius: 5px;
+        padding: 5px 10px;
+        text-align: center;
+        background: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .history-item a {
+        text-decoration: none;
+        color: #007bff;
+        font-weight: bold;
+    }
+
+    .history-item a:hover {
+        text-decoration: underline;
+    }
     </style>
 </head>
 <body>
@@ -36,7 +102,11 @@
         <i class="fas fa-book-open"></i>
     </div>
 </div>
-
+<div class="history-container">
+    <h3>Last Read</h3>
+    <div id="history-list" class="history-list"></div>
+</div>
+    
 <div class="header">
     <i class="fas fa-arrow-left arrow arrow-left" onclick="navigateSurah(-1)"></i>
     <div id="surah-heading" class="surah-heading" style="display: none;"></div>
@@ -62,6 +132,7 @@
 
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
+        displayHistory(); // Display the saved history on page load
     });
 
     function getQueryParam(param) {
@@ -81,6 +152,43 @@
 
         displaySurah(arabicData, translationData, urduData);
     }
+    function saveToHistory(index) {
+        const history = JSON.parse(localStorage.getItem('surahHistory')) || [];
+        const currentSurah = {
+            index: index,
+            link: `surah?index=${index}`,
+            name: `Surah ${index}` // Placeholder, replace with actual Surah name if available
+        };
+
+        // Remove existing entry if it already exists
+        const existingIndex = history.findIndex(item => item.index === index);
+        if (existingIndex !== -1) {
+            history.splice(existingIndex, 1);
+        }
+
+        history.unshift(currentSurah); // Add the current Surah to the beginning
+
+        // Keep only the last 5 entries
+        if (history.length > 5) {
+            history.pop();
+        }
+
+        localStorage.setItem('surahHistory', JSON.stringify(history));
+    }
+
+    function displayHistory() {
+        const history = JSON.parse(localStorage.getItem('surahHistory')) || [];
+        const historyList = document.getElementById('history-list');
+        historyList.innerHTML = '';
+
+        history.forEach(item => {
+            const div = document.createElement('div');
+            div.classList.add('history-item');
+            div.innerHTML = `<a href="${item.link}">${item.name}</a>`;
+            historyList.appendChild(div);
+        });
+    }
+
 
     function displaySurah(arabicData, translationData, urduData) {
         const surahHeading = document.getElementById('surah-heading');
