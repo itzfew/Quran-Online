@@ -3,342 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quran - Verse Details</title>
-    <link href="https://fonts.googleapis.com/css2?family=Scheherazade+New&family=Amiri&display=swap" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a076d05399.js"></script> <!-- FontAwesome for icons -->
-    <style>
-        body {
-            font-family: 'Amiri', serif;
-            background-color: #f4f4f9;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Quran Surahs</title>
 
-        #verse-container {
-            max-width: 900px;
-            margin: 20px auto;
-            background-color: white;
-            padding: 20px;
-            text-align: center;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border: 2px solid #ddd; /* Added border around the container */
-        }
+    <!-- Link to PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
 
-        #verse-heading {
-            text-align: center;
-            font-size: 32px;
-            margin-bottom: 20px;
-            font-family: 'Scheherazade New', serif;
-        }
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-        #verse-content, #word-content, #tafsir-content {
-            margin-bottom: 30px;
-            border-bottom: 2px solid #ddd; /* Border for sections */
-            padding-bottom: 20px;
-        }
+<!-- Link to external CSS -->
+<link rel="stylesheet" href="main/css/index.css">
 
-        .arabic-text {
-            text-align: center;
-            font-family: 'Scheherazade New', serif;
-            font-size: 24px;
-            color: #3d3d3d;
-            line-height: 1.6;
-        }
-
-        .verse-number {
-            font-size: 1.0em;
-            margin-top: 10px;
-            font-weight: bold;
-            background-image: url('https://quran-online.pages.dev/source/download.png');
-            background-size: cover;
-            text-align: center;
-            background-position: center;
-            padding: 5px 10px;
-            border-radius: 8px;
-            color: black;
-            display: inline-block;
-            margin-left: 10px;
-        }
-
-        .translation-text,
-        .urdu-text {
-            margin-top: 15px;
-        }
-
-        .translation-text p,
-        .urdu-text p {
-            font-size: 18px;
-            line-height: 1.6;
-        }
-
-        .translation-text strong,
-        .urdu-text strong {
-            font-weight: bold;
-        }
-
-        .word-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .word-table th, .word-table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .word-table th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        #tafsir-content {
-            background-color: #f9f9f9;
-            border-radius: 10px;
-            text-align: center;
-            padding: 15px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            border: 1px solid #ddd; /* Added border for tafsir content */
-        }
-
-        #tafsir-content h3 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            font-family: 'Scheherazade New', serif;
-        }
-
-        #tafsir-content .tafsir-text {
-            font-size: 16px;
-            line-height: 1.7;
-            color: #555;
-        }
-
-        #verse-actions {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
-
-        .share-btn, .back-btn {
-            background-color: #1d72b8;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        .share-btn:hover, .back-btn:hover {
-            background-color: #155a8a;
-        }
-
-        .share-btn:focus, .back-btn:focus {
-            outline: none;
-        }
-
-        /* For smaller screens */
-        @media (max-width: 600px) {
-            #verse-container {
-                padding: 15px;
-            }
-
-            #verse-heading {
-                font-size: 28px;
-            }
-
-            .share-btn, .back-btn {
-                font-size: 14px;
-                padding: 8px 16px;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div id="verse-container">
-        <div id="verse-content"></div> <!-- Verse Section -->
-        <div id="word-content"></div> <!-- Word-to-Word Section -->
-        <div id="tafsir-language">
-            <label for="tafsir-select">Select Tafsir Language:</label>
-            <select id="tafsir-select" onchange="loadTafsir()">
-                <option value="en">English (Ibn Kathir)</option>
-                <option value="ur">Urdu</option>
-                <option value="maarif-ul-quran">English (Maarif-ul-Quran)</option>
-            </select>
-        </div>
-        <div id="tafsir-content" class="tafsir-box"></div> <!-- Tafsir Section -->
-        <div id="verse-actions">
-            <button class="share-btn" onclick="shareVerse()">Share <i class="fas fa-share-alt"></i></button>
-            <button class="back-btn" onclick="goBack()">Back to Surah</button>
-        </div>
-    </div>
 
-    <script>
-        // Get the surah and verse from URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const surahIndex = urlParams.get('surah');
-        const verseId = urlParams.get('verse');
+<div class="settings-container">
+    <!-- (Your existing settings items remain unchanged) -->
+</div>
 
-        // Fetch Verse Data
-        async function fetchVerseDetails(surahIndex, verseId) {
-            try {
-                const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(surahIndex).padStart(1, '0')}.json`);
-                const arabicData = await arabicResponse.json();
-                
-                const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(surahIndex).padStart(1, '0')}.json`);
-                const translationData = await translationResponse.json();
+<div id="last-read-container">
+    <a href="wordtoword.html" style="margin-bottom: 10px; display: inline-block; text-decoration: none; font-size: 1.2em; color: #3498db;">
+        Word to Word <i class="fas fa-arrow-right"></i>
+    </a>
+    <div id="last-read"></div>
+</div>
 
-                const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(surahIndex).padStart(3, '0')}.json`);
-                const urduData = await urduResponse.json();
+<div class="controls">
+    <input type="text" id="search-input" placeholder="Search Surahs..." oninput="filterSurahs()">
+</div>
 
-                displayVerse(arabicData, translationData, urduData, verseId);
-                fetchWordToWordDetails(); // Load word-to-word details
-                loadTafsir(); // Default load English Ibn Kathir Tafsir
-            } catch (error) {
-                console.error('Error fetching verse data:', error);
-            }
-        }
+<div id="surah-list"></div>
 
-        function displayVerse(arabicData, translationData, urduData, verseId) {
-            const verseDiv = document.getElementById('verse-content');
-            const arabicVerse = arabicData.verse[`verse_${verseId}`];
-            const translatedVerse = translationData.verse[`verse_${verseId}`];
-            const urduVerse = urduData.data.find(v => v.aya == verseId)?.text || '';
+<script>
+    let surahData = [];
+    let deferredPrompt;
 
-            // Display Verse
-            let verseContent = `
-                <div class="arabic-text">
-                    <p>${arabicVerse}</p>
-                    <div class="verse-number">Verse ${verseId}</div>
+    fetch('https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah.json')
+        .then(response => response.json())
+        .then(data => {
+            surahData = data;
+            renderSurahs(surahData);
+        })
+        .catch(error => {
+            console.error("Error loading Surah data:", error);
+        });
+
+    function renderSurahs(surahList) {
+        const listElement = document.getElementById("surah-list");
+        listElement.innerHTML = '';
+
+        surahList.forEach(surah => {
+            const surahNumber = parseInt(surah.index);
+            const lastReadData = getLastReadAyah(surahNumber);
+
+            const surahItem = document.createElement('div');
+            surahItem.classList.add('surah-item');
+
+            surahItem.innerHTML = `
+                <div class="surah-number">${surahNumber}</div>
+                <div class="surah-title">${surah.title}</div>
+                <div class="surah-arabic">${surah.titleAr}</div>
+                <div class="surah-meta">
+                    <p>${surah.type}</p>
+                    <p>${surah.count}</p>
                 </div>
-                <div class="translation-text">
-                    <strong>Translation (English):</strong> <p>${translatedVerse}</p>
-                </div>
-                <div class="urdu-text">
-                    <strong>Translation (Urdu):</strong> <p>${urduVerse}</p>
-                </div>
+                <div class="surah-actions">
+    <button class="action-btn" data-tooltip="Word to Word" onclick="openWordToWord(surahIndex, ayahIndex)">
+        <i class="fas fa-book"></i>
+    </button>
+    <button class="action-btn" data-tooltip="Surah" onclick="openSurah(surahIndex)">
+        <i class="fas fa-quran"></i>
+    </button>
+    <button class="action-btn" data-tooltip="Read" onclick="openRead(surahIndex)">
+        <i class="fas fa-eye"></i>
+    </button>
+</div>
             `;
-            verseDiv.innerHTML = verseContent;
+
+            surahItem.onclick = () => saveLastRead(surahNumber);
+            listElement.appendChild(surahItem);
+        });
+    }
+
+    function openWordToWord(surahIndex, ayahIndex) {
+    const url = `wordtoword?index=${surahIndex}#${ayahIndex}`;
+    window.location.href = url;
+}
+
+function openSurah(surahIndex) {
+    const url = `surah?index=${surahIndex}`;
+    window.location.href = url;
+}
+
+function openRead(surahIndex) {
+    const url = `read?index=${surahIndex}`;
+    window.location.href = url;
+}
+
+    function saveLastRead(surahIndex) {
+        const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
+        const currentDate = new Date().toLocaleString();
+
+        const newRead = {
+            surah: surahIndex,
+            ayah: 1, // Default ayah for now
+            date: currentDate
+        };
+
+        lastReads.unshift(newRead);
+        localStorage.setItem('lastReads', JSON.stringify(lastReads.slice(0, 5))); // Keep only the last 5 reads
+        displayLastReads();
+    }
+
+    function getLastReadAyah(surahIndex) {
+        const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
+        const lastRead = lastReads.find(read => read.surah === surahIndex);
+        return lastRead ? lastRead.ayah : 1;
+    }
+
+    function displayLastReads() {
+        const lastReadContainer = document.getElementById('last-read');
+        const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
+
+        lastReadContainer.innerHTML = '';
+
+        lastReads.forEach(({ surah, ayah, date }) => {
+            const button = document.createElement('button');
+            button.textContent = `Surah ${surah}, Ayah ${ayah}`;
+            button.onclick = () => {
+                window.location.href = `wordtoword?index=${surah}#${ayah}`;
+            };
+
+            const dateDiv = document.createElement('div');
+            dateDiv.className = 'date';
+            dateDiv.textContent = date;
+
+            button.appendChild(dateDiv);
+            lastReadContainer.appendChild(button);
+        });
+    }
+
+    function filterSurahs() {
+        const searchTerm = document.getElementById("search-input").value.toLowerCase();
+        const filteredSurahs = surahData.filter(surah => 
+            surah.title.toLowerCase().includes(searchTerm) || 
+            surah.titleAr.toLowerCase().includes(searchTerm) ||
+            surah.type.toLowerCase().includes(searchTerm)
+        );
+        renderSurahs(filteredSurahs);
+    }
+
+    function toggleTheme() {
+        const isDark = document.body.classList.toggle('dark-mode');
+        localStorage.setItem('darkMode', isDark);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('darkMode');
+        if (savedTheme === 'true') {
+            document.body.classList.add('dark-mode');
         }
+        displayLastReads();
+    });
 
-        async function fetchWordToWordDetails() {
-            const metadataUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/word.json';
-            const wordsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/nastaliq-quranwbw.json';
-            const englishTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/en-quranwbw.json';
-            const urduTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/ur-quranwbw.json';
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+    });
 
-            try {
-                const [metadataResponse, wordsResponse, englishTranslationsResponse, urduTranslationsResponse] = await Promise.all([
-                    fetch(metadataUrl),
-                    fetch(wordsUrl),
-                    fetch(englishTranslationsUrl),
-                    fetch(urduTranslationsUrl)
-                ]);
-
-                const metadata = await metadataResponse.json();
-                const words = await wordsResponse.json();
-                const englishTranslations = await englishTranslationsResponse.json();
-                const urduTranslations = await urduTranslationsResponse.json();
-
-                const verseMetadata = Object.values(metadata).filter(
-                    item => item.surah == surahIndex && item.ayah == verseId
-                );
-
-                let wordContent = `
-                    <h3>Word-to-Word Translation</h3>
-                    <table class="word-table">
-                        <thead>
-                            <tr>
-                                <th>Arabic Word</th>
-                                <th>English Translation</th>
-                                <th>Urdu Translation</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-
-                verseMetadata.forEach(word => {
-                    const wordText = words[word.position];
-                    const englishTranslation = englishTranslations[word.position];
-                    const urduTranslation = urduTranslations[word.position];
-
-                    wordContent += `
-                        <tr>
-                            <td>${wordText}</td>
-                            <td>${englishTranslation}</td>
-                            <td>${urduTranslation}</td>
-                        </tr>
-                    `;
-                });
-
-                wordContent += `
-                        </tbody>
-                    </table>
-                `;
-
-                document.getElementById('word-content').innerHTML = wordContent;
-
-            } catch (error) {
-                console.error('Error fetching word-to-word details:', error);
-                document.getElementById('word-content').innerHTML = '<p>Unable to load word-to-word details.</p>';
-            }
+    function installPWA() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    console.log("User accepted the A2HS prompt");
+                } else {
+                    console.log("User dismissed the A2HS prompt");
+                }
+                deferredPrompt = null;
+            });
         }
-
-        async function loadTafsir() {
-            const selectedLanguage = document.getElementById('tafsir-select').value;
-            const tafsirDiv = document.getElementById('tafsir-content');
-            let tafsirUrl = '';
-
-            if (selectedLanguage === 'en') {
-                tafsirUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/en-tafisr-ibn-kathir/${surahIndex}.json`;
-            } else if (selectedLanguage === 'ur') {
-                tafsirUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/ur-tafseer-ibn-e-kaseer/${surahIndex}.json`;
-            } else if (selectedLanguage === 'maarif-ul-quran') {
-                tafsirUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/tafsir/en-tafsir-maarif-ul-quran/${surahIndex}.json`;
-            }
-
-            try {
-                const response = await fetch(tafsirUrl);
-                const tafsirData = await response.json();
-                const tafsirText = tafsirData.ayahs.find(v => v.ayah == verseId)?.text || 'No tafsir available for this verse.';
-                tafsirDiv.innerHTML = `
-                    <h3>Tafsir for Verse ${verseId}</h3>
-                    <div class="tafsir-text">
-                        <p>${tafsirText}</p>
-                    </div>
-                `;
-            } catch (error) {
-                console.error('Error fetching tafsir:', error);
-                tafsirDiv.innerHTML = `<p>Unable to load Tafsir.</p>`;
-            }
-        }
-
-        function shareVerse() {
-            const verseText = document.getElementById('verse-content').innerText;
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Quran Verse',
-                    text: verseText,
-                    url: window.location.href
-                }).catch((error) => console.log('Error sharing: ', error));
-            } else {
-                navigator.clipboard.writeText(verseText).then(() => {
-                    alert('Verse copied to clipboard!');
-                }).catch((error) => {
-                    console.log('Error copying to clipboard: ', error);
-                });
-            }
-        }
-
-        function goBack() {
-            window.location.href = `surah.html?index=${surahIndex}`;
-        }
-
-        fetchVerseDetails(surahIndex, verseId);
-    </script>
+    }
+</script>
 </body>
 </html>
