@@ -70,131 +70,161 @@
     </div>
 
     <script>
-    async function renderSurah(surahNumber, highlightAyah = null) {
-        const metadata = await fetchData(metadataUrl);
-        const words = await fetchData(wordsUrl);
-        const englishTranslations = await fetchData(englishTranslationsUrl);
-        const urduTranslations = await fetchData(urduTranslationsUrl);
+        const metadataUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/word.json';
+        const wordsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/nastaliq-quranwbw.json';
+        const englishTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/en-quranwbw.json';
+        const urduTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/ur-quranwbw.json';
 
-        if (!metadata || !words || !englishTranslations || !urduTranslations) return;
+        async function fetchData(url) {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Failed to fetch: ${url}`);
+                return response.json();
+            } catch (error) {
+                console.error(error);
+                alert(`Error loading data: ${error.message}`);
+            }
+        }
 
-        const quranContainer = document.getElementById('quran');
-        quranContainer.innerHTML = '';
+        async function renderSurah(surahNumber) {
+            const metadata = await fetchData(metadataUrl);
+            const words = await fetchData(wordsUrl);
+            const englishTranslations = await fetchData(englishTranslationsUrl);
+            const urduTranslations = await fetchData(urduTranslationsUrl);
 
-        const surahName = `Surah ${surahNumber}`;
-        document.getElementById('surah-name').textContent = surahName;
-        document.getElementById('current-surah').textContent = surahName;
+            if (!metadata || !words || !englishTranslations || !urduTranslations) return;
 
-        const surahData = {};
-        for (const [wordId, meta] of Object.entries(metadata)) {
-            if (meta.surah === surahNumber && meta.ayah > 0) {
-                if (!surahData[meta.ayah]) surahData[meta.ayah] = [];
-                surahData[meta.ayah].push({
-                    word: words[wordId],
-                    englishTranslation: englishTranslations[wordId],
-                    urduTranslation: urduTranslations[wordId]
+            const quranContainer = document.getElementById('quran');
+            quranContainer.innerHTML = '';
+
+            const surahName = `Surah ${surahNumber}`;
+            document.getElementById('surah-name').textContent = surahName;
+            document.getElementById('current-surah').textContent = surahName;
+
+            const surahData = {};
+            for (const [wordId, meta] of Object.entries(metadata)) {
+                if (meta.surah === surahNumber && meta.ayah > 0) {
+                    if (!surahData[meta.ayah]) surahData[meta.ayah] = [];
+                    surahData[meta.ayah].push({
+                        word: words[wordId],
+                        englishTranslation: englishTranslations[wordId],
+                        urduTranslation: urduTranslations[wordId]
+                    });
+                }
+            }
+
+            for (const [ayah, words] of Object.entries(surahData)) {
+                const ayahDiv = document.createElement('div');
+                ayahDiv.className = 'ayah';
+                ayahDiv.id = `${surahNumber}#${ayah}`;
+
+                const ayahHeader = document.createElement('div');
+                ayahHeader.className = 'ayah-header';
+                ayahHeader.textContent = `Verse ${ayah}`;
+
+                ayahDiv.appendChild(ayahHeader);
+
+                words.forEach(wordData => {
+                    const wordSpan = document.createElement('span');
+                    wordSpan.className = 'word';
+                    wordSpan.innerHTML = `
+                        <span>${wordData.word}</span>
+                        <span class="translation">${wordData.englishTranslation}</span>
+                        <span class="translation urdu">${wordData.urduTranslation}</span>
+                    `;
+                    ayahDiv.appendChild(wordSpan);
+                });
+
+                const threeDots = document.createElement('div');
+                threeDots.className = 'three-dots';
+                threeDots.innerHTML = '<i class="fas fa-ellipsis-v"></i>';
+                
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tooltip';
+                tooltip.innerHTML = `
+                    <button onclick="bookmarkAyah(${surahNumber}, ${ayah})">Bookmark</button>
+                    <button onclick="shareAyah(${surahNumber}, ${ayah})">Share</button>
+                `;
+
+                threeDots.addEventListener('click', () => {
+                    tooltip.style.display = tooltip.style.display === 'block' ? 'none' : 'block';
+                });
+
+                ayahDiv.appendChild(threeDots);
+                ayahDiv.appendChild(tooltip);
+
+                quranContainer.appendChild(ayahDiv);
+            }
+        }
+
+        function bookmarkAyah(surah, ayah) {
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            bookmarks.push({ surah, ayah });
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+            alert(`Ayah ${ayah} bookmarked.`);
+            renderBookmarks();
+        }
+
+        function renderBookmarks() {
+            const bookmarkList = document.getElementById('bookmark-list');
+            bookmarkList.innerHTML = '';
+
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            bookmarks.forEach(({ surah, ayah }) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
+                listItem.style.cursor = 'pointer';
+                listItem.addEventListener('click', () => {
+                    window.location.hash = `${ayah}`;
+                    renderSurah(surah).then(() => {
+                        document.getElementById(`${surah}#${ayah}`).scrollIntoView({ behavior: 'smooth' });
+                    });
+                });
+                bookmarkList.appendChild(listItem);
+            });
+        }
+
+        function shareAyah(surah, ayah) {
+            const url = `${window.location.origin}${window.location.pathname}?index=${surah}#${ayah}`;
+            if (navigator.share) {
+                navigator.share({
+                    title: `Surah ${surah}, Ayah ${ayah}`,
+                    url
+                }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('Link copied to clipboard.');
                 });
             }
         }
 
-        for (const [ayah, words] of Object.entries(surahData)) {
-            const ayahDiv = document.createElement('div');
-            ayahDiv.className = 'ayah';
-            if (highlightAyah === parseInt(ayah)) {
-                ayahDiv.style.backgroundColor = '#ffffcc'; // Highlight the ayah
+        async function initialize() {
+            const params = new URLSearchParams(window.location.search);
+            const hash = window.location.hash.substring(1);
+            const surah = parseInt(params.get('index'), 10) || 1;
+            const ayah = parseInt(hash, 10);
+            await renderSurah(surah);
+            if (ayah) {
+                document.getElementById(`${surah}#${ayah}`).scrollIntoView({ behavior: 'smooth' });
             }
-
-            const ayahHeader = document.createElement('div');
-            ayahHeader.className = 'ayah-header';
-            ayahHeader.textContent = `Verse ${ayah}`;
-
-            ayahDiv.appendChild(ayahHeader);
-
-            words.forEach(wordData => {
-                const wordSpan = document.createElement('span');
-                wordSpan.className = 'word';
-                wordSpan.innerHTML = `
-                    <span>${wordData.word}</span>
-                    <span class="translation">${wordData.englishTranslation}</span>
-                    <span class="translation urdu">${wordData.urduTranslation}</span>
-                `;
-                ayahDiv.appendChild(wordSpan);
-            });
-
-            const threeDots = document.createElement('div');
-            threeDots.className = 'three-dots';
-            threeDots.innerHTML = '<i class="fas fa-ellipsis-v"></i>';
-            
-            const tooltip = document.createElement('div');
-            tooltip.className = 'tooltip';
-            tooltip.innerHTML = `
-                <button onclick="bookmarkAyah(${surahNumber}, ${ayah})">Bookmark</button>
-                <button onclick="shareAyah(${surahNumber}, ${ayah})">Share</button>
-            `;
-
-            threeDots.addEventListener('click', () => {
-                tooltip.style.display = tooltip.style.display === 'block' ? 'none' : 'block';
-            });
-
-            ayahDiv.appendChild(threeDots);
-            ayahDiv.appendChild(tooltip);
-
-            quranContainer.appendChild(ayahDiv);
+            renderBookmarks();
         }
-    }
 
-    function bookmarkAyah(surah, ayah) {
-        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-        bookmarks.push({ surah, ayah });
-        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-        alert(`Ayah ${ayah} of Surah ${surah} bookmarked.`);
-        renderBookmarks(); // Update the bookmark list dynamically
-    }
-
-    function renderBookmarks() {
-        const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-        const bookmarksContainer = document.getElementById('bookmarks');
-        bookmarksContainer.innerHTML = '';
-        bookmarks.forEach(({ surah, ayah }, index) => {
-            const bookmarkItem = document.createElement('div');
-            bookmarkItem.className = 'bookmark-item';
-            bookmarkItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
-            bookmarkItem.addEventListener('click', async () => {
-                await renderSurah(surah, ayah);
-                window.history.replaceState(null, '', `?index=${surah}#${ayah}`);
-            });
-            bookmarksContainer.appendChild(bookmarkItem);
+        document.getElementById('previous-surah').addEventListener('click', async () => {
+            const currentSurah = parseInt(document.getElementById('current-surah').textContent.split(' ')[1], 10);
+            if (currentSurah > 1) {
+                await renderSurah(currentSurah - 1);
+            }
         });
-    }
 
-    async function initialize() {
-        const params = new URLSearchParams(window.location.search);
-        const hash = window.location.hash.substring(1);
-        const surah = parseInt(params.get('index'), 10) || 1;
-        const ayah = parseInt(hash, 10) || null;
+        document.getElementById('next-surah').addEventListener('click', async () => {
+            const currentSurah = parseInt(document.getElementById('current-surah').textContent.split(' ')[1], 10);
+            if (currentSurah < 114) {
+                await renderSurah(currentSurah + 1);
+            }
+        });
 
-        await renderSurah(surah, ayah);
-        renderBookmarks();
-    }
-
-    document.getElementById('previous-surah').addEventListener('click', async () => {
-        const currentSurah = parseInt(document.getElementById('current-surah').textContent.split(' ')[1], 10);
-        if (currentSurah > 1) {
-            await renderSurah(currentSurah - 1);
-            window.history.replaceState(null, '', `?index=${currentSurah - 1}`);
-        }
-    });
-
-    document.getElementById('next-surah').addEventListener('click', async () => {
-        const currentSurah = parseInt(document.getElementById('current-surah').textContent.split(' ')[1], 10);
-        if (currentSurah < 114) {
-            await renderSurah(currentSurah + 1);
-            window.history.replaceState(null, '', `?index=${currentSurah + 1}`);
-        }
-    });
-
-    initialize();
-</script>
-
+        initialize();
+    </script>
 </body>
 </html>
