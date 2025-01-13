@@ -86,7 +86,7 @@
             }
         }
 
-        async function renderSurah(surahNumber) {
+        async function renderSurah(surahNumber, ayahNumber = null) {
             const metadata = await fetchData(metadataUrl);
             const words = await fetchData(wordsUrl);
             const englishTranslations = await fetchData(englishTranslationsUrl);
@@ -155,6 +155,18 @@
 
                 quranContainer.appendChild(ayahDiv);
             }
+
+            if (ayahNumber) {
+                const ayahDiv = document.getElementById(`${surahNumber}#${ayahNumber}`);
+                if (ayahDiv) ayahDiv.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            updateUrl(surahNumber, ayahNumber || 1);
+        }
+
+        function updateUrl(surah, ayah) {
+            const newUrl = `${window.location.origin}${window.location.pathname}?index=${surah}#${ayah}`;
+            window.history.pushState({}, '', newUrl);
         }
 
         function bookmarkAyah(surah, ayah) {
@@ -175,10 +187,7 @@
                 listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
                 listItem.style.cursor = 'pointer';
                 listItem.addEventListener('click', () => {
-                    window.location.hash = `${ayah}`;
-                    renderSurah(surah).then(() => {
-                        document.getElementById(`${surah}#${ayah}`).scrollIntoView({ behavior: 'smooth' });
-                    });
+                    renderSurah(surah, ayah);
                 });
                 bookmarkList.appendChild(listItem);
             });
@@ -203,10 +212,7 @@
             const hash = window.location.hash.substring(1);
             const surah = parseInt(params.get('index'), 10) || 1;
             const ayah = parseInt(hash, 10);
-            await renderSurah(surah);
-            if (ayah) {
-                document.getElementById(`${surah}#${ayah}`).scrollIntoView({ behavior: 'smooth' });
-            }
+            await renderSurah(surah, ayah);
             renderBookmarks();
         }
 
