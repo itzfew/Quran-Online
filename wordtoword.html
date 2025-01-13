@@ -6,7 +6,7 @@
     <title>Quran Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="maind.css">
+    <link rel="stylesheet" href="main/css/wordtoword.css">
     <style>
         body {
             font-family: 'Amiri Quran', serif;
@@ -15,63 +15,41 @@
             padding: 0;
         }
 
-        #surah-name {
+        h1 {
             text-align: center;
-            font-size: 2em;
-            margin-top: 20px;
+            padding: 20px;
         }
 
         #controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin-top: 20px;
+            text-align: center;
+            margin-bottom: 20px;
         }
 
-        #controls i {
+        .nav-button {
             font-size: 1.5em;
+            margin: 0 10px;
             cursor: pointer;
         }
 
         #quran {
-            margin: 20px auto;
+            margin: 20px;
             padding: 10px;
-            width: 90%;
-            max-width: 800px;
-            background-color: #fff;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: #fff;
             border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .ayah {
-            margin: 15px 0;
-            padding: 15px;
+            margin: 10px 0;
+            padding: 10px;
             border: 1px solid #ddd;
-            border-radius: 8px;
+            border-radius: 5px;
             position: relative;
-            transition: background-color 0.3s ease;
         }
 
         .ayah-header {
             font-weight: bold;
-            font-size: 1.2em;
-            margin-bottom: 10px;
-        }
-
-        .word {
-            display: inline-block;
-            margin: 0 5px;
-        }
-
-        .translation {
-            display: block;
-            font-size: 0.9em;
-            color: #555;
-        }
-
-        .urdu {
-            color: #00796b;
+            margin-bottom: 5px;
         }
 
         .tooltip {
@@ -83,66 +61,65 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 5px 10px;
             z-index: 1000;
+            padding: 5px 10px;
+        }
+
+        .tooltip button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
         }
 
         .three-dots {
             position: absolute;
             top: 10px;
-            right: 10px;
+            left: 10px; /* Change this to left to position the three dots at the left corner */
             cursor: pointer;
         }
 
         .three-dots i {
-            font-size: 1.5em;
+            font-size: 1.2em;
         }
 
         #bookmarked-verses {
-            text-align: center;
-            margin-top: 20px;
+            margin: 10px 20px;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 8px;
+            background-color: #fff;
         }
 
         #bookmark-list {
             display: flex;
             overflow-x: auto;
-            justify-content: center;
-            gap: 10px;
-            border: 1px solid black;
-            padding: 10px;
-            border-radius: 8px;
-            max-width: 100%;
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
         }
 
         #bookmark-list li {
-            list-style-type: none;
-            cursor: pointer;
+            margin-right: 10px;
+            background-color: #f1f1f1;
             padding: 5px 10px;
-            background-color: #fafafa;
             border-radius: 5px;
-            transition: background-color 0.3s ease;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         #bookmark-list li:hover {
-            background-color: #d0e8f3;
+            background-color: #e1e1e1;
         }
 
         .highlight {
-            background-color: #ffff99;
-        }
-
-        .bookmark-button {
-            background: #00796b;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            border: none;
-            font-size: 1em;
-        }
-
-        .bookmark-button:hover {
-            background-color: #004d40;
+            background-color: #ffe0b3; /* Light yellow highlight */
+            border: 2px solid #ffb84d;
         }
     </style>
 </head>
@@ -155,13 +132,13 @@
         <i id="previous-surah" class="fas fa-arrow-left nav-button">Previous</i>
     </div>
 
-    <div id="quran">
-        <!-- Quranic verses will be dynamically displayed here -->
-    </div>
-
     <div id="bookmarked-verses">
         <h2>Bookmarked Verses</h2>
         <ul id="bookmark-list"></ul>
+    </div>
+
+    <div id="quran">
+        <!-- Quranic verses will be dynamically displayed here -->
     </div>
 
     <script>
@@ -253,7 +230,10 @@
 
             if (ayahNumber) {
                 const ayahDiv = document.getElementById(`${surahNumber}#${ayahNumber}`);
-                if (ayahDiv) ayahDiv.scrollIntoView({ behavior: 'smooth' });
+                if (ayahDiv) {
+                    ayahDiv.scrollIntoView({ behavior: 'smooth' });
+                    ayahDiv.classList.add('highlight');  // Highlight verse when referred to
+                }
             }
 
             updateUrl(surahNumber, ayahNumber || 1);
@@ -266,8 +246,8 @@
 
         function bookmarkAyah(surah, ayah) {
             const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-            bookmarks.unshift({ surah, ayah });  // Add new bookmark at the start
-            if (bookmarks.length > 7) bookmarks.pop(); // Limit to 7 bookmarks
+            bookmarks.unshift({ surah, ayah });
+            if (bookmarks.length > 7) bookmarks.pop();  // Keep only the latest 7
             localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
             alert(`Ayah ${ayah} bookmarked.`);
             renderBookmarks();
@@ -281,22 +261,12 @@
             bookmarks.forEach(({ surah, ayah }) => {
                 const listItem = document.createElement('li');
                 listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
+                listItem.style.cursor = 'pointer';
                 listItem.addEventListener('click', () => {
-                    highlightVerse(surah, ayah);
                     renderSurah(surah, ayah);
                 });
                 bookmarkList.appendChild(listItem);
             });
-        }
-
-        function highlightVerse(surah, ayah) {
-            const verseDiv = document.getElementById(`${surah}#${ayah}`);
-            if (verseDiv) {
-                verseDiv.classList.add('highlight');
-                setTimeout(() => {
-                    verseDiv.classList.remove('highlight');
-                }, 2000);  // Highlight for 2 seconds
-            }
         }
 
         function shareAyah(surah, ayah) {
