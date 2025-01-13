@@ -12,12 +12,11 @@
     <!-- Font Awesome CDN for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-<!-- Link to external CSS -->
-<link rel="stylesheet" href="main/css/index.css">
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" href="main/css/index.css">
 
 </head>
 <body>
-
 
 <div class="settings-container">
     <div class="settings-item" onclick="toggleTheme()">
@@ -66,20 +65,13 @@
     </div>
 </div>
 
-<div id="last-read-container">
-    <a href="wordtoword.html" style="margin-bottom: 10px; display: inline-block; text-decoration: none; font-size: 1.2em; color: #3498db;">
-        Word to Word <i class="fas fa-arrow-right"></i>
-    </a>
-    <div id="last-read"></div>
-</div>
-
 <div class="controls">
     <input type="text" id="search-input" placeholder="Search Surahs..." oninput="filterSurahs()">
 </div>
 
 <div id="surah-list"></div>
 
-                <script>
+<script>
     let surahData = [];
     let deferredPrompt;
 
@@ -123,48 +115,44 @@
     }
 
     function showSurahOptions(surahIndex) {
-    const surah = surahData.find(s => parseInt(s.index) === surahIndex);
-    const surahName = surah ? surah.title : 'Unknown Surah';
+        const surah = surahData.find(s => parseInt(s.index) === surahIndex);
+        const surahName = surah ? surah.title : 'Unknown Surah';
 
-    const modal = document.createElement('div');
-    modal.classList.add('modal');
+        const modal = document.createElement('div');
+        modal.classList.add('modal');
 
-    modal.innerHTML = `
-        <div class="modal-content">
-            <button class="close-modal" onclick="closeModal()">
-                <i class="fas fa-times"></i>
-            </button>
-            <h2>${surahName}</h2>
-            <div class="modal-buttons">
-                <div class="button-row">
-                    <button onclick="window.location.href='surah?index=${surahIndex}'">
-                        <i class="fas fa-book"></i> Read Surah
-                    </button>
-                    <button onclick="window.location.href='read?index=${surahIndex}'">
-                        <i class="fas fa-book-reader"></i> Read Quran
+        modal.innerHTML = `
+            <div class="modal-content">
+                <button class="close-modal" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h2>${surahName}</h2>
+                <div class="modal-buttons">
+                    <div class="button-row">
+                        <button onclick="window.location.href='surah?index=${surahIndex}'">
+                            <i class="fas fa-book"></i> Read Surah
+                        </button>
+                        <button onclick="window.location.href='read?index=${surahIndex}'">
+                            <i class="fas fa-book-reader"></i> Read Quran
+                        </button>
+                    </div>
+                    <button onclick="openWordToWord(${surahIndex})">
+                        <i class="fas fa-language"></i> Read Word to Word
                     </button>
                 </div>
-                <button onclick="openWordToWord(${surahIndex})">
-                    <i class="fas fa-language"></i> Read Word to Word
-                </button>
             </div>
-        </div>
-    `;
+        `;
 
-    document.body.appendChild(modal);
+        document.body.appendChild(modal);
 
-    const overlay = document.createElement('div');
-    overlay.classList.add('overlay');
-    overlay.onclick = closeModal;
-    document.body.appendChild(overlay);
-}
-
+        const overlay = document.createElement('div');
+        overlay.classList.add('overlay');
+        overlay.onclick = closeModal;
+        document.body.appendChild(overlay);
+    }
 
     function openWordToWord(surahIndex) {
-        const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
-        const lastReadForSurah = lastReads.find(read => read.surah === surahIndex);
-        const lastAyah = lastReadForSurah ? lastReadForSurah.ayah : 1;
-        window.location.href = `wordtoword?index=${surahIndex}#${lastAyah}`;
+        window.location.href = `wordtoword?index=${surahIndex}#1`; // Start at the first Ayah
     }
 
     function closeModal() {
@@ -172,43 +160,6 @@
         const overlay = document.querySelector('.overlay');
         if (modal) modal.remove();
         if (overlay) overlay.remove();
-    }
-
-    function saveLastRead(surahIndex) {
-        const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
-        const currentDate = new Date().toLocaleString();
-
-        const newRead = {
-            surah: surahIndex,
-            ayah: 1, // Default ayah for now
-            date: currentDate
-        };
-
-        lastReads.unshift(newRead);
-        localStorage.setItem('lastReads', JSON.stringify(lastReads.slice(0, 5))); // Keep only the last 5 reads
-        displayLastReads();
-    }
-
-    function displayLastReads() {
-        const lastReadContainer = document.getElementById('last-read');
-        const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
-
-        lastReadContainer.innerHTML = '';
-
-        lastReads.forEach(({ surah, ayah, date }) => {
-            const button = document.createElement('button');
-            button.textContent = `Surah ${surah}, Ayah ${ayah}`;
-            button.onclick = () => {
-                window.location.href = `wordtoword?index=${surah}#${ayah}`;
-            };
-
-            const dateDiv = document.createElement('div');
-            dateDiv.className = 'date';
-            dateDiv.textContent = date;
-
-            button.appendChild(dateDiv);
-            lastReadContainer.appendChild(button);
-        });
     }
 
     function filterSurahs() {
@@ -231,7 +182,6 @@
         if (savedTheme === 'true') {
             document.body.classList.add('dark-mode');
         }
-        displayLastReads();
     });
 
     window.addEventListener('beforeinstallprompt', (e) => {
@@ -253,6 +203,7 @@
         }
     }
 </script>
+
 <style>
     /* Modal container styles */
     .modal {
@@ -348,7 +299,6 @@
         justify-content: center;
     }
 </style>
-
 
 </body>
 </html>
