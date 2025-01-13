@@ -287,23 +287,43 @@
             }
         }
 
-        function bookmarkAyah(surah, ayah) {
-            const bookmarkedVerses = JSON.parse(localStorage.getItem('bookmarkedVerses')) || [];
-            const verseIdentifier = `${surah}#${ayah}`;
+        let currentSurah = 1;
+        const urlParams = new URLSearchParams(window.location.search);
+        const index = urlParams.get('index');
+        const verse = urlParams.get('verse');
 
-            if (!bookmarkedVerses.includes(verseIdentifier)) {
-                bookmarkedVerses.push(verseIdentifier);
-                localStorage.setItem('bookmarkedVerses', JSON.stringify(bookmarkedVerses));
+        if (index && verse) {
+            currentSurah = parseInt(index);
+            renderSurah(currentSurah, verse);
+        }
 
-                const bookmarkList = document.getElementById('bookmark-list');
-                const listItem = document.createElement('li');
-                listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
-                listItem.onclick = () => {
-                    renderSurah(surah, ayah);
-                    highlightVerse(surah, ayah);
-                };
-                bookmarkList.appendChild(listItem);
+        document.getElementById('next-surah').addEventListener('click', () => {
+            currentSurah++;
+            renderSurah(currentSurah);
+        });
+
+        document.getElementById('previous-surah').addEventListener('click', () => {
+            if (currentSurah > 1) {
+                currentSurah--;
+                renderSurah(currentSurah);
             }
+        });
+
+        function bookmarkAyah(surah, ayah) {
+            const bookmarkList = document.getElementById('bookmark-list');
+            const listItem = document.createElement('li');
+            listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
+            listItem.addEventListener('click', () => {
+                renderSurah(surah, ayah);
+                updateUrl(surah, ayah);
+            });
+
+            // Save to local storage
+            let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            bookmarks.push({ surah, ayah });
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+
+            bookmarkList.appendChild(listItem);
         }
 
         function shareAyah(surah, ayah) {
@@ -324,24 +344,20 @@
             window.open(tafsirUrl, '_blank');
         }
 
-        // Initialize
-        renderSurah(1);
-
-        // Load Bookmarked Verses
-        window.onload = () => {
-            const bookmarkedVerses = JSON.parse(localStorage.getItem('bookmarkedVerses')) || [];
-            const bookmarkList = document.getElementById('bookmark-list');
-            bookmarkedVerses.forEach(verse => {
-                const [surah, ayah] = verse.split('#');
+        // Load saved bookmarks
+        window.addEventListener('load', () => {
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            bookmarks.forEach(bookmark => {
+                const bookmarkList = document.getElementById('bookmark-list');
                 const listItem = document.createElement('li');
-                listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
-                listItem.onclick = () => {
-                    renderSurah(surah, ayah);
-                    highlightVerse(surah, ayah);
-                };
+                listItem.textContent = `Surah ${bookmark.surah}, Ayah ${bookmark.ayah}`;
+                listItem.addEventListener('click', () => {
+                    renderSurah(bookmark.surah, bookmark.ayah);
+                    updateUrl(bookmark.surah, bookmark.ayah);
+                });
                 bookmarkList.appendChild(listItem);
             });
-        };
+        });
     </script>
 </body>
 </html>
