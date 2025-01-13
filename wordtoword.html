@@ -45,6 +45,7 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             background-color: #f9f9f9;
+            position: relative;
         }
         .ayah-header {
             font-size: 1.2em;
@@ -126,6 +127,41 @@
             color: #666;
             margin-top: 5px;
         }
+        /* Tooltip styling */
+        .dot-menu {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 1.5em;
+            color: #333;
+        }
+        .dot-tooltip {
+            display: none;
+            position: absolute;
+            top: 30px;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            width: 150px;
+        }
+        .dot-tooltip a {
+            display: block;
+            padding: 5px 0;
+            text-decoration: none;
+            color: #333;
+        }
+        .dot-tooltip a:hover {
+            background-color: #f0f0f0;
+        }
+        .dot-menu:hover + .dot-tooltip {
+            display: block;
+        }
+
         /* Toast Notification */
         #toast {
             position: fixed;
@@ -232,6 +268,21 @@
                 ayahHeader.className = 'ayah-header';
                 ayahHeader.textContent = `Verse ${ayah}`;
 
+                // Three dots menu for actions (bookmark, share)
+                const dotMenu = document.createElement('span');
+                dotMenu.className = 'dot-menu';
+                dotMenu.innerHTML = '...';
+
+                const dotTooltip = document.createElement('div');
+                dotTooltip.className = 'dot-tooltip';
+                dotTooltip.innerHTML = `
+                    <a href="#" onclick="bookmarkVerse(${surahNumber}, ${ayah})">Bookmark</a>
+                    <a href="#" onclick="shareVerse(${surahNumber}, ${ayah})">Share</a>
+                `;
+
+                ayahDiv.appendChild(dotMenu);
+                ayahDiv.appendChild(dotTooltip);
+
                 ayahDiv.appendChild(ayahHeader);
                 words.forEach(wordData => {
                     const wordSpan = document.createElement('span');
@@ -317,6 +368,18 @@
 
                 button.appendChild(dateDiv);
                 lastReadContainer.appendChild(button);
+            });
+        }
+
+        function bookmarkVerse(surah, ayah) {
+            saveLastRead(surah, ayah);
+            showToast(`Ayah ${ayah} bookmarked.`);
+        }
+
+        function shareVerse(surah, ayah) {
+            const verseLink = `${window.location.origin}?index=${surah}#${ayah}`;
+            navigator.clipboard.writeText(verseLink).then(() => {
+                showToast(`Verse link copied: ${verseLink}`);
             });
         }
 
