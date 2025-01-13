@@ -6,23 +6,28 @@
     <title>Quran Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="main/css/wordtoword.css">
     <style>
         body {
             font-family: 'Amiri Quran', serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
         h1 {
             text-align: center;
             padding: 20px;
+            margin: 0;
+            background-color: #fff;
+            border-bottom: 1px solid #ddd;
         }
 
         #controls {
             text-align: center;
-            margin-bottom: 20px;
+            margin: 20px 0;
         }
 
         .nav-button {
@@ -32,25 +37,24 @@
         }
 
         #quran {
-            margin: 20px;
-            padding: 10px;
+            flex-grow: 1;
+            margin: 0px;
+            padding: 0px;
             background: #fff;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .ayah {
             margin: 10px 0;
-            padding: 10px;
+            padding: 20px;
             border: 1px solid #ddd;
             border-radius: 5px;
             position: relative;
-            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .ayah.highlight {
-            background-color: #ffe0b3; /* Highlight color */
-            border-color: #ffb84d; /* Border color for highlighted verse */
+            background-color: #ffe0b3;
+            border-color: #ffb84d;
         }
 
         .ayah-header {
@@ -58,38 +62,31 @@
             margin-bottom: 5px;
         }
 
-        #bookmarked-verses {
-            margin: 10px 20px;
-            padding: 10px;
-            border: 1px solid black;
-            border-radius: 8px;
+        .ayah-buttons {
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0px;
             background-color: #fff;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        #bookmark-list {
-            display: flex;
-            overflow-x: auto;
-            margin: 0;
-            padding: 0;
-            list-style-type: none;
-        }
-
-        #bookmark-list li {
-            margin-right: 10px;
-            background-color: #f1f1f1;
-            padding: 5px 10px;
+            border-top: 1px solid #ddd;
             border-radius: 5px;
-            cursor: pointer;
-            white-space: nowrap;
-            font-size: 14px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        #bookmark-list li:hover {
-            background-color: #e1e1e1;
+        .ayah-buttons button {
+            font-size: 12px;
+            padding: 10px 10px;
+            background-color: #ffb84d;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .ayah-buttons button:hover {
+            background-color: #ff9e3d;
         }
 
         .word {
@@ -123,32 +120,49 @@
             padding-top: 5px;
         }
 
-        .ayah-buttons {
-            position: absolute;
-            bottom: 10px;
-            left: 10px;
-            right: 10px;
-            display: flex;
-            justify-content: space-between;
+        #bookmarked-verses {
+            margin: 20px 0;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 8px;
             background-color: #fff;
-            padding: 1px 10px;
-            border-top: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .ayah-buttons button {
-            font-size: 12px;
+        #bookmark-list {
+            display: flex;
+            overflow-x: auto;
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        #bookmark-list li {
+            margin-right: 10px;
+            background-color: #f1f1f1;
             padding: 5px 10px;
-            background-color: #ffb84d;
-            border: none;
             border-radius: 5px;
-            color: #fff;
             cursor: pointer;
         }
 
-        .ayah-buttons button:hover {
-            background-color: #ff9e3d;
+        #bookmark-list li:hover {
+            background-color: #e1e1e1;
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 20px;
+                padding: 10px;
+            }
+
+            .ayah-buttons {
+                padding: 5px;
+                font-size: 10px;
+            }
+
+            .ayah-buttons button {
+                padding: 3px 7px;
+            }
         }
     </style>
 </head>
@@ -269,68 +283,51 @@
                 verseElement.classList.add('highlight');
                 setTimeout(() => {
                     verseElement.classList.remove('highlight');
-                }, 3000);  // Remove highlight after 3 seconds
+                }, 3000);
             }
         }
 
+        let currentSurah = 1;
+
+        document.getElementById('next-surah').addEventListener('click', () => {
+            currentSurah++;
+            renderSurah(currentSurah);
+        });
+
+        document.getElementById('previous-surah').addEventListener('click', () => {
+            if (currentSurah > 1) {
+                currentSurah--;
+                renderSurah(currentSurah);
+            }
+        });
+
         function bookmarkAyah(surah, ayah) {
-            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-            bookmarks.unshift({ surah, ayah });
-            if (bookmarks.length > 7) bookmarks.pop();  // Keep only the latest 7
-            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-            alert(`Ayah ${ayah} bookmarked.`);
-            renderBookmarks();
-        }
-
-        function renderBookmarks() {
             const bookmarkList = document.getElementById('bookmark-list');
-            bookmarkList.innerHTML = '';
-
-            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-            bookmarks.forEach(({ surah, ayah }) => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
-                listItem.style.cursor = 'pointer';
-                listItem.addEventListener('click', () => {
-                    renderSurah(surah, ayah);
-                });
-                bookmarkList.appendChild(listItem);
-            });
+            const listItem = document.createElement('li');
+            listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
+            bookmarkList.appendChild(listItem);
         }
 
         function shareAyah(surah, ayah) {
-            const url = `${window.location.origin}${window.location.pathname}?index=${surah}#${ayah}`;
+            const text = `Check out this verse: Surah ${surah}, Ayah ${ayah}`;
             if (navigator.share) {
                 navigator.share({
-                    title: `Surah ${surah}, Ayah ${ayah}`,
-                    url
-                }).catch(console.error);
-            } else {
-                navigator.clipboard.writeText(url).then(() => {
-                    alert('Link copied to clipboard.');
+                    title: 'Quran Verse',
+                    text: text,
+                    url: window.location.href,
                 });
+            } else {
+                alert(`Share this verse: ${text}`);
             }
         }
 
         function openTafsir(surah, ayah) {
-            window.location.href = `/verse?surah=${surah}&verse=${ayah}`;
+            const tafsirUrl = `https://www.alim.org/quran/tafsir/${surah}/${ayah}/`;
+            window.open(tafsirUrl, '_blank');
         }
 
-        document.getElementById('next-surah').addEventListener('click', async () => {
-            const surahNumber = parseInt(new URLSearchParams(window.location.search).get('index') || 1);
-            renderSurah(surahNumber + 1);
-        });
-
-        document.getElementById('previous-surah').addEventListener('click', async () => {
-            const surahNumber = parseInt(new URLSearchParams(window.location.search).get('index') || 1);
-            if (surahNumber > 1) renderSurah(surahNumber - 1);
-        });
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const surahNumber = parseInt(new URLSearchParams(window.location.search).get('index') || 1);
-            renderSurah(surahNumber);
-            renderBookmarks();
-        });
+        // Initialize
+        renderSurah(currentSurah);
     </script>
 </body>
 </html>
