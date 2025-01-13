@@ -52,20 +52,23 @@
             margin-bottom: 5px;
         }
 
-        .tooltip {
+        .popup {
             display: none;
             position: absolute;
             top: 30px;
-            right: 10px;
+            right: 0;
             background: #fff;
             border: 1px solid #ddd;
             border-radius: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 1000;
-            padding: 5px 10px;
+            width: 200px;
+            padding: 10px;
+            text-align: left;
+            transform: translateX(100%);
         }
 
-        .tooltip button {
+        .popup button {
             display: block;
             width: 100%;
             margin: 5px 0;
@@ -73,6 +76,15 @@
             border: none;
             text-align: left;
             cursor: pointer;
+        }
+
+        .popup .close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: red;
+            cursor: pointer;
+            font-size: 1.2em;
         }
 
         .three-dots {
@@ -123,6 +135,27 @@
         .highlight {
             background-color: #ffe0b3; /* Light yellow highlight */
             border: 2px solid #ffb84d;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .ayah {
+                font-size: 14px;
+            }
+
+            .popup {
+                width: 150px;
+                padding: 8px;
+            }
+
+            .nav-button {
+                font-size: 1.2em;
+            }
+
+            #quran {
+                margin: 10px;
+                padding: 8px;
+            }
         }
     </style>
 </head>
@@ -214,22 +247,22 @@
                 threeDots.className = 'three-dots';
                 threeDots.innerHTML = '<i class="fas fa-ellipsis-v"></i>';
                 
-                const tooltip = document.createElement('div');
-                tooltip.className = 'tooltip';
-                tooltip.innerHTML = `
+                const popup = document.createElement('div');
+                popup.className = 'popup';
+                popup.innerHTML = `
                     <button onclick="bookmarkAyah(${surahNumber}, ${ayah})"><i class="fas fa-bookmark"></i> Bookmark</button>
                     <button onclick="shareAyah(${surahNumber}, ${ayah})"><i class="fas fa-share"></i> Share</button>
                     <button onclick="openTafsir(${surahNumber}, ${ayah})"><i class="fas fa-book-open"></i> Tafsir</button>
+                    <span class="close-btn" onclick="closePopup()">×</span>
                 `;
 
                 threeDots.addEventListener('click', () => {
-                    closeAllTooltips();
-                    tooltip.style.display = 'block';
+                    closeAllPopups();
+                    popup.style.display = 'block';
+                    threeDots.appendChild(popup);
                 });
 
                 ayahDiv.appendChild(threeDots);
-                ayahDiv.appendChild(tooltip);
-
                 quranContainer.appendChild(ayahDiv);
             }
 
@@ -244,11 +277,16 @@
             updateUrl(surahNumber, ayahNumber || 1);
         }
 
-        function closeAllTooltips() {
-            const tooltips = document.querySelectorAll('.tooltip');
-            tooltips.forEach(tooltip => {
-                tooltip.style.display = 'none';
+        function closeAllPopups() {
+            const popups = document.querySelectorAll('.popup');
+            popups.forEach(popup => {
+                popup.style.display = 'none';
             });
+        }
+
+        function closePopup() {
+            const popup = event.target.closest('.popup');
+            if (popup) popup.style.display = 'none';
         }
 
         function updateUrl(surah, ayah) {
@@ -310,17 +348,13 @@
         }
 
         document.getElementById('previous-surah').addEventListener('click', async () => {
-            const currentSurah = parseInt(document.getElementById('current-surah').textContent.split(' ')[1], 10);
-            if (currentSurah > 1) {
-                await renderSurah(currentSurah - 1);
-            }
+            const currentSurah = parseInt(document.getElementById('current-surah').textContent.replace('Surah ', ''), 10);
+            await renderSurah(currentSurah - 1 || 1);
         });
 
         document.getElementById('next-surah').addEventListener('click', async () => {
-            const currentSurah = parseInt(document.getElementById('current-surah').textContent.split(' ')[1], 10);
-            if (currentSurah < 114) {
-                await renderSurah(currentSurah + 1);
-            }
+            const currentSurah = parseInt(document.getElementById('current-surah').textContent.replace('Surah ', ''), 10);
+            await renderSurah(currentSurah + 1);
         });
 
         initialize();
