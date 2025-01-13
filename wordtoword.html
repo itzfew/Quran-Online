@@ -45,45 +45,17 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             position: relative;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .ayah.highlight {
+            background-color: #ffe0b3; /* Highlight color */
+            border-color: #ffb84d; /* Border color for highlighted verse */
         }
 
         .ayah-header {
             font-weight: bold;
             margin-bottom: 5px;
-        }
-
-        .tooltip {
-            display: none;
-            position: absolute;
-            top: 30px;
-            right: 10px;
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            padding: 5px 10px;
-        }
-
-        .tooltip button {
-            display: block;
-            width: 100%;
-            margin: 5px 0;
-            background: none;
-            border: none;
-            text-align: left;
-            cursor: pointer;
-        }
-
-        .three-dots {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-        }
-
-        .three-dots i {
-            font-size: 1.2em;
         }
 
         #bookmarked-verses {
@@ -92,6 +64,9 @@
             border: 1px solid black;
             border-radius: 8px;
             background-color: #fff;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         #bookmark-list {
@@ -115,6 +90,65 @@
 
         #bookmark-list li:hover {
             background-color: #e1e1e1;
+        }
+
+        .word {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+
+        .word span {
+            display: block;
+            margin: 3px 0;
+            font-size: 16px;
+        }
+
+        .word .original {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .word .translation {
+            font-size: 14px;
+            color: #00796b;
+            border-top: 1px solid #ddd;
+            padding-top: 5px;
+        }
+
+        .word .urdu {
+            font-size: 14px;
+            color: #ff5722;
+            border-top: 1px solid #ddd;
+            padding-top: 5px;
+        }
+
+        .ayah-buttons {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            background-color: #fff;
+            padding: 5px 10px;
+            border-top: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .ayah-buttons button {
+            font-size: 12px;
+            padding: 5px 10px;
+            background-color: #ffb84d;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .ayah-buttons button:hover {
+            background-color: #ff9e3d;
         }
     </style>
 </head>
@@ -202,23 +236,15 @@
                     ayahDiv.appendChild(wordSpan);
                 });
 
-                const threeDots = document.createElement('div');
-                threeDots.className = 'three-dots';
-                threeDots.innerHTML = '<i class="fas fa-ellipsis-v"></i>';
-                
-                const tooltip = document.createElement('div');
-                tooltip.className = 'tooltip';
-                tooltip.innerHTML = `
-                    <button onclick="bookmarkAyah(${surahNumber}, ${ayah})">Bookmark</button>
-                    <button onclick="shareAyah(${surahNumber}, ${ayah})">Share</button>
+                // Buttons for Bookmark, Share, and Tafsir
+                const buttonsDiv = document.createElement('div');
+                buttonsDiv.className = 'ayah-buttons';
+                buttonsDiv.innerHTML = `
+                    <button class="bookmark-button" onclick="bookmarkAyah(${surahNumber}, ${ayah})"><i class="fas fa-bookmark"></i> Bookmark</button>
+                    <button class="share-button" onclick="shareAyah(${surahNumber}, ${ayah})"><i class="fas fa-share"></i> Share</button>
+                    <button class="tafsir-button" onclick="openTafsir(${surahNumber}, ${ayah})"><i class="fas fa-book-open"></i> Tafsir</button>
                 `;
-
-                threeDots.addEventListener('click', () => {
-                    tooltip.style.display = tooltip.style.display === 'block' ? 'none' : 'block';
-                });
-
-                ayahDiv.appendChild(threeDots);
-                ayahDiv.appendChild(tooltip);
+                ayahDiv.appendChild(buttonsDiv);
 
                 quranContainer.appendChild(ayahDiv);
             }
@@ -226,6 +252,7 @@
             if (ayahNumber) {
                 const ayahDiv = document.getElementById(`${surahNumber}#${ayahNumber}`);
                 if (ayahDiv) ayahDiv.scrollIntoView({ behavior: 'smooth' });
+                highlightVerse(surahNumber, ayahNumber);
             }
 
             updateUrl(surahNumber, ayahNumber || 1);
@@ -234,6 +261,16 @@
         function updateUrl(surah, ayah) {
             const newUrl = `${window.location.origin}${window.location.pathname}?index=${surah}#${ayah}`;
             window.history.pushState({}, '', newUrl);
+        }
+
+        function highlightVerse(surah, ayah) {
+            const verseElement = document.getElementById(`${surah}#${ayah}`);
+            if (verseElement) {
+                verseElement.classList.add('highlight');
+                setTimeout(() => {
+                    verseElement.classList.remove('highlight');
+                }, 3000);  // Remove highlight after 3 seconds
+            }
         }
 
         function bookmarkAyah(surah, ayah) {
@@ -275,30 +312,25 @@
             }
         }
 
-        async function initialize() {
-            const params = new URLSearchParams(window.location.search);
-            const hash = window.location.hash.substring(1);
-            const surah = parseInt(params.get('index'), 10) || 1;
-            const ayah = parseInt(hash, 10);
-            await renderSurah(surah, ayah);
-            renderBookmarks();
+        function openTafsir(surah, ayah) {
+            window.location.href = `/verse?surah=${surah}&verse=${ayah}`;
         }
 
-        document.getElementById('previous-surah').addEventListener('click', async () => {
-            const currentSurah = parseInt(document.getElementById('current-surah').textContent.split(' ')[1], 10);
-            if (currentSurah > 1) {
-                await renderSurah(currentSurah - 1);
-            }
-        });
-
         document.getElementById('next-surah').addEventListener('click', async () => {
-            const currentSurah = parseInt(document.getElementById('current-surah').textContent.split(' ')[1], 10);
-            if (currentSurah < 114) {
-                await renderSurah(currentSurah + 1);
-            }
+            const surahNumber = parseInt(new URLSearchParams(window.location.search).get('index') || 1);
+            renderSurah(surahNumber + 1);
         });
 
-        initialize();
+        document.getElementById('previous-surah').addEventListener('click', async () => {
+            const surahNumber = parseInt(new URLSearchParams(window.location.search).get('index') || 1);
+            if (surahNumber > 1) renderSurah(surahNumber - 1);
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const surahNumber = parseInt(new URLSearchParams(window.location.search).get('index') || 1);
+            renderSurah(surahNumber);
+            renderBookmarks();
+        });
     </script>
 </body>
 </html>
