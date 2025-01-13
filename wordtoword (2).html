@@ -6,7 +6,7 @@
     <title>Quran Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="main/css/wordtoword.css">
     <style>
         body {
             font-family: 'Amiri Quran', serif;
@@ -236,23 +236,15 @@
                     ayahDiv.appendChild(wordSpan);
                 });
 
-                const threeDots = document.createElement('div');
-                threeDots.className = 'three-dots';
-                threeDots.innerHTML = '<i class="fas fa-ellipsis-v"></i>';
-                
-                const tooltip = document.createElement('div');
-                tooltip.className = 'tooltip';
-                tooltip.innerHTML = `
-                    <button onclick="bookmarkAyah(${surahNumber}, ${ayah})">Bookmark</button>
-                    <button onclick="shareAyah(${surahNumber}, ${ayah})">Share</button>
+                // Buttons for Bookmark, Share, and Tafsir
+                const buttonsDiv = document.createElement('div');
+                buttonsDiv.className = 'ayah-buttons';
+                buttonsDiv.innerHTML = `
+                    <button class="bookmark-button" onclick="bookmarkAyah(${surahNumber}, ${ayah})"><i class="fas fa-bookmark"></i> Bookmark</button>
+                    <button class="share-button" onclick="shareAyah(${surahNumber}, ${ayah})"><i class="fas fa-share"></i> Share</button>
+                    <button class="tafsir-button" onclick="openTafsir(${surahNumber}, ${ayah})"><i class="fas fa-book-open"></i> Tafsir</button>
                 `;
-
-                threeDots.addEventListener('click', () => {
-                    tooltip.style.display = tooltip.style.display === 'block' ? 'none' : 'block';
-                });
-
-                ayahDiv.appendChild(threeDots);
-                ayahDiv.appendChild(tooltip);
+                ayahDiv.appendChild(buttonsDiv);
 
                 quranContainer.appendChild(ayahDiv);
             }
@@ -260,6 +252,7 @@
             if (ayahNumber) {
                 const ayahDiv = document.getElementById(`${surahNumber}#${ayahNumber}`);
                 if (ayahDiv) ayahDiv.scrollIntoView({ behavior: 'smooth' });
+                highlightVerse(surahNumber, ayahNumber);
             }
 
             updateUrl(surahNumber, ayahNumber || 1);
@@ -268,6 +261,16 @@
         function updateUrl(surah, ayah) {
             const newUrl = `${window.location.origin}${window.location.pathname}?index=${surah}#${ayah}`;
             window.history.pushState({}, '', newUrl);
+        }
+
+        function highlightVerse(surah, ayah) {
+            const verseElement = document.getElementById(`${surah}#${ayah}`);
+            if (verseElement) {
+                verseElement.classList.add('highlight');
+                setTimeout(() => {
+                    verseElement.classList.remove('highlight');
+                }, 3000);  // Remove highlight after 3 seconds
+            }
         }
 
         function bookmarkAyah(surah, ayah) {
@@ -309,30 +312,25 @@
             }
         }
 
-        async function initialize() {
-            const params = new URLSearchParams(window.location.search);
-            const hash = window.location.hash.substring(1);
-            const surah = parseInt(params.get('index'), 10) || 1;
-            const ayah = parseInt(hash, 10);
-            await renderSurah(surah, ayah);
-            renderBookmarks();
+        function openTafsir(surah, ayah) {
+            window.location.href = `/verse?surah=${surah}&verse=${ayah}`;
         }
 
-        document.getElementById('previous-surah').addEventListener('click', async () => {
-            const currentSurah = parseInt(document.getElementById('current-surah').textContent.split(' ')[1], 10);
-            if (currentSurah > 1) {
-                await renderSurah(currentSurah - 1);
-            }
-        });
-
         document.getElementById('next-surah').addEventListener('click', async () => {
-            const currentSurah = parseInt(document.getElementById('current-surah').textContent.split(' ')[1], 10);
-            if (currentSurah < 114) {
-                await renderSurah(currentSurah + 1);
-            }
+            const surahNumber = parseInt(new URLSearchParams(window.location.search).get('index') || 1);
+            renderSurah(surahNumber + 1);
         });
 
-        initialize();
+        document.getElementById('previous-surah').addEventListener('click', async () => {
+            const surahNumber = parseInt(new URLSearchParams(window.location.search).get('index') || 1);
+            if (surahNumber > 1) renderSurah(surahNumber - 1);
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const surahNumber = parseInt(new URLSearchParams(window.location.search).get('index') || 1);
+            renderSurah(surahNumber);
+            renderBookmarks();
+        });
     </script>
 </body>
 </html>
