@@ -52,6 +52,7 @@
             margin-bottom: 5px;
         }
 
+        /* Tooltip / Popup Styling */
         .popup {
             display: none;
             position: absolute;
@@ -59,32 +60,32 @@
             right: 0;
             background: #fff;
             border: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
             z-index: 1000;
             width: 200px;
-            padding: 10px;
+            padding: 12px;
             text-align: left;
-            transform: translateX(100%);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
         }
 
         .popup button {
             display: block;
             width: 100%;
-            margin: 5px 0;
-            background: none;
-            border: none;
-            text-align: left;
+            margin: 8px 0;
+            padding: 8px;
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 4px;
             cursor: pointer;
+            text-align: left;
+            transition: background-color 0.3s;
         }
 
-        .popup .close-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            color: red;
-            cursor: pointer;
-            font-size: 1.2em;
+        .popup button:hover {
+            background-color: #e1e1e1;
         }
 
         .three-dots {
@@ -96,6 +97,12 @@
 
         .three-dots i {
             font-size: 1.2em;
+        }
+
+        /* Highlight the Ayah */
+        .highlight {
+            background-color: #ffe0b3; /* Light yellow highlight */
+            border: 2px solid #ffb84d;
         }
 
         #bookmarked-verses {
@@ -130,11 +137,6 @@
 
         #bookmark-list li:hover {
             background-color: #e1e1e1;
-        }
-
-        .highlight {
-            background-color: #ffe0b3; /* Light yellow highlight */
-            border: 2px solid #ffb84d;
         }
 
         /* Responsive styles */
@@ -253,12 +255,13 @@
                     <button onclick="bookmarkAyah(${surahNumber}, ${ayah})"><i class="fas fa-bookmark"></i> Bookmark</button>
                     <button onclick="shareAyah(${surahNumber}, ${ayah})"><i class="fas fa-share"></i> Share</button>
                     <button onclick="openTafsir(${surahNumber}, ${ayah})"><i class="fas fa-book-open"></i> Tafsir</button>
-                    <span class="close-btn" onclick="closePopup()">×</span>
                 `;
 
                 threeDots.addEventListener('click', () => {
                     closeAllPopups();
                     popup.style.display = 'block';
+                    popup.style.opacity = '1';
+                    popup.style.visibility = 'visible';
                     threeDots.appendChild(popup);
                 });
 
@@ -281,12 +284,9 @@
             const popups = document.querySelectorAll('.popup');
             popups.forEach(popup => {
                 popup.style.display = 'none';
+                popup.style.opacity = '0';
+                popup.style.visibility = 'hidden';
             });
-        }
-
-        function closePopup() {
-            const popup = event.target.closest('.popup');
-            if (popup) popup.style.display = 'none';
         }
 
         function updateUrl(surah, ayah) {
@@ -308,43 +308,25 @@
             bookmarkList.innerHTML = '';
 
             const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-            bookmarks.forEach(({ surah, ayah }) => {
+            bookmarks.forEach(bookmark => {
                 const listItem = document.createElement('li');
-                listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
-                listItem.style.cursor = 'pointer';
-                listItem.addEventListener('click', () => {
-                    renderSurah(surah, ayah);
-                });
+                listItem.textContent = `Surah ${bookmark.surah}, Ayah ${bookmark.ayah}`;
+                listItem.addEventListener('click', () => renderSurah(bookmark.surah, bookmark.ayah));
                 bookmarkList.appendChild(listItem);
             });
         }
 
         function shareAyah(surah, ayah) {
-            const url = `${window.location.origin}${window.location.pathname}?index=${surah}#${ayah}`;
-            if (navigator.share) {
-                navigator.share({
-                    title: `Surah ${surah}, Ayah ${ayah}`,
-                    url
-                }).catch(console.error);
-            } else {
-                navigator.clipboard.writeText(url).then(() => {
-                    alert('Link copied to clipboard.');
-                });
-            }
+            const message = `Check out Surah ${surah}, Ayah ${ayah} from the Quran.`;
+            navigator.share({
+                title: 'Quran Verse',
+                text: message,
+                url: window.location.href
+            }).catch(error => console.log('Error sharing:', error));
         }
 
         function openTafsir(surah, ayah) {
-            const tafsirLink = `https://www.altafsir.com/Tafsir.asp?t=0&surah=${surah}&verse=${ayah}`;
-            window.open(tafsirLink, '_blank');
-        }
-
-        async function initialize() {
-            const params = new URLSearchParams(window.location.search);
-            const hash = window.location.hash.substring(1);
-            const surah = parseInt(params.get('index'), 10) || 1;
-            const ayah = parseInt(hash, 10);
-            await renderSurah(surah, ayah);
-            renderBookmarks();
+            alert(`Tafsir for Surah ${surah}, Ayah ${ayah} is not available yet.`);
         }
 
         document.getElementById('previous-surah').addEventListener('click', async () => {
@@ -357,7 +339,8 @@
             await renderSurah(currentSurah + 1);
         });
 
-        initialize();
+        renderBookmarks();  // Show existing bookmarks
+        renderSurah(1);  // Initially show Surah 1
     </script>
 </body>
 </html>
