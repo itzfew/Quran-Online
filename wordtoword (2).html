@@ -45,45 +45,17 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             position: relative;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .ayah.highlight {
+            background-color: #ffe0b3; /* Highlight color */
+            border-color: #ffb84d; /* Border color for highlighted verse */
         }
 
         .ayah-header {
             font-weight: bold;
             margin-bottom: 5px;
-        }
-
-        .tooltip {
-            display: none;
-            position: absolute;
-            top: 30px;
-            right: 10px;
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            padding: 5px 10px;
-        }
-
-        .tooltip button {
-            display: block;
-            width: 100%;
-            margin: 5px 0;
-            background: none;
-            border: none;
-            text-align: left;
-            cursor: pointer;
-        }
-
-        .three-dots {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-        }
-
-        .three-dots i {
-            font-size: 1.2em;
         }
 
         #bookmarked-verses {
@@ -92,6 +64,9 @@
             border: 1px solid black;
             border-radius: 8px;
             background-color: #fff;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         #bookmark-list {
@@ -115,6 +90,65 @@
 
         #bookmark-list li:hover {
             background-color: #e1e1e1;
+        }
+
+        .word {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+
+        .word span {
+            display: block;
+            margin: 3px 0;
+            font-size: 16px;
+        }
+
+        .word .original {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .word .translation {
+            font-size: 14px;
+            color: #00796b;
+            border-top: 1px solid #ddd;
+            padding-top: 5px;
+        }
+
+        .word .urdu {
+            font-size: 14px;
+            color: #ff5722;
+            border-top: 1px solid #ddd;
+            padding-top: 5px;
+        }
+
+        .ayah-buttons {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            background-color: #fff;
+            padding: 5px 10px;
+            border-top: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .ayah-buttons button {
+            font-size: 12px;
+            padding: 5px 10px;
+            background-color: #ffb84d;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .ayah-buttons button:hover {
+            background-color: #ff9e3d;
         }
     </style>
 </head>
