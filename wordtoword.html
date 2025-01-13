@@ -64,6 +64,11 @@
         <!-- Quranic verses will be dynamically displayed here -->
     </div>
 
+    <div id="bookmarked-verses">
+        <h2>Bookmarked Verses</h2>
+        <ul id="bookmark-list"></ul>
+    </div>
+
     <script>
         const metadataUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/word.json';
         const wordsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/nastaliq-quranwbw.json';
@@ -111,6 +116,7 @@
             for (const [ayah, words] of Object.entries(surahData)) {
                 const ayahDiv = document.createElement('div');
                 ayahDiv.className = 'ayah';
+                ayahDiv.id = `${surahNumber}#${ayah}`;
 
                 const ayahHeader = document.createElement('div');
                 ayahHeader.className = 'ayah-header';
@@ -156,6 +162,26 @@
             bookmarks.push({ surah, ayah });
             localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
             alert(`Ayah ${ayah} bookmarked.`);
+            renderBookmarks();
+        }
+
+        function renderBookmarks() {
+            const bookmarkList = document.getElementById('bookmark-list');
+            bookmarkList.innerHTML = '';
+
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            bookmarks.forEach(({ surah, ayah }) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
+                listItem.style.cursor = 'pointer';
+                listItem.addEventListener('click', () => {
+                    window.location.hash = `${ayah}`;
+                    renderSurah(surah).then(() => {
+                        document.getElementById(`${surah}#${ayah}`).scrollIntoView({ behavior: 'smooth' });
+                    });
+                });
+                bookmarkList.appendChild(listItem);
+            });
         }
 
         function shareAyah(surah, ayah) {
@@ -178,6 +204,10 @@
             const surah = parseInt(params.get('index'), 10) || 1;
             const ayah = parseInt(hash, 10);
             await renderSurah(surah);
+            if (ayah) {
+                document.getElementById(`${surah}#${ayah}`).scrollIntoView({ behavior: 'smooth' });
+            }
+            renderBookmarks();
         }
 
         document.getElementById('previous-surah').addEventListener('click', async () => {
