@@ -287,25 +287,23 @@
             }
         }
 
-        let currentSurah = 1;
-
-        document.getElementById('next-surah').addEventListener('click', () => {
-            currentSurah++;
-            renderSurah(currentSurah);
-        });
-
-        document.getElementById('previous-surah').addEventListener('click', () => {
-            if (currentSurah > 1) {
-                currentSurah--;
-                renderSurah(currentSurah);
-            }
-        });
-
         function bookmarkAyah(surah, ayah) {
-            const bookmarkList = document.getElementById('bookmark-list');
-            const listItem = document.createElement('li');
-            listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
-            bookmarkList.appendChild(listItem);
+            const bookmarkedVerses = JSON.parse(localStorage.getItem('bookmarkedVerses')) || [];
+            const verseIdentifier = `${surah}#${ayah}`;
+
+            if (!bookmarkedVerses.includes(verseIdentifier)) {
+                bookmarkedVerses.push(verseIdentifier);
+                localStorage.setItem('bookmarkedVerses', JSON.stringify(bookmarkedVerses));
+
+                const bookmarkList = document.getElementById('bookmark-list');
+                const listItem = document.createElement('li');
+                listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
+                listItem.onclick = () => {
+                    renderSurah(surah, ayah);
+                    highlightVerse(surah, ayah);
+                };
+                bookmarkList.appendChild(listItem);
+            }
         }
 
         function shareAyah(surah, ayah) {
@@ -327,7 +325,23 @@
         }
 
         // Initialize
-        renderSurah(currentSurah);
+        renderSurah(1);
+
+        // Load Bookmarked Verses
+        window.onload = () => {
+            const bookmarkedVerses = JSON.parse(localStorage.getItem('bookmarkedVerses')) || [];
+            const bookmarkList = document.getElementById('bookmark-list');
+            bookmarkedVerses.forEach(verse => {
+                const [surah, ayah] = verse.split('#');
+                const listItem = document.createElement('li');
+                listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
+                listItem.onclick = () => {
+                    renderSurah(surah, ayah);
+                    highlightVerse(surah, ayah);
+                };
+                bookmarkList.appendChild(listItem);
+            });
+        };
     </script>
 </body>
 </html>
