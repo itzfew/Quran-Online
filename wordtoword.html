@@ -52,21 +52,21 @@
             margin-bottom: 5px;
         }
 
-        .popup {
+        .tooltip {
             display: none;
             position: absolute;
             top: 30px;
-            left: 10px;
+            right: 10px;
             background: #fff;
             border: 1px solid #ddd;
             border-radius: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 1000;
-            padding: 10px;
-            width: 150px;
+            padding: 5px 10px;
         }
 
-        .popup button {
+        .tooltip button {
+            display: block;
             width: 100%;
             margin: 5px 0;
             background: none;
@@ -92,6 +92,9 @@
             border: 1px solid black;
             border-radius: 8px;
             background-color: #fff;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         #bookmark-list {
@@ -211,22 +214,21 @@
                 threeDots.className = 'three-dots';
                 threeDots.innerHTML = '<i class="fas fa-ellipsis-v"></i>';
                 
-                const popup = document.createElement('div');
-                popup.className = 'popup';
-                popup.innerHTML = `
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tooltip';
+                tooltip.innerHTML = `
                     <button onclick="bookmarkAyah(${surahNumber}, ${ayah})"><i class="fas fa-bookmark"></i> Bookmark</button>
                     <button onclick="shareAyah(${surahNumber}, ${ayah})"><i class="fas fa-share"></i> Share</button>
-                    <button onclick="viewTafsir(${surahNumber}, ${ayah})"><i class="fas fa-book"></i> Tafsir</button>
-                    <button onclick="closePopup(this)"><i class="fas fa-times" style="color: red;"></i> Close</button>
+                    <button onclick="openTafsir(${surahNumber}, ${ayah})"><i class="fas fa-book-open"></i> Tafsir</button>
                 `;
 
                 threeDots.addEventListener('click', () => {
-                    closeAllPopups(); // Close any open popup before showing the new one
-                    popup.style.display = 'block';
+                    closeAllTooltips();
+                    tooltip.style.display = 'block';
                 });
 
                 ayahDiv.appendChild(threeDots);
-                ayahDiv.appendChild(popup);
+                ayahDiv.appendChild(tooltip);
 
                 quranContainer.appendChild(ayahDiv);
             }
@@ -242,15 +244,16 @@
             updateUrl(surahNumber, ayahNumber || 1);
         }
 
-        function closeAllPopups() {
-            const allPopups = document.querySelectorAll('.popup');
-            allPopups.forEach(popup => {
-                popup.style.display = 'none';
+        function closeAllTooltips() {
+            const tooltips = document.querySelectorAll('.tooltip');
+            tooltips.forEach(tooltip => {
+                tooltip.style.display = 'none';
             });
         }
 
-        function closePopup(button) {
-            button.parentElement.style.display = 'none';
+        function updateUrl(surah, ayah) {
+            const newUrl = `${window.location.origin}${window.location.pathname}?index=${surah}#${ayah}`;
+            window.history.pushState({}, '', newUrl);
         }
 
         function bookmarkAyah(surah, ayah) {
@@ -260,6 +263,22 @@
             localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
             alert(`Ayah ${ayah} bookmarked.`);
             renderBookmarks();
+        }
+
+        function renderBookmarks() {
+            const bookmarkList = document.getElementById('bookmark-list');
+            bookmarkList.innerHTML = '';
+
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            bookmarks.forEach(({ surah, ayah }) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
+                listItem.style.cursor = 'pointer';
+                listItem.addEventListener('click', () => {
+                    renderSurah(surah, ayah);
+                });
+                bookmarkList.appendChild(listItem);
+            });
         }
 
         function shareAyah(surah, ayah) {
@@ -276,9 +295,9 @@
             }
         }
 
-        function viewTafsir(surah, ayah) {
-            const tafsirUrl = `${window.location.origin}${window.location.pathname}?surah=${surah}&verse=${ayah}`;
-            alert(`Tafsir link: ${tafsirUrl}`);
+        function openTafsir(surah, ayah) {
+            const tafsirLink = `https://www.altafsir.com/Tafsir.asp?t=0&surah=${surah}&verse=${ayah}`;
+            window.open(tafsirLink, '_blank');
         }
 
         async function initialize() {
