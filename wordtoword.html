@@ -45,6 +45,7 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             position: relative;
+            background-color: #fafafa;
         }
 
         .ayah-header {
@@ -62,28 +63,37 @@
             border-radius: 5px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             z-index: 1000;
-            padding: 5px 10px;
+            padding: 10px;
+            width: 150px;
+            font-size: 14px;
         }
 
         .tooltip button {
             display: block;
             width: 100%;
             margin: 5px 0;
-            background: none;
+            background: #eee;
             border: none;
             text-align: left;
             cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+        }
+
+        .tooltip button:hover {
+            background: #ddd;
         }
 
         .three-dots {
             position: absolute;
             top: 10px;
-            left: 10px; /* Change this to left to position the three dots at the left corner */
+            left: 10px;
             cursor: pointer;
         }
 
         .three-dots i {
-            font-size: 1.2em;
+            font-size: 1.5em;
+            color: #333;
         }
 
         #bookmarked-verses {
@@ -115,11 +125,6 @@
 
         #bookmark-list li:hover {
             background-color: #e1e1e1;
-        }
-
-        .highlight {
-            background-color: #ffe0b3; /* Light yellow highlight */
-            border: 2px solid #ffb84d;
         }
     </style>
 </head>
@@ -210,12 +215,13 @@
                 const threeDots = document.createElement('div');
                 threeDots.className = 'three-dots';
                 threeDots.innerHTML = '<i class="fas fa-ellipsis-v"></i>';
-                
+
                 const tooltip = document.createElement('div');
                 tooltip.className = 'tooltip';
                 tooltip.innerHTML = `
-                    <button onclick="bookmarkAyah(${surahNumber}, ${ayah})">Bookmark</button>
-                    <button onclick="shareAyah(${surahNumber}, ${ayah})">Share</button>
+                    <button onclick="bookmarkAyah(${surahNumber}, ${ayah})"><i class="fas fa-bookmark"></i> Bookmark</button>
+                    <button onclick="shareAyah(${surahNumber}, ${ayah})"><i class="fas fa-share"></i> Share</button>
+                    <button onclick="openTafsir(${surahNumber}, ${ayah})"><i class="fas fa-book"></i> Tafsir</button>
                 `;
 
                 threeDots.addEventListener('click', () => {
@@ -230,10 +236,7 @@
 
             if (ayahNumber) {
                 const ayahDiv = document.getElementById(`${surahNumber}#${ayahNumber}`);
-                if (ayahDiv) {
-                    ayahDiv.scrollIntoView({ behavior: 'smooth' });
-                    ayahDiv.classList.add('highlight');  // Highlight verse when referred to
-                }
+                if (ayahDiv) ayahDiv.scrollIntoView({ behavior: 'smooth' });
             }
 
             updateUrl(surahNumber, ayahNumber || 1);
@@ -281,6 +284,11 @@
                     alert('Link copied to clipboard.');
                 });
             }
+        }
+
+        function openTafsir(surah, ayah) {
+            const tafsirUrl = `${window.location.origin}${window.location.pathname}?surah=${surah}&verse=${ayah}`;
+            window.open(tafsirUrl, '_blank');
         }
 
         async function initialize() {
