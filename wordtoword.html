@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        body {
+       body {
             font-family: 'Amiri Quran', serif;
             background-color: #f4f4f4;
             margin: 0;
@@ -204,6 +204,12 @@
             return lastClicked ? JSON.parse(lastClicked) : null;
         }
 
+        function getQueryParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const index = urlParams.get('index');
+            return index ? index.split('#') : null;
+        }
+
         async function renderSurah(surahNumber, ayahNumber = null) {
             const metadata = await fetchData(metadataUrl);
             const words = await fetchData(wordsUrl);
@@ -360,7 +366,13 @@
         });
 
         window.onload = function() {
-            renderSurah(1);  // Load the first Surah initially
+            const queryParams = getQueryParams();
+            if (queryParams) {
+                const [surah, ayah] = queryParams;
+                renderSurah(surah, ayah);
+            } else {
+                renderSurah(1);  // Load the first Surah initially
+            }
             renderBookmarks();
             loadLastClickedVerse();
         };
