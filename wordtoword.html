@@ -10,24 +10,33 @@
     <style>
         body {
             font-family: 'Amiri Quran', serif;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5;
         }
 
-        #quran {
-            margin: 20px;
+        h1 {
+            text-align: center;
+            padding: 20px;
         }
 
         #controls {
             text-align: center;
-            margin: 20px 0;
+            margin-bottom: 20px;
         }
 
-        #controls i {
+        .nav-button {
             font-size: 1.5em;
-            margin: 0 20px;
+            margin: 0 10px;
             cursor: pointer;
+        }
+
+        #quran {
+            margin: 20px;
+            padding: 10px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .ayah {
@@ -36,7 +45,6 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             position: relative;
-            background-color: #fff;
         }
 
         .ayah-header {
@@ -79,41 +87,34 @@
         }
 
         #bookmarked-verses {
-            margin: 20px;
-            border: 2px solid #000;
+            margin: 10px 20px;
             padding: 10px;
+            border: 1px solid black;
+            border-radius: 8px;
             background-color: #fff;
-        }
-
-        #bookmarked-verses h2 {
-            margin: 0;
-            padding-bottom: 10px;
-            font-size: 1.5em;
-            text-align: center;
         }
 
         #bookmark-list {
             display: flex;
-            flex-wrap: nowrap;
             overflow-x: auto;
-            gap: 10px;
-            padding: 10px 0;
             margin: 0;
+            padding: 0;
+            list-style-type: none;
         }
 
         #bookmark-list li {
-            list-style: none;
-            border: 1px solid #ddd;
+            margin-right: 10px;
+            background-color: #f1f1f1;
             padding: 5px 10px;
-            background-color: #f0f0f0;
-            cursor: pointer;
             border-radius: 5px;
-            flex-shrink: 0;
+            cursor: pointer;
             white-space: nowrap;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         #bookmark-list li:hover {
-            background-color: #dcdcdc;
+            background-color: #e1e1e1;
         }
     </style>
 </head>
@@ -121,18 +122,18 @@
     <h1 id="surah-name">Loading...</h1>
 
     <div id="controls">
-        <i id="next-surah" class="fas fa-arrow-right nav-button">next</i>
+        <i id="next-surah" class="fas fa-arrow-right nav-button">Next</i>
         <span id="current-surah"></span>
-        <i id="previous-surah" class="fas fa-arrow-left nav-button">previous</i>
-    </div>
-
-    <div id="quran">
-        <!-- Quranic verses will be dynamically displayed here -->
+        <i id="previous-surah" class="fas fa-arrow-left nav-button">Previous</i>
     </div>
 
     <div id="bookmarked-verses">
         <h2>Bookmarked Verses</h2>
         <ul id="bookmark-list"></ul>
+    </div>
+
+    <div id="quran">
+        <!-- Quranic verses will be dynamically displayed here -->
     </div>
 
     <script>
@@ -152,7 +153,7 @@
             }
         }
 
-        async function renderSurah(surahNumber) {
+        async function renderSurah(surahNumber, ayahNumber = null) {
             const metadata = await fetchData(metadataUrl);
             const words = await fetchData(wordsUrl);
             const englishTranslations = await fetchData(englishTranslationsUrl);
@@ -221,16 +222,26 @@
 
                 quranContainer.appendChild(ayahDiv);
             }
+
+            if (ayahNumber) {
+                const ayahDiv = document.getElementById(`${surahNumber}#${ayahNumber}`);
+                if (ayahDiv) ayahDiv.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            updateUrl(surahNumber, ayahNumber || 1);
+        }
+
+        function updateUrl(surah, ayah) {
+            const newUrl = `${window.location.origin}${window.location.pathname}?index=${surah}#${ayah}`;
+            window.history.pushState({}, '', newUrl);
         }
 
         function bookmarkAyah(surah, ayah) {
             const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-            const bookmarkExists = bookmarks.some(b => b.surah === surah && b.ayah === ayah);
-            if (!bookmarkExists) {
-                bookmarks.push({ surah, ayah });
-                localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-                alert(`Ayah ${ayah} bookmarked.`);
-            }
+            bookmarks.unshift({ surah, ayah });
+            if (bookmarks.length > 7) bookmarks.pop();  // Keep only the latest 7
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+            alert(`Ayah ${ayah} bookmarked.`);
             renderBookmarks();
         }
 
@@ -239,16 +250,12 @@
             bookmarkList.innerHTML = '';
 
             const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-            const recentBookmarks = bookmarks.slice(-7);  // Get the latest 7 bookmarks
-
-            recentBookmarks.forEach(({ surah, ayah }) => {
+            bookmarks.forEach(({ surah, ayah }) => {
                 const listItem = document.createElement('li');
                 listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
+                listItem.style.cursor = 'pointer';
                 listItem.addEventListener('click', () => {
-                    window.location.hash = `${ayah}`;
-                    renderSurah(surah).then(() => {
-                        document.getElementById(`${surah}#${ayah}`).scrollIntoView({ behavior: 'smooth' });
-                    });
+                    renderSurah(surah, ayah);
                 });
                 bookmarkList.appendChild(listItem);
             });
@@ -273,10 +280,7 @@
             const hash = window.location.hash.substring(1);
             const surah = parseInt(params.get('index'), 10) || 1;
             const ayah = parseInt(hash, 10);
-            await renderSurah(surah);
-            if (ayah) {
-                document.getElementById(`${surah}#${ayah}`).scrollIntoView({ behavior: 'smooth' });
-            }
+            await renderSurah(surah, ayah);
             renderBookmarks();
         }
 
