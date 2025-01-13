@@ -6,10 +6,52 @@
     <title>Quran Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-<link rel="stylesheet" href="main/css/wordtoword.css">
+    <link rel="stylesheet" href="main/css/wordtoword.css">
+    <style>
+        .ayah {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            position: relative;
+        }
+        .ayah-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .tooltip {
+            display: none;
+            position: absolute;
+            top: 30px;
+            right: 10px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 5px 10px;
+        }
+        .tooltip button {
+            display: block;
+            width: 100%;
+            margin: 5px 0;
+            background: none;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+        }
+        .three-dots {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+        .three-dots i {
+            font-size: 1.2em;
+        }
+    </style>
 </head>
 <body>
-
     <h1 id="surah-name">Loading...</h1>
 
     <div id="controls">
@@ -18,17 +60,9 @@
         <i id="previous-surah" class="fas fa-arrow-left nav-button">previous</i>
     </div>
 
-    <div id="last-read-container">
-        <div id="last-read">
-            <!-- Last viewed buttons will be dynamically added here -->
-        </div>
-    </div>
-
     <div id="quran">
         <!-- Quranic verses will be dynamically displayed here -->
     </div>
-
-    <div id="toast"></div>
 
     <script>
         const metadataUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/word.json';
@@ -47,15 +81,13 @@
             }
         }
 
-        async function renderSurah(surahNumber, highlightAyah = null) {
+        async function renderSurah(surahNumber) {
             const metadata = await fetchData(metadataUrl);
             const words = await fetchData(wordsUrl);
             const englishTranslations = await fetchData(englishTranslationsUrl);
             const urduTranslations = await fetchData(urduTranslationsUrl);
-            const fullTranslationUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahNumber}.json`;
-            const fullTranslation = await fetchData(fullTranslationUrl);
 
-            if (!metadata || !words || !englishTranslations || !urduTranslations || !fullTranslation) return;
+            if (!metadata || !words || !englishTranslations || !urduTranslations) return;
 
             const quranContainer = document.getElementById('quran');
             quranContainer.innerHTML = '';
@@ -76,23 +108,16 @@
                 }
             }
 
-            let scrollToElement = null;
-            let verseCounter = 0;
-
             for (const [ayah, words] of Object.entries(surahData)) {
                 const ayahDiv = document.createElement('div');
                 ayahDiv.className = 'ayah';
-
-                if (highlightAyah && parseInt(ayah, 10) === highlightAyah) {
-                    ayahDiv.style.backgroundColor = '#dff0d8';
-                    scrollToElement = ayahDiv;
-                }
 
                 const ayahHeader = document.createElement('div');
                 ayahHeader.className = 'ayah-header';
                 ayahHeader.textContent = `Verse ${ayah}`;
 
                 ayahDiv.appendChild(ayahHeader);
+
                 words.forEach(wordData => {
                     const wordSpan = document.createElement('span');
                     wordSpan.className = 'word';
@@ -100,102 +125,59 @@
                         <span>${wordData.word}</span>
                         <span class="translation">${wordData.englishTranslation}</span>
                         <span class="translation urdu">${wordData.urduTranslation}</span>
-                        <div class="word-popup">
-                            <div><strong>Word:</strong> ${wordData.word}</div>
-                            <div><strong>English:</strong> ${wordData.englishTranslation}</div>
-                            <div><strong>Urdu:</strong> ${wordData.urduTranslation}</div>
-                        </div>
                     `;
                     ayahDiv.appendChild(wordSpan);
                 });
 
-                const translationKey = surahNumber === 1 ? `verse_${verseCounter}` : `verse_${ayah}`;
-                const fullTranslationDiv = document.createElement('div');
-                fullTranslationDiv.className = 'full-translation';
-                fullTranslationDiv.textContent = fullTranslation.verse[translationKey] || '';
+                const threeDots = document.createElement('div');
+                threeDots.className = 'three-dots';
+                threeDots.innerHTML = '<i class="fas fa-ellipsis-v"></i>';
+                
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tooltip';
+                tooltip.innerHTML = `
+                    <button onclick="bookmarkAyah(${surahNumber}, ${ayah})">Bookmark</button>
+                    <button onclick="shareAyah(${surahNumber}, ${ayah})">Share</button>
+                `;
 
-                ayahDiv.appendChild(fullTranslationDiv);
-                ayahDiv.addEventListener('click', () => saveLastRead(surahNumber, parseInt(ayah, 10)));
+                threeDots.addEventListener('click', () => {
+                    tooltip.style.display = tooltip.style.display === 'block' ? 'none' : 'block';
+                });
+
+                ayahDiv.appendChild(threeDots);
+                ayahDiv.appendChild(tooltip);
 
                 quranContainer.appendChild(ayahDiv);
-
-                verseCounter++;
             }
+        }
 
-            if (scrollToElement) {
-                setTimeout(() => {
-                    scrollToElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 500);
+        function bookmarkAyah(surah, ayah) {
+            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+            bookmarks.push({ surah, ayah });
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+            alert(`Ayah ${ayah} bookmarked.`);
+        }
+
+        function shareAyah(surah, ayah) {
+            const url = `${window.location.origin}${window.location.pathname}?index=${surah}#${ayah}`;
+            if (navigator.share) {
+                navigator.share({
+                    title: `Surah ${surah}, Ayah ${ayah}`,
+                    url
+                }).catch(console.error);
+            } else {
+                navigator.clipboard.writeText(url).then(() => {
+                    alert('Link copied to clipboard.');
+                });
             }
-
-            saveLastRead(surahNumber, highlightAyah || 1);
-            displayLastReads();
-        }
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.classList.add('show');
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-
-        function saveLastRead(surah, ayah) {
-            const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
-            const currentDate = new Date().toLocaleDateString();
-
-            const newEntry = { surah, ayah, date: currentDate };
-            const updatedLastReads = [newEntry, ...lastReads.filter(item => item.surah !== surah || item.ayah !== ayah)];
-            localStorage.setItem('lastReads', JSON.stringify(updatedLastReads.slice(0, 5)));
-
-            updateUrlHash(surah, ayah);
-            showToast(`Ayah ${ayah} saved successfully.`);
-        }
-
-        function updateUrlHash(surah, ayah) {
-            const currentUrl = new URL(window.location);
-            currentUrl.searchParams.set('index', surah);
-            currentUrl.hash = `#${ayah}`;
-            history.replaceState({}, '', currentUrl);
-        }
-
-        function displayLastReads() {
-            const lastReadContainer = document.getElementById('last-read');
-            const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
-
-            lastReadContainer.innerHTML = '';
-
-            lastReads.forEach(({ surah, ayah, date }) => {
-                const button = document.createElement('button');
-                button.textContent = `Surah ${surah}, Ayah ${ayah}`;
-                button.onclick = () => renderSurah(surah, ayah);
-
-                const dateDiv = document.createElement('div');
-                dateDiv.className = 'date';
-                dateDiv.textContent = date;
-
-                button.appendChild(dateDiv);
-                lastReadContainer.appendChild(button);
-            });
         }
 
         async function initialize() {
             const params = new URLSearchParams(window.location.search);
             const hash = window.location.hash.substring(1);
-            const surah = parseInt(params.get('index'), 10);
+            const surah = parseInt(params.get('index'), 10) || 1;
             const ayah = parseInt(hash, 10);
-
-            const lastReads = JSON.parse(localStorage.getItem('lastReads')) || [];
-
-            if (surah && ayah) {
-                await renderSurah(surah, ayah);
-            } else if (lastReads.length > 0) {
-                const { surah: lastSurah, ayah: lastAyah } = lastReads[0];
-                await renderSurah(lastSurah, lastAyah);
-            } else {
-                await renderSurah(1, 1);
-            }
+            await renderSurah(surah);
         }
 
         document.getElementById('previous-surah').addEventListener('click', async () => {
