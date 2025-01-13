@@ -168,214 +168,209 @@
     <div id="quran">
         <!-- Quranic verses will be dynamically displayed here -->
     </div>
+<script>
+    const metadataUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/word.json';
+    const wordsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/nastaliq-quranwbw.json';
+    const englishTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/en-quranwbw.json';
+    const urduTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/ur-quranwbw.json';
 
-    <script>
-        const metadataUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/word.json';
-        const wordsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/nastaliq-quranwbw.json';
-        const englishTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/en-quranwbw.json';
-        const urduTranslationsUrl = 'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/ur-quranwbw.json';
-
-        async function fetchData(url) {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`Failed to fetch: ${url}`);
-                return response.json();
-            } catch (error) {
-                console.error(error);
-                alert(`Error loading data: ${error.message}`);
-            }
+    async function fetchData(url) {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`Failed to fetch: ${url}`);
+            return response.json();
+        } catch (error) {
+            console.error(error);
+            alert(`Error loading data: ${error.message}`);
         }
+    }
 
-        function saveBookmarks(bookmarks) {
-            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-        }
+    function saveBookmarks(bookmarks) {
+        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+    }
 
-        function getBookmarks() {
-            const bookmarks = localStorage.getItem('bookmarks');
-            return bookmarks ? JSON.parse(bookmarks) : [];
-        }
+    function getBookmarks() {
+        const bookmarks = localStorage.getItem('bookmarks');
+        return bookmarks ? JSON.parse(bookmarks) : [];
+    }
 
-        function saveLastClickedVerse(surah, ayah) {
-            localStorage.setItem('lastClickedVerse', JSON.stringify({ surah, ayah }));
-        }
+    function saveLastClickedVerse(surah, ayah) {
+        localStorage.setItem('lastClickedVerse', JSON.stringify({ surah, ayah }));
+    }
 
-        function getLastClickedVerse() {
-            const lastClicked = localStorage.getItem('lastClickedVerse');
-            return lastClicked ? JSON.parse(lastClicked) : null;
-        }
+    function getLastClickedVerse() {
+        const lastClicked = localStorage.getItem('lastClickedVerse');
+        return lastClicked ? JSON.parse(lastClicked) : null;
+    }
 
-        function getQueryParams() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const index = urlParams.get('index');
-            return index ? index.split('#') : null;
-        }
+    async function renderSurah(surahNumber, ayahNumber = null) {
+        const metadata = await fetchData(metadataUrl);
+        const words = await fetchData(wordsUrl);
+        const englishTranslations = await fetchData(englishTranslationsUrl);
+        const urduTranslations = await fetchData(urduTranslationsUrl);
 
-        async function renderSurah(surahNumber, ayahNumber = null) {
-            const metadata = await fetchData(metadataUrl);
-            const words = await fetchData(wordsUrl);
-            const englishTranslations = await fetchData(englishTranslationsUrl);
-            const urduTranslations = await fetchData(urduTranslationsUrl);
+        if (!metadata || !words || !englishTranslations || !urduTranslations) return;
 
-            if (!metadata || !words || !englishTranslations || !urduTranslations) return;
+        const quranContainer = document.getElementById('quran');
+        quranContainer.innerHTML = '';
 
-            const quranContainer = document.getElementById('quran');
-            quranContainer.innerHTML = '';
+        const surahName = `Surah ${surahNumber}`;
+        document.getElementById('surah-name').textContent = surahName;
+        document.getElementById('current-surah').textContent = surahName;
 
-            const surahName = `Surah ${surahNumber}`;
-            document.getElementById('surah-name').textContent = surahName;
-            document.getElementById('current-surah').textContent = surahName;
-
-            const surahData = {};
-            for (const [wordId, meta] of Object.entries(metadata)) {
-                if (meta.surah === surahNumber && meta.ayah > 0) {
-                    if (!surahData[meta.ayah]) surahData[meta.ayah] = [];
-                    surahData[meta.ayah].push({
-                        word: words[wordId],
-                        englishTranslation: englishTranslations[wordId],
-                        urduTranslation: urduTranslations[wordId]
-                    });
-                }
-            }
-
-            for (const [ayah, words] of Object.entries(surahData)) {
-                const ayahDiv = document.createElement('div');
-                ayahDiv.className = 'ayah';
-                ayahDiv.id = `${surahNumber}#${ayah}`;
-
-                const ayahHeader = document.createElement('div');
-                ayahHeader.className = 'ayah-header';
-                ayahHeader.textContent = `Verse ${ayah}`;
-
-                ayahDiv.appendChild(ayahHeader);
-
-                words.forEach(wordData => {
-                    const wordSpan = document.createElement('span');
-                    wordSpan.className = 'word';
-                    wordSpan.innerHTML = `
-                        <span class="original">${wordData.word}</span>
-                        <span class="translation">${wordData.englishTranslation}</span>
-                        <span class="urdu">${wordData.urduTranslation}</span>
-                    `;
-                    ayahDiv.appendChild(wordSpan);
+        const surahData = {};
+        for (const [wordId, meta] of Object.entries(metadata)) {
+            if (meta.surah === surahNumber && meta.ayah > 0) {
+                if (!surahData[meta.ayah]) surahData[meta.ayah] = [];
+                surahData[meta.ayah].push({
+                    word: words[wordId],
+                    englishTranslation: englishTranslations[wordId],
+                    urduTranslation: urduTranslations[wordId]
                 });
+            }
+        }
 
-                // Buttons for Bookmark, Share, and Tafsir at the bottom of each verse
-                const buttonsDiv = document.createElement('div');
-                buttonsDiv.className = 'ayah-buttons';
-                buttonsDiv.innerHTML = `
-                    <button class="bookmark-button"><i class="fas fa-bookmark"></i> Bookmark</button>
-                    <button class="share-button"><i class="fas fa-share"></i> Share</button>
-                    <button class="tafsir-button"><i class="fas fa-book-open"></i> Tafsir</button>
+        for (const [ayah, words] of Object.entries(surahData)) {
+            const ayahDiv = document.createElement('div');
+            ayahDiv.className = 'ayah';
+            ayahDiv.id = `${surahNumber}#${ayah}`;
+
+            const ayahHeader = document.createElement('div');
+            ayahHeader.className = 'ayah-header';
+            ayahHeader.textContent = `Verse ${ayah}`;
+
+            ayahDiv.appendChild(ayahHeader);
+
+            words.forEach(wordData => {
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'word';
+                wordSpan.innerHTML = `
+                    <span class="original">${wordData.word}</span>
+                    <span class="translation">${wordData.englishTranslation}</span>
+                    <span class="urdu">${wordData.urduTranslation}</span>
                 `;
+                ayahDiv.appendChild(wordSpan);
+            });
 
-                buttonsDiv.querySelector('.bookmark-button').addEventListener('click', (event) => {
-                    event.stopPropagation();  // Prevent opening verse URL
-                    bookmarkAyah(surahNumber, ayah);
-                });
+            // Buttons for Bookmark, Share, and Tafsir at the bottom of each verse
+            const buttonsDiv = document.createElement('div');
+            buttonsDiv.className = 'ayah-buttons';
+            buttonsDiv.innerHTML = `
+                <button class="bookmark-button"><i class="fas fa-bookmark"></i> Bookmark</button>
+                <button class="share-button"><i class="fas fa-share"></i> Share</button>
+                <button class="tafsir-button"><i class="fas fa-book-open"></i> Tafsir</button>
+            `;
 
-                buttonsDiv.querySelector('.share-button').addEventListener('click', (event) => {
-                    event.stopPropagation();  // Prevent opening verse URL
-                    shareAyah(surahNumber, ayah);
-                });
+            buttonsDiv.querySelector('.bookmark-button').addEventListener('click', (event) => {
+                event.stopPropagation();  // Prevent opening verse URL
+                bookmarkAyah(surahNumber, ayah);
+            });
 
-                buttonsDiv.querySelector('.tafsir-button').addEventListener('click', (event) => {
-                    event.stopPropagation();  // Prevent opening verse URL
-                    openTafsir(surahNumber, ayah);
-                });
+            buttonsDiv.querySelector('.share-button').addEventListener('click', (event) => {
+                event.stopPropagation();  // Prevent opening verse URL
+                shareAyah(surahNumber, ayah);
+            });
 
-                ayahDiv.appendChild(buttonsDiv);
+            buttonsDiv.querySelector('.tafsir-button').addEventListener('click', (event) => {
+                event.stopPropagation();  // Prevent opening verse URL
+                openTafsir(surahNumber, ayah);
+            });
 
-                quranContainer.appendChild(ayahDiv);
-            }
+            ayahDiv.appendChild(buttonsDiv);
 
-            if (ayahNumber) {
-                const ayahDiv = document.getElementById(`${surahNumber}#${ayahNumber}`);
-                ayahDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            quranContainer.appendChild(ayahDiv);
+        }
 
-                // Highlight the verse after scrolling to it
+        if (ayahNumber) {
+            const ayahDiv = document.getElementById(`${surahNumber}#${ayahNumber}`);
+            ayahDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            // Highlight the verse after scrolling to it
+            setTimeout(() => {
+                const verseDiv = document.getElementById(`${surahNumber}#${ayahNumber}`);
+                if (verseDiv) {
+                    verseDiv.classList.add('highlight');
+                }
+            }, 500); // Delay to allow smooth scrolling before highlighting
+        }
+    }
+
+    function bookmarkAyah(surah, ayah) {
+        let bookmarks = getBookmarks();
+        bookmarks.push({ surah, ayah });
+        saveBookmarks(bookmarks);
+        saveLastClickedVerse(surah, ayah);
+        renderBookmarks();
+        alert(`Bookmarked Surah ${surah} Ayah ${ayah}`);
+    }
+
+    function shareAyah(surah, ayah) {
+        alert(`Shared Surah ${surah} Ayah ${ayah}`);
+    }
+
+    function openTafsir(surah, ayah) {
+        alert(`Opening Tafsir for Surah ${surah} Ayah ${ayah}`);
+    }
+
+    function renderBookmarks() {
+        const bookmarks = getBookmarks();
+        const bookmarkList = document.getElementById('bookmark-list');
+        bookmarkList.innerHTML = '';
+
+        bookmarks.forEach(bookmark => {
+            const bookmarkItem = document.createElement('li');
+            bookmarkItem.textContent = `Surah ${bookmark.surah} Ayah ${bookmark.ayah}`;
+            bookmarkItem.addEventListener('click', () => {
+                renderSurah(bookmark.surah, bookmark.ayah);
                 setTimeout(() => {
-                    const verseDiv = document.getElementById(`${surahNumber}#${ayahNumber}`);
+                    const verseDiv = document.getElementById(`${bookmark.surah}#${bookmark.ayah}`);
                     if (verseDiv) {
                         verseDiv.classList.add('highlight');
                     }
                 }, 500); // Delay to allow smooth scrolling before highlighting
-            }
-        }
-
-        function bookmarkAyah(surah, ayah) {
-            let bookmarks = getBookmarks();
-            bookmarks.push({ surah, ayah });
-            saveBookmarks(bookmarks);
-            saveLastClickedVerse(surah, ayah);
-            renderBookmarks();
-            alert(`Bookmarked Surah ${surah} Ayah ${ayah}`);
-        }
-
-        function shareAyah(surah, ayah) {
-            alert(`Shared Surah ${surah} Ayah ${ayah}`);
-        }
-
-        function openTafsir(surah, ayah) {
-            alert(`Opening Tafsir for Surah ${surah} Ayah ${ayah}`);
-        }
-
-        function renderBookmarks() {
-            const bookmarks = getBookmarks();
-            const bookmarkList = document.getElementById('bookmark-list');
-            bookmarkList.innerHTML = '';
-
-            bookmarks.forEach(bookmark => {
-                const bookmarkItem = document.createElement('li');
-                bookmarkItem.textContent = `Surah ${bookmark.surah} Ayah ${bookmark.ayah}`;
-                bookmarkItem.addEventListener('click', () => {
-                    renderSurah(bookmark.surah, bookmark.ayah);
-                    setTimeout(() => {
-                        const verseDiv = document.getElementById(`${bookmark.surah}#${bookmark.ayah}`);
-                        if (verseDiv) {
-                            verseDiv.classList.add('highlight');
-                        }
-                    }, 500); // Delay to allow smooth scrolling before highlighting
-                });
-                bookmarkList.appendChild(bookmarkItem);
             });
-        }
-
-        function loadLastClickedVerse() {
-            const lastClicked = getLastClickedVerse();
-            if (lastClicked) {
-                renderSurah(lastClicked.surah, lastClicked.ayah);
-                setTimeout(() => {
-                    const verseDiv = document.getElementById(`${lastClicked.surah}#${lastClicked.ayah}`);
-                    if (verseDiv) {
-                        verseDiv.classList.add('highlight');
-                    }
-                }, 500);
-            }
-        }
-
-        document.getElementById('next-surah').addEventListener('click', () => {
-            let surahNumber = parseInt(document.getElementById('surah-name').textContent.split(' ')[1]) + 1;
-            renderSurah(surahNumber);
+            bookmarkList.appendChild(bookmarkItem);
         });
+    }
 
-        document.getElementById('previous-surah').addEventListener('click', () => {
-            let surahNumber = parseInt(document.getElementById('surah-name').textContent.split(' ')[1]) - 1;
-            if (surahNumber > 0) {
-                renderSurah(surahNumber);
-            }
-        });
+    function loadLastClickedVerse() {
+        const lastClicked = getLastClickedVerse();
+        if (lastClicked) {
+            renderSurah(lastClicked.surah, lastClicked.ayah);
+            setTimeout(() => {
+                const verseDiv = document.getElementById(`${lastClicked.surah}#${lastClicked.ayah}`);
+                if (verseDiv) {
+                    verseDiv.classList.add('highlight');
+                }
+            }, 500);
+        }
+    }
 
-        window.onload = function() {
-            const queryParams = getQueryParams();
-            if (queryParams) {
-                const [surah, ayah] = queryParams;
-                renderSurah(surah, ayah);
-            } else {
-                renderSurah(1);  // Load the first Surah initially
+    // Parse the URL to get index (surah#ayah)
+    function parseUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const index = urlParams.get('index');
+        if (index) {
+            const [surah, ayah] = index.split('#');
+            if (surah && ayah) {
+                return { surah: parseInt(surah), ayah: parseInt(ayah) };
             }
-            renderBookmarks();
-            loadLastClickedVerse();
-        };
-    </script>
+        }
+        return null;
+    }
+
+    window.onload = function() {
+        const verse = parseUrl();
+        if (verse) {
+            renderSurah(verse.surah, verse.ayah); // Load specified Surah and Ayah
+        } else {
+            renderSurah(1);  // Default to Surah 1 if no URL parameters
+        }
+        renderBookmarks();
+        loadLastClickedVerse();
+    };
+</script>
+
+
 </body>
 </html>
