@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Amiri Quran', serif;
@@ -23,17 +22,6 @@
             margin: 0;
             background-color: #fff;
             border-bottom: 1px solid #ddd;
-        }
-
-        #controls {
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .nav-button {
-            font-size: 1.5em;
-            margin: 0 10px;
-            cursor: pointer;
         }
 
         #quran {
@@ -89,37 +77,6 @@
             background-color: #ff9e3d;
         }
 
-        .word {
-            display: inline-block;
-            margin: 10px;
-            text-align: center;
-        }
-
-        .word span {
-            display: block;
-            margin: 3px 0;
-            font-size: 16px;
-        }
-
-        .word .original {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .word .translation {
-            font-size: 14px;
-            color: #00796b;
-            border-top: 1px solid #ddd;
-            padding-top: 5px;
-        }
-
-        .word .urdu {
-            font-size: 14px;
-            color: #ff5722;
-            border-top: 1px solid #ddd;
-            padding-top: 5px;
-        }
-
         #bookmarked-verses {
             margin: 20px 0;
             padding: 10px;
@@ -147,38 +104,10 @@
         #bookmark-list li:hover {
             background-color: #e1e1e1;
         }
-
-        /* Responsive design for smaller screens */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 20px;
-                padding: 10px;
-            }
-
-            .ayah-buttons {
-                padding: 5px;
-                font-size: 10px;
-            }
-
-            .ayah-buttons button {
-                padding: 3px 7px;
-            }
-        }
     </style>
 </head>
 <body>
     <h1 id="surah-name">Loading...</h1>
-
-    <div id="controls">
-        <i id="next-surah" class="fas fa-arrow-right nav-button">Next</i>
-        <span id="current-surah"></span>
-        <i id="previous-surah" class="fas fa-arrow-left nav-button">Previous</i>
-    </div>
-
-    <div id="bookmarked-verses">
-        <h2>Bookmarked Verses</h2>
-        <ul id="bookmark-list"></ul>
-    </div>
 
     <div id="quran">
         <!-- Quranic verses will be dynamically displayed here -->
@@ -214,7 +143,6 @@
 
             const surahName = `Surah ${surahNumber}`;
             document.getElementById('surah-name').textContent = surahName;
-            document.getElementById('current-surah').textContent = surahName;
 
             const surahData = {};
             for (const [wordId, meta] of Object.entries(metadata)) {
@@ -249,16 +177,6 @@
                     `;
                     ayahDiv.appendChild(wordSpan);
                 });
-
-                // Buttons for Bookmark, Share, and Tafsir
-                const buttonsDiv = document.createElement('div');
-                buttonsDiv.className = 'ayah-buttons';
-                buttonsDiv.innerHTML = `
-                    <button class="bookmark-button" onclick="bookmarkAyah(${surahNumber}, ${ayah})"><i class="fas fa-bookmark"></i> Bookmark</button>
-                    <button class="share-button" onclick="shareAyah(${surahNumber}, ${ayah})"><i class="fas fa-share"></i> Share</button>
-                    <button class="tafsir-button" onclick="openTafsir(${surahNumber}, ${ayah})"><i class="fas fa-book-open"></i> Tafsir</button>
-                `;
-                ayahDiv.appendChild(buttonsDiv);
 
                 quranContainer.appendChild(ayahDiv);
             }
@@ -295,68 +213,17 @@
         if (index && verse) {
             currentSurah = parseInt(index);
             renderSurah(currentSurah, verse);
-        }
-
-        document.getElementById('next-surah').addEventListener('click', () => {
-            currentSurah++;
+        } else {
             renderSurah(currentSurah);
-        });
+        }
 
-        document.getElementById('previous-surah').addEventListener('click', () => {
-            if (currentSurah > 1) {
-                currentSurah--;
-                renderSurah(currentSurah);
+        window.addEventListener('popstate', function() {
+            const newUrlParams = new URLSearchParams(window.location.search);
+            const newIndex = newUrlParams.get('index');
+            const newVerse = newUrlParams.get('verse');
+            if (newIndex && newVerse) {
+                renderSurah(newIndex, newVerse);
             }
-        });
-
-        function bookmarkAyah(surah, ayah) {
-            const bookmarkList = document.getElementById('bookmark-list');
-            const listItem = document.createElement('li');
-            listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
-            listItem.addEventListener('click', () => {
-                renderSurah(surah, ayah);
-                updateUrl(surah, ayah);
-            });
-
-            // Save to local storage
-            let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-            bookmarks.push({ surah, ayah });
-            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-
-            bookmarkList.appendChild(listItem);
-        }
-
-        function shareAyah(surah, ayah) {
-            const text = `Check out this verse: Surah ${surah}, Ayah ${ayah}`;
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Quran Verse',
-                    text: text,
-                    url: window.location.href,
-                });
-            } else {
-                alert(`Share this verse: ${text}`);
-            }
-        }
-
-        function openTafsir(surah, ayah) {
-            const tafsirUrl = `https://www.alim.org/quran/tafsir/${surah}/${ayah}/`;
-            window.open(tafsirUrl, '_blank');
-        }
-
-        // Load saved bookmarks
-        window.addEventListener('load', () => {
-            const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
-            bookmarks.forEach(bookmark => {
-                const bookmarkList = document.getElementById('bookmark-list');
-                const listItem = document.createElement('li');
-                listItem.textContent = `Surah ${bookmark.surah}, Ayah ${bookmark.ayah}`;
-                listItem.addEventListener('click', () => {
-                    renderSurah(bookmark.surah, bookmark.ayah);
-                    updateUrl(bookmark.surah, bookmark.ayah);
-                });
-                bookmarkList.appendChild(listItem);
-            });
         });
     </script>
 </body>
