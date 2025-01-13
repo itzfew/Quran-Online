@@ -6,7 +6,6 @@
     <title>Quran Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="main/css/wordtoword.css">
     <style>
         body {
             font-family: 'Amiri Quran', serif;
@@ -196,6 +195,15 @@
             return bookmarks ? JSON.parse(bookmarks) : [];
         }
 
+        function saveLastClickedVerse(surah, ayah) {
+            localStorage.setItem('lastClickedVerse', JSON.stringify({ surah, ayah }));
+        }
+
+        function getLastClickedVerse() {
+            const lastClicked = localStorage.getItem('lastClickedVerse');
+            return lastClicked ? JSON.parse(lastClicked) : null;
+        }
+
         async function renderSurah(surahNumber, ayahNumber = null) {
             const metadata = await fetchData(metadataUrl);
             const words = await fetchData(wordsUrl);
@@ -292,6 +300,7 @@
             let bookmarks = getBookmarks();
             bookmarks.push({ surah, ayah });
             saveBookmarks(bookmarks);
+            saveLastClickedVerse(surah, ayah);
             renderBookmarks();
             alert(`Bookmarked Surah ${surah} Ayah ${ayah}`);
         }
@@ -307,20 +316,54 @@
         function renderBookmarks() {
             const bookmarks = getBookmarks();
             const bookmarkList = document.getElementById('bookmark-list');
-            bookmarkList.innerHTML = ''; // Clear existing list
+            bookmarkList.innerHTML = '';
 
             bookmarks.forEach(bookmark => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `Surah ${bookmark.surah} Ayah ${bookmark.ayah}`;
-                listItem.addEventListener('click', () => {
-                    window.location.hash = `${bookmark.surah}#${bookmark.ayah}`;
+                const bookmarkItem = document.createElement('li');
+                bookmarkItem.textContent = `Surah ${bookmark.surah} Ayah ${bookmark.ayah}`;
+                bookmarkItem.addEventListener('click', () => {
+                    renderSurah(bookmark.surah, bookmark.ayah);
+                    setTimeout(() => {
+                        const verseDiv = document.getElementById(`${bookmark.surah}#${bookmark.ayah}`);
+                        if (verseDiv) {
+                            verseDiv.classList.add('highlight');
+                        }
+                    }, 500); // Delay to allow smooth scrolling before highlighting
                 });
-                bookmarkList.appendChild(listItem);
+                bookmarkList.appendChild(bookmarkItem);
             });
         }
 
-        renderBookmarks();  // Initially render the saved bookmarks
-        renderSurah(1); // Example: Render Surah Al-Fatiha
+        function loadLastClickedVerse() {
+            const lastClicked = getLastClickedVerse();
+            if (lastClicked) {
+                renderSurah(lastClicked.surah, lastClicked.ayah);
+                setTimeout(() => {
+                    const verseDiv = document.getElementById(`${lastClicked.surah}#${lastClicked.ayah}`);
+                    if (verseDiv) {
+                        verseDiv.classList.add('highlight');
+                    }
+                }, 500);
+            }
+        }
+
+        document.getElementById('next-surah').addEventListener('click', () => {
+            let surahNumber = parseInt(document.getElementById('surah-name').textContent.split(' ')[1]) + 1;
+            renderSurah(surahNumber);
+        });
+
+        document.getElementById('previous-surah').addEventListener('click', () => {
+            let surahNumber = parseInt(document.getElementById('surah-name').textContent.split(' ')[1]) - 1;
+            if (surahNumber > 0) {
+                renderSurah(surahNumber);
+            }
+        });
+
+        window.onload = function() {
+            renderSurah(1);  // Load the first Surah initially
+            renderBookmarks();
+            loadLastClickedVerse();
+        };
     </script>
 </body>
 </html>
