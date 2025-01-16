@@ -64,7 +64,9 @@
             const quranContainer = document.getElementById('quran');
             quranContainer.innerHTML = '';
 
-            const surahName = `Surah ${surahNumber}`;
+           const surahName = fullTranslation.name || `Surah ${surahNumber}`;
+    const surahTitle = `${surahName} (Surah ${surahNumber})`;
+      
             document.getElementById('surah-name').textContent = surahName;
             document.getElementById('current-surah').textContent = surahName;
 
@@ -138,9 +140,10 @@
             }
 
             updateUrl(surahNumber, ayahNumber || 1);
-        }
+ }
  
-        function updateUrl(surah, ayah) {
+      
+      function updateUrl(surah, ayah) {
             const newUrl = `${window.location.origin}${window.location.pathname}?index=${surah}#${ayah}`;
             window.history.pushState({}, '', newUrl);
         }
