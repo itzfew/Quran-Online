@@ -49,96 +49,96 @@
             }
         }
         
-async function renderSurah(surahNumber, ayahNumber = null) {
-    const metadata = await fetchData(metadataUrl);
-    const words = await fetchData(wordsUrl);
-    const englishTranslations = await fetchData(englishTranslationsUrl);
-    const urduTranslations = await fetchData(urduTranslationsUrl);
-    
-    // Fetch full English translations for the surah
-    const fullTranslationUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahNumber}.json`;
-    const fullTranslation = await fetchData(fullTranslationUrl);
+        async function renderSurah(surahNumber, ayahNumber = null) {
+            const metadata = await fetchData(metadataUrl);
+            const words = await fetchData(wordsUrl);
+            const englishTranslations = await fetchData(englishTranslationsUrl);
+            const urduTranslations = await fetchData(urduTranslationsUrl);
+            
+            // Fetch full English translations for the surah
+            const fullTranslationUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahNumber}.json`;
+            const fullTranslation = await fetchData(fullTranslationUrl);
 
-    if (!metadata || !words || !englishTranslations || !urduTranslations || !fullTranslation) return;
+            if (!metadata || !words || !englishTranslations || !urduTranslations || !fullTranslation) return;
 
-    const quranContainer = document.getElementById('quran');
-    quranContainer.innerHTML = '';
+            const quranContainer = document.getElementById('quran');
+            quranContainer.innerHTML = '';
 
-    const surahName = `Surah ${surahNumber}`;
-    document.getElementById('surah-name').textContent = surahName;
-    document.getElementById('current-surah').textContent = surahName;
+            const surahName = `Surah ${surahNumber}`;
+            document.getElementById('surah-name').textContent = surahName;
+            document.getElementById('current-surah').textContent = surahName;
 
-    const surahData = {};
-    for (const [wordId, meta] of Object.entries(metadata)) {
-        if (meta.surah === surahNumber && meta.ayah > 0) {
-            if (!surahData[meta.ayah]) surahData[meta.ayah] = [];
-            surahData[meta.ayah].push({
-                word: words[wordId],
-                englishTranslation: englishTranslations[wordId],
-                urduTranslation: urduTranslations[wordId]
-            });
-        }
-    }
+            const surahData = {};
+            for (const [wordId, meta] of Object.entries(metadata)) {
+                if (meta.surah === surahNumber && meta.ayah > 0) {
+                    if (!surahData[meta.ayah]) surahData[meta.ayah] = [];
+                    surahData[meta.ayah].push({
+                        word: words[wordId],
+                        englishTranslation: englishTranslations[wordId],
+                        urduTranslation: urduTranslations[wordId]
+                    });
+                }
+            }
 
-    const isSurah1 = surahNumber === 1;
-    const ayahCount = isSurah1 ? 7 : fullTranslation.count; // Limit Surah 1 to 7 ayahs
+            const isSurah1 = surahNumber === 1;
+            const ayahCount = isSurah1 ? 7 : fullTranslation.count; // Limit Surah 1 to 7 ayahs
 
-    // Iterate over ayahs
-    for (let ayah = 1; ayah <= ayahCount; ayah++) {
-        const ayahDiv = document.createElement('div');
-        ayahDiv.className = 'ayah';
-        ayahDiv.id = `${surahNumber}#${ayah}`;
+            // Iterate over ayahs
+            for (let ayah = 1; ayah <= ayahCount; ayah++) {
+                const ayahDiv = document.createElement('div');
+                ayahDiv.className = 'ayah';
+                ayahDiv.id = `${surahNumber}#${ayah}`;
 
-        const ayahHeader = document.createElement('div');
-        ayahHeader.className = 'ayah-header';
-        ayahHeader.textContent = `Verse ${ayah}`;
+                const ayahHeader = document.createElement('div');
+                ayahHeader.className = 'ayah-header';
+                ayahHeader.textContent = `Verse ${ayah}`;
 
-        ayahDiv.appendChild(ayahHeader);
+                ayahDiv.appendChild(ayahHeader);
 
-        if (surahData[ayah]) {
-            surahData[ayah].forEach(wordData => {
-                const wordSpan = document.createElement('span');
-                wordSpan.className = 'word';
-                wordSpan.innerHTML = `
-                    <span>${wordData.word}</span>
-                    <span class="translation">${wordData.englishTranslation}</span>
-                    <span class="translation urdu">${wordData.urduTranslation}</span>
+                if (surahData[ayah]) {
+                    surahData[ayah].forEach(wordData => {
+                        const wordSpan = document.createElement('span');
+                        wordSpan.className = 'word';
+                        wordSpan.innerHTML = `
+                            <span>${wordData.word}</span>
+                            <span class="translation">${wordData.englishTranslation}</span>
+                            <span class="translation urdu">${wordData.urduTranslation}</span>
+                        `;
+                        ayahDiv.appendChild(wordSpan);
+                    });
+                }
+
+                // Map verse numbers for Surah 1
+                const verseIndex = isSurah1 ? ayah - 1 : ayah; // Subtract 1 for Surah 1 (0-based indexing)
+                const verseKey = `verse_${verseIndex}`;
+
+                // Add full English translation for the verse
+                const fullTranslationDiv = document.createElement('div');
+                fullTranslationDiv.className = 'full-translation';
+                fullTranslationDiv.textContent = fullTranslation.verse[verseKey] || 'Translation not available';
+                ayahDiv.appendChild(fullTranslationDiv);
+
+                // Buttons for Bookmark, Share, and Tafsir
+                const buttonsDiv = document.createElement('div');
+                buttonsDiv.className = 'ayah-buttons';
+                buttonsDiv.innerHTML = `
+                    <button class="bookmark-button" onclick="bookmarkAyah(${surahNumber}, ${ayah})"><i class="fas fa-bookmark"></i> Bookmark</button>
+                    <button class="share-button" onclick="shareAyah(${surahNumber}, ${ayah})"><i class="fas fa-share"></i> Share</button>
+                    <button class="tafsir-button" onclick="openTafsir(${surahNumber}, ${ayah})"><i class="fas fa-book-open"></i> Tafsir</button>
                 `;
-                ayahDiv.appendChild(wordSpan);
-            });
+                ayahDiv.appendChild(buttonsDiv);
+
+                quranContainer.appendChild(ayahDiv);
+            }
+
+            if (ayahNumber) {
+                const ayahDiv = document.getElementById(`${surahNumber}#${ayahNumber}`);
+                if (ayahDiv) ayahDiv.scrollIntoView({ behavior: 'smooth' });
+                highlightVerse(surahNumber, ayahNumber);
+            }
+
+            updateUrl(surahNumber, ayahNumber || 1);
         }
-
-        // Map verse numbers for Surah 1
-        const verseIndex = isSurah1 ? ayah - 1 : ayah; // Subtract 1 for Surah 1 (0-based indexing)
-        const verseKey = `verse_${verseIndex}`;
-
-        // Add full English translation for the verse
-        const fullTranslationDiv = document.createElement('div');
-        fullTranslationDiv.className = 'full-translation';
-        fullTranslationDiv.textContent = fullTranslation.verse[verseKey] || 'Translation not available';
-        ayahDiv.appendChild(fullTranslationDiv);
-
-        // Buttons for Bookmark, Share, and Tafsir
-        const buttonsDiv = document.createElement('div');
-        buttonsDiv.className = 'ayah-buttons';
-        buttonsDiv.innerHTML = `
-            <button class="bookmark-button" onclick="bookmarkAyah(${surahNumber}, ${ayah})"><i class="fas fa-bookmark"></i> Bookmark</button>
-            <button class="share-button" onclick="shareAyah(${surahNumber}, ${ayah})"><i class="fas fa-share"></i> Share</button>
-            <button class="tafsir-button" onclick="openTafsir(${surahNumber}, ${ayah})"><i class="fas fa-book-open"></i> Tafsir</button>
-        `;
-        ayahDiv.appendChild(buttonsDiv);
-
-        quranContainer.appendChild(ayahDiv);
-    }
-
-    if (ayahNumber) {
-        const ayahDiv = document.getElementById(`${surahNumber}#${ayahNumber}`);
-        if (ayahDiv) ayahDiv.scrollIntoView({ behavior: 'smooth' });
-        highlightVerse(surahNumber, ayahNumber);
-    }
-
-    updateUrl(surahNumber, ayahNumber || 1);
-}
  
         function updateUrl(surah, ayah) {
             const newUrl = `${window.location.origin}${window.location.pathname}?index=${surah}#${ayah}`;
@@ -214,5 +214,19 @@ async function renderSurah(surahNumber, ayahNumber = null) {
             renderBookmarks();
         });
     </script>
+
+    <!-- Service Worker for Offline Capabilities -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered with scope: ', registration.scope);
+                })
+                .catch(error => {
+                    console.log('Service Worker registration failed: ', error);
+                });
+        }
+    </script>
+
 </body>
 </html>
