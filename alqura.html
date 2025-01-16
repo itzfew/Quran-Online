@@ -11,24 +11,64 @@
     <link rel="stylesheet" href="style/style.css">
 
     <style>
-        /* You can add additional custom styles here if needed */
+        /* Spinner style */
+        #spinner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            z-index: 9999;
+        }
+        #spinner img {
+            width: 100px;
+            height: 100px;
+        }
+
+        /* Bookmarks overflow behavior */
+        #bookmarked-verses {
+            overflow-x: auto;
+            white-space: nowrap;
+            margin-bottom: 20px;
+        }
+
+        #bookmark-list {
+            display: flex;
+            gap: 10px;
+        }
+
+        #bookmark-list li {
+            cursor: pointer;
+        }
+
+        /* Hide the spinner after page loads */
+        #quran {
+            display: block;
+        }
     </style>
 </head>
 <body>
-    <h1 id="surah-name">Loading...</h1>
+    <div id="spinner" style="display: none;">
+        <img src="https://i.gifer.com/VAyR.gif" alt="Loading...">
+    </div>
 
-    <div id="controls">
+    <h1 id="surah-name" style="display: none;">Loading...</h1>
+
+    <div id="controls" style="display: flex; justify-content: space-between;">
         <i id="next-surah" class="fas fa-arrow-right nav-button">Next</i>
         <span id="current-surah"></span>
         <i id="previous-surah" class="fas fa-arrow-left nav-button">Previous</i>
     </div>
 
     <div id="bookmarked-verses">
-        <h2>Bookmarked Verses</h2>
         <ul id="bookmark-list"></ul>
     </div>
 
-    <div id="quran">
+    <div id="quran" style="display: none;">
         <!-- Quranic verses will be dynamically displayed here -->
     </div>
 
@@ -48,98 +88,102 @@
                 alert(`Error loading data: ${error.message}`);
             }
         }
-        
-async function renderSurah(surahNumber, ayahNumber = null) {
-    const metadata = await fetchData(metadataUrl);
-    const words = await fetchData(wordsUrl);
-    const englishTranslations = await fetchData(englishTranslationsUrl);
-    const urduTranslations = await fetchData(urduTranslationsUrl);
-    
-    // Fetch full English translations for the surah
-    const fullTranslationUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahNumber}.json`;
-    const fullTranslation = await fetchData(fullTranslationUrl);
 
-    if (!metadata || !words || !englishTranslations || !urduTranslations || !fullTranslation) return;
+        async function renderSurah(surahNumber, ayahNumber = null) {
+            // Show spinner while the data is being loaded
+            document.getElementById('spinner').style.display = 'flex';
+            document.getElementById('quran').style.display = 'none';
 
-    const quranContainer = document.getElementById('quran');
-    quranContainer.innerHTML = '';
+            const metadata = await fetchData(metadataUrl);
+            const words = await fetchData(wordsUrl);
+            const englishTranslations = await fetchData(englishTranslationsUrl);
+            const urduTranslations = await fetchData(urduTranslationsUrl);
 
-    const surahName = `Surah ${surahNumber}`;
-    document.getElementById('surah-name').textContent = surahName;
-    document.getElementById('current-surah').textContent = surahName;
+            const fullTranslationUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahNumber}.json`;
+            const fullTranslation = await fetchData(fullTranslationUrl);
 
-    const surahData = {};
-    for (const [wordId, meta] of Object.entries(metadata)) {
-        if (meta.surah === surahNumber && meta.ayah > 0) {
-            if (!surahData[meta.ayah]) surahData[meta.ayah] = [];
-            surahData[meta.ayah].push({
-                word: words[wordId],
-                englishTranslation: englishTranslations[wordId],
-                urduTranslation: urduTranslations[wordId]
-            });
-        }
-    }
+            if (!metadata || !words || !englishTranslations || !urduTranslations || !fullTranslation) return;
 
-    const isSurah1 = surahNumber === 1;
-    const ayahCount = isSurah1 ? 7 : fullTranslation.count; // Limit Surah 1 to 7 ayahs
+            const quranContainer = document.getElementById('quran');
+            quranContainer.innerHTML = '';
 
-    // Iterate over ayahs
-    for (let ayah = 1; ayah <= ayahCount; ayah++) {
-        const ayahDiv = document.createElement('div');
-        ayahDiv.className = 'ayah';
-        ayahDiv.id = `${surahNumber}#${ayah}`;
+            const surahName = `Surah ${surahNumber}`;
+            document.getElementById('surah-name').textContent = surahName;
+            document.getElementById('surah-name').style.display = 'block'; // Show the title
+            document.getElementById('current-surah').textContent = surahName;
 
-        const ayahHeader = document.createElement('div');
-        ayahHeader.className = 'ayah-header';
-        ayahHeader.textContent = `Verse ${ayah}`;
+            const surahData = {};
+            for (const [wordId, meta] of Object.entries(metadata)) {
+                if (meta.surah === surahNumber && meta.ayah > 0) {
+                    if (!surahData[meta.ayah]) surahData[meta.ayah] = [];
+                    surahData[meta.ayah].push({
+                        word: words[wordId],
+                        englishTranslation: englishTranslations[wordId],
+                        urduTranslation: urduTranslations[wordId]
+                    });
+                }
+            }
 
-        ayahDiv.appendChild(ayahHeader);
+            const isSurah1 = surahNumber === 1;
+            const ayahCount = isSurah1 ? 7 : fullTranslation.count;
 
-        if (surahData[ayah]) {
-            surahData[ayah].forEach(wordData => {
-                const wordSpan = document.createElement('span');
-                wordSpan.className = 'word';
-                wordSpan.innerHTML = `
-                    <span>${wordData.word}</span>
-                    <span class="translation">${wordData.englishTranslation}</span>
-                    <span class="translation urdu">${wordData.urduTranslation}</span>
+            for (let ayah = 1; ayah <= ayahCount; ayah++) {
+                const ayahDiv = document.createElement('div');
+                ayahDiv.className = 'ayah';
+                ayahDiv.id = `${surahNumber}#${ayah}`;
+
+                const ayahHeader = document.createElement('div');
+                ayahHeader.className = 'ayah-header';
+                ayahHeader.textContent = `Verse ${ayah}`;
+
+                ayahDiv.appendChild(ayahHeader);
+
+                if (surahData[ayah]) {
+                    surahData[ayah].forEach(wordData => {
+                        const wordSpan = document.createElement('span');
+                        wordSpan.className = 'word';
+                        wordSpan.innerHTML = `
+                            <span>${wordData.word}</span>
+                            <span class="translation">${wordData.englishTranslation}</span>
+                            <span class="translation urdu">${wordData.urduTranslation}</span>
+                        `;
+                        ayahDiv.appendChild(wordSpan);
+                    });
+                }
+
+                const verseIndex = isSurah1 ? ayah - 1 : ayah;
+                const verseKey = `verse_${verseIndex}`;
+
+                const fullTranslationDiv = document.createElement('div');
+                fullTranslationDiv.className = 'full-translation';
+                fullTranslationDiv.textContent = fullTranslation.verse[verseKey] || 'Translation not available';
+                ayahDiv.appendChild(fullTranslationDiv);
+
+                const buttonsDiv = document.createElement('div');
+                buttonsDiv.className = 'ayah-buttons';
+                buttonsDiv.innerHTML = `
+                    <button class="bookmark-button" onclick="bookmarkAyah(${surahNumber}, ${ayah})"><i class="fas fa-bookmark"></i> Bookmark</button>
+                    <button class="share-button" onclick="shareAyah(${surahNumber}, ${ayah})"><i class="fas fa-share"></i> Share</button>
+                    <button class="tafsir-button" onclick="openTafsir(${surahNumber}, ${ayah})"><i class="fas fa-book-open"></i> Tafsir</button>
                 `;
-                ayahDiv.appendChild(wordSpan);
-            });
+                ayahDiv.appendChild(buttonsDiv);
+
+                quranContainer.appendChild(ayahDiv);
+            }
+
+            if (ayahNumber) {
+                const ayahDiv = document.getElementById(`${surahNumber}#${ayahNumber}`);
+                if (ayahDiv) ayahDiv.scrollIntoView({ behavior: 'smooth' });
+                highlightVerse(surahNumber, ayahNumber);
+            }
+
+            updateUrl(surahNumber, ayahNumber || 1);
+
+            // Hide spinner and display Quran content once loaded
+            document.getElementById('spinner').style.display = 'none';
+            document.getElementById('quran').style.display = 'block';
         }
 
-        // Map verse numbers for Surah 1
-        const verseIndex = isSurah1 ? ayah - 1 : ayah; // Subtract 1 for Surah 1 (0-based indexing)
-        const verseKey = `verse_${verseIndex}`;
-
-        // Add full English translation for the verse
-        const fullTranslationDiv = document.createElement('div');
-        fullTranslationDiv.className = 'full-translation';
-        fullTranslationDiv.textContent = fullTranslation.verse[verseKey] || 'Translation not available';
-        ayahDiv.appendChild(fullTranslationDiv);
-
-        // Buttons for Bookmark, Share, and Tafsir
-        const buttonsDiv = document.createElement('div');
-        buttonsDiv.className = 'ayah-buttons';
-        buttonsDiv.innerHTML = `
-            <button class="bookmark-button" onclick="bookmarkAyah(${surahNumber}, ${ayah})"><i class="fas fa-bookmark"></i> Bookmark</button>
-            <button class="share-button" onclick="shareAyah(${surahNumber}, ${ayah})"><i class="fas fa-share"></i> Share</button>
-            <button class="tafsir-button" onclick="openTafsir(${surahNumber}, ${ayah})"><i class="fas fa-book-open"></i> Tafsir</button>
-        `;
-        ayahDiv.appendChild(buttonsDiv);
-
-        quranContainer.appendChild(ayahDiv);
-    }
-
-    if (ayahNumber) {
-        const ayahDiv = document.getElementById(`${surahNumber}#${ayahNumber}`);
-        if (ayahDiv) ayahDiv.scrollIntoView({ behavior: 'smooth' });
-        highlightVerse(surahNumber, ayahNumber);
-    }
-
-    updateUrl(surahNumber, ayahNumber || 1);
-}
- 
         function updateUrl(surah, ayah) {
             const newUrl = `${window.location.origin}${window.location.pathname}?index=${surah}#${ayah}`;
             window.history.pushState({}, '', newUrl);
@@ -151,17 +195,22 @@ async function renderSurah(surahNumber, ayahNumber = null) {
                 verseElement.classList.add('highlight');
                 setTimeout(() => {
                     verseElement.classList.remove('highlight');
-                }, 3000);  // Remove highlight after 3 seconds
+                }, 3000);
             }
         }
 
         function bookmarkAyah(surah, ayah) {
+            // Show spinner while bookmarking
+            document.getElementById('spinner').style.display = 'flex';
             const bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
             bookmarks.unshift({ surah, ayah });
-            if (bookmarks.length > 7) bookmarks.pop();  // Keep only the latest 7
+            if (bookmarks.length > 7) bookmarks.pop();
             localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+
             alert(`Ayah ${ayah} bookmarked.`);
             renderBookmarks();
+            // Hide spinner after bookmark is saved
+            document.getElementById('spinner').style.display = 'none';
         }
 
         function renderBookmarks() {
@@ -172,7 +221,6 @@ async function renderSurah(surahNumber, ayahNumber = null) {
             bookmarks.forEach(({ surah, ayah }) => {
                 const listItem = document.createElement('li');
                 listItem.textContent = `Surah ${surah}, Ayah ${ayah}`;
-                listItem.style.cursor = 'pointer';
                 listItem.addEventListener('click', () => {
                     renderSurah(surah, ayah);
                 });
