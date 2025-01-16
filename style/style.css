@@ -51,7 +51,6 @@
         #bookmarked-verses {
             margin: 10px 10px;
             padding: 10px;
-            border: 1px solid black;
             border-radius: 8px;
             background-color: #fff;
             display: flex;
@@ -72,6 +71,7 @@
             background-color: #f1f1f1;
             padding: 5px 10px;
             border-radius: 5px;
+            border:1px solid;
             cursor: pointer;
             white-space: nowrap;
             font-size: 14px;
