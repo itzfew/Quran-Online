@@ -48,6 +48,7 @@
                 alert(`Error loading data: ${error.message}`);
             }
         }
+        
 async function renderSurah(surahNumber, ayahNumber = null) {
     const metadata = await fetchData(metadataUrl);
     const words = await fetchData(wordsUrl);
@@ -80,9 +81,10 @@ async function renderSurah(surahNumber, ayahNumber = null) {
     }
 
     const isSurah1 = surahNumber === 1;
+    const ayahCount = isSurah1 ? 7 : fullTranslation.count; // Limit Surah 1 to 7 ayahs
 
     // Iterate over ayahs
-    for (let ayah = 1; ayah <= fullTranslation.count; ayah++) {
+    for (let ayah = 1; ayah <= ayahCount; ayah++) {
         const ayahDiv = document.createElement('div');
         ayahDiv.className = 'ayah';
         ayahDiv.id = `${surahNumber}#${ayah}`;
@@ -137,6 +139,7 @@ async function renderSurah(surahNumber, ayahNumber = null) {
 
     updateUrl(surahNumber, ayahNumber || 1);
 }
+ 
         function updateUrl(surah, ayah) {
             const newUrl = `${window.location.origin}${window.location.pathname}?index=${surah}#${ayah}`;
             window.history.pushState({}, '', newUrl);
