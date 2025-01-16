@@ -173,8 +173,10 @@
 
             if (ayahNumber) {
                 const ayahDiv = document.getElementById(`${surahNumber}#${ayahNumber}`);
-                if (ayahDiv) ayahDiv.scrollIntoView({ behavior: 'smooth' });
-                highlightVerse(surahNumber, ayahNumber);
+                if (ayahDiv) {
+                    ayahDiv.scrollIntoView({ behavior: 'smooth' });
+                    highlightVerse(surahNumber, ayahNumber);
+                }
             }
 
             updateUrl(surahNumber, ayahNumber || 1);
@@ -258,7 +260,8 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const surahNumber = parseInt(new URLSearchParams(window.location.search).get('index') || 1);
-            renderSurah(surahNumber);
+            const ayahNumber = parseInt(window.location.hash.substring(1)) || null;
+            renderSurah(surahNumber, ayahNumber);
             renderBookmarks();
         });
     </script>
