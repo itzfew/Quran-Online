@@ -1,17 +1,21 @@
-const CACHE_NAME = 'pwa-cache-v1';
+const CACHE_NAME = 'quran-viewer-cache-v1';
 const urlsToCache = [
     '/',
-    '/quran.html',
-    '/surah.html',
-    '/hadith.html',
-    'Quran_kareem_logo.png',
-    'Quran_kareem_logo.png'
+    'index.html',
+    'style/style.css',
+    'https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap',
+    'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css',
+    'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/word.json',
+    'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/nastaliq-quranwbw.json',
+    'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/en-quranwbw.json',
+    'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/ur-quranwbw.json'
 ];
 
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
+                console.log('Caching resources');
                 return cache.addAll(urlsToCache);
             })
     );
@@ -20,23 +24,11 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         caches.match(event.request)
-            .then((response) => {
-                return response || fetch(event.request);
+            .then((cachedResponse) => {
+                if (cachedResponse) {
+                    return cachedResponse;
+                }
+                return fetch(event.request);
             })
-    );
-});
-
-self.addEventListener('activate', (event) => {
-    const cacheWhitelist = [CACHE_NAME];
-    event.waitUntil(
-        caches.keys().then((cacheNames) => {
-            return Promise.all(
-                cacheNames.map((cacheName) => {
-                    if (!cacheWhitelist.includes(cacheName)) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        })
     );
 });
