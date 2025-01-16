@@ -48,16 +48,15 @@
                 alert(`Error loading data: ${error.message}`);
             }
         }
-
-        async function renderSurah(surahNumber, ayahNumber = null) {
+async function renderSurah(surahNumber, ayahNumber = null) {
     const metadata = await fetchData(metadataUrl);
     const words = await fetchData(wordsUrl);
     const englishTranslations = await fetchData(englishTranslationsUrl);
     const urduTranslations = await fetchData(urduTranslationsUrl);
-
-    // Fetch full English translation for the Surah
-    const surahTranslationUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahNumber}.json`;
-    const fullTranslation = await fetchData(surahTranslationUrl);
+    
+    // Fetch full English translations for the surah
+    const fullTranslationUrl = `https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${surahNumber}.json`;
+    const fullTranslation = await fetchData(fullTranslationUrl);
 
     if (!metadata || !words || !englishTranslations || !urduTranslations || !fullTranslation) return;
 
@@ -80,7 +79,10 @@
         }
     }
 
-    for (const [ayah, words] of Object.entries(surahData)) {
+    const isSurah1 = surahNumber === 1;
+
+    // Iterate over ayahs
+    for (let ayah = 1; ayah <= fullTranslation.count; ayah++) {
         const ayahDiv = document.createElement('div');
         ayahDiv.className = 'ayah';
         ayahDiv.id = `${surahNumber}#${ayah}`;
@@ -91,21 +93,27 @@
 
         ayahDiv.appendChild(ayahHeader);
 
-        words.forEach(wordData => {
-            const wordSpan = document.createElement('span');
-            wordSpan.className = 'word';
-            wordSpan.innerHTML = `
-                <span>${wordData.word}</span>
-                <span class="translation">${wordData.englishTranslation}</span>
-                <span class="translation urdu">${wordData.urduTranslation}</span>
-            `;
-            ayahDiv.appendChild(wordSpan);
-        });
+        if (surahData[ayah]) {
+            surahData[ayah].forEach(wordData => {
+                const wordSpan = document.createElement('span');
+                wordSpan.className = 'word';
+                wordSpan.innerHTML = `
+                    <span>${wordData.word}</span>
+                    <span class="translation">${wordData.englishTranslation}</span>
+                    <span class="translation urdu">${wordData.urduTranslation}</span>
+                `;
+                ayahDiv.appendChild(wordSpan);
+            });
+        }
 
-        // Add the full English translation
+        // Map verse numbers for Surah 1
+        const verseIndex = isSurah1 ? ayah - 1 : ayah; // Subtract 1 for Surah 1 (0-based indexing)
+        const verseKey = `verse_${verseIndex}`;
+
+        // Add full English translation for the verse
         const fullTranslationDiv = document.createElement('div');
         fullTranslationDiv.className = 'full-translation';
-        fullTranslationDiv.textContent = fullTranslation.verse[`verse_${ayah}`];
+        fullTranslationDiv.textContent = fullTranslation.verse[verseKey] || 'Translation not available';
         ayahDiv.appendChild(fullTranslationDiv);
 
         // Buttons for Bookmark, Share, and Tafsir
