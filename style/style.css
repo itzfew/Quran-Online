@@ -1,0 +1,142 @@
+        body {
+            font-family: 'Amiri Quran', serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 20px;
+        }
+
+        #controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .nav-button {
+            font-size: 1.0em;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+
+        #quran {
+            margin: 5px;
+            padding: 0px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .ayah {
+            margin: 1px 0;
+            padding: 1px;
+            border: 1px solid #000;
+            border-radius: 5px;
+            position: relative;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .ayah.highlight {
+            background-color: #ffe0b3; /* Highlight color */
+            border-color: #ffb84d; /* Border color for highlighted verse */
+        }
+
+        .ayah-header {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        #bookmarked-verses {
+            margin: 10px 10px;
+            padding: 10px;
+            border: 1px solid black;
+            border-radius: 8px;
+            background-color: #fff;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #bookmark-list {
+            display: flex;
+            overflow-x: auto;
+            margin: 0;
+            padding: 0;
+            list-style-type: none;
+        }
+
+        #bookmark-list li {
+            margin-right: 10px;
+            background-color: #f1f1f1;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #bookmark-list li:hover {
+            background-color: #e1e1e1;
+        }
+
+        .word {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+        }
+
+        .word span {
+            display: block;
+            margin: 3px 0;
+            font-size: 16px;
+        }
+
+        .word .original {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .word .translation {
+            font-size: 14px;
+            color: #00796b;
+            border-top: 1px solid #ddd;
+            padding-top: 5px;
+        }
+
+        .word .urdu {
+            font-size: 14px;
+            color: #ff5722;
+            border-top: 1px solid #ddd;
+            padding-top: 5px;
+        }
+
+        .ayah-buttons {
+            position: absolute;
+            bottom: 0px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            background-color: #fff;
+            padding: 1px 7px;
+            border-top: 0px solid #ddd;
+            border-radius: 5px;
+          
+        }
+
+        .ayah-buttons button {
+            font-size: 12px;
+            padding: 1px 10px;
+            background-color: #ffb84d;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .ayah-buttons button:hover {
+            background-color: #ff9e3d;
+        }
