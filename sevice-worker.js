@@ -8,7 +8,9 @@ const urlsToCache = [
     'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/word.json',
     'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/nastaliq-quranwbw.json',
     'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/en-quranwbw.json',
-    'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/ur-quranwbw.json'
+    'https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/words/ur-quranwbw.json',
+    'https://quran-online.pages.dev/source/download.png',
+    'https://kit.fontawesome.com/a076d05399.js'
 ];
 
 self.addEventListener('install', (event) => {
