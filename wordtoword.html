@@ -64,9 +64,12 @@ async function renderSurah(surahNumber, ayahNumber = null) {
     const quranContainer = document.getElementById('quran');
     quranContainer.innerHTML = '';
 
-    const surahName = `Surah ${surahNumber}`;
-    document.getElementById('surah-name').textContent = surahName;
-    document.getElementById('current-surah').textContent = surahName;
+    const surahName = fullTranslation.name || `Surah ${surahNumber}`;
+    const surahTitle = `${surahName} (Surah ${surahNumber})`;
+
+    
+    document.getElementById('surah-name').textContent = surahTitle;
+    document.getElementById('current-surah').textContent = surahTitle;
 
     const surahData = {};
     for (const [wordId, meta] of Object.entries(metadata)) {
@@ -139,7 +142,9 @@ async function renderSurah(surahNumber, ayahNumber = null) {
 
     updateUrl(surahNumber, ayahNumber || 1);
 }
- 
+
+
+    
         function updateUrl(surah, ayah) {
             const newUrl = `${window.location.origin}${window.location.pathname}?index=${surah}#${ayah}`;
             window.history.pushState({}, '', newUrl);
@@ -213,6 +218,19 @@ async function renderSurah(surahNumber, ayahNumber = null) {
             renderSurah(surahNumber);
             renderBookmarks();
         });
+    </script>
+ 
+   <!-- Service Worker for Offline Capabilities -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then(registration => {
+                    console.log('Service Worker registered with scope: ', registration.scope);
+                })
+                .catch(error => {
+                    console.log('Service Worker registration failed: ', error);
+                });
+        }
     </script>
 </body>
 </html>
