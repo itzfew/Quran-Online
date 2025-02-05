@@ -37,6 +37,7 @@
             border: 2px solid white;
             display: block;
             margin: 0 auto;
+            background-color: black;
         }
         .video-info {
             margin-top: 10px;
@@ -48,7 +49,7 @@
     <h1>📡 Live Video Simulation</h1>
     <div class="live-container">
         <span class="live-indicator">🔴 LIVE</span>
-        <video id="liveVideo" controls autoplay muted></video>
+        <video id="liveVideo" autoplay muted></video>
     </div>
     <div class="video-info" id="videoTitle"></div>
 
@@ -97,6 +98,9 @@
             videoElement.src = videos[index].src;
             videoElement.currentTime = startTime;
             videoElement.play();
+
+            // Hide video controls (no progress bar or buttons)
+            videoElement.controls = false;
 
             // Update video title dynamically
             titleElement.innerHTML = `🎬 Now Playing: <b>${videos[index].title}</b>`;
