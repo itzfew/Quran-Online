@@ -9,22 +9,61 @@
             text-align: center;
             background-color: #000;
             color: white;
+            font-family: Arial, sans-serif;
+        }
+        .live-container {
+            display: inline-block;
+            position: relative;
+            margin-bottom: 10px;
+        }
+        .live-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: red;
+            color: white;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            animation: blink 1s infinite alternate;
+        }
+        @keyframes blink {
+            0% { opacity: 1; }
+            100% { opacity: 0.5; }
         }
         video {
             width: 80%;
             max-width: 800px;
             border: 2px solid white;
+            display: block;
+            margin: 0 auto;
+        }
+        .video-info {
+            margin-top: 10px;
+            font-size: 18px;
         }
     </style>
 </head>
 <body>
-    <h1>Live Video Simulation</h1>
-    <video id="liveVideo" controls autoplay muted></video>
+    <h1>📡 Live Video Simulation</h1>
+    <div class="live-container">
+        <span class="live-indicator">🔴 LIVE</span>
+        <video id="liveVideo" controls autoplay muted></video>
+    </div>
+    <div class="video-info" id="videoTitle"></div>
 
     <script>
         const videos = [
-            { src: "https://itzfew.github.io/Edu.Hub/audio/Status/MOTIVATION-se-zyaada-POWERFUL-ye-hai-_shorts-__-alakh-pandey-__-pw-__-physicswallah720P_HD.mp4", duration: 24 }, // Example: 2-hour video
-            { src: "https://itzfew.github.io/Edu.Hub/audio/Status/Beta-Aapki-Actual-Problem-Kya-Hai-_-Ft_Alakh-Sir-_-_motivation-_physicswallah720P_HD.mp4", duration: 28 }  // Example: 1-hour video
+            { 
+                src: "https://itzfew.github.io/Edu.Hub/audio/Status/MOTIVATION-se-zyaada-POWERFUL-ye-hai-_shorts-__-alakh-pandey-__-pw-__-physicswallah720P_HD.mp4", 
+                duration: 24, // 24 seconds video
+                title: "Motivation Session 1" 
+            },
+            { 
+                src: "https://itzfew.github.io/Edu.Hub/audio/Status/Beta-Aapki-Actual-Problem-Kya-Hai-_-Ft_Alakh-Sir-_-_motivation-_physicswallah720P_HD.mp4", 
+                duration: 28, // 28 seconds video
+                title: "Motivation Session 2" 
+            }
         ];
 
         function getCurrentTimeInSeconds() {
@@ -52,11 +91,16 @@
 
         function startVideo() {
             const videoElement = document.getElementById("liveVideo");
+            const titleElement = document.getElementById("videoTitle");
             const { index, startTime } = findCurrentVideo();
 
             videoElement.src = videos[index].src;
             videoElement.currentTime = startTime;
             videoElement.play();
+
+            // Update video title dynamically
+            titleElement.innerHTML = `🎬 Now Playing: <b>${videos[index].title}</b>`;
+            document.title = `LIVE: ${videos[index].title}`;
 
             videoElement.onended = () => {
                 startVideo(); // Automatically switch to next video
