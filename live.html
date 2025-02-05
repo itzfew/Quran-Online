@@ -11,6 +11,7 @@
             background-color: #000;
             color: white;
             font-family: Arial, sans-serif;
+            overflow: hidden;
         }
 
         .live-container {
@@ -18,6 +19,7 @@
             width: 100%;
             height: 400px; /* Fixed height for video */
             overflow: hidden;
+            border-bottom: 2px solid #fff; /* Subtle border at the bottom */
         }
 
         .live-indicator {
@@ -43,21 +45,31 @@
             object-fit: cover; /* Ensures the video covers the entire container without stretching */
             display: block;
             margin: 0 auto;
+            opacity: 0; /* Initially hidden */
+            transition: opacity 1s ease-in-out; /* Smooth fade-in transition */
         }
 
         .video-info {
-            margin-top: 10px;
+            margin-top: 20px;
             font-size: 18px;
+            font-weight: bold;
         }
+
+        .video-title {
+            font-size: 22px;
+            color: #f0f0f0;
+        }
+
     </style>
 </head>
 <body>
-    <h1>📡 Live Video Simulation</h1>
     <div class="live-container">
         <span class="live-indicator">🔴 LIVE</span>
         <video id="liveVideo" autoplay muted></video>
     </div>
-    <div class="video-info" id="videoTitle"></div>
+    <div class="video-info">
+        <span class="video-title" id="videoTitle">Starting Live Video...</span>
+    </div>
 
     <script>
         const videos = [
@@ -105,6 +117,9 @@
             videoElement.currentTime = startTime;
             videoElement.play();
 
+            // Fade in the video with smooth transition
+            videoElement.style.opacity = 1;
+
             // Hide video controls (no progress bar or buttons)
             videoElement.controls = false;
 
@@ -112,8 +127,10 @@
             titleElement.innerHTML = `🎬 Now Playing: <b>${videos[index].title}</b>`;
             document.title = `LIVE: ${videos[index].title}`;
 
+            // When video ends, switch to next video
             videoElement.onended = () => {
-                startVideo(); // Automatically switch to next video
+                videoElement.style.opacity = 0; // Fade out the current video
+                setTimeout(startVideo, 1000); // Wait for 1 second before switching to next video
             };
         }
 
