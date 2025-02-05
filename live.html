@@ -13,7 +13,6 @@
             font-family: Arial, sans-serif;
             overflow: hidden;
         }
-
         .live-container {
             position: relative;
             width: 100%;
@@ -22,21 +21,23 @@
             border-bottom: 2px solid #fff; /* Subtle border at the bottom */
         }
 
-        .live-indicator {
+        .live-status {
             position: absolute;
-            top: 10px;
-            right: 10px;
+            right: 5px;
+            top: 5px;
+            display: flex;
+            align-items: center;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            font-size: 14px; /* Small font size for time */
             background-color: red;
             color: white;
-            font-weight: bold;
             padding: 5px 10px;
             border-radius: 5px;
-            animation: blink 1s infinite alternate;
         }
 
-        @keyframes blink {
-            0% { opacity: 1; }
-            100% { opacity: 0.5; }
+        .live-status span {
+            margin-left: 5px; /* Space between time and "LIVE" */
         }
 
         video {
@@ -47,6 +48,7 @@
             margin: 0 auto;
             opacity: 0; /* Initially hidden */
             transition: opacity 1s ease-in-out; /* Smooth fade-in transition */
+            pointer-events: none; /* Disable clicks and long press */
         }
 
         .video-info {
@@ -58,19 +60,23 @@
         .video-title {
             font-size: 22px;
             color: #f0f0f0;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            text-align: center;
         }
 
     </style>
+
 </head>
 <body>
     <div class="live-container">
-        <span class="live-indicator">🔴 LIVE</span>
+        <div class="live-status">
+            <span id="liveTime">00:00:00</span>
+            <span>LIVE</span>
+        </div>
         <video id="liveVideo" autoplay muted></video>
     </div>
-    <div class="video-info">
-        <span class="video-title" id="videoTitle">Starting Live Video...</span>
-    </div>
-
+    <div class="video-title" id="videoTitle">Starting Live Video...</div>
     <script>
         const videos = [
             { 
@@ -111,6 +117,7 @@
         function startVideo() {
             const videoElement = document.getElementById("liveVideo");
             const titleElement = document.getElementById("videoTitle");
+            const liveTimeElement = document.getElementById("liveTime");
             const { index, startTime } = findCurrentVideo();
 
             videoElement.src = videos[index].src;
@@ -127,6 +134,15 @@
             titleElement.innerHTML = `🎬 Now Playing: <b>${videos[index].title}</b>`;
             document.title = `LIVE: ${videos[index].title}`;
 
+            // Update live time every second
+            setInterval(() => {
+                const currentTime = getCurrentTimeInSeconds();
+                let hours = Math.floor(currentTime / 3600);
+                let minutes = Math.floor((currentTime % 3600) / 60);
+                let seconds = currentTime % 60;
+                liveTimeElement.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            }, 1000);
+
             // When video ends, switch to next video
             videoElement.onended = () => {
                 videoElement.style.opacity = 0; // Fade out the current video
@@ -136,5 +152,6 @@
 
         window.onload = startVideo;
     </script>
+
 </body>
 </html>
