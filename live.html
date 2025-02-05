@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Video Simulation</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: #000;
+            color: white;
+        }
+        video {
+            width: 80%;
+            max-width: 800px;
+            border: 2px solid white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Live Video Simulation</h1>
+    <video id="liveVideo" controls autoplay muted></video>
+
+    <script>
+        const videos = [
+            { src: "https://itzfew.github.io/Edu.Hub/audio/Status/MOTIVATION-se-zyaada-POWERFUL-ye-hai-_shorts-__-alakh-pandey-__-pw-__-physicswallah720P_HD.mp4", duration: 24 }, // Example: 2-hour video
+            { src: "https://itzfew.github.io/Edu.Hub/audio/Status/Beta-Aapki-Actual-Problem-Kya-Hai-_-Ft_Alakh-Sir-_-_motivation-_physicswallah720P_HD.mp4", duration: 28 }  // Example: 1-hour video
+        ];
+
+        function getCurrentTimeInSeconds() {
+            const now = new Date();
+            return now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+        }
+
+        function findCurrentVideo() {
+            let currentTime = getCurrentTimeInSeconds();
+            let totalDuration = videos.reduce((sum, vid) => sum + vid.duration, 0);
+            
+            if (currentTime >= totalDuration) {
+                currentTime %= totalDuration; // Loop back to start
+            }
+
+            let accumulatedTime = 0;
+            for (let i = 0; i < videos.length; i++) {
+                accumulatedTime += videos[i].duration;
+                if (currentTime < accumulatedTime) {
+                    return { index: i, startTime: currentTime - (accumulatedTime - videos[i].duration) };
+                }
+            }
+            return { index: 0, startTime: 0 }; // Fallback
+        }
+
+        function startVideo() {
+            const videoElement = document.getElementById("liveVideo");
+            const { index, startTime } = findCurrentVideo();
+
+            videoElement.src = videos[index].src;
+            videoElement.currentTime = startTime;
+            videoElement.play();
+
+            videoElement.onended = () => {
+                startVideo(); // Automatically switch to next video
+            };
+        }
+
+        window.onload = startVideo;
+    </script>
+</body>
+</html>
