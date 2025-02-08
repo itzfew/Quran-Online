@@ -188,8 +188,8 @@
         return audioBuffer;
       }));
 
-      // The total video length will be the sum of all audio durations plus 2 seconds for the credit.
-      console.log("Total Video Duration (seconds):", totalDuration + 2);
+      // Total video length = sum of audio durations + 3 seconds for credit display.
+      console.log("Total Video Duration (seconds):", totalDuration + 3);
 
       recorder.start();
 
@@ -197,7 +197,7 @@
 
       function drawFrame() {
         if (frameIndex >= verses.length) {
-          // Show credit message for 2 seconds
+          // Show credit message for 3 seconds
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           ctx.fillStyle = "black";
           ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -207,7 +207,7 @@
           
           setTimeout(() => {
             recorder.stop();
-          }, 2000); // 2 seconds credit display
+          }, 3000); // 3 seconds credit display
           return;
         }
 
