@@ -10,6 +10,7 @@
         .container { margin-top: 20px; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
         select, input, button { padding: 10px; margin: 5px; font-size: 16px; }
         .verse { padding: 10px; margin: 10px 0; border-bottom: 1px solid #ddd; background: white; border-radius: 8px; }
+        .translation { font-size: 14px; color: #555; margin-top: 5px; }
         canvas { display: none; }
         audio { width: 100%; margin-top: 10px; }
         #progress-bar-container { width: 80%; margin: 20px auto; background: #ddd; height: 20px; border-radius: 10px; display: none; }
@@ -63,24 +64,30 @@
             return;
         }
 
-        const response = await fetch(`https://api.alquran.cloud/v1/surah/${surahIndex}/ar.alafasy`);
-        const data = await response.json();
+        const responseArabic = await fetch(`https://api.alquran.cloud/v1/surah/${surahIndex}/ar.alafasy`);
+        const responseEnglish = await fetch(`https://api.alquran.cloud/v1/surah/${surahIndex}/en.ahmedraza`);
+        const dataArabic = await responseArabic.json();
+        const dataEnglish = await responseEnglish.json();
 
-        if (data.status !== "OK") {
+        if (dataArabic.status !== "OK" || dataEnglish.status !== "OK") {
             alert("Failed to load data. Try again.");
             return;
         }
 
-        const ayahs = data.data.ayahs.slice(startVerse - 1, endVerse);
+        const ayahsArabic = dataArabic.data.ayahs.slice(startVerse - 1, endVerse);
+        const ayahsEnglish = dataEnglish.data.ayahs.slice(startVerse - 1, endVerse);
         const content = document.getElementById("content");
-        content.innerHTML = `<h3>${data.data.name}</h3>`;
+        content.innerHTML = `<h3>${dataArabic.data.name} (${dataArabic.data.englishName})</h3>`;
         verses = [];
 
-        ayahs.forEach(ayah => {
-            verses.push({ text: ayah.text, audio: ayah.audio, number: ayah.numberInSurah });
+        ayahsArabic.forEach((ayah, index) => {
+            const translation = ayahsEnglish[index] ? ayahsEnglish[index].text : "Translation not available.";
+            verses.push({ text: ayah.text, audio: ayah.audio, number: ayah.numberInSurah, translation });
+
             content.innerHTML += `
                 <div class="verse">
                     <p>${ayah.text} <span>(${ayah.numberInSurah})</span></p>
+                    <p class="translation">${translation}</p>
                     <audio controls>
                         <source src="${ayah.audio}" type="audio/mp3">
                         Your browser does not support audio playback.
@@ -153,8 +160,10 @@
             ctx.font = "40px Amiri";
             ctx.textAlign = "center";
             ctx.fillText(verses[frameIndex].text, canvas.width / 2, 300);
+            ctx.font = "25px Arial";
+            ctx.fillText(verses[frameIndex].translation, canvas.width / 2, 400);
             ctx.font = "30px Arial";
-            ctx.fillText(`Verse ${verses[frameIndex].number}`, canvas.width / 2, 400);
+            ctx.fillText(`Verse ${verses[frameIndex].number}`, canvas.width / 2, 500);
 
             document.getElementById("progress-bar").style.width = `${(frameIndex / verses.length) * 100}%`;
 
