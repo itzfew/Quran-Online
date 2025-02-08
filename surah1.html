@@ -79,8 +79,7 @@
 
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 <div id="content">
-<!-- Inside the verseDiv HTML -->
-<button class="download-btn" onclick="showImagePreview(${i})">Download Image</button></div>
+</div>
 <button class="back-to-top" onclick="scrollToTop()">
     <i class="fas fa-arrow-up"></i>
 </button>
@@ -162,6 +161,8 @@
                 </div>
                 <div class="translation-text">${translatedVerse}</div>
                 <div class="urdu-text">${urduVerse}</div>
+                <!-- Inside the verseDiv HTML -->
+<button class="download-btn" onclick="showImagePreview(${i})">Download Image</button>
                 <button class="share-btn" onclick="shareVerse(${i})">Share</button>
                 <button class="view-btn" onclick="viewVerse(${i})">View</button>
             `;
