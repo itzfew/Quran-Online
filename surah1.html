@@ -15,45 +15,6 @@
         .selected .share-btn, .selected .view-btn, .selected .download-btn {
             display: inline-block;
         }
-        canvas {
-            display: none; /* Hide the canvas element */
-        }
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-content {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            max-width: 90%;
-            max-height: 90%;
-            overflow: auto;
-        }
-        .modal-content img {
-            max-width: 100%;
-            height: auto;
-            border: 1px solid #ccc;
-        }
-        .modal-actions {
-            margin-top: 20px;
-        }
-        .modal-actions button {
-            margin: 0 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -84,156 +45,227 @@
 
 <div id="first-verse" class="first-verse" style="display: none;"></div>
 <div id="content"></div>
+<div id="background-preview" style="display: none;"></div>
 
 <button class="back-to-top" onclick="scrollToTop()">
     <i class="fas fa-arrow-up"></i>
 </button>
 
-<!-- Canvas for generating images -->
-<canvas id="verseCanvas" width="800" height="400"></canvas>
-
-<!-- Modal for Preview and Edit -->
-<div id="previewModal" class="modal">
-    <div class="modal-content">
-        <img id="previewImage" src="#" alt="Verse Image Preview">
-        <div class="modal-actions">
-            <button onclick="downloadImage()">Download</button>
-            <button onclick="closeModal()">Close</button>
-        </div>
-    </div>
-</div>
-
 <script>
+    // Add event listener for click action on the download button, share button and view button
     document.addEventListener('DOMContentLoaded', () => {
-        const darkMode = localStorage.getItem('darkMode') === 'true';
-        const textSize = localStorage.getItem('textSize') || '18';
-        if (darkMode) {
-            document.body.classList.add('dark-mode');
-        }
-
-        document.body.style.fontSize = textSize + 'px';
-
-        const index = getQueryParam('index');
-        fetchSurah(index ? index : 1);
-        displayHistory(); // Display the saved history on page load
+        // Rest of your code...
+        const downloadBtns = document.querySelectorAll('.download-btn');
+        downloadBtns.forEach(downloadBtn => downloadBtn.addEventListener('click', () => downloadImage()));
+        const shareBtns = document.querySelectorAll('.share-btn');
+        shareBtns.forEach(shareBtn => shareBtn.addEventListener('click', () => shareVerse()));
+        const viewBtns = document.querySelectorAll('.view-btn');
+        viewBtns.forEach(viewBtn => viewBtn.addEventListener('click', () => viewVerse()));
     });
 
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
-    }
 
-    async function fetchSurah(index) {
-        const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
-        const arabicData = await arabicResponse.json();
+    function generateBackground() {
+        const backgroundImage = document.getElementById("background-preview");
 
-        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(1, '0')}.json`);
-        const translationData = await translationResponse.json();
+        const verseId = this.dataset.verseId;
+        const randomBackground = Math.floor(Math.random() * 2);
+        let background = '';
 
-        const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(index).padStart(3, '0')}.json`);
-        const urduData = await urduResponse.json();
-
-        displaySurah(arabicData, translationData, urduData);
-    }
-
-    function displaySurah(arabicData, translationData, urduData) {
-        const surahHeading = document.getElementById('surah-heading');
-        const firstVerse = document.getElementById('first-verse');
-        const content = document.getElementById('content');
-        const count = arabicData.count;
-        const arabicVerses = arabicData.verse;
-        const translationVerses = translationData.verse;
-        const urduVerses = urduData.data;
-
-        surahHeading.style.display = 'block';
-        firstVerse.style.display = 'block';
-        content.innerHTML = '';
-
-        surahHeading.innerText = arabicData.name;
-        firstVerse.innerText = arabicVerses['verse_0'];
-
-        for (let i = 1; i <= count; i++) {
-            const arabicVerse = arabicVerses[`verse_${i}`];
-            const translatedVerse = translationVerses[`verse_${i}`];
-            const urduVerse = urduVerses.find(v => v.aya == i.toString())?.text || '';
-
-            const verseDiv = document.createElement('div');
-            verseDiv.classList.add('verse');
-            verseDiv.setAttribute('id', `verse-${i}`);
-
-            let verseContent = `
-                <div class="arabic-text">${arabicVerse}
-                    <span class="verse-number">${i}</span>
-                </div>
-                <div class="translation-text">${translatedVerse}</div>
-                <div class="urdu-text">${urduVerse}</div>
-                <button class="share-btn" onclick="shareVerse(${i})">Share</button>
-                <button class="view-btn" onclick="viewVerse(${i})">View</button>
-                <button class="download-btn" onclick="generateImage(${i}, '${arabicVerse}', '${translatedVerse}', '${urduVerse}')">Download Image</button>
-            `;
-
-            verseDiv.innerHTML = verseContent;
-
-            verseDiv.onclick = () => toggleHighlight(i);
-
-            content.appendChild(verseDiv);
+        if(randomBackground == 0) {
+            background = `https://i.ytimg.com/vi/vsGDkyfbOCw/hq720.jpg?sqp=-oaymwEXCK4FEIIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLBzhBZq3_36lbUX6JQh0hDILX3nDg`;
+        } else {
+            background = `https://t4.ftcdn.net/jpg/03/21/06/95/360_F_321069500_jgiE640YA8DHtZjwMRftcTtnYNo7sHwR.jpg`;
         }
-    }
 
-    function toggleHighlight(verseId) {
-        const allVerses = document.querySelectorAll('.verse');
-        allVerses.forEach(verse => {
-            verse.classList.remove('selected');
-            const shareButton = verse.querySelector('.share-btn');
-            const viewButton = verse.querySelector('.view-btn');
-            const downloadButton = verse.querySelector('.download-btn');
-            if (shareButton) shareButton.style.display = 'none';
-            if (viewButton) viewButton.style.display = 'none';
-            if (downloadButton) downloadButton.style.display = 'none';
+        let verseBackground = `
+            <div style="
+                position: relative;
+                width: 80vw;
+                margin: 50px auto;
+                background-image: url('${background}');
+                background-size: cover;
+                background-position: center;
+                padding: 50px;
+                border-radius: 20px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                color: white;
+                font-size: 20px;
+                line-height: 35px;
+                text-align: center;
+            ">`;
+        
+        if(verseId) {
+            verseBackground += `
+                <span style="font-weight: bold;">${getVerseText(verseId)}</span>
+            `;
+        }
+
+        const previewContainer = document.querySelectorAll("#content");
+        const backgroundPreviewDiv = document.createElement("div");
+        backgroundPreviewDiv.className = 'background-preview';
+        backgroundPreviewDiv.innerHTML = verseBackground;
+        previewContainer[0].appendChild(backgroundPreviewDiv);
+        backgroundPreviewDiv.style.position = 'absolute';
+        backgroundPreviewDiv.style.top = `${previewContainer[0].offsetTop + 100}px`;
+        backgroundPreviewDiv.style.left = `${previewContainer[0].offsetLeft}`;
+        const imagePreview = backgroundPreviewDiv.children[0];
+        imagePreview.style.display = 'flex';
+        imagePreview.style.flexDirection = 'column';
+        imagePreview.style.alignItems = 'center';
+        imagePreview.style.justifyContent = 'space-between';
+        const editText = document.createElement('div');
+        editText.style.display = 'flex';
+        editText.style.flexDirection = 'column';
+        editText.style.alignItems = 'center';
+        editText.style.gap = '20px';
+        const textInput = document.createElement('input');
+        textInput.value = verseId == 0 ? "Quran Kareem" : getVerseText(verseId);
+        textInput.style.width = '50vh';
+        textInput.style.padding = '10px 20px';
+        textInput.style.borderRadius = '20px';
+
+        // Add event listener for click action on the text input field
+        textInput.addEventListener('click', () => {
+            imagePreview.style.display = 'none';
+            textInput.style.border = '3px solid blue';
         });
 
-        const verseElement = document.getElementById(`verse-${verseId}`);
-        verseElement.classList.add('selected');
-        const shareButton = verseElement.querySelector('.share-btn');
-        const viewButton = verseElement.querySelector('.view-btn');
-        const downloadButton = verseElement.querySelector('.download-btn');
-        if (shareButton) shareButton.style.display = 'inline-block';
-        if (viewButton) viewButton.style.display = 'inline-block';
-        if (downloadButton) downloadButton.style.display = 'inline-block';
+        textInput.addEventListener('dblclick', () => {
+            // Display a dialog box to edit the text
+            const dialogBox = document.createElement('div');
+            dialogBox.id = 'dialogBox';
+            dialogBox.style.position = 'absolute';
+            dialogBox.style.top = Math.max(window.innerHeight / 2 - 100, 0) + 'px';
+            dialogBox.style.left = Math.max(window.innerWidth / 2 - 150, 0) + 'px';
+            dialogBox.style.border = '1px solid #ccc';
+            dialogBox.style.padding = '20px';
+            dialogBox.style.background = 'white';
+            dialogBox.style.zIndex = 1000;
+            dialogBox.style.display = 'flex';
+            dialogBox.style.flexDirection = 'column';
+            dialogBox.style.alignItems = 'center';
+            const saveChangesButton = document.createElement('button');
+            saveChangesButton.textContent = 'Save Changes';
+            saveChangesButton.style.background = 'green';
+            saveChangesButton.style.color = 'white';
+            saveChangesButton.style.padding = '10px 20px';
+            saveChangesButton.style.borderRadius = '10px';
+            const cancelButton = document.createElement('button');
+            cancelButton.textContent = 'Cancel';
+            cancelButton.style.background = 'red';
+            cancelButton.style.color = 'white';
+            cancelButton.style.padding = '10px 20px';
+            cancelButton.style.borderRadius = '10px';
+            const editText = document.createElement('input');
+            editText.value = textInput.value;
+            editText.style.width = '50vh';
+            editText.style.padding = '10px 20px';
+            editText.style.borderRadius = '20px';
+            dialogBox.appendChild(saveChangesButton);
+            dialogBox.appendChild(cancelButton);
+            dialogBox.appendChild(editText);
+            document.body.appendChild(dialogBox);
+            saveChangesButton.addEventListener('click', () => {
+                // Update the verse text
+                textInput.value = editText.value;
+                // Remove the dialog box
+                dialogBox.style.display = 'none';
+                document.body.removeChild(dialogBox);
+            });
+            cancelButton.addEventListener('click', () => {
+                // Remove the dialog box
+                dialogBox.style.display = 'none';
+                document.body.removeChild(dialogBox);
+            });
+        });
+
+        editText.appendChild(textInput);
+        editText.appendChild(cancelButton);
+        imagePreview.appendChild(editText);
+
+        const saveChangesButton = document.createElement('button');
+        saveChangesButton.textContent = 'Save Changes';
+        saveChangesButton.style.background = 'green';
+        saveChangesButton.style.color = 'white';
+        saveChangesButton.style.padding = '10px 20px';
+        saveChangesButton.style.borderRadius = '10px';
+        saveChangesButton.addEventListener('click', () => {
+            // Update the verse text
+            imagePreview.innerHTML = verseBackground;
+        });
+        imagePreview.appendChild(saveChangesButton);
+        saveChangesButton.addEventListener('click', () => {
+            // Update the verse text
+            imagePreview.innerHTML = verseBackground;
+        });
+        // Add event listener for click action on the download button
+        saveChangesButton.addEventListener('click', () => {
+            downloadImage();
+        });
+
+        imagePreview.appendChild(saveChangesButton);
+        editButton.addEventListener('click', () => {
+            // Display the text input field
+            imagePreview.style.display = 'flex';
+            textInput.style.border = '1px solid blue';
+            textInput.focus();
+        });
+        // Add event listener for click action on the edit button
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.style.background = 'yellow';
+        editButton.style.color = 'black';
+        editButton.style.padding = '10px 20px';
+        editButton.style.borderRadius = '10px';
+        // Add event listener for click action on the edit button
+        editButton.addEventListener('click', () => {
+            // Display the text input field
+            imagePreview.style.display = 'flex';
+            textInput.style.border = '1px solid blue';
+            textInput.focus();
+        });
+        imagePreview.appendChild(editButton);
+        editButton.addEventListener('click', downloadImage);
+        // Add event listener for click action on the cancel button
+        const cancelButton = document.createElement('button');
+        cancelButton.textContent = 'Cancel';
+        cancelButton.style.background = 'red';
+        cancelButton.style.color = 'white';
+        cancelButton.style.padding = '10px 20px';
+        cancelButton.style.borderRadius = '10px';
+        cancelButton.addEventListener('click', () => {
+            // Remove the dialog box
+            dialogBox.style.display = 'none';
+            document.body.removeChild(dialogBox);
+        });
+        imagePreview.appendChild(cancelButton);
+
     }
 
-    function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    function downloadImage() {
+        // Get the current Surah index from the query parameter or fallback to the default
+        const surahIndex = getQueryParam('index') || 1;
+        const verseId = this.dataset.verseId;
+        const backgroundImage = document.getElementById("background-preview");
+        const image = backgroundImage.children[0];
+        const canvas = document.createElement("canvas");
+        canvas.width = image.offsetWidth;
+        canvas.height = image.offsetHeight;
+        canvas.style.position = "absolute";
+        canvas.style.top = 0;
+        canvas.style.left = 0;
+        canvas.style.display = "none";
+        canvas.getContext("2d").drawImage(image, 0, 0, image.offsetWidth, image.offsetHeight);
+        const a = document.createElement("a");
+        a.href = canvas.toDataURL();
+        a.download = `verse_${surahIndex}_${verseId}.png`;
+        a.click();
     }
 
-    function toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
-
-    function changeTextSize(increment) {
-        const newSize = parseInt(document.body.style.fontSize) + increment;
-        document.body.style.fontSize = newSize + 'px';
-        localStorage.setItem('textSize', newSize);
-    }
-
-    let currentSurahIndex = 1;
-
-    function navigateSurah(direction) {
-        currentSurahIndex += direction;
-
-        if (currentSurahIndex < 1) {
-            currentSurahIndex = 1;
-        } else if (currentSurahIndex > 114) {
-            currentSurahIndex = 114;
-        }
-
-        const newUrl = `https://quran-online.pages.dev/surah?index=${currentSurahIndex}`;
-        window.history.pushState({ path: newUrl }, '', newUrl);
-        window.location.reload();
-    }
-
-    function shareVerse(verseId) {
+    function shareVerse() {
+        // Get the current Surah index from the query parameter or fallback to the default
+        const surahIndex = getQueryParam('index') || 1;
+        const verseId = this.dataset.verseId;
         const verseText = document.getElementById(`verse-${verseId}`).innerText;
         if (navigator.share) {
             navigator.share({
@@ -250,100 +282,19 @@
         }
     }
 
+    function getVerseText(verseId) {
+        // Get the verse text from the database or API
+        // This function should return the verse text as a string
+        const verseText = verseId == 0 ? "Quran Kareem" : "Verse " + verseId + " text";
+        return verseText;
+    }
+
     function viewVerse(verseId) {
         const surahIndex = getQueryParam('index') || 1;
         window.location.href = `verse.html?surah=${surahIndex}&verse=${verseId}`;
     }
 
-    function navigateToWordToWord() {
-        const surahIndex = getQueryParam('index') || currentSurahIndex;
-        if (surahIndex) {
-            window.location.href = `wordtoword.html?index=${surahIndex}#1`;
-        } else {
-            console.error("Unable to determine Surah index.");
-        }
-    }
-
-    function navigateToRead() {
-        const surahIndex = getQueryParam('index') || currentSurahIndex;
-        const surahNumber = surahIndex.split('/')[0];
-        const pageNumber = 1;
-        window.location.href = `read?index=${surahNumber}/${pageNumber}`;
-    }
-
-    // Function to wrap text in canvas
-    function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-        const words = text.split(' ');
-        let line = '';
-        for (let n = 0; n < words.length; n++) {
-            const testLine = line + words[n] + ' ';
-            const metrics = ctx.measureText(testLine);
-            const testWidth = metrics.width;
-            if (testWidth > maxWidth && n > 0) {
-                ctx.fillText(line, x, y);
-                line = words[n] + ' ';
-                y += lineHeight;
-            } else {
-                line = testLine;
-            }
-        }
-        ctx.fillText(line, x, y);
-    }
-
-    // Function to generate and preview the image
-    function generateImage(verseId, arabicText, translatedText, urduText) {
-        const canvas = document.getElementById('verseCanvas');
-        const ctx = canvas.getContext('2d');
-
-        // Clear canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Set background color
-        ctx.fillStyle = '#f0f0f0';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        // Set text styles
-        ctx.font = '30px Amiri';
-        ctx.fillStyle = '#000';
-        ctx.textAlign = 'center';
-
-        // Draw Arabic text with wrapping
-        wrapText(ctx, arabicText, canvas.width / 2, 50, canvas.width - 40, 40);
-
-        // Draw translated text
-        ctx.font = '20px Arial';
-        wrapText(ctx, translatedText, canvas.width / 2, 150, canvas.width - 40, 30);
-
-        // Draw Urdu text
-        ctx.font = '20px Lateef';
-        wrapText(ctx, urduText, canvas.width / 2, 250, canvas.width - 40, 30);
-
-        // Show the preview modal
-        const previewImage = document.getElementById('previewImage');
-        previewImage.src = canvas.toDataURL('image/png');
-        openModal();
-    }
-
-    // Function to open the preview modal
-    function openModal() {
-        const modal = document.getElementById('previewModal');
-        modal.style.display = 'flex';
-    }
-
-    // Function to close the preview modal
-    function closeModal() {
-        const modal = document.getElementById('previewModal');
-        modal.style.display = 'none';
-    }
-
-    // Function to download the image
-    function downloadImage() {
-        const canvas = document.getElementById('verseCanvas');
-        const link = document.createElement('a');
-        link.download = `verse_image.png`;
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-    }
+    // Rest of your code...
 </script>
 
 </body>
