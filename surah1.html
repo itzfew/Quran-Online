@@ -3,299 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quran Kareem (Ar)</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="main/css/surah.css">
+    <title>Quran Verse Image Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
-        .share-btn, .view-btn, .download-btn {
-            display: none;
-            margin-top: 10px;
-        }
-        .selected .share-btn, .selected .view-btn, .selected .download-btn {
-            display: inline-block;
-        }
+        body { font-family: 'Amiri', serif; text-align: center; }
+        .verse-container { display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
+        .image-preview { width: 300px; height: 200px; position: relative; display: none; }
+        .image-preview canvas { width: 100%; height: 100%; }
+        .image-bg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+        .image-text { position: absolute; width: 80%; text-align: center; color: white; font-size: 24px; }
+        .controls { margin-top: 10px; }
     </style>
 </head>
 <body>
-
-<div class="settings-container">
-    <div class="settings-item" onclick="toggleTheme()">
-        <i class="fas fa-adjust"></i>
+    <div class="verse-container">
+        <select id="background-select">
+            <option value="bg1">Background 1</option>
+            <option value="bg2">Background 2</option>
+        </select>
+        <input type="color" id="text-color" value="#ffffff">
+        <button onclick="generateImage()">Generate Image</button>
     </div>
-    <div class="settings-item" onclick="changeTextSize(1)">
-        <i class="fas fa-plus"></i>
+    <div class="image-preview" id="image-preview">
+        <img id="image-bg" src="" class="image-bg">
+        <div id="image-text" class="image-text">Sample Verse Text</div>
     </div>
-    <div class="settings-item" onclick="changeTextSize(-1)">
-        <i class="fas fa-minus"></i>
-    </div>
-    <div class="settings-item" onclick="navigateToWordToWord()">
-        <i class="fas fa-brands fa-fire"></i>
-    </div>
-    <div class="settings-item" onclick="navigateToRead()">
-        <i class="fas fa-book-open"></i>
-    </div>
-</div>
+    <button id="download-btn" style="display:none;" onclick="downloadImage()">Download</button>
     
-<div class="header">
-    <i class="fas fa-arrow-left arrow arrow-left" onclick="navigateSurah(-1)"></i>
-    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
-    <i class="fas fa-arrow-right arrow arrow-right" onclick="navigateSurah(+1)"></i>
-</div>
-
-<div id="first-verse" class="first-verse" style="display: none;"></div>
-<div id="content"></div>
-<div id="background-preview" style="display: none;"></div>
-
-<button class="back-to-top" onclick="scrollToTop()">
-    <i class="fas fa-arrow-up"></i>
-</button>
-
-<script>
-    // Add event listener for click action on the download button, share button and view button
-    document.addEventListener('DOMContentLoaded', () => {
-        // Rest of your code...
-        const downloadBtns = document.querySelectorAll('.download-btn');
-        downloadBtns.forEach(downloadBtn => downloadBtn.addEventListener('click', () => downloadImage()));
-        const shareBtns = document.querySelectorAll('.share-btn');
-        shareBtns.forEach(shareBtn => shareBtn.addEventListener('click', () => shareVerse()));
-        const viewBtns = document.querySelectorAll('.view-btn');
-        viewBtns.forEach(viewBtn => viewBtn.addEventListener('click', () => viewVerse()));
-    });
-
-
-    function generateBackground() {
-        const backgroundImage = document.getElementById("background-preview");
-
-        const verseId = this.dataset.verseId;
-        const randomBackground = Math.floor(Math.random() * 2);
-        let background = '';
-
-        if(randomBackground == 0) {
-            background = `https://i.ytimg.com/vi/vsGDkyfbOCw/hq720.jpg?sqp=-oaymwEXCK4FEIIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLBzhBZq3_36lbUX6JQh0hDILX3nDg`;
-        } else {
-            background = `https://t4.ftcdn.net/jpg/03/21/06/95/360_F_321069500_jgiE640YA8DHtZjwMRftcTtnYNo7sHwR.jpg`;
+    <script>
+        function generateImage() {
+            const verseText = "إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ"; // Example verse
+            const bgSelect = document.getElementById('background-select').value;
+            const textColor = document.getElementById('text-color').value;
+            
+            const bgImages = {
+                bg1: "https://i.ytimg.com/vi/vsGDkyfbOCw/hq720.jpg",
+                bg2: "https://t4.ftcdn.net/jpg/03/21/06/95/360_F_321069500_jgiE640YA8DHtZjwMRftcTtnYNo7sHwR.jpg"
+            };
+            
+            document.getElementById('image-bg').src = bgImages[bgSelect];
+            document.getElementById('image-text').innerText = verseText;
+            document.getElementById('image-text').style.color = textColor;
+            document.getElementById('image-preview').style.display = 'block';
+            document.getElementById('download-btn').style.display = 'block';
         }
-
-        let verseBackground = `
-            <div style="
-                position: relative;
-                width: 80vw;
-                margin: 50px auto;
-                background-image: url('${background}');
-                background-size: cover;
-                background-position: center;
-                padding: 50px;
-                border-radius: 20px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-                color: white;
-                font-size: 20px;
-                line-height: 35px;
-                text-align: center;
-            ">`;
         
-        if(verseId) {
-            verseBackground += `
-                <span style="font-weight: bold;">${getVerseText(verseId)}</span>
-            `;
-        }
-
-        const previewContainer = document.querySelectorAll("#content");
-        const backgroundPreviewDiv = document.createElement("div");
-        backgroundPreviewDiv.className = 'background-preview';
-        backgroundPreviewDiv.innerHTML = verseBackground;
-        previewContainer[0].appendChild(backgroundPreviewDiv);
-        backgroundPreviewDiv.style.position = 'absolute';
-        backgroundPreviewDiv.style.top = `${previewContainer[0].offsetTop + 100}px`;
-        backgroundPreviewDiv.style.left = `${previewContainer[0].offsetLeft}`;
-        const imagePreview = backgroundPreviewDiv.children[0];
-        imagePreview.style.display = 'flex';
-        imagePreview.style.flexDirection = 'column';
-        imagePreview.style.alignItems = 'center';
-        imagePreview.style.justifyContent = 'space-between';
-        const editText = document.createElement('div');
-        editText.style.display = 'flex';
-        editText.style.flexDirection = 'column';
-        editText.style.alignItems = 'center';
-        editText.style.gap = '20px';
-        const textInput = document.createElement('input');
-        textInput.value = verseId == 0 ? "Quran Kareem" : getVerseText(verseId);
-        textInput.style.width = '50vh';
-        textInput.style.padding = '10px 20px';
-        textInput.style.borderRadius = '20px';
-
-        // Add event listener for click action on the text input field
-        textInput.addEventListener('click', () => {
-            imagePreview.style.display = 'none';
-            textInput.style.border = '3px solid blue';
-        });
-
-        textInput.addEventListener('dblclick', () => {
-            // Display a dialog box to edit the text
-            const dialogBox = document.createElement('div');
-            dialogBox.id = 'dialogBox';
-            dialogBox.style.position = 'absolute';
-            dialogBox.style.top = Math.max(window.innerHeight / 2 - 100, 0) + 'px';
-            dialogBox.style.left = Math.max(window.innerWidth / 2 - 150, 0) + 'px';
-            dialogBox.style.border = '1px solid #ccc';
-            dialogBox.style.padding = '20px';
-            dialogBox.style.background = 'white';
-            dialogBox.style.zIndex = 1000;
-            dialogBox.style.display = 'flex';
-            dialogBox.style.flexDirection = 'column';
-            dialogBox.style.alignItems = 'center';
-            const saveChangesButton = document.createElement('button');
-            saveChangesButton.textContent = 'Save Changes';
-            saveChangesButton.style.background = 'green';
-            saveChangesButton.style.color = 'white';
-            saveChangesButton.style.padding = '10px 20px';
-            saveChangesButton.style.borderRadius = '10px';
-            const cancelButton = document.createElement('button');
-            cancelButton.textContent = 'Cancel';
-            cancelButton.style.background = 'red';
-            cancelButton.style.color = 'white';
-            cancelButton.style.padding = '10px 20px';
-            cancelButton.style.borderRadius = '10px';
-            const editText = document.createElement('input');
-            editText.value = textInput.value;
-            editText.style.width = '50vh';
-            editText.style.padding = '10px 20px';
-            editText.style.borderRadius = '20px';
-            dialogBox.appendChild(saveChangesButton);
-            dialogBox.appendChild(cancelButton);
-            dialogBox.appendChild(editText);
-            document.body.appendChild(dialogBox);
-            saveChangesButton.addEventListener('click', () => {
-                // Update the verse text
-                textInput.value = editText.value;
-                // Remove the dialog box
-                dialogBox.style.display = 'none';
-                document.body.removeChild(dialogBox);
-            });
-            cancelButton.addEventListener('click', () => {
-                // Remove the dialog box
-                dialogBox.style.display = 'none';
-                document.body.removeChild(dialogBox);
-            });
-        });
-
-        editText.appendChild(textInput);
-        editText.appendChild(cancelButton);
-        imagePreview.appendChild(editText);
-
-        const saveChangesButton = document.createElement('button');
-        saveChangesButton.textContent = 'Save Changes';
-        saveChangesButton.style.background = 'green';
-        saveChangesButton.style.color = 'white';
-        saveChangesButton.style.padding = '10px 20px';
-        saveChangesButton.style.borderRadius = '10px';
-        saveChangesButton.addEventListener('click', () => {
-            // Update the verse text
-            imagePreview.innerHTML = verseBackground;
-        });
-        imagePreview.appendChild(saveChangesButton);
-        saveChangesButton.addEventListener('click', () => {
-            // Update the verse text
-            imagePreview.innerHTML = verseBackground;
-        });
-        // Add event listener for click action on the download button
-        saveChangesButton.addEventListener('click', () => {
-            downloadImage();
-        });
-
-        imagePreview.appendChild(saveChangesButton);
-        editButton.addEventListener('click', () => {
-            // Display the text input field
-            imagePreview.style.display = 'flex';
-            textInput.style.border = '1px solid blue';
-            textInput.focus();
-        });
-        // Add event listener for click action on the edit button
-        const editButton = document.createElement('button');
-        editButton.textContent = 'Edit';
-        editButton.style.background = 'yellow';
-        editButton.style.color = 'black';
-        editButton.style.padding = '10px 20px';
-        editButton.style.borderRadius = '10px';
-        // Add event listener for click action on the edit button
-        editButton.addEventListener('click', () => {
-            // Display the text input field
-            imagePreview.style.display = 'flex';
-            textInput.style.border = '1px solid blue';
-            textInput.focus();
-        });
-        imagePreview.appendChild(editButton);
-        editButton.addEventListener('click', downloadImage);
-        // Add event listener for click action on the cancel button
-        const cancelButton = document.createElement('button');
-        cancelButton.textContent = 'Cancel';
-        cancelButton.style.background = 'red';
-        cancelButton.style.color = 'white';
-        cancelButton.style.padding = '10px 20px';
-        cancelButton.style.borderRadius = '10px';
-        cancelButton.addEventListener('click', () => {
-            // Remove the dialog box
-            dialogBox.style.display = 'none';
-            document.body.removeChild(dialogBox);
-        });
-        imagePreview.appendChild(cancelButton);
-
-    }
-
-    function downloadImage() {
-        // Get the current Surah index from the query parameter or fallback to the default
-        const surahIndex = getQueryParam('index') || 1;
-        const verseId = this.dataset.verseId;
-        const backgroundImage = document.getElementById("background-preview");
-        const image = backgroundImage.children[0];
-        const canvas = document.createElement("canvas");
-        canvas.width = image.offsetWidth;
-        canvas.height = image.offsetHeight;
-        canvas.style.position = "absolute";
-        canvas.style.top = 0;
-        canvas.style.left = 0;
-        canvas.style.display = "none";
-        canvas.getContext("2d").drawImage(image, 0, 0, image.offsetWidth, image.offsetHeight);
-        const a = document.createElement("a");
-        a.href = canvas.toDataURL();
-        a.download = `verse_${surahIndex}_${verseId}.png`;
-        a.click();
-    }
-
-    function shareVerse() {
-        // Get the current Surah index from the query parameter or fallback to the default
-        const surahIndex = getQueryParam('index') || 1;
-        const verseId = this.dataset.verseId;
-        const verseText = document.getElementById(`verse-${verseId}`).innerText;
-        if (navigator.share) {
-            navigator.share({
-                title: 'Quran Verse',
-                text: verseText,
-                url: window.location.href
-            }).catch((error) => console.log('Error sharing: ', error));
-        } else {
-            navigator.clipboard.writeText(verseText).then(() => {
-                alert('Verse copied to clipboard!');
-            }).catch((error) => {
-                console.log('Error copying to clipboard: ', error);
+        function downloadImage() {
+            html2canvas(document.getElementById('image-preview')).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'verse-image.png';
+                link.href = canvas.toDataURL();
+                link.click();
             });
         }
-    }
-
-    function getVerseText(verseId) {
-        // Get the verse text from the database or API
-        // This function should return the verse text as a string
-        const verseText = verseId == 0 ? "Quran Kareem" : "Verse " + verseId + " text";
-        return verseText;
-    }
-
-    function viewVerse(verseId) {
-        const surahIndex = getQueryParam('index') || 1;
-        window.location.href = `verse.html?surah=${surahIndex}&verse=${verseId}`;
-    }
-
-    // Rest of your code...
-</script>
-
+    </script>
 </body>
 </html>
