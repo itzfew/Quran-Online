@@ -8,34 +8,96 @@
     <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="main/css/surah.css">
     <style>
-        /* ... (Your existing CSS styles) ... */
+        .share-btn, .view-btn {
+            display: none;
+            margin-top: 10px;
+        }
+        .selected .share-btn, .selected .view-btn {
+            display: inline-block;
+        }
+ 
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+    margin: 2% auto;
+    border-radius: 10px;
+    position: relative;
+}
+
+#verse-canvas {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ccc;
+}
+
+.controls {
+    margin-bottom: 15px;
+    display: flex;
+    gap: 10px;
+}
+
     </style>
 </head>
 <body>
 
 <div class="settings-container">
+    <div class="settings-item" onclick="toggleTheme()">
+        <i class="fas fa-adjust"></i>
     </div>
-
+    <div class="settings-item" onclick="changeTextSize(1)">
+        <i class="fas fa-plus"></i>
+    </div>
+    <div class="settings-item" onclick="changeTextSize(-1)">
+        <i class="fas fa-minus"></i>
+    </div>
+    <div class="settings-item" onclick="navigateToWordToWord()">
+        <i class="fas fa-brands fa-fire"></i>
+    </div>
+    <div class="settings-item" onclick="navigateToRead()">
+        <i class="fas fa-book-open"></i>
+    </div>
+</div>
+    
 <div class="header">
-    </div>
+    <i class="fas fa-arrow-left arrow arrow-left" onclick="navigateSurah(-1)"></i>
+    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
+    <i class="fas fa-arrow-right arrow arrow-right" onclick="navigateSurah(+1)"></i>
+</div>
 
 <div id="first-verse" class="first-verse" style="display: none;"></div>
-<div id="content"></div>
-
+<div id="content">
+<!-- Inside the verseDiv HTML -->
+<button class="download-btn" onclick="showImagePreview(${i})">Download Image</button></div>
 <button class="back-to-top" onclick="scrollToTop()">
     <i class="fas fa-arrow-up"></i>
 </button>
-
-<div id="image-preview">
-    <img id="preview-image" src="" alt="Verse Image">
-    <div id="image-editor">
-        <div id="editable-verse-text" class="editable-text" contenteditable="true"></div>
-        <input type="color" id="text-color" class="color-picker" value="#000000">
+<div id="image-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <div class="controls">
+            <input type="color" id="text-color" value="#000000" onchange="updateTextColor()">
+            <select id="background-select" onchange="updateBackground()">
+                <option value="1">Background 1</option>
+                <option value="2">Background 2</option>
+            </select>
+        </div>
+        <canvas id="verse-canvas"></canvas>
+        <button onclick="downloadImage()" class="download-final">Download</button>
     </div>
-    <button onclick="downloadImage()">Download Image</button>
-    <button onclick="closePreview()">Close</button>
 </div>
-
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const darkMode = localStorage.getItem('darkMode') === 'true';
@@ -48,7 +110,7 @@
 
         const index = getQueryParam('index');
         fetchSurah(index ? index : 1);
-        displayHistory(); 
+        displayHistory(); // Display the saved history on page load
     });
 
     function getQueryParam(param) {
@@ -70,163 +132,69 @@
     }
 
     function displaySurah(arabicData, translationData, urduData) {
-        // ... (Your existing code to display surah content) ...
+        const surahHeading = document.getElementById('surah-heading');
+        const firstVerse = document.getElementById('first-verse');
+        const content = document.getElementById('content');
+        const count = arabicData.count;
+        const arabicVerses = arabicData.verse;
+        const translationVerses = translationData.verse;
+        const urduVerses = urduData.data;
+
+        surahHeading.style.display = 'block';
+        firstVerse.style.display = 'block';
+        content.innerHTML = '';
+
+        surahHeading.innerText = arabicData.name;
+        firstVerse.innerText = arabicVerses['verse_0'];
 
         for (let i = 1; i <= count; i++) {
-            // ... (Your existing code to create verseDiv) ...
+            const arabicVerse = arabicVerses[`verse_${i}`];
+            const translatedVerse = translationVerses[`verse_${i}`];
+            const urduVerse = urduVerses.find(v => v.aya == i.toString())?.text || '';
 
-            const downloadButton = document.createElement('button');
-            downloadButton.classList.add('download-btn');
-            downloadButton.innerText = 'Download Image';
-            verseDiv.appendChild(downloadButton);
+            const verseDiv = document.createElement('div');
+            verseDiv.classList.add('verse');
+            verseDiv.setAttribute('id', `verse-${i}`);
 
-            generateVerseImage(arabicVerse, i); // Generate image for each verse
+            let verseContent = `
+                <div class="arabic-text">${arabicVerse}
+                    <span class="verse-number">${i}</span>
+                </div>
+                <div class="translation-text">${translatedVerse}</div>
+                <div class="urdu-text">${urduVerse}</div>
+                <button class="share-btn" onclick="shareVerse(${i})">Share</button>
+                <button class="view-btn" onclick="viewVerse(${i})">View</button>
+            `;
 
-            // ... (rest of your existing code) ...
+            verseDiv.innerHTML = verseContent;
+
+            verseDiv.onclick = () => toggleHighlight(i);
+
+            content.appendChild(verseDiv);
         }
     }
 
-    const backgroundImageUrls = [
-        "https://i.ytimg.com/vi/vsGDkyfbOCw/hq720.jpg?sqp=-oaymwEXCK4FEIIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLBzhBZq3_36lbUX6JQh0hDILX3nDg",
-        "https://t4.ftcdn.net/jpg/03/21/06/95/360_F_321069500_jgiE640YA8DHtZjwMRftcTtnYNo7sHwR.jpg"
-    ];
+    function toggleHighlight(verseId) {
+        const allVerses = document.querySelectorAll('.verse');
+        allVerses.forEach(verse => {
+            verse.classList.remove('selected');
+            const shareButton = verse.querySelector('.share-btn');
+            const viewButton = verse.querySelector('.view-btn');
+            if (shareButton) shareButton.style.display = 'none';
+            if (viewButton) viewButton.style.display = 'none';
+        });
 
-    function generateVerseImage(verseText, verseNumber) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const backgroundImage = new Image();
-        backgroundImage.crossOrigin = "anonymous";
-        backgroundImage.src = backgroundImageUrls[Math.floor(Math.random() * backgroundImageUrls.length)];
-
-        backgroundImage.onload = () => {
-            canvas.width = backgroundImage.width;
-            canvas.height = backgroundImage.height;
-            ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-
-            ctx.font = '30px Amiri';
-            ctx.fillStyle = document.getElementById('text-color').value;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-
-            const words = verseText.split(' ');
-            let lines = [];
-            let currentLine = '';
-            for (let i = 0; i < words.length; i++) {
-                const testLine = currentLine ? currentLine + ' ' + words[i] : words[i];
-                const metrics = ctx.measureText(testLine);
-                if (metrics.width > canvas.width * 0.8) {
-                    lines.push(currentLine);
-                    currentLine = words[i];
-                } else {
-                    currentLine = testLine;
-                }
-            }
-            lines.push(currentLine);
-
-            const lineHeight = 40;
-            let y = canvas.height / 2 - (lines.length * lineHeight) / 2;
-
-            for (const line of lines) {
-                ctx.fillText(line, canvas.width / 2, y);
-                y += lineHeight;
-            }
-
-            const dataURL = canvas.toDataURL('image/png');
-            const verseElement = document.getElementById(`verse-${verseNumber}`);
-            const imageContainer = document.createElement('div');
-            imageContainer.classList.add('verse-image-container');
-            const verseImage = document.createElement('img');
-            verseImage.src = dataURL;
-            verseImage.classList.add('verse-image');
-            imageContainer.appendChild(verseImage);
-
-            verseElement.insertBefore(imageContainer, verseElement.firstChild);
-
-            const downloadButton = verseElement.querySelector('.download-btn');
-            downloadButton.onclick = () => showPreview(dataURL, verseText, verseNumber);
-        }
+        const verseElement = document.getElementById(`verse-${verseId}`);
+        verseElement.classList.add('selected');
+        const shareButton = verseElement.querySelector('.share-btn');
+        const viewButton = verseElement.querySelector('.view-btn');
+        if (shareButton) shareButton.style.display = 'inline-block';
+        if (viewButton) viewButton.style.display = 'inline-block';
     }
 
-    function showPreview(imageUrl, verseText, verseNumber) {
-        document.getElementById('preview-image').src = imageUrl;
-        document.getElementById('editable-verse-text').innerText = verseText;
-        document.getElementById('editable-verse-text').dataset.verseNumber = verseNumber;
-        document.getElementById('image-preview').style.display = 'block';
-
-        const textColor = getComputedStyle(document.getElementById(`verse-${verseNumber}`).querySelector('.arabic-text')).color;
-        document.getElementById('text-color').value = rgbToHex(textColor);
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    function rgbToHex(rgb) {
-        let [r, g, b] = rgb.match(/\d+/g);
-        r = parseInt(r).toString(16); g = parseInt(g).toString(16); b = parseInt(b).toString(16);
-        r = r.length == 1 ? "0" + r : r; g = g.length == 1 ? "0" + g : g; b = b.length == 1 ? "0" + b : b;
-        return "#" + r + g + b;
-    }
-
-    function closePreview() {
-        document.getElementById('image-preview').style.display = 'none';
-    }
-
-    function downloadImage() {
-        const link = document.createElement('a');
-        link.href = document.getElementById('preview-image').src;
-        link.download = 'verse.png';
-        link.click();
-    }
-
-document.getElementById('text-color').addEventListener('change', function() {
-        const newColor = this.value;
-        const verseNumber = document.getElementById('editable-verse-text').dataset.verseNumber;
-        const previewImage = document.getElementById('preview-image');
-
-        // 1. Re-create the canvas and draw with the new color:
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        const img = new Image();
-        img.crossOrigin = "anonymous";
-        img.src = previewImage.src; // Use current preview image as source
-
-        img.onload = () => {
-             canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0); // Redraw existing image
-
-            ctx.font = '30px Amiri'; // Or your font
-            ctx.fillStyle = newColor;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-
-            const verseText = document.getElementById('editable-verse-text').innerText;
-            const words = verseText.split(' ');
-            let lines = [];
-            let currentLine = '';
-            for (let i = 0; i < words.length; i++) {
-                const testLine = currentLine ? currentLine + ' ' + words[i] : words[i];
-                const metrics = ctx.measureText(testLine);
-                if (metrics.width > canvas.width * 0.8) {
-                    lines.push(currentLine);
-                    currentLine = words[i];
-                } else {
-                    currentLine = testLine;
-                }
-            }
-            lines.push(currentLine);
-
-            const lineHeight = 40; // Adjust as needed
-            let y = canvas.height / 2 - (lines.length * lineHeight) / 2;
-
-            for (const line of lines) {
-                ctx.fillText(line, canvas.width / 2, y);
-                y += lineHeight;
-            }
-
-            const newDataURL = canvas.toDataURL('image/png');
-            previewImage.src = newDataURL; // Update the preview image
-
-        }
-    });
-
 
     function toggleTheme() {
         const isDark = document.body.classList.toggle('dark-mode');
@@ -277,52 +245,124 @@ document.getElementById('text-color').addEventListener('change', function() {
         window.location.href = `verse.html?surah=${surahIndex}&verse=${verseId}`;
     }
 
-    function navigateToWordToWord() {
-        const surahIndex = getQueryParam('index') || currentSurahIndex;
-        if (surahIndex) {
-            window.location.href = `wordtoword.html?index=${surahIndex}#1`;
-        } else {
-            console.error("Unable to determine Surah index.");
-        }
-    }
+function navigateToWordToWord() {
+    // Get the current Surah index from the query parameter or fallback to the default
+    const surahIndex = getQueryParam('index') || currentSurahIndex;
 
+    // Navigate to the Word-to-Word page with the correct Surah number and append #1
+    if (surahIndex) {
+        window.location.href = `wordtoword.html?index=${surahIndex}#1`;
+    } else {
+        console.error("Unable to determine Surah index.");
+    }
+}
     function navigateToRead() {
         const surahIndex = getQueryParam('index') || currentSurahIndex;
         const surahNumber = surahIndex.split('/')[0];
         const pageNumber = 1;
         window.location.href = `read?index=${surahNumber}/${pageNumber}`;
     }
+    let currentVerseText = '';
+let currentCanvas = null;
+let currentContext = null;
+const backgrounds = [
+    'https://i.ytimg.com/vi/vsGDkyfbOCw/hq720.jpg?sqp=-oaymwEXCK4FEIIDSFryq4qpAwkIARUAAIhCGAE=&rs=AOn4CLBzhBZq3_36lbUX6JQh0hDILX3nDg',
+    'https://t4.ftcdn.net/jpg/03/21/06/95/360_F_321069500_jgiE640YA8DHtZjwMRftcTtnYNo7sHwR.jpg'
+];
 
-    function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+async function showImagePreview(verseId) {
+    currentVerseText = document.querySelector(`#verse-${verseId} .arabic-text`).innerText;
+    const modal = document.getElementById('image-modal');
+    modal.style.display = 'block';
+    
+    await initCanvas();
+    drawVerse();
+}
+
+function closeModal() {
+    document.getElementById('image-modal').style.display = 'none';
+}
+
+async function initCanvas() {
+    const canvas = document.getElementById('verse-canvas');
+    canvas.width = 1200;
+    canvas.height = 630;
+    currentContext = canvas.getContext('2d');
+    
+    // Load background image
+    const bgIndex = document.getElementById('background-select').value - 1;
+    const bgImg = await loadImage(backgrounds[bgIndex]);
+    currentContext.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+}
+
+function loadImage(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => resolve(img);
+        img.src = url;
+    });
+}
+
+function drawVerse() {
+    const context = currentContext;
+    const canvas = document.getElementById('verse-canvas');
+    
+    // Clear and redraw background
+    const bgIndex = document.getElementById('background-select').value - 1;
+    loadImage(backgrounds[bgIndex]).then(img => {
+        context.drawImage(img, 0, 0, canvas.width, canvas.height);
+        
+        // Set text styles
+        const color = document.getElementById('text-color').value;
+        context.fillStyle = color;
+        context.font = '40px Amiri';
+        context.textAlign = 'center';
+        
+        // Wrap text
+        const maxWidth = canvas.width - 100;
+        const x = canvas.width / 2;
+        const y = 100;
+        
+        wrapText(context, currentVerseText, x, y, maxWidth, 60);
+    });
+}
+
+function wrapText(context, text, x, y, maxWidth, lineHeight) {
+    const words = text.split(' ');
+    let line = '';
+    let currentY = y;
+
+    for (const word of words) {
+        const testLine = line + word + ' ';
+        const metrics = context.measureText(testLine);
+        if (metrics.width > maxWidth && line !== '') {
+            context.fillText(line.trim(), x, currentY);
+            line = word + ' ';
+            currentY += lineHeight;
+        } else {
+            line = testLine;
+        }
     }
+    context.fillText(line.trim(), x, currentY);
+}
 
-    function toggleHighlight(verseId) {
-        const allVerses = document.querySelectorAll('.verse');
-        allVerses.forEach(verse => {
-            verse.classList.remove('selected');
-            const shareButton = verse.querySelector('.share-btn');
-            const viewButton = verse.querySelector('.view-btn');
-            const downloadButton = verse.querySelector('.download-btn');
-            if (shareButton) shareButton.style.display = 'none';
-            if (viewButton) viewButton.style.display = 'none';
-            if (downloadButton) downloadButton.style.display = 'none';
-        });
+function updateTextColor() {
+    drawVerse();
+}
 
-        const verseElement = document.getElementById(`verse-${verseId}`);
-        verseElement.classList.add('selected');
-        const shareButton = verseElement.querySelector('.share-btn');
-        const viewButton = verseElement.querySelector('.view-btn');
-        const downloadButton = verseElement.querySelector('.download-btn');
-        if (shareButton) shareButton.style.display = 'inline-block';
-        if (viewButton) viewButton.style.display = 'inline-block';
-        if (downloadButton) downloadButton.style.display = 'inline-block';
-    }
+async function updateBackground() {
+    await initCanvas();
+    drawVerse();
+}
 
-    function displayHistory() {
-        // (If you have any history display logic, put it here)
-    }
-
+function downloadImage() {
+    const canvas = document.getElementById('verse-canvas');
+    const link = document.createElement('a');
+    link.download = 'quran-verse.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+}
 </script>
 
 </body>
