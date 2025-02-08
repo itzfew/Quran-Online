@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مولد فيديو القرآن الكريم</title>
+    <title>Quran Video Generator</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Amiri', serif; text-align: center; direction: rtl; background: #f4f4f4; padding: 20px; }
@@ -19,14 +19,14 @@
 <body>
 
 <div class="container">
-    <h2>اختر السورة والآيات</h2>
+    <h2>Select Surah & Verses</h2>
     <select id="surah-select">
-        <option value="">اختر السورة</option>
+        <option value="">Choose Surah</option>
     </select>
-    <input type="number" id="start-verse" placeholder="آية البداية" min="1">
-    <input type="number" id="end-verse" placeholder="آية النهاية" min="1">
-    <button onclick="fetchSurah()">عرض الآيات</button>
-    <button onclick="generateVideo()">توليد الفيديو</button>
+    <input type="number" id="start-verse" placeholder="Start Verse" min="1">
+    <input type="number" id="end-verse" placeholder="End Verse" min="1">
+    <button onclick="fetchSurah()">Display Verses</button>
+    <button onclick="generateVideo()">Generate Video</button>
 </div>
 
 <div id="progress-bar-container">
@@ -38,7 +38,7 @@
 <div id="content"></div>
 
 <video id="quranVideo" controls style="display:none; width:100%; margin-top:20px;"></video>
-<a id="downloadLink" style="display:none;" download="quran_video.mp4">تحميل الفيديو</a>
+<a id="downloadLink" style="display:none;" download="quran_video.mp4">Download Video</a>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -46,7 +46,7 @@
         for (let i = 1; i <= 114; i++) {
             let option = document.createElement("option");
             option.value = i;
-            option.textContent = `سورة ${i}`;
+            option.textContent = `Surah ${i}`;
             surahSelect.appendChild(option);
         }
     });
@@ -59,7 +59,7 @@
         const endVerse = parseInt(document.getElementById("end-verse").value);
 
         if (!surahIndex || isNaN(startVerse) || isNaN(endVerse) || startVerse > endVerse) {
-            alert("يرجى اختيار سورة وتحديد نطاق آيات صحيح.");
+            alert("Please select a Surah and enter a valid verse range.");
             return;
         }
 
@@ -67,7 +67,7 @@
         const data = await response.json();
 
         if (data.status !== "OK") {
-            alert("فشل في تحميل البيانات، حاول مرة أخرى.");
+            alert("Failed to load data. Try again.");
             return;
         }
 
@@ -83,7 +83,7 @@
                     <p>${ayah.text} <span>(${ayah.numberInSurah})</span></p>
                     <audio controls>
                         <source src="${ayah.audio}" type="audio/mp3">
-                        متصفحك لا يدعم تشغيل الصوت.
+                        Your browser does not support audio playback.
                     </audio>
                 </div>
             `;
@@ -92,7 +92,7 @@
 
     async function generateVideo() {
         if (verses.length === 0) {
-            alert("يرجى تحميل الآيات أولاً");
+            alert("Please load the verses first.");
             return;
         }
 
@@ -103,12 +103,10 @@
         const ctx = canvas.getContext("2d");
         let recordedChunks = [];
 
-        // Create a MediaStream to combine canvas and audio
         const canvasStream = canvas.captureStream(30);
         const audioContext = new AudioContext();
         const destination = audioContext.createMediaStreamDestination();
 
-        // Create a MediaRecorder to record the combined stream
         const combinedStream = new MediaStream([
             ...canvasStream.getVideoTracks(),
             ...destination.stream.getAudioTracks(),
@@ -128,7 +126,6 @@
             downloadLink.style.display = "block";
         };
 
-        // Preload all audio files and calculate total duration
         let totalDuration = 0;
         const audioBuffers = await Promise.all(verses.map(async verse => {
             const response = await fetch(verse.audio);
@@ -157,21 +154,19 @@
             ctx.textAlign = "center";
             ctx.fillText(verses[frameIndex].text, canvas.width / 2, 300);
             ctx.font = "30px Arial";
-            ctx.fillText(`آية ${verses[frameIndex].number}`, canvas.width / 2, 400);
+            ctx.fillText(`Verse ${verses[frameIndex].number}`, canvas.width / 2, 400);
 
             document.getElementById("progress-bar").style.width = `${(frameIndex / verses.length) * 100}%`;
 
-            // Play the audio for the current verse
             const source = audioContext.createBufferSource();
             source.buffer = audioBuffers[frameIndex];
             source.connect(destination);
             source.start();
 
-            // Wait for the audio to finish before moving to the next frame
             setTimeout(() => {
                 frameIndex++;
                 drawFrame();
-            }, audioBuffers[frameIndex].duration * 1000); // Convert duration to milliseconds
+            }, audioBuffers[frameIndex].duration * 1000);
         }
 
         drawFrame();
@@ -179,4 +174,4 @@
 </script>
 
 </body>
-</html> 
+</html>
