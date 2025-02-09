@@ -60,7 +60,7 @@
     });
     document.getElementById('generate-video-btn').addEventListener('click', () => {
       let link = document.createElement('a');
-      link.href = `https://your-server.com/generate-video?audios=${audioUrls.join(',')}`;
+      link.href = `surah1?audios=${audioUrls.join(',')}`;
       link.download = 'quran_video.mp4';
       link.click();
     });
