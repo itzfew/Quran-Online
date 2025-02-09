@@ -1,185 +1,269 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>Quran Verse Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quran Video Generator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #f9f9f9; color: #333; }
-    h1 { text-align: center; }
-    .form-container { max-width: 500px; margin: 0 auto; padding: 15px; background: #fff; border-radius: 8px; }
-    .form-container label { display: block; margin: 10px 0 5px; }
-    .form-container select, .form-container input { width: 100%; padding: 8px; margin-bottom: 10px; }
-    #generate-btn, #generate-video-btn { width: 100%; padding: 10px; background: #007BFF; color: #fff; border: none; cursor: pointer; }
-    #result { max-width: 800px; margin: 0 auto; }
-    .verse { background: #fff; margin: 10px 0; padding: 15px; border-radius: 6px; }
-    .verse .arabic { font-size: 20px; text-align: right; direction: rtl; }
-    .verse .english { font-size: 16px; text-align: left; }
-    .verse audio { width: 100%; }
-    .error { color: red; text-align: center; }
+    body { 
+      font-family: 'Amiri', serif; 
+      text-align: center; 
+      direction: rtl; 
+      background: #f4f4f4; 
+      padding: 20px; 
+    }
+    .container { 
+      margin-top: 20px; 
+      background: white; 
+      padding: 15px; 
+      border-radius: 10px; 
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    }
+    select, input, button { 
+      padding: 10px; 
+      margin: 5px; 
+      font-size: 16px; 
+    }
+    .verse { 
+      padding: 10px; 
+      margin: 10px 0; 
+      border-bottom: 1px solid #ddd; 
+      background: white; 
+      border-radius: 8px; 
+    }
+    .translation { 
+      font-size: 14px; 
+      color: #555; 
+      margin-top: 5px; 
+    }
+    canvas { display: none; }
+    audio { 
+      width: 100%; 
+      margin-top: 10px; 
+    }
+    #progress-bar-container { 
+      width: 80%; 
+      margin: 20px auto; 
+      background: #ddd; 
+      height: 20px; 
+      border-radius: 10px; 
+      display: none; 
+    }
+    #progress-bar { 
+      height: 100%; 
+      width: 0%; 
+      background: green; 
+      transition: width 0.2s; 
+    }
+    .credit-text {
+      font-size: 40px;
+      text-align: center;
+      margin-top: 50vh;
+      transform: translateY(-50%);
+    }
   </style>
 </head>
 <body>
-  <h1>Quran Verse Generator</h1>
-  <div class="form-container">
-    <label for="surah-select">Select Surah:</label>
-    <select id="surah-select"><option value="">Loading surahs...</option></select>
-    <label for="start-verse">Start Verse:</label>
-    <input type="number" id="start-verse" min="1" placeholder="e.g., 1">
-    <label for="end-verse">End Verse:</label>
-    <input type="number" id="end-verse" min="1" placeholder="e.g., 6">
-    <button id="generate-btn">Generate</button>
-    <button id="generate-video-btn" disabled>Generate Video</button>
-    <div id="error-message" class="error"></div>
+  <div class="container">
+    <h2>Select Surah & Verses</h2>
+    <select id="surah-select">
+      <option value="">Choose Surah</option>
+    </select>
+    <input type="number" id="start-verse" placeholder="Start Verse" min="1">
+    <input type="number" id="end-verse" placeholder="End Verse" min="1">
+    <button onclick="fetchSurah()">Display Verses</button>
+    <button onclick="generateVideo()">Generate Video</button>
   </div>
-  <div id="result"></div>
+
+  <div id="progress-bar-container">
+    <div id="progress-bar"></div>
+  </div>
+
+  <canvas id="quranCanvas" width="1280" height="720"></canvas>
+
+  <div id="content"></div>
+
+  <video id="quranVideo" controls style="display:none; width:100%; margin-top:20px;"></video>
+  <a id="downloadLink" style="display:none;" download="quran_video.mp4">Download Video</a>
+
   <script>
-    let audioUrls = [];
-    document.getElementById('generate-btn').addEventListener('click', () => {
-      const surah = document.getElementById('surah-select').value;
-      const start = parseInt(document.getElementById('start-verse').value);
-      const end = parseInt(document.getElementById('end-verse').value);
-      if (!surah || isNaN(start) || isNaN(end) || start > end) {
-        document.getElementById('error-message').textContent = 'Invalid input';
+    document.addEventListener("DOMContentLoaded", function () {
+      const surahSelect = document.getElementById("surah-select");
+      for (let i = 1; i <= 114; i++) {
+        let option = document.createElement("option");
+        option.value = i;
+        option.textContent = `Surah ${i}`;
+        surahSelect.appendChild(option);
+      }
+    });
+
+    let verses = [];
+
+    async function fetchSurah() {
+      const surahIndex = document.getElementById("surah-select").value;
+      const startVerse = parseInt(document.getElementById("start-verse").value);
+      const endVerse = parseInt(document.getElementById("end-verse").value);
+
+      if (!surahIndex || isNaN(startVerse) || isNaN(endVerse) || startVerse > endVerse) {
+        alert("Please select a Surah and enter a valid verse range.");
         return;
       }
-      fetch(`https://api.alquran.cloud/v1/surah/${surah}/ar.alafasy`)
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById('result').innerHTML = '';
-          audioUrls = [];
-          data.data.ayahs.slice(start - 1, end).forEach(ayah => {
-            let div = document.createElement('div');
-            div.className = 'verse';
-            div.innerHTML = `<audio controls src="${ayah.audio}"></audio>
-                             <p class='arabic'>${ayah.text}</p>`;
-            document.getElementById('result').appendChild(div);
-            audioUrls.push(ayah.audio);
-          });
-          document.getElementById('generate-video-btn').disabled = false;
-        });
-    });
-    document.getElementById('generate-video-btn').addEventListener('click', () => {
-      let link = document.createElement('a');
-      link.href = `https://quran-online.pages.dev/surah1?audios=${audioUrls.join(',')}`;
-      link.download = 'quran_video.mp4';
-      link.click();
-    });
-        const surahSelect = document.getElementById('surah-select');
-    const generateBtn = document.getElementById('generate-btn');
-    const resultDiv = document.getElementById('result');
-    const errorDiv = document.getElementById('error-message');
 
-    let surahsList = [];
+      const responseArabic = await fetch(`https://api.alquran.cloud/v1/surah/${surahIndex}/ar.alafasy`);
+      const responseEnglish = await fetch(`https://api.alquran.cloud/v1/surah/${surahIndex}/en.ahmedraza`);
+      const dataArabic = await responseArabic.json();
+      const dataEnglish = await responseEnglish.json();
 
-    // Fetch surah list on page load
-    fetch('https://api.alquran.cloud/v1/surah')
-      .then(response => response.json())
-      .then(data => {
-        surahsList = data.data; // Array of surah objects
-        populateSurahDropdown(surahsList);
-      })
-      .catch(error => {
-        surahSelect.innerHTML = `<option value="">Error loading surahs</option>`;
-        console.error('Error fetching surah list:', error);
-      });
+      if (dataArabic.status !== "OK" || dataEnglish.status !== "OK") {
+        alert("Failed to load data. Try again.");
+        return;
+      }
 
-    // Populate the dropdown with surah options
-    function populateSurahDropdown(surahs) {
-      surahSelect.innerHTML = '<option value="">-- Select Surah --</option>';
-      surahs.forEach(surah => {
-        const option = document.createElement('option');
-        option.value = surah.number;
-        // Storing number of ayahs as a data attribute for range validation
-        option.setAttribute('data-ayahs', surah.numberOfAyahs);
-        option.textContent = `${surah.number}. ${surah.englishName} (${surah.name})`;
-        surahSelect.appendChild(option);
+      const ayahsArabic = dataArabic.data.ayahs.slice(startVerse - 1, endVerse);
+      const ayahsEnglish = dataEnglish.data.ayahs.slice(startVerse - 1, endVerse);
+      const content = document.getElementById("content");
+      content.innerHTML = `<h3>${dataArabic.data.name} (${dataArabic.data.englishName})</h3>`;
+      verses = [];
+
+      ayahsArabic.forEach((ayah, index) => {
+        const translation = ayahsEnglish[index] ? ayahsEnglish[index].text : "Translation not available.";
+        verses.push({ text: ayah.text, audio: ayah.audio, number: ayah.numberInSurah, translation });
+
+        content.innerHTML += `
+          <div class="verse">
+            <p>${ayah.text} <span>(${ayah.numberInSurah})</span></p>
+            <p class="translation">${translation}</p>
+            <audio controls>
+              <source src="${ayah.audio}" type="audio/mp3">
+              Your browser does not support audio playback.
+            </audio>
+          </div>
+        `;
       });
     }
-
-    // Handle Generate button click
-    generateBtn.addEventListener('click', () => {
-      errorDiv.textContent = '';
-      resultDiv.innerHTML = '';
-
-      const surahNumber = surahSelect.value;
-      const startVerse = parseInt(document.getElementById('start-verse').value);
-      const endVerse = parseInt(document.getElementById('end-verse').value);
-
-      if (!surahNumber) {
-        errorDiv.textContent = 'Please select a surah.';
-        return;
-      }
-      if (isNaN(startVerse) || isNaN(endVerse)) {
-        errorDiv.textContent = 'Please enter valid verse numbers.';
-        return;
-      }
-      if (startVerse < 1 || endVerse < startVerse) {
-        errorDiv.textContent = 'Invalid verse range.';
+   
+    async function generateVideo() {
+      if (verses.length === 0) {
+        alert("Please load the verses first.");
         return;
       }
 
-      // Validate verse range against total ayahs from selected surah
-      const selectedOption = surahSelect.options[surahSelect.selectedIndex];
-      const totalAyahs = parseInt(selectedOption.getAttribute('data-ayahs'));
-      if (endVerse > totalAyahs) {
-        errorDiv.textContent = `This surah has only ${totalAyahs} verses.`;
-        return;
-      }
+      document.getElementById("progress-bar-container").style.display = "block";
+      document.getElementById("progress-bar").style.width = "0%";
 
-      // API endpoints for Arabic and English
-      const arabicURL = `https://api.alquran.cloud/v1/surah/${surahNumber}/ar.alafasy`;
-      const englishURL = `https://api.alquran.cloud/v1/surah/${surahNumber}/en.ahmedraza`;
+      const canvas = document.getElementById("quranCanvas");
+      const ctx = canvas.getContext("2d");
+      let recordedChunks = [];
 
-      // Show loading message
-      resultDiv.innerHTML = '<p>Loading verses...</p>';
+      const canvasStream = canvas.captureStream(30);
+      const audioContext = new AudioContext();
+      const destination = audioContext.createMediaStreamDestination();
 
-      // Fetch both Arabic and English data concurrently
-      Promise.all([
-        fetch(arabicURL).then(res => res.json()),
-        fetch(englishURL).then(res => res.json())
-      ])
-      .then(([arabicData, englishData]) => {
-        // Filter ayahs within selected range
-        const arabicAyahs = arabicData.data.ayahs.filter(ayah => ayah.numberInSurah >= startVerse && ayah.numberInSurah <= endVerse);
-        const englishAyahs = englishData.data.ayahs.filter(ayah => ayah.numberInSurah >= startVerse && ayah.numberInSurah <= endVerse);
+      const combinedStream = new MediaStream([
+        ...canvasStream.getVideoTracks(),
+        ...destination.stream.getAudioTracks(),
+      ]);
+      const recorder = new MediaRecorder(combinedStream, { mimeType: "video/webm; codecs=vp9,opus" });
 
-        // Clear loading message
-        resultDiv.innerHTML = '';
+      recorder.ondataavailable = event => recordedChunks.push(event.data);
+      recorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: "video/mp4" });
+        const url = URL.createObjectURL(blob);
+        const videoElement = document.getElementById("quranVideo");
+        videoElement.src = url;
+        videoElement.style.display = "block";
 
-        // Display each verse with audio, Arabic text, and English translation
-        for (let i = 0; i < arabicAyahs.length; i++) {
-          const verseDiv = document.createElement('div');
-          verseDiv.className = 'verse';
+        const downloadLink = document.getElementById("downloadLink");
+        downloadLink.href = url;
+        downloadLink.style.display = "block";
+      };
 
-          // Audio element using Arabic audio URL
-          const audioEl = document.createElement('audio');
-          audioEl.controls = true;
-          const sourceEl = document.createElement('source');
-          sourceEl.src = arabicAyahs[i].audio;
-          sourceEl.type = 'audio/mpeg';
-          audioEl.appendChild(sourceEl);
-          verseDiv.appendChild(audioEl);
+      let totalDuration = 0;
+      const audioBuffers = await Promise.all(verses.map(async verse => {
+        const response = await fetch(verse.audio);
+        const arrayBuffer = await response.arrayBuffer();
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+        totalDuration += audioBuffer.duration;
+        return audioBuffer;
+      }));
 
-          // Arabic text paragraph
-          const arabicP = document.createElement('p');
-          arabicP.className = 'arabic';
-          arabicP.textContent = arabicAyahs[i].text;
-          verseDiv.appendChild(arabicP);
+      // Total video length = sum of audio durations + 3 seconds for credit display.
+      console.log("Total Video Duration (seconds):", totalDuration + 3);
 
-          // English text paragraph
-          const englishP = document.createElement('p');
-          englishP.className = 'english';
-          englishP.textContent = englishAyahs[i] ? englishAyahs[i].text : '';
-          verseDiv.appendChild(englishP);
+      recorder.start();
 
-          resultDiv.appendChild(verseDiv);
+      let frameIndex = 0;
+
+      function drawFrame() {
+        if (frameIndex >= verses.length) {
+          // Show credit message for 3 seconds
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "black";
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = "white";
+          ctx.font = "40px Amiri";
+          wrapText(ctx, "Generated by: Waheed Alquran", canvas.width / 2, canvas.height / 2, canvas.width - 100, 50);
+          
+          setTimeout(() => {
+            recorder.stop();
+          }, 3000); // 3 seconds credit display
+          return;
         }
-      })
-      .catch(error => {
-        console.error('Error fetching verses:', error);
-        resultDiv.innerHTML = '<p class="error">An error occurred while fetching verses.</p>';
-      });
-    });
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "black";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "white";
+
+        // Draw Arabic verse text
+        ctx.font = "40px Amiri";
+        wrapText(ctx, verses[frameIndex].text, canvas.width / 2, 100, canvas.width - 100, 50);
+        
+        // Draw English translation
+        ctx.font = "25px Arial";
+        wrapText(ctx, verses[frameIndex].translation, canvas.width / 2, 300, canvas.width - 100, 40);
+        
+        // Draw verse number
+        ctx.font = "30px Arial";
+        ctx.fillText(`Verse ${verses[frameIndex].number}`, canvas.width / 2, 450);
+
+        document.getElementById("progress-bar").style.width = `${(frameIndex / verses.length) * 100}%`;
+
+        const source = audioContext.createBufferSource();
+        source.buffer = audioBuffers[frameIndex];
+        source.connect(destination);
+        source.start();
+
+        // Display current verse for the duration of its audio
+        const duration = audioBuffers[frameIndex].duration * 1000;
+        frameIndex++;
+        setTimeout(drawFrame, duration);
+      }
+
+      // Text wrapping function
+      function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+        const words = text.split(' ');
+        let line = '';
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+
+        for (let n = 0; n < words.length; n++) {
+          let testLine = line + words[n] + ' ';
+          let metrics = ctx.measureText(testLine);
+          if (metrics.width > maxWidth && n > 0) {
+            ctx.fillText(line, x, y);
+            line = words[n] + ' ';
+            y += lineHeight;
+          } else {
+            line = testLine;
+          }
+        }
+        ctx.fillText(line, x, y);
+      }
+
+      drawFrame();
+    }
   </script>
 </body>
 </html>
