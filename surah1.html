@@ -6,205 +6,108 @@
     <title>Quran Web App</title>
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-        select, button {
-            font-size: 18px;
-            padding: 8px;
-            margin-top: 10px;
-        }
-        .surah-name {
-            font-size: 22px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-        .ayah {
-            font-size: 20px;
-            margin: 10px 0;
-            padding: 10px;
-            background: #eef;
-            border-radius: 5px;
-        }
-        audio {
-            width: 100%;
-            margin-top: 5px;
-        }
-        .settings-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-        }
-        .settings-menu {
-            position: fixed;
-            top: 0;
-            right: -300px;
-            width: 250px;
-            height: 100%;
-            background: white;
-            box-shadow: -2px 0 5px rgba(0,0,0,0.2);
-            padding: 20px;
-            transition: 0.3s;
-            overflow-y: auto;
-        }
-        .settings-menu.active {
-            right: 0;
-        }
-        .settings-menu h3 {
-            margin-bottom: 15px;
-        }
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            font-size: 18px;
-            cursor: pointer;
-            color: red;
-        }
-        .checkbox-group {
-            text-align: left;
-            margin-bottom: 15px;
-        }
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
+        .container { width: 100%; padding: 20px; text-align: center; }
+        select { font-size: 18px; padding: 8px; margin-top: 10px; }
+        .ayah { font-size: 20px; margin: 10px 0; padding: 10px; background: #eef; border-radius: 5px; }
+        audio { width: 100%; margin-top: 5px; }
+        .settings-btn { position: fixed; top: 20px; right: 20px; background: #008cba; color: white; border: none; padding: 15px; border-radius: 50%; font-size: 20px; cursor: pointer; z-index: 1000; }
+        .settings-menu { position: fixed; top: 0; right: -300px; width: 250px; height: 100%; background: white; box-shadow: -2px 0 5px rgba(0,0,0,0.2); padding: 20px; transition: 0.3s; overflow-y: auto; }
+        .settings-menu.active { right: 0; }
+        .close-btn { position: absolute; top: 10px; left: 10px; font-size: 18px; cursor: pointer; color: red; }
     </style>
 </head>
 <body>
-
 <div class="container">
     <h2>Quran Surah Player</h2>
     <label for="surahSelect">Select Surah:</label>
-    <select id="surahSelect">
-        <!-- Surah options will be added dynamically -->
-    </select>
-    <button onclick="fetchSurah()">Load Surah</button>
-
+    <select id="surahSelect" onchange="fetchSurah()"></select>
     <div id="surahContent"></div>
 </div>
-
-<!-- Settings Button -->
-<button class="settings-btn" onclick="toggleSettings()">
-    <i class="fas fa-cog"></i>
-</button>
-
-<!-- Settings Menu -->
+<button class="settings-btn" onclick="toggleSettings()"><i class="fas fa-cog"></i></button>
 <div class="settings-menu" id="settingsMenu">
     <span class="close-btn" onclick="toggleSettings()">X</span>
+    <h3>Select Languages</h3>
+    <div id="languageList"></div>
     <h3>Select Translations</h3>
-    <div id="editionList" class="checkbox-group">
-        <!-- Checkboxes will be added dynamically -->
-    </div>
+    <div id="editionList"></div>
     <button onclick="saveSettings()">Save Settings</button>
 </div>
-
 <script>
-    // Populate Surah dropdown (1 to 114)
-    const surahSelect = document.getElementById('surahSelect');
-    for (let i = 1; i <= 114; i++) {
-        let option = document.createElement('option');
-        option.value = i;
-        option.textContent = `Surah ${i}`;
-        surahSelect.appendChild(option);
+    async function loadSurahs() {
+        const response = await fetch('https://api.alquran.cloud/v1/meta');
+        const data = await response.json();
+        const surahSelect = document.getElementById('surahSelect');
+        data.data.surahs.references.forEach(surah => {
+            let option = document.createElement('option');
+            option.value = surah.number;
+            option.textContent = `${surah.englishName} (${surah.name})`;
+            surahSelect.appendChild(option);
+        });
+        const urlParams = new URLSearchParams(window.location.search);
+        const surahIndex = urlParams.get('index') || 1;
+        surahSelect.value = surahIndex;
+        fetchSurah();
     }
-
-    // Fetch and populate Editions with checkboxes
-    function loadEditions() {
-        fetch('https://api.alquran.cloud/v1/edition')
-            .then(response => response.json())
-            .then(data => {
-                const editionList = document.getElementById('editionList');
-                editionList.innerHTML = '';
-                data.data.forEach(edition => {
-                    let checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.value = edition.identifier;
-                    checkbox.id = `edition-${edition.identifier}`;
-                    
-                    let label = document.createElement('label');
-                    label.htmlFor = `edition-${edition.identifier}`;
-                    label.textContent = `${edition.englishName} (${edition.language})`;
-
-                    let br = document.createElement('br');
-
-                    editionList.appendChild(checkbox);
-                    editionList.appendChild(label);
-                    editionList.appendChild(br);
-                });
-
-                // Load saved settings
-                const savedEditions = JSON.parse(localStorage.getItem('quranEditions')) || [];
-                savedEditions.forEach(id => {
-                    const checkbox = document.getElementById(`edition-${id}`);
-                    if (checkbox) checkbox.checked = true;
-                });
-            })
-            .catch(error => console.error('Error fetching editions:', error));
+    async function loadEditions() {
+        const response = await fetch('https://api.alquran.cloud/v1/edition');
+        const data = await response.json();
+        const editionList = document.getElementById('editionList');
+        editionList.innerHTML = '';
+        data.data.forEach(edition => {
+            let checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.value = edition.identifier;
+            checkbox.id = `edition-${edition.identifier}`;
+            let label = document.createElement('label');
+            label.htmlFor = `edition-${edition.identifier}`;
+            label.textContent = `${edition.englishName} (${edition.language})`;
+            let br = document.createElement('br');
+            editionList.appendChild(checkbox);
+            editionList.appendChild(label);
+            editionList.appendChild(br);
+        });
+        const savedEditions = JSON.parse(localStorage.getItem('quranEditions')) || ['ar.alafasy'];
+        savedEditions.forEach(id => {
+            const checkbox = document.getElementById(`edition-${id}`);
+            if (checkbox) checkbox.checked = true;
+        });
     }
-
-    // Save user settings
     function saveSettings() {
-        const selectedEditions = [];
+        const selectedEditions = ['ar.alafasy'];
         document.querySelectorAll('#editionList input[type="checkbox"]:checked').forEach(checkbox => {
-            selectedEditions.push(checkbox.value);
+            if (checkbox.value !== 'ar.alafasy') selectedEditions.push(checkbox.value);
         });
         localStorage.setItem('quranEditions', JSON.stringify(selectedEditions));
         alert('Settings saved!');
         toggleSettings();
     }
-
-    // Fetch and display Surah based on user settings
-    function fetchSurah() {
-        const surahNumber = surahSelect.value;
+    async function fetchSurah() {
+        const surahNumber = document.getElementById('surahSelect').value;
         const selectedEditions = JSON.parse(localStorage.getItem('quranEditions')) || ['ar.alafasy'];
-
         let requests = selectedEditions.map(edition => fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${edition}`).then(res => res.json()));
-
         Promise.all(requests)
             .then(results => {
                 let content = `<div class="surah-name">${results[0].data.englishName} (${results[0].data.name})</div>`;
                 results[0].data.ayahs.forEach((ayah, index) => {
                     let ayahContent = `<div class="ayah"><p>${ayah.text}</p>`;
-                    
                     results.forEach(result => {
                         let translation = result.data.ayahs[index].text;
                         ayahContent += `<p style="color: gray; font-size: 16px;">${translation}</p>`;
                     });
-
-                    ayahContent += ayah.audio ? `<audio controls><source src="${ayah.audio}" type="audio/mp3"></audio>` : '';
+                    ayahContent += `<audio controls><source src="${ayah.audio}" type="audio/mp3"></audio>`;
                     ayahContent += '</div>';
                     content += ayahContent;
                 });
-
                 document.getElementById('surahContent').innerHTML = content;
             })
             .catch(error => console.error('Error fetching Surah:', error));
     }
-
-    // Toggle Settings Menu
     function toggleSettings() {
         document.getElementById('settingsMenu').classList.toggle('active');
     }
-
-    // Load editions on startup
+    loadSurahs();
     loadEditions();
 </script>
-
 </body>
 </html>
