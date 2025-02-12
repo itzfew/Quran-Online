@@ -229,14 +229,26 @@
         }
 
         function shareAsImage() {
-            const verseElement = document.getElementById(`verse-${selectedVerseId}`);
-            html2canvas(verseElement).then(canvas => {
+            const verseElement = document.getElementById(`verse-${selectedVerseId}`).cloneNode(true);
+            
+            // Remove buttons from cloned element
+            const buttons = verseElement.querySelectorAll('button');
+            buttons.forEach(btn => btn.remove());
+            
+            const container = document.createElement('div');
+            container.classList.add('verse-container');
+            container.appendChild(verseElement);
+            document.body.appendChild(container);
+            
+            html2canvas(container).then(canvas => {
                 const imgUrl = canvas.toDataURL('image/png');
                 const link = document.createElement('a');
                 link.href = imgUrl;
                 link.download = `verse_${selectedVerseId}.png`;
                 link.click();
+                document.body.removeChild(container);
             });
+            
             closeSharePopup();
         }
 
