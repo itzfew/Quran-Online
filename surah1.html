@@ -1,277 +1,209 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quran Kareem (Ar)</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Cairo&family=El+Messiri&family=Harmattan&family=Lateef&family=Scheherazade+New&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    
-    <link rel="stylesheet" href="main/css/surah.css">
+    <title>Quran Web App</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
     <style>
-        .share-btn, .view-btn {
-            display: none;
-            margin-top: 10px;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 20px;
         }
-        .selected .share-btn, .selected .view-btn {
-            display: inline-block;
-        }
- 
-        .share-popup {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        .container {
+            max-width: 600px;
+            margin: auto;
             background: white;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
         }
-        .share-popup button {
-            margin: 10px;
+        select, button {
+            font-size: 18px;
+            padding: 8px;
+            margin-top: 10px;
+        }
+        .surah-name {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .ayah {
+            font-size: 20px;
+            margin: 10px 0;
             padding: 10px;
+            background: #eef;
+            border-radius: 5px;
+        }
+        audio {
+            width: 100%;
+            margin-top: 5px;
+        }
+        .settings-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            font-size: 20px;
             cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
         }
-        .hidden {
-            display: none;
+        .settings-menu {
+            position: fixed;
+            top: 0;
+            right: -300px;
+            width: 250px;
+            height: 100%;
+            background: white;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+            padding: 20px;
+            transition: 0.3s;
+            overflow-y: auto;
         }
-
+        .settings-menu.active {
+            right: 0;
+        }
+        .settings-menu h3 {
+            margin-bottom: 15px;
+        }
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            color: red;
+        }
+        .checkbox-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
 
-<div class="settings-container">
-    <div class="settings-item" onclick="toggleTheme()">
-        <i class="fas fa-adjust"></i>
-    </div>
-    <div class="settings-item" onclick="changeTextSize(1)">
-        <i class="fas fa-plus"></i>
-    </div>
-    <div class="settings-item" onclick="changeTextSize(-1)">
-        <i class="fas fa-minus"></i>
-    </div>
-    <div class="settings-item" onclick="navigateToWordToWord()">
-        <i class="fas fa-brands fa-fire"></i>
-    </div>
-    <div class="settings-item" onclick="navigateToRead()">
-        <i class="fas fa-book-open"></i>
-    </div>
-</div>
-    
-<div class="header">
-    <i class="fas fa-arrow-left arrow arrow-left" onclick="navigateSurah(-1)"></i>
-    <div id="surah-heading" class="surah-heading" style="display: none;"></div>
-    <i class="fas fa-arrow-right arrow arrow-right" onclick="navigateSurah(+1)"></i>
+<div class="container">
+    <h2>Quran Surah Player</h2>
+    <label for="surahSelect">Select Surah:</label>
+    <select id="surahSelect">
+        <!-- Surah options will be added dynamically -->
+    </select>
+    <button onclick="fetchSurah()">Load Surah</button>
+
+    <div id="surahContent"></div>
 </div>
 
-<div id="first-verse" class="first-verse" style="display: none;"></div>
-<div id="content"></div>
-    <div class="share-popup" id="sharePopup">
-        <p>Share this verse as:</p>
-        <button onclick="shareAsText()">Text</button>
-        <button onclick="shareAsImage()">Image</button>
-        <button onclick="closeSharePopup()">Cancel</button>
-    </div>
-
-<button class="back-to-top" onclick="scrollToTop()">
-    <i class="fas fa-arrow-up"></i>
+<!-- Settings Button -->
+<button class="settings-btn" onclick="toggleSettings()">
+    <i class="fas fa-cog"></i>
 </button>
 
+<!-- Settings Menu -->
+<div class="settings-menu" id="settingsMenu">
+    <span class="close-btn" onclick="toggleSettings()">X</span>
+    <h3>Select Translations</h3>
+    <div id="editionList" class="checkbox-group">
+        <!-- Checkboxes will be added dynamically -->
+    </div>
+    <button onclick="saveSettings()">Save Settings</button>
+</div>
+
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const darkMode = localStorage.getItem('darkMode') === 'true';
-        const textSize = localStorage.getItem('textSize') || '18';
-        if (darkMode) {
-            document.body.classList.add('dark-mode');
-        }
-
-        document.body.style.fontSize = textSize + 'px';
-
-        const index = getQueryParam('index');
-        fetchSurah(index ? index : 1);
-        displayHistory(); // Display the saved history on page load
-    });
-
-    function getQueryParam(param) {
-        const urlParams = new URLSearchParams(window.location.search);
-        return urlParams.get(param);
+    // Populate Surah dropdown (1 to 114)
+    const surahSelect = document.getElementById('surahSelect');
+    for (let i = 1; i <= 114; i++) {
+        let option = document.createElement('option');
+        option.value = i;
+        option.textContent = `Surah ${i}`;
+        surahSelect.appendChild(option);
     }
 
-    async function fetchSurah(index) {
-        const arabicResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_${String(index).padStart(1, '0')}.json`);
-        const arabicData = await arabicResponse.json();
+    // Fetch and populate Editions with checkboxes
+    function loadEditions() {
+        fetch('https://api.alquran.cloud/v1/edition')
+            .then(response => response.json())
+            .then(data => {
+                const editionList = document.getElementById('editionList');
+                editionList.innerHTML = '';
+                data.data.forEach(edition => {
+                    let checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.value = edition.identifier;
+                    checkbox.id = `edition-${edition.identifier}`;
+                    
+                    let label = document.createElement('label');
+                    label.htmlFor = `edition-${edition.identifier}`;
+                    label.textContent = `${edition.englishName} (${edition.language})`;
 
-        const translationResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/en/en_translation_${String(index).padStart(1, '0')}.json`);
-        const translationData = await translationResponse.json();
+                    let br = document.createElement('br');
 
-        const urduResponse = await fetch(`https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/translation/ur/t_surah_${String(index).padStart(3, '0')}.json`);
-        const urduData = await urduResponse.json();
-
-        displaySurah(arabicData, translationData, urduData);
-    }
-
-    function displaySurah(arabicData, translationData, urduData) {
-        const surahHeading = document.getElementById('surah-heading');
-        const firstVerse = document.getElementById('first-verse');
-        const content = document.getElementById('content');
-        const count = arabicData.count;
-        const arabicVerses = arabicData.verse;
-        const translationVerses = translationData.verse;
-        const urduVerses = urduData.data;
-
-        surahHeading.style.display = 'block';
-        firstVerse.style.display = 'block';
-        content.innerHTML = '';
-
-        surahHeading.innerText = arabicData.name;
-        firstVerse.innerText = arabicVerses['verse_0'];
-
-        for (let i = 1; i <= count; i++) {
-            const arabicVerse = arabicVerses[`verse_${i}`];
-            const translatedVerse = translationVerses[`verse_${i}`];
-            const urduVerse = urduVerses.find(v => v.aya == i.toString())?.text || '';
-
-            const verseDiv = document.createElement('div');
-            verseDiv.classList.add('verse');
-            verseDiv.setAttribute('id', `verse-${i}`);
-
-            let verseContent = `
-                <div class="arabic-text">${arabicVerse}
-                    <span class="verse-number">${i}</span>
-                </div>
-                <div class="translation-text">${translatedVerse}</div>
-                <div class="urdu-text">${urduVerse}</div>
-                <button class="share-btn" onclick="shareVerse(${i})">Share</button>
-                <button class="view-btn" onclick="viewVerse(${i})">View</button>
-            `;
-
-            verseDiv.innerHTML = verseContent;
-
-            verseDiv.onclick = () => toggleHighlight(i);
-
-            content.appendChild(verseDiv);
-        }
-    }
-
-    function toggleHighlight(verseId) {
-        const allVerses = document.querySelectorAll('.verse');
-        allVerses.forEach(verse => {
-            verse.classList.remove('selected');
-            const shareButton = verse.querySelector('.share-btn');
-            const viewButton = verse.querySelector('.view-btn');
-            if (shareButton) shareButton.style.display = 'none';
-            if (viewButton) viewButton.style.display = 'none';
-        });
-
-        const verseElement = document.getElementById(`verse-${verseId}`);
-        verseElement.classList.add('selected');
-        const shareButton = verseElement.querySelector('.share-btn');
-        const viewButton = verseElement.querySelector('.view-btn');
-        if (shareButton) shareButton.style.display = 'inline-block';
-        if (viewButton) viewButton.style.display = 'inline-block';
-    }
-
-    function scrollToTop() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
-
-    function changeTextSize(increment) {
-        const newSize = parseInt(document.body.style.fontSize) + increment;
-        document.body.style.fontSize = newSize + 'px';
-        localStorage.setItem('textSize', newSize);
-    }
-
-    let currentSurahIndex = 1;
-
-    function navigateSurah(direction) {
-        currentSurahIndex += direction;
-
-        if (currentSurahIndex < 1) {
-            currentSurahIndex = 1;
-        } else if (currentSurahIndex > 114) {
-            currentSurahIndex = 114;
-        }
-
-        const newUrl = `https://quran-online.pages.dev/surah?index=${currentSurahIndex}`;
-        window.history.pushState({ path: newUrl }, '', newUrl);
-        window.location.reload();
-    }
-
-    function shareVerse(verseId) {
-            selectedVerseId = verseId;
-            document.getElementById('sharePopup').style.display = 'block';
-        }
-
-        function shareAsText() {
-            const verseText = document.getElementById(`verse-${selectedVerseId}`).innerText;
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Quran Verse',
-                    text: verseText,
-                    url: window.location.href
-                }).catch((error) => console.log('Error sharing:', error));
-            } else {
-                navigator.clipboard.writeText(verseText).then(() => {
-                    alert('Verse copied to clipboard!');
-                }).catch((error) => {
-                    console.log('Error copying to clipboard:', error);
+                    editionList.appendChild(checkbox);
+                    editionList.appendChild(label);
+                    editionList.appendChild(br);
                 });
-            }
-            closeSharePopup();
-        }
 
-        function shareAsImage() {
-            const container = document.createElement('div');
-            container.classList.add('verse-container');
-            container.innerText = selectedVerseText;
-            document.body.appendChild(container);
-            
-            html2canvas(container, { width: 512, height: 512 }).then(canvas => {
-                const imgUrl = canvas.toDataURL('image/png');
-                const link = document.createElement('a');
-                link.href = imgUrl;
-                link.download = `quran_verse.png`;
-                link.click();
-                document.body.removeChild(container);
-            });
-            
-            closeSharePopup();
-        }
-
-        function closeSharePopup() {
-            document.getElementById('sharePopup').style.display = 'none';
-        }
-
-    function viewVerse(verseId) {
-        const surahIndex = getQueryParam('index') || 1;
-        window.location.href = `verse.html?surah=${surahIndex}&verse=${verseId}`;
+                // Load saved settings
+                const savedEditions = JSON.parse(localStorage.getItem('quranEditions')) || [];
+                savedEditions.forEach(id => {
+                    const checkbox = document.getElementById(`edition-${id}`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            })
+            .catch(error => console.error('Error fetching editions:', error));
     }
 
-function navigateToWordToWord() {
-    // Get the current Surah index from the query parameter or fallback to the default
-    const surahIndex = getQueryParam('index') || currentSurahIndex;
+    // Save user settings
+    function saveSettings() {
+        const selectedEditions = [];
+        document.querySelectorAll('#editionList input[type="checkbox"]:checked').forEach(checkbox => {
+            selectedEditions.push(checkbox.value);
+        });
+        localStorage.setItem('quranEditions', JSON.stringify(selectedEditions));
+        alert('Settings saved!');
+        toggleSettings();
+    }
 
-    // Navigate to the Word-to-Word page with the correct Surah number and append #1
-    if (surahIndex) {
-        window.location.href = `wordtoword.html?index=${surahIndex}#1`;
-    } else {
-        console.error("Unable to determine Surah index.");
+    // Fetch and display Surah based on user settings
+    function fetchSurah() {
+        const surahNumber = surahSelect.value;
+        const selectedEditions = JSON.parse(localStorage.getItem('quranEditions')) || ['ar.alafasy'];
+
+        let requests = selectedEditions.map(edition => fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${edition}`).then(res => res.json()));
+
+        Promise.all(requests)
+            .then(results => {
+                let content = `<div class="surah-name">${results[0].data.englishName} (${results[0].data.name})</div>`;
+                results[0].data.ayahs.forEach((ayah, index) => {
+                    let ayahContent = `<div class="ayah"><p>${ayah.text}</p>`;
+                    
+                    results.forEach(result => {
+                        let translation = result.data.ayahs[index].text;
+                        ayahContent += `<p style="color: gray; font-size: 16px;">${translation}</p>`;
+                    });
+
+                    ayahContent += ayah.audio ? `<audio controls><source src="${ayah.audio}" type="audio/mp3"></audio>` : '';
+                    ayahContent += '</div>';
+                    content += ayahContent;
+                });
+
+                document.getElementById('surahContent').innerHTML = content;
+            })
+            .catch(error => console.error('Error fetching Surah:', error));
     }
-}
-    function navigateToRead() {
-        const surahIndex = getQueryParam('index') || currentSurahIndex;
-        const surahNumber = surahIndex.split('/')[0];
-        const pageNumber = 1;
-        window.location.href = `read?index=${surahNumber}/${pageNumber}`;
+
+    // Toggle Settings Menu
+    function toggleSettings() {
+        document.getElementById('settingsMenu').classList.toggle('active');
     }
+
+    // Load editions on startup
+    loadEditions();
 </script>
 
 </body>
