@@ -240,7 +240,7 @@
             container.appendChild(verseElement);
             document.body.appendChild(container);
             
-            html2canvas(container).then(canvas => {
+            html2canvas(container, { width: 512, height: 512 }).then(canvas => {
                 const imgUrl = canvas.toDataURL('image/png');
                 const link = document.createElement('a');
                 link.href = imgUrl;
@@ -255,6 +255,7 @@
         function closeSharePopup() {
             document.getElementById('sharePopup').style.display = 'none';
         }
+            
 
     function viewVerse(verseId) {
         const surahIndex = getQueryParam('index') || 1;
