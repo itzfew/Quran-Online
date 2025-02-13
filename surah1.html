@@ -129,7 +129,7 @@
     }
 }
 function generateVerseImage(verseId, arabicText, englishText, urduText) {
-    // Create a canvas for the image
+    // Create canvas for the image
     const canvas = document.createElement('canvas');
     canvas.width = 512;
     canvas.height = 512;
@@ -144,31 +144,33 @@ function generateVerseImage(verseId, arabicText, englishText, urduText) {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // Ask user what to include in the image
-    const choice = prompt("What should the image contain?\n1. Arabic only\n2. Arabic & English\n3. Arabic & Urdu");
-
+    // Default: Arabic only
     let lines = [];
+    let choice = prompt("What should the image contain?\n1. Arabic only\n2. Arabic & English\n3. Arabic & Urdu");
 
-    if (choice === "1") {
-        ctx.font = 'bold 40px "Amiri", "Scheherazade New", serif';
-        lines = splitText(ctx, arabicText, 450);
-    } else if (choice === "2") {
-        ctx.font = 'bold 35px "Amiri", "Scheherazade New", serif';
-        lines = splitText(ctx, arabicText, 450);
-        ctx.font = 'bold 20px "Cairo", sans-serif';
-        lines = lines.concat(splitText(ctx, englishText, 450));
-    } else if (choice === "3") {
-        ctx.font = 'bold 35px "Amiri", "Scheherazade New", serif';
-        lines = splitText(ctx, arabicText, 450);
-        ctx.font = 'bold 20px "Cairo", sans-serif';
-        lines = lines.concat(splitText(ctx, urduText, 450));
-    } else {
+    // Ensure choice is valid (default to Arabic if input is invalid)
+    if (choice !== "1" && choice !== "2" && choice !== "3") {
         alert("Invalid choice! Defaulting to Arabic only.");
-        ctx.font = 'bold 40px "Amiri", "Scheherazade New", serif';
-        lines = splitText(ctx, arabicText, 450);
+        choice = "1";
     }
 
-    // Draw text on canvas with proper spacing
+    // Arabic Text
+    ctx.font = 'bold 38px "Amiri", "Scheherazade New", serif';
+    lines = splitText(ctx, arabicText, 450);
+
+    // English Text (if selected)
+    if (choice === "2") {
+        ctx.font = 'bold 22px "Cairo", sans-serif';
+        lines = lines.concat(splitText(ctx, englishText, 450));
+    }
+
+    // Urdu Text (if selected)
+    if (choice === "3") {
+        ctx.font = 'bold 22px "Cairo", sans-serif';
+        lines = lines.concat(splitText(ctx, urduText, 450));
+    }
+
+    // Draw text with proper spacing
     let yPosition = 180 - (lines.length * 20);
     lines.forEach((line, index) => {
         ctx.fillText(line, canvas.width / 2, yPosition + index * 50);
@@ -203,6 +205,7 @@ function splitText(ctx, text, maxWidth) {
     lines.push(currentLine);
     return lines;
 }
+
 
 
 
