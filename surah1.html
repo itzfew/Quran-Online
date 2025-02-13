@@ -85,8 +85,7 @@
 
         displaySurah(arabicData, translationData, urduData);
     }
-
-    function displaySurah(arabicData, translationData, urduData) {
+function displaySurah(arabicData, translationData, urduData) {
     const surahHeading = document.getElementById('surah-heading');
     const firstVerse = document.getElementById('first-verse');
     const content = document.getElementById('content');
@@ -128,14 +127,15 @@
         content.appendChild(verseDiv);
     }
 }
-function generateVerseImage(verseId, arabicText, englishText, urduText) {
-    // Create canvas for the image
+    
+function generateVerseImage(verseId, arabicText, englishText = '', urduText = '') {
+    // Create a canvas for the image
     const canvas = document.createElement('canvas');
     canvas.width = 512;
     canvas.height = 512;
     const ctx = canvas.getContext('2d');
 
-    // Black background
+    // Set black background
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -144,33 +144,35 @@ function generateVerseImage(verseId, arabicText, englishText, urduText) {
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // Default: Arabic only
-    let lines = [];
+    // Ask user what to include in the image
     let choice = prompt("What should the image contain?\n1. Arabic only\n2. Arabic & English\n3. Arabic & Urdu");
 
-    // Ensure choice is valid (default to Arabic if input is invalid)
-    if (choice !== "1" && choice !== "2" && choice !== "3") {
+    // Ensure a valid choice is made (default to Arabic only)
+    if (!["1", "2", "3"].includes(choice)) {
         alert("Invalid choice! Defaulting to Arabic only.");
         choice = "1";
     }
 
-    // Arabic Text
+    // Initialize text lines
+    let lines = [];
+
+    // Arabic text (always included)
     ctx.font = 'bold 38px "Amiri", "Scheherazade New", serif';
     lines = splitText(ctx, arabicText, 450);
 
-    // English Text (if selected)
-    if (choice === "2") {
+    // English text (if selected)
+    if (choice === "2" && englishText) {
         ctx.font = 'bold 22px "Cairo", sans-serif';
         lines = lines.concat(splitText(ctx, englishText, 450));
     }
 
-    // Urdu Text (if selected)
-    if (choice === "3") {
+    // Urdu text (if selected)
+    if (choice === "3" && urduText) {
         ctx.font = 'bold 22px "Cairo", sans-serif';
         lines = lines.concat(splitText(ctx, urduText, 450));
     }
 
-    // Draw text with proper spacing
+    // Calculate Y position for centered text
     let yPosition = 180 - (lines.length * 20);
     lines.forEach((line, index) => {
         ctx.fillText(line, canvas.width / 2, yPosition + index * 50);
@@ -205,7 +207,6 @@ function splitText(ctx, text, maxWidth) {
     lines.push(currentLine);
     return lines;
 }
-
 
 
 
