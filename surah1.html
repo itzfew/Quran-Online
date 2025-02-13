@@ -128,7 +128,8 @@
         content.appendChild(verseDiv);
     }
 }
-function generateVerseImage(verseId, verseText) {
+function generateVerseImage(verseId, arabicText, englishText, urduText) {
+    // Create a canvas for the image
     const canvas = document.createElement('canvas');
     canvas.width = 512;
     canvas.height = 512;
@@ -138,16 +139,39 @@ function generateVerseImage(verseId, verseText) {
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // White text
+    // White text settings
     ctx.fillStyle = 'white';
-    ctx.font = 'bold 32px Amiri, sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
 
-    // Split verse text for multi-line support
-    const lines = splitText(ctx, verseText, 450);
+    // Ask user what to include in the image
+    const choice = prompt("What should the image contain?\n1. Arabic only\n2. Arabic & English\n3. Arabic & Urdu");
+
+    let lines = [];
+
+    if (choice === "1") {
+        ctx.font = 'bold 40px "Amiri", "Scheherazade New", serif';
+        lines = splitText(ctx, arabicText, 450);
+    } else if (choice === "2") {
+        ctx.font = 'bold 35px "Amiri", "Scheherazade New", serif';
+        lines = splitText(ctx, arabicText, 450);
+        ctx.font = 'bold 20px "Cairo", sans-serif';
+        lines = lines.concat(splitText(ctx, englishText, 450));
+    } else if (choice === "3") {
+        ctx.font = 'bold 35px "Amiri", "Scheherazade New", serif';
+        lines = splitText(ctx, arabicText, 450);
+        ctx.font = 'bold 20px "Cairo", sans-serif';
+        lines = lines.concat(splitText(ctx, urduText, 450));
+    } else {
+        alert("Invalid choice! Defaulting to Arabic only.");
+        ctx.font = 'bold 40px "Amiri", "Scheherazade New", serif';
+        lines = splitText(ctx, arabicText, 450);
+    }
+
+    // Draw text on canvas with proper spacing
+    let yPosition = 180 - (lines.length * 20);
     lines.forEach((line, index) => {
-        ctx.fillText(line, canvas.width / 2, 200 + index * 40);
+        ctx.fillText(line, canvas.width / 2, yPosition + index * 50);
     });
 
     // Convert canvas to image and download
@@ -179,6 +203,7 @@ function splitText(ctx, text, maxWidth) {
     lines.push(currentLine);
     return lines;
 }
+
 
 
     function toggleHighlight(verseId) {
