@@ -215,7 +215,7 @@ function navigateToWordToWord() {
         const surahIndex = getQueryParam('index') || currentSurahIndex;
         const surahNumber = surahIndex.split('/')[0];
         const pageNumber = 1;
-        window.location.href = `read?index=${surahNumber}/${pageNumber}`;
+        window.location.href = `read?surah=${surahNumber}&page=${pageNumber}`;
     }
 </script>
 
