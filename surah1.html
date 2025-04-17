@@ -1,571 +1,663 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran Surah Viewer</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --gold: #c9a769;
-            --dark-brown: #3a2e1e;
-            --light-beige: #f8f3e6;
-            --verse-highlight: #f0e8d5;
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --text-color: #333;
+            --light-bg: #f9f9f9;
+            --verse-highlight: #f0f7ff;
         }
-
+        
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
-
+        
         body {
             font-family: 'Amiri', serif;
-            background-color: var(--light-beige);
-            color: var(--dark-brown);
-            line-height: 2.5;
-            padding: 0;
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
-        }
-
-        .quran-page {
-            background-color: var(--light-beige);
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="%23e0d9c3" d="M0,0 L100,0 L100,100 L0,100 Z M0,50 Q50,40 100,50 Q50,60 0,50" /></svg>');
-            background-size: 100% auto;
-            padding: 1.5rem;
-            margin: 0 auto;
-            max-width: 800px;
-            width: 100%;
-            flex-grow: 1;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 80px;
             position: relative;
-            overflow-y: auto;
+            min-height: 100vh;
         }
-
+        
         .header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 0;
             text-align: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid var(--gold);
-            position: relative;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-
-        .surah-name {
+        
+        .surah-title {
             font-size: 1.8rem;
-            color: var(--dark-brown);
-            font-weight: 700;
-            margin: 0;
-            padding: 0 2rem;
-            display: inline-block;
-            position: relative;
+            margin-bottom: 5px;
         }
-
-        .surah-name::before,
-        .surah-name::after {
-            content: "۞";
-            color: var(--gold);
-            font-size: 1.2rem;
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
+        
+        .surah-meta {
+            font-size: 0.9rem;
+            opacity: 0.8;
         }
-
-        .surah-name::before {
-            right: 0;
+        
+        .content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
         }
-
-        .surah-name::after {
-            left: 0;
-        }
-
+        
         .bismillah {
-            font-size: 2rem;
             text-align: center;
-            margin: 1rem 0;
-            color: var(--dark-brown);
-            line-height: 1.5;
+            font-size: 2.5rem;
+            margin: 20px 0;
+            color: var(--primary-color);
+            line-height: 1.2;
         }
-
-        .verses {
+        
+        .verses-container {
+            margin-top: 20px;
+        }
+        
+        .verse {
             font-size: 2rem;
             text-align: right;
-            line-height: 3.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .verse {
-            margin-bottom: 1.5rem;
+            margin-bottom: 30px;
+            padding: 15px;
+            border-radius: 8px;
+            transition: background-color 0.3s;
             position: relative;
-            padding-right: 3rem;
-            text-align: justify;
-            text-justify: inter-word;
+            line-height: 2;
         }
-
+        
+        .verse:hover {
+            background-color: var(--verse-highlight);
+        }
+        
         .verse-number {
-            position: absolute;
-            right: 0;
-            top: 0;
-            width: 2.5rem;
-            height: 2.5rem;
-            background-color: var(--gold);
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background-color: var(--secondary-color);
             color: white;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            font-weight: bold;
-        }
-
-        .footer {
             text-align: center;
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid var(--gold);
-            font-size: 1rem;
-            color: var(--dark-brown);
+            line-height: 30px;
+            font-size: 0.9rem;
+            margin-left: 10px;
+            position: relative;
+            top: -5px;
         }
-
-        .page-number {
-            display: inline-block;
-            padding: 0.3rem 1rem;
-            background-color: var(--gold);
-            color: white;
-            border-radius: 1rem;
-        }
-
+        
         .navigation {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 15px;
             display: flex;
             justify-content: space-between;
-            padding: 1rem;
-            background-color: var(--dark-brown);
-            position: sticky;
-            bottom: 0;
-            z-index: 100;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 90;
         }
-
+        
         .nav-button {
-            background-color: var(--gold);
+            background-color: var(--secondary-color);
             color: white;
             border: none;
-            border-radius: 50%;
-            width: 3rem;
-            height: 3rem;
-            font-size: 1.2rem;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            transition: all 0.2s;
+            gap: 8px;
+            transition: all 0.3s;
         }
-
+        
+        .nav-button:hover {
+            background-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        
         .nav-button:disabled {
-            background-color: #cccccc;
+            background-color: #bdc3c7;
             cursor: not-allowed;
-            opacity: 0.6;
+            transform: none;
         }
-
-        .nav-button:active {
-            transform: scale(0.95);
-        }
-
-        .top-nav {
+        
+        .page-indicator {
             display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 1rem;
-            background-color: var(--dark-brown);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-color);
         }
-
-        .top-nav-button {
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 1.2rem;
+            color: var(--text-color);
+        }
+        
+        .error {
+            text-align: center;
+            padding: 50px;
+            color: #e74c3c;
+            font-size: 1.2rem;
+        }
+        
+        .settings-btn {
+            position: fixed;
+            top: 15px;
+            left: 15px;
             background: none;
             border: none;
-            color: var(--gold);
+            color: white;
             font-size: 1.2rem;
             cursor: pointer;
-            padding: 0.5rem;
+            z-index: 110;
         }
-
-        .surah-info {
-            font-size: 0.9rem;
-            color: #666;
-            text-align: center;
-            margin-bottom: 1rem;
+        
+        .home-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 110;
         }
-
-        /* Highlight current verse during swipe */
-        .verse-highlight {
-            background-color: var(--verse-highlight);
-            transition: background-color 0.3s;
+        
+        /* Settings panel */
+        .settings-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
         }
-
+        
+        .settings-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+        }
+        
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .settings-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+        }
+        
+        .close-settings {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .setting-option {
+            margin-bottom: 15px;
+        }
+        
+        .setting-option label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .setting-option select {
+            width: 100%;
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
         /* Responsive adjustments */
         @media (max-width: 768px) {
-            .quran-page {
-                padding: 1rem;
+            .verse {
+                font-size: 1.8rem;
             }
             
-            .surah-name {
+            .bismillah {
+                font-size: 2rem;
+            }
+            
+            .surah-title {
                 font-size: 1.5rem;
             }
-            
-            .bismillah {
-                font-size: 1.8rem;
-            }
-            
-            .verses {
-                font-size: 1.8rem;
-                line-height: 3rem;
-            }
-            
-            .verse-number {
-                width: 2rem;
-                height: 2rem;
-                font-size: 0.8rem;
-            }
         }
-
+        
         @media (max-width: 480px) {
-            .quran-page {
-                padding: 0.8rem;
-            }
-            
-            .surah-name {
-                font-size: 1.3rem;
-                padding: 0 1.5rem;
-            }
-            
-            .surah-name::before,
-            .surah-name::after {
-                font-size: 1rem;
+            .verse {
+                font-size: 1.6rem;
+                margin-bottom: 20px;
             }
             
             .bismillah {
-                font-size: 1.6rem;
-                margin: 0.5rem 0;
-            }
-            
-            .verses {
-                font-size: 1.6rem;
-                line-height: 2.8rem;
-            }
-            
-            .verse {
-                padding-right: 2.5rem;
-                margin-bottom: 1rem;
-            }
-            
-            .verse-number {
-                width: 1.8rem;
-                height: 1.8rem;
-                font-size: 0.7rem;
-            }
-            
-            .footer {
-                font-size: 0.9rem;
+                font-size: 1.8rem;
+                margin: 15px 0;
             }
             
             .nav-button {
-                width: 2.8rem;
-                height: 2.8rem;
-                font-size: 1.1rem;
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .verse-number {
+                width: 25px;
+                height: 25px;
+                line-height: 25px;
+                font-size: 0.8rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="top-nav">
-        <button id="back-button" class="top-nav-button" title="Back to Surah list">
-            <i class="fas fa-arrow-left"></i>
+    <div class="header">
+        <button class="settings-btn" id="settings-btn">
+            <i class="fas fa-cog"></i>
         </button>
-        <button id="home-button" class="top-nav-button" title="Go to Home">
+        <h1 class="surah-title" id="surah-title">سورة الفاتحة</h1>
+        <div class="surah-meta" id="surah-meta">مكية - 7 آيات</div>
+        <button class="home-btn" id="home-btn">
             <i class="fas fa-home"></i>
         </button>
     </div>
-
-    <div class="quran-page">
-        <div class="header">
-            <h1 class="surah-name" id="surah-name">سورة الفاتحة</h1>
-        </div>
-
+    
+    <div class="content">
         <div class="bismillah" id="bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>
-
-        <div class="surah-info" id="surah-info">مكية - 7 آيات</div>
-
-        <div class="verses" id="verses">
-            <div class="verse">
-                <span class="verse-text">الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</span>
-                <span class="verse-number">١</span>
-            </div>
-            <!-- Verses will be loaded here -->
-        </div>
-
-        <div class="footer">
-            <span class="page-number" id="page-number">الصفحة ١</span>
-        </div>
-    </div>
-
-    <div class="navigation">
-        <button id="prev-button" class="nav-button" disabled title="Previous page">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-        <button id="next-button" class="nav-button" title="Next page">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-    </div>
-
-    <script>
-        // Configuration
-        const surahBaseURL = "https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah/surah_";
-        const surahDetailsURL = "https://raw.githubusercontent.com/itzfew/Quran-Online/refs/heads/main/source/surah.json";
         
-        // State management
-        let currentSurah = 1;
-        let currentPage = 1;
-        let surahDetails = [];
-        let versesPerPage = 8; // Adjust based on screen size
-
+        <div class="verses-container" id="verses-container">
+            <div class="loading">جاري التحميل...</div>
+        </div>
+    </div>
+    
+    <div class="navigation">
+        <button class="nav-button" id="prev-btn" disabled>
+            <i class="fas fa-arrow-right"></i> السابق
+        </button>
+        
+        <div class="page-indicator" id="page-indicator">الصفحة 1 من 10</div>
+        
+        <button class="nav-button" id="next-btn">
+            التالي <i class="fas fa-arrow-left"></i>
+        </button>
+    </div>
+    
+    <div class="settings-panel" id="settings-panel">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h2 class="settings-title">الإعدادات</h2>
+                <button class="close-settings" id="close-settings">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="setting-option">
+                <label for="font-size">حجم الخط:</label>
+                <select id="font-size">
+                    <option value="1.8rem">صغير</option>
+                    <option value="2rem" selected>متوسط</option>
+                    <option value="2.2rem">كبير</option>
+                    <option value="2.5rem">كبير جداً</option>
+                </select>
+            </div>
+            
+            <div class="setting-option">
+                <label for="theme">السمة:</label>
+                <select id="theme">
+                    <option value="light">فاتح</option>
+                    <option value="dark">غامق</option>
+                    <option value="sepia">سيبيا</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Quran data URLs
+        const surahDataURL = 'https://api.alquran.cloud/v1/surah';
+        const ayahDataURL = 'https://api.alquran.cloud/v1/ayah/';
+        
         // DOM elements
-        const surahNameEl = document.getElementById("surah-name");
-        const bismillahEl = document.getElementById("bismillah");
-        const surahInfoEl = document.getElementById("surah-info");
-        const versesEl = document.getElementById("verses");
-        const prevButton = document.getElementById("prev-button");
-        const nextButton = document.getElementById("next-button");
-        const pageNumberEl = document.getElementById("page-number");
-        const backButton = document.getElementById("back-button");
-        const homeButton = document.getElementById("home-button");
-
+        const surahTitleEl = document.getElementById('surah-title');
+        const surahMetaEl = document.getElementById('surah-meta');
+        const bismillahEl = document.getElementById('bismillah');
+        const versesContainerEl = document.getElementById('verses-container');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const pageIndicatorEl = document.getElementById('page-indicator');
+        const settingsBtn = document.getElementById('settings-btn');
+        const homeBtn = document.getElementById('home-btn');
+        const settingsPanel = document.getElementById('settings-panel');
+        const closeSettingsBtn = document.getElementById('close-settings');
+        const fontSizeSelect = document.getElementById('font-size');
+        const themeSelect = document.getElementById('theme');
+        
+        // App state
+        let currentState = {
+            surahNumber: 1,
+            currentPage: 1,
+            versesPerPage: 10,
+            totalVerses: 0,
+            surahData: null,
+            verses: []
+        };
+        
+        // Initialize the app
+        async function initApp() {
+            // Get surah number from URL or default to 1
+            const urlParams = new URLSearchParams(window.location.search);
+            const surahParam = urlParams.get('surah');
+            currentState.surahNumber = surahParam ? parseInt(surahParam) : 1;
+            
+            // Load surah data
+            await loadSurahData(currentState.surahNumber);
+            
+            // Load first page of verses
+            await loadVersesPage(currentState.currentPage);
+            
+            // Set up event listeners
+            setupEventListeners();
+            
+            // Apply saved settings
+            applySavedSettings();
+        }
+        
+        // Load surah data
+        async function loadSurahData(surahNumber) {
+            try {
+                const response = await fetch(`${surahDataURL}/${surahNumber}/ar.alafasy`);
+                if (!response.ok) throw new Error('Failed to fetch surah data');
+                
+                const data = await response.json();
+                currentState.surahData = data.data;
+                currentState.totalVerses = parseInt(data.data.numberOfAyahs);
+                
+                // Update UI with surah info
+                updateSurahInfo();
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+        
+        // Load verses for a specific page
+        async function loadVersesPage(page) {
+            try {
+                versesContainerEl.innerHTML = '<div class="loading">جاري التحميل...</div>';
+                
+                const startAyah = (page - 1) * currentState.versesPerPage + 1;
+                const endAyah = Math.min(page * currentState.versesPerPage, currentState.totalVerses);
+                
+                // Clear previous verses
+                currentState.verses = [];
+                
+                // Load each ayah in the page range
+                for (let i = startAyah; i <= endAyah; i++) {
+                    const ayahNumber = `${currentState.surahNumber}:${i}`;
+                    const response = await fetch(`${ayahDataURL}${ayahNumber}/ar.alafasy`);
+                    
+                    if (!response.ok) throw new Error(`Failed to fetch ayah ${ayahNumber}`);
+                    
+                    const data = await response.json();
+                    currentState.verses.push(data.data);
+                }
+                
+                // Update UI with verses
+                updateVersesUI();
+                updateNavigation();
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+        
+        // Update surah information in the UI
+        function updateSurahInfo() {
+            if (!currentState.surahData) return;
+            
+            surahTitleEl.textContent = currentState.surahData.name;
+            
+            const revelationType = currentState.surahData.revelationType === 'Meccan' ? 'مكية' : 'مدنية';
+            surahMetaEl.textContent = `${revelationType} - ${currentState.totalVerses} آيات`;
+            
+            // Hide bismillah for Surah 9 (At-Tawbah)
+            bismillahEl.style.display = currentState.surahNumber === 9 ? 'none' : 'block';
+        }
+        
+        // Update verses in the UI
+        function updateVersesUI() {
+            if (currentState.verses.length === 0) {
+                versesContainerEl.innerHTML = '<div class="error">لا توجد آيات متاحة</div>';
+                return;
+            }
+            
+            let versesHTML = '';
+            
+            currentState.verses.forEach(verse => {
+                const ayahNumber = verse.numberInSurah;
+                versesHTML += `
+                    <div class="verse">
+                        ${verse.text}
+                        <span class="verse-number">${toArabicNumerals(ayahNumber)}</span>
+                    </div>
+                `;
+            });
+            
+            versesContainerEl.innerHTML = versesHTML;
+        }
+        
+        // Update navigation controls
+        function updateNavigation() {
+            const totalPages = Math.ceil(currentState.totalVerses / currentState.versesPerPage);
+            
+            // Update page indicator
+            pageIndicatorEl.textContent = `الصفحة ${toArabicNumerals(currentState.currentPage)} من ${toArabicNumerals(totalPages)}`;
+            
+            // Enable/disable navigation buttons
+            prevBtn.disabled = currentState.currentPage <= 1;
+            nextBtn.disabled = currentState.currentPage >= totalPages;
+            
+            // Update URL
+            updateURL();
+        }
+        
         // Convert numbers to Arabic numerals
         function toArabicNumerals(number) {
             const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
             return number.toString().split('').map(digit => arabicNumerals[parseInt(digit)]).join('');
         }
-
-        // Format page number display
-        function formatPageNumber(page) {
-            return `الصفحة ${toArabicNumerals(page)}`;
-        }
-
-        // Adjust verses per page based on screen size
-        function adjustVersesPerPage() {
-            const screenHeight = window.innerHeight;
-            if (screenHeight < 600) {
-                versesPerPage = 5;
-            } else if (screenHeight < 800) {
-                versesPerPage = 6;
-            } else {
-                versesPerPage = 8;
-            }
-        }
-
-        // Fetch surah details
-        async function fetchSurahDetails() {
-            try {
-                const response = await fetch(surahDetailsURL);
-                if (!response.ok) throw new Error("Failed to fetch Surah details.");
-                surahDetails = await response.json();
-                loadSurah();
-            } catch (error) {
-                console.error("Error loading surah details:", error);
-                surahNameEl.textContent = "خطأ في تحميل البيانات";
-                versesEl.innerHTML = "<div style='text-align:center;padding:2rem;'>تعذر تحميل السورة. يرجى المحاولة لاحقاً.</div>";
-            }
-        }
-
-        // Get current surah details
-        function getCurrentSurahDetails() {
-            return surahDetails.find(item => item.index === currentSurah.toString().padStart(3, '0'));
-        }
-
-        // Display surah information
-        function displaySurahInfo() {
-            const surah = getCurrentSurahDetails();
-            if (!surah) return 0;
-
-            surahNameEl.textContent = surah.title;
-            surahInfoEl.textContent = `${surah.type === "Meccan" ? "مكية" : "مدنية"} - ${toArabicNumerals(surah.count)} آيات`;
-            
-            // Hide bismillah for Surah At-Tawbah (9) except for Surah An-Naml (27:30)
-            bismillahEl.style.display = (currentSurah === 1 || currentSurah === 9) ? "none" : "block";
-            
-            return parseInt(surah.count);
-        }
-
-        // Fetch and display surah verses
-        async function loadSurah() {
-            try {
-                const verseCount = displaySurahInfo();
-                if (verseCount === 0) throw new Error("Surah not found");
-
-                const response = await fetch(`${surahBaseURL}${currentSurah}.json`);
-                if (!response.ok) throw new Error("Failed to fetch Surah verses.");
-                const surahData = await response.json();
-                
-                displayVerses(surahData, verseCount);
-            } catch (error) {
-                console.error("Error loading surah:", error);
-                versesEl.innerHTML = `<div style='text-align:center;padding:2rem;'>${error.message}</div>`;
-            }
-        }
-
-        // Display verses with pagination
-        function displayVerses(surahData, verseCount) {
-            adjustVersesPerPage();
-            
-            const totalPages = Math.ceil(verseCount / versesPerPage);
-            const startIndex = (currentPage - 1) * versesPerPage;
-            const endIndex = Math.min(startIndex + versesPerPage, verseCount);
-            
-            let versesHTML = "";
-            let verseCounter = startIndex + 1;
-
-            // Handle basmalah for the first page of each surah (except Surah 9)
-            if (currentPage === 1 && currentSurah !== 1 && currentSurah !== 9) {
-                versesHTML += `<div class="bismillah">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ</div>`;
-            }
-
-            // Display verses
-            Object.entries(surahData.verse).slice(startIndex, endIndex).forEach(([key, verse]) => {
-                if (key === "verse_0") {
-                    // Surah title - we already display it in the header
-                    return;
-                } else {
-                    const arabicVerseNumber = toArabicNumerals(verseCounter);
-                    versesHTML += `
-                        <div class="verse">
-                            <span class="verse-text">${verse}</span>
-                            <span class="verse-number">${arabicVerseNumber}</span>
-                        </div>
-                    `;
-                    verseCounter++;
-                }
-            });
-
-            versesEl.innerHTML = versesHTML;
-            pageNumberEl.textContent = formatPageNumber(currentPage);
-
-            // Update button states
-            prevButton.disabled = currentPage === 1;
-            nextButton.disabled = currentPage === totalPages;
-        }
-
-        // Update URL parameters
+        
+        // Update browser URL
         function updateURL() {
             const newURL = new URL(window.location);
-            newURL.searchParams.set('surah', currentSurah);
-            newURL.searchParams.set('page', currentPage);
+            newURL.searchParams.set('surah', currentState.surahNumber);
+            newURL.searchParams.set('page', currentState.currentPage);
             window.history.pushState({}, '', newURL);
         }
-
-        // Parse URL parameters
-        function parseURL() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const surahParam = urlParams.get('surah');
-            const pageParam = urlParams.get('page');
-
-            if (surahParam) currentSurah = parseInt(surahParam);
-            if (pageParam) currentPage = parseInt(pageParam);
+        
+        // Show error message
+        function showError(message) {
+            versesContainerEl.innerHTML = `<div class="error">${message}</div>`;
         }
-
-        // Event listeners
-        prevButton.addEventListener("click", () => {
-            if (currentPage > 1) {
-                currentPage--;
-                updateURL();
-                loadSurah();
-                scrollToTop();
-            }
-        });
-
-        nextButton.addEventListener("click", () => {
-            const surah = getCurrentSurahDetails();
-            const totalPages = Math.ceil(parseInt(surah.count) / versesPerPage);
-            
-            if (currentPage < totalPages) {
-                currentPage++;
-                updateURL();
-                loadSurah();
-                scrollToTop();
-            }
-        });
-
-        backButton.addEventListener("click", () => {
-            window.location.href = "surah.html";
-        });
-
-        homeButton.addEventListener("click", () => {
-            window.location.href = "index.html";
-        });
-
-        // Helper function to scroll to top
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // Touch events for swipe navigation
-        let touchStartX = 0;
-        let touchEndX = 0;
-
-        document.addEventListener('touchstart', (e) => {
-            touchStartX = e.changedTouches[0].screenX;
-        });
-
-        document.addEventListener('touchend', (e) => {
-            touchEndX = e.changedTouches[0].screenX;
-            handleSwipe();
-        });
-
-        function handleSwipe() {
-            const threshold = 50; // Minimum swipe distance
-            const difference = touchStartX - touchEndX;
-
-            if (Math.abs(difference) < threshold) return;
-
-            // Highlight verse during swipe
-            const verses = document.querySelectorAll('.verse');
-            verses.forEach(verse => {
-                verse.classList.add('verse-highlight');
-                setTimeout(() => verse.classList.remove('verse-highlight'), 300);
+        
+        // Set up event listeners
+        function setupEventListeners() {
+            // Navigation buttons
+            prevBtn.addEventListener('click', () => {
+                if (currentState.currentPage > 1) {
+                    currentState.currentPage--;
+                    loadVersesPage(currentState.currentPage);
+                }
             });
-
-            if (difference > threshold) {
-                // Swipe left - next page
-                if (!nextButton.disabled) nextButton.click();
-            } else if (difference < -threshold) {
-                // Swipe right - previous page
-                if (!prevButton.disabled) prevButton.click();
+            
+            nextBtn.addEventListener('click', () => {
+                const totalPages = Math.ceil(currentState.totalVerses / currentState.versesPerPage);
+                if (currentState.currentPage < totalPages) {
+                    currentState.currentPage++;
+                    loadVersesPage(currentState.currentPage);
+                }
+            });
+            
+            // Settings button
+            settingsBtn.addEventListener('click', () => {
+                settingsPanel.style.display = 'flex';
+            });
+            
+            // Home button
+            homeBtn.addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+            
+            // Close settings
+            closeSettingsBtn.addEventListener('click', () => {
+                settingsPanel.style.display = 'none';
+            });
+            
+            // Font size change
+            fontSizeSelect.addEventListener('change', (e) => {
+                document.querySelectorAll('.verse').forEach(verse => {
+                    verse.style.fontSize = e.target.value;
+                });
+                localStorage.setItem('quranFontSize', e.target.value);
+            });
+            
+            // Theme change
+            themeSelect.addEventListener('change', (e) => {
+                applyTheme(e.target.value);
+                localStorage.setItem('quranTheme', e.target.value);
+            });
+            
+            // Handle browser back/forward
+            window.addEventListener('popstate', () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const surahParam = urlParams.get('surah');
+                const pageParam = urlParams.get('page');
+                
+                if (surahParam && parseInt(surahParam) !== currentState.surahNumber) {
+                    currentState.surahNumber = parseInt(surahParam);
+                    currentState.currentPage = pageParam ? parseInt(pageParam) : 1;
+                    initApp();
+                } else if (pageParam && parseInt(pageParam) !== currentState.currentPage) {
+                    currentState.currentPage = parseInt(pageParam);
+                    loadVersesPage(currentState.currentPage);
+                }
+            });
+            
+            // Swipe gestures for mobile
+            let touchStartX = 0;
+            let touchEndX = 0;
+            
+            document.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, false);
+            
+            document.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            }, false);
+            
+            function handleSwipe() {
+                const threshold = 50; // Minimum swipe distance
+                
+                if (touchEndX < touchStartX - threshold) {
+                    // Swipe left - next page
+                    if (!nextBtn.disabled) nextBtn.click();
+                } else if (touchEndX > touchStartX + threshold) {
+                    // Swipe right - previous page
+                    if (!prevBtn.disabled) prevBtn.click();
+                }
             }
         }
-
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' && !prevButton.disabled) {
-                prevButton.click();
-            } else if (e.key === 'ArrowLeft' && !nextButton.disabled) {
-                nextButton.click();
+        
+        // Apply saved settings from localStorage
+        function applySavedSettings() {
+            // Font size
+            const savedFontSize = localStorage.getItem('quranFontSize');
+            if (savedFontSize) {
+                fontSizeSelect.value = savedFontSize;
+                document.querySelectorAll('.verse').forEach(verse => {
+                    verse.style.fontSize = savedFontSize;
+                });
             }
-        });
-
-        // Initialize
-        window.addEventListener('load', () => {
-            parseURL();
-            fetchSurahDetails();
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            // Reload with adjusted verses per page
-            loadSurah();
-        });
+            
+            // Theme
+            const savedTheme = localStorage.getItem('quranTheme');
+            if (savedTheme) {
+                themeSelect.value = savedTheme;
+                applyTheme(savedTheme);
+            }
+        }
+        
+        // Apply theme
+        function applyTheme(theme) {
+            document.body.className = ''; // Clear previous theme classes
+            document.body.classList.add(theme + '-theme');
+            
+            // Define theme colors
+            let primaryColor, secondaryColor, textColor, lightBg, verseHighlight;
+            
+            switch (theme) {
+                case 'dark':
+                    primaryColor = '#1a1a2e';
+                    secondaryColor = '#4cc9f0';
+                    textColor = '#f8f9fa';
+                    lightBg = '#16213e';
+                    verseHighlight = '#2a2a40';
+                    break;
+                case 'sepia':
+                    primaryColor = '#5e3023';
+                    secondaryColor = '#895737';
+                    textColor = '#3a2d1e';
+                    lightBg = '#f4ecd8';
+                    verseHighlight = '#e6d5b8';
+                    break;
+                default: // light
+                    primaryColor = '#2c3e50';
+                    secondaryColor = '#3498db';
+                    textColor = '#333';
+                    lightBg = '#f9f9f9';
+                    verseHighlight = '#f0f7ff';
+            }
+            
+            // Update CSS variables
+            document.documentElement.style.setProperty('--primary-color', primaryColor);
+            document.documentElement.style.setProperty('--secondary-color', secondaryColor);
+            document.documentElement.style.setProperty('--text-color', textColor);
+            document.documentElement.style.setProperty('--light-bg', lightBg);
+            document.documentElement.style.setProperty('--verse-highlight', verseHighlight);
+        }
+        
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
