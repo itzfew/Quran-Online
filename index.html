@@ -12,293 +12,231 @@
     <!-- Font Awesome CDN for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <!-- Link to external CSS -->
-    <link rel="stylesheet" href="main/css/index.css">
+    <!-- Amiri Font for Arabic text -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-[#fefaf4] text-[#0c6155] font-sans">
 
-<div class="settings-container">
-    <div class="settings-item" onclick="toggleTheme()">
-        <i class="fas fa-moon"></i>
-        <div class="tooltip">Dark Mode</div>
+    <!-- Header -->
+    <header class="bg-[#0c6155] text-white flex items-center justify-between px-4 py-3 shadow fixed top-0 left-0 w-full z-10">
+        <a href="#" class="text-xl">←</a>
+        <h1 id="header-title" class="text-lg font-semibold">Quran Surahs</h1>
+        <div id="search-bar" class="hidden flex items-center w-full max-w-xs">
+            <input type="text" id="search-input" placeholder="Search Surahs..." oninput="filterSurahs()" 
+                   class="p-2 text-sm border border-gray-300 rounded-md w-full text-[#0c6155] bg-white focus:outline-none">
+            <button id="search-clear" class="absolute right-6 text-gray-500 hover:text-[#e74c3c]">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <button id="search-toggle" class="text-xl">
+            <i class="fas fa-search"></i>
+        </button>
+    </header>
+
+    <!-- Settings Container (Scrollable on small screens) -->
+    <div class="bg-white border-b mt-14 overflow-x-auto whitespace-nowrap scrollbar-thin scrollbar-thumb-[#0c6155] scrollbar-track-[#f4f6f8]">
+        <div class="flex text-sm font-medium text-gray-600">
+            <a href="hadith.html" class="inline-flex flex-none px-4 py-3 text-center border-b-2 border-[#0c6155] text-[#0c6155] font-semibold min-w-[100px]">
+                <i class="fas fa-kaaba"></i>
+                <span class="ml-2">Hadith</span>
+            </a>
+            <a href="kalima.html" class="inline-flex flex-none px-4 py-3 text-center hover:border-b-2 hover:border-[#0c6155] hover:text-[#0c6155] min-w-[100px]">
+                <i class="fas fa-hand-point-right"></i>
+                <span class="ml-2">Kalima</span>
+            </a>
+            <a href="tasbih.html" class="inline-flex flex-none px-4 py-3 text-center hover:border-b-2 hover:border-[#0c6155] hover:text-[#0c6155] min-w-[100px]">
+                <i class="fas fa-praying-hands"></i>
+                <span class="ml-2">Tasbih</span>
+            </a>
+            <a href="99-names.html" class="inline-flex flex-none px-4 py-3 text-center hover:border-b-2 hover:border-[#0c6155] hover:text-[#0c6155] min-w-[100px]">
+                <i class="fas fa-mosque"></i>
+                <span class="ml-2">99 Names</span>
+            </a>
+            <a href="prayer.html" class="inline-flex flex-none px-4 py-3 text-center hover:border-b-2 hover:border-[#0c6155] hover:text-[#0c6155] min-w-[100px]">
+                <i class="fas fa-pray"></i>
+                <span class="ml-2">Prayer</span>
+            </a>
+            <div class="inline-flex flex-none px-4 py-3 text-center hover:border-b-2 hover:border-[#0c6155] hover:text-[#0c6155] cursor-pointer min-w-[100px]" onclick="installPWA()">
+                <i class="fas fa-download"></i>
+                <span class="ml-2">Install PWA</span>
+            </div>
+        </div>
     </div>
 
-    <div class="settings-item">
-        <a href="hadith.html">
-            <i class="fas fa-kaaba"></i>
-        </a>
-        <div class="tooltip">Hadith</div>
-    </div>
+    <!-- Surah List -->
+    <div id="surah-list" class="p-2 divide-y divide-gray-200"></div>
 
-    <div class="settings-item">
-        <a href="kalima.html">
-            <i class="fas fa-hand-point-right"></i>
-        </a>
-        <div class="tooltip">Kalima</div>
-    </div>
+    <script>
+        let surahData = [];
+        let deferredPrompt;
 
-    <div class="settings-item">
-        <a href="tasbih.html">
-            <i class="fas fa-praying-hands"></i>
-        </a>
-        <div class="tooltip">Tasbih</div>
-    </div>
+        // Fetch Surah data
+        fetch('https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah.json')
+            .then(response => response.json())
+            .then(data => {
+                surahData = data;
+                renderSurahs(surahData);
+            })
+            .catch(error => {
+                console.error("Error loading Surah data:", error);
+            });
 
-    <div class="settings-item">
-        <a href="99-names.html">
-            <i class="fas fa-mosque"></i>
-        </a>
-        <div class="tooltip">99 Names</div>
-    </div>
+        function renderSurahs(surahList) {
+            const listElement = document.getElementById("surah-list");
+            listElement.innerHTML = '';
 
-    <div class="settings-item">
-        <a href="prayer.html">
-            <i class="fas fa-pray"></i>
-        </a>
-        <div class="tooltip">Prayer</div>
-    </div>
+            surahList.forEach(surah => {
+                const surahLink = document.createElement('div');
+                surahLink.classList.add('flex', 'items-center', 'justify-between', 'py-3', 'px-2', 'bg-[#fefcf9]', 'rounded-md', 'shadow-sm', 'mb-2', 'cursor-pointer');
+                surahLink.onclick = () => showSurahOptions(parseInt(surah.index));
 
-    <div class="settings-item install-pwa" onclick="installPWA()">
-        <i class="fas fa-download"></i>
-        <div class="tooltip">Install PWA</div>
-    </div>
-</div>
+                surahLink.innerHTML = `
+                    <div class="flex items-start gap-3">
+                        <div class="w-6 h-6 flex items-center justify-center rounded-full border border-[#0c6155] text-xs font-bold mt-1">${parseInt(surah.index)}</div>
+                        <div>
+                            <div class="text-[#b2513a] font-semibold">${surah.title}</div>
+                            <div class="text-sm text-gray-600">${surah.type} - Verses: ${surah.count}</div>
+                        </div>
+                    </div>
+                    <div class="text-right text-sm text-[#0c6155] font-semibold font-arabic">${surah.titleAr}</div>
+                `;
 
-<div class="controls">
-    <input type="text" id="search-input" placeholder="Search Surahs..." oninput="filterSurahs()">
-</div>
+                listElement.appendChild(surahLink);
+            });
+        }
 
-<div id="surah-list"></div>
+        function showSurahOptions(surahIndex) {
+            const surah = surahData.find(s => parseInt(s.index) === surahIndex);
+            const surahName = surah ? surah.title : 'Unknown Surah';
 
-<script>
-    let surahData = [];
-    let deferredPrompt;
+            const modal = document.createElement('div');
+            modal.classList.add('modal', 'fixed', 'top-1/2', 'left-1/2', 'transform', '-translate-x-1/2', '-translate-y-1/2', 'bg-white', 'rounded-lg', 'shadow-lg', 'w-11/12', 'max-w-md', 'z-[1001]', 'p-6', 'text-center');
 
-    fetch('https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah.json')
-        .then(response => response.json())
-        .then(data => {
-            surahData = data;
-            renderSurahs(surahData);
-        })
-        .catch(error => {
-            console.error("Error loading Surah data:", error);
-        });
-
-    function renderSurahs(surahList) {
-        const listElement = document.getElementById("surah-list");
-        listElement.innerHTML = '';
-
-        surahList.forEach(surah => {
-            const surahLink = document.createElement('div'); // Changed to div
-            surahLink.classList.add('surah-link');
-            surahLink.style.textDecoration = 'none';
-
-            const surahItem = document.createElement('div');
-            surahItem.classList.add('surah-item');
-
-            surahItem.innerHTML = `
-                <div class="surah-number">${parseInt(surah.index)}</div>
-                <div class="surah-title">${surah.title}</div>
-                <div class="surah-arabic">${surah.titleAr}</div>
-                <div class="surah-meta">
-                    <p>${surah.type}</p>
-                    <p>${surah.count}</p>
-                </div>
-            `;
-
-            surahItem.onclick = () => showSurahOptions(parseInt(surah.index));
-
-            surahLink.appendChild(surahItem);
-            listElement.appendChild(surahLink);
-        });
-    }
-
-    function showSurahOptions(surahIndex) {
-        const surah = surahData.find(s => parseInt(s.index) === surahIndex);
-        const surahName = surah ? surah.title : 'Unknown Surah';
-
-        const modal = document.createElement('div');
-        modal.classList.add('modal');
-
-        modal.innerHTML = `
-            <div class="modal-content">
-                <button class="close-modal" onclick="closeModal()">
+            modal.innerHTML = `
+                <button class="absolute top-2 right-2 text-[#e74c3c] text-lg hover:text-[#c0392b]" onclick="closeModal()">
                     <i class="fas fa-times"></i>
                 </button>
-                <h2>${surahName}</h2>
-                <div class="modal-buttons">
-                    <div class="button-row">
-                        <button onclick="window.location.href='surah?index=${surahIndex}'">
+                <h2 class="text-xl font-semibold mb-4 text-[#333] capitalize">${surahName}</h2>
+                <div class="space-y-3">
+                    <div class="flex gap-3 justify-center">
+                        <button onclick="window.location.href='surah?index=${surahIndex}'" class="flex items-center gap-2 px-4 py-2 border border-[#333] text-[#333] rounded-md hover:bg-gray-100 hover:border-[#000] text-sm uppercase">
                             <i class="fas fa-book"></i> Read Surah
                         </button>
-                        <button onclick="window.location.href='read?index=${surahIndex}/1'">
+                        <button onclick="window.location.href='read?index=${surahIndex}/1'" class="flex items-center gap-2 px-4 py-2 border border-[#333] text-[#333] rounded-md hover:bg-gray-100 hover:border-[#000] text-sm uppercase">
                             <i class="fas fa-book-reader"></i> Read Quran
                         </button>
                     </div>
-                    <button onclick="openWordToWord(${surahIndex})">
+                    <button onclick="openWordToWord(${surahIndex})" class="flex items-center gap-2 px-4 py-2 border border-[#333] text-[#333] rounded-md hover:bg-gray-100 hover:border-[#000] text-sm uppercase w-full justify-center">
                         <i class="fas fa-language"></i> Read Word to Word
                     </button>
                 </div>
-            </div>
-        `;
+            `;
 
-        document.body.appendChild(modal);
+            document.body.appendChild(modal);
 
-        const overlay = document.createElement('div');
-        overlay.classList.add('overlay');
-        overlay.onclick = closeModal;
-        document.body.appendChild(overlay);
-    }
-
-    function openWordToWord(surahIndex) {
-        window.location.href = `wordtoword?index=${surahIndex}#1`; // Start at the first Ayah
-    }
-
-    function closeModal() {
-        const modal = document.querySelector('.modal');
-        const overlay = document.querySelector('.overlay');
-        if (modal) modal.remove();
-        if (overlay) overlay.remove();
-    }
-
-    function filterSurahs() {
-        const searchTerm = document.getElementById("search-input").value.toLowerCase();
-        const filteredSurahs = surahData.filter(surah => 
-            surah.title.toLowerCase().includes(searchTerm) || 
-            surah.titleAr.toLowerCase().includes(searchTerm) ||
-            surah.type.toLowerCase().includes(searchTerm)
-        );
-        renderSurahs(filteredSurahs);
-    }
-
-    function toggleTheme() {
-        const isDark = document.body.classList.toggle('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-        const savedTheme = localStorage.getItem('darkMode');
-        if (savedTheme === 'true') {
-            document.body.classList.add('dark-mode');
+            const overlay = document.createElement('div');
+            overlay.classList.add('overlay', 'fixed', 'top-0', 'left-0', 'w-full', 'h-full', 'bg-black/40', 'z-[1000]');
+            overlay.onclick = closeModal;
+            document.body.appendChild(overlay);
         }
-    });
 
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-    });
+        function openWordToWord(surahIndex) {
+            window.location.href = `wordtoword?index=${surahIndex}#1`;
+        }
 
-    function installPWA() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log("User accepted the A2HS prompt");
+        function closeModal() {
+            const modal = document.querySelector('.modal');
+            const overlay = document.querySelector('.overlay');
+            if (modal) modal.remove();
+            if (overlay) overlay.remove();
+        }
+
+        function filterSurahs() {
+            const searchTerm = document.getElementById("search-input").value.toLowerCase();
+            const filteredSurahs = surahData.filter(surah => 
+                surah.title.toLowerCase().includes(searchTerm) || 
+                surah.titleAr.toLowerCase().includes(searchTerm) ||
+                surah.type.toLowerCase().includes(searchTerm)
+            );
+            renderSurahs(filteredSurahs);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Search bar toggle
+            const searchToggle = document.getElementById('search-toggle');
+            const searchBar = document.getElementById('search-bar');
+            const searchInput = document.getElementById('search-input');
+            const searchClear = document.getElementById('search-clear');
+            const headerTitle = document.getElementById('header-title');
+
+            searchToggle.addEventListener('click', () => {
+                searchBar.classList.toggle('hidden');
+                headerTitle.classList.toggle('hidden');
+                if (!searchBar.classList.contains('hidden')) {
+                    searchInput.focus();
+                    searchToggle.innerHTML = '<i class="fas fa-search"></i>'; // Reset to search icon
                 } else {
-                    console.log("User dismissed the A2HS prompt");
+                    searchInput.value = ''; // Clear input when hiding
+                    filterSurahs(); // Reset Surah list
                 }
-                deferredPrompt = null;
             });
+
+            searchClear.addEventListener('click', () => {
+                searchInput.value = '';
+                filterSurahs();
+                searchBar.classList.add('hidden');
+                headerTitle.classList.remove('hidden');
+                searchInput.focus();
+            });
+        });
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log("User accepted the A2HS prompt");
+                    } else {
+                        console.log("User dismissed the A2HS prompt");
+                    }
+                    deferredPrompt = null;
+                });
+            }
         }
-    }
-</script>
+    </script>
 
-<style>
-    /* Modal container styles */
-    .modal {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        width: 90%;
-        max-width: 400px;
-        z-index: 1001;
-        padding: 20px;
-        text-align: center;
-    }
+    <style>
+        /* Arabic font for Surah titles */
+Present: .font-arabic {
+            font-family: 'Amiri', serif;
+        }
 
-    /* Modal overlay background */
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.4);
-        z-index: 1000;
-    }
+        /* Custom scrollbar for settings container */
+        .scrollbar-thin {
+            scrollbar-width: thin;
+        }
 
-    /* Close button at top-right corner */
-    .close-modal {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: none;
-        border: none;
-        color: #e74c3c;
-        font-size: 1.2em;
-        cursor: pointer;
-        transition: color 0.3s ease;
-    }
+        .scrollbar-thumb-[#0c6155]::-webkit-scrollbar-thumb {
+            background-color: #0c6155;
+            border-radius: 10px;
+        }
 
-    .close-modal:hover {
-        color: #c0392b;
-    }
+        .scrollbar-track-[#f4f6f8]::-webkit-scrollbar-track {
+            background-color: #f4f6f8;
+        }
 
-    /* Modal heading */
-    .modal-content h2 {
-        margin-bottom: 20px;
-        font-size: 1.5em;
-        color: #333;
-        text-transform: capitalize;
-    }
-
-    /* Button styles */
-    .modal-buttons {
-        margin-top: 20px;
-    }
-
-    .button-row {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-bottom: 10px;
-    }
-
-    .modal-buttons button {
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        border: 1px solid #333;
-        background-color: transparent;
-        color: #333;
-        padding: 10px 15px;
-        font-size: 0.9em;
-        border-radius: 4px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-transform: uppercase;
-    }
-
-    .modal-buttons button:hover {
-        background-color: #f0f0f0;
-        border-color: #000;
-    }
-
-    .modal-buttons button i {
-        font-size: 1em;
-    }
-
-    /* Word to Word button at the bottom */
-    .modal-buttons button:nth-child(3) {
-        width: 100%;
-        justify-content: center;
-    }
-</style>
-
+        /* Ensure smooth scrolling for touch devices */
+        .overflow-x-auto {
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
 </body>
 </html>
