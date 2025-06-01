@@ -3,244 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hadith Books List</title>
-    <!-- Link to PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Hadith Books</title>
 
-    <!-- Include Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
-        
-        /* Dark Mode */
-        body.dark-mode {
-            background-color: #1a1a1a;  /* Dark background */
-            color: #fff;  /* White text */
-        }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-            font-size: 2rem;
-            margin-top: 60px;
-            padding: 0 10px;
-        }
+    <!-- Amiri Font for Arabic text -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
 
-        header {
-            color: white;
-            padding: 10px;
-            text-align: center;
-            font-size: 2rem;
-            background-color: #3498db;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-
-        /* Settings Section */
-        .settings-container {
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            padding: 10px 20px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-            background-color: #BEBEBE;
-        }
-
-        .settings-item {
-            margin-right: 20px;
-            cursor: pointer;
-            font-size: 1.5rem;
-            position: relative;
-        }
-
-        /* Dark Mode Settings Section */
-        .settings-container.dark-mode {
-            background-color: #1a1a1a;
-        }
-
-        .settings-item img {
-            width: 24px; /* Set the icon size */
-            height: 24px; /* Set the icon size */
-            object-fit: contain;
-        }
-
-        .settings-item.dark-mode img {
-            filter: brightness(1.2); /* Brighter icons in dark mode */
-        }
-
-        .book-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 80px;
-            padding: 0px;
-        }
-
-        .book-item {
-            background-color: #fff;
-            border-radius: 30px;
-            box-shadow: 0 0px 0px rgba(0, 0, 0, 0.1);
-            margin: 5px;
-            padding: 0px;
-            text-align: center;
-            width: 100%;
-            transition: transform 0.2s ease;
-            position: relative;
-        }
-
-        .book-item:hover {
-            transform: translateY(-5px);
-        }
-
-        .book-item a {
-            text-decoration: none;
-            color: #3498db;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .book-item a:hover {
-            color: #2980b9;
-        }
-
-        .book-item h3 {
-            margin: 0;
-            color: #16a085;
-            font-size: 20px;
-        }
-
-        .book-item p {
-            color: #7f8c8d;
-        }
-
-        /* Numbering background image */
-        .book-item .numbering {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 40px;
-            height: 40px;
-            background-image: url('https://quran-online.pages.dev/source/download.png');
-            background-size: cover;
-            background-position: center;
-            border-radius: 50%;
-            color: black;  /* Light color for the number */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            font-size: 16px;
-            border: 2px solid #fff;  /* White border for better contrast */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);  /* Shadow for better visibility */
-        }
-
-        /* Dark Mode Surah Card */
-        body.dark-mode .book-item {
-            background-color: #1a1a1a;  /* Dark background for Surah item */
-            border: 1px solid #444;  /* Slightly darker border */
-        }
-        body.dark-mode .numbering {
-            color: white;  /* Dark background for Surah item */
-        }
-        /* Tooltip styles */
-        .tooltip {
-            position: absolute;
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 5px 10px;
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            border-radius: 5px;
-            font-size: 12px;
-            visibility: hidden;
-        }
-
-        /* PWA Install Button */
-        .install-pwa {
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #3498db;
-        }
-
-        /* Tooltip visibility on hover */
-        .settings-item:hover .tooltip {
-            visibility: visible;
-        }
-    </style>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <!-- Settings Section at the top (Fixed) -->
-<div class="settings-container">
-    <!-- Dark/Light Mode Toggle -->
-    <div class="settings-item" onclick="toggleTheme()">
-        <i class="fas fa-moon"></i>
-        <div class="tooltip">Dark Mode</div>
+<body class="bg-[#fefaf4] text-[#0c6155] font-sans">
+
+    <!-- Header -->
+    <header class="bg-[#0c6155] text-white flex items-center justify-between px-4 py-3 shadow fixed top-0 left-0 w-full z-10">
+        <h1 id="header-title" class="text-lg font-semibold">Hadith Books</h1>
+        <div id="search-bar" class="hidden flex items-center w-full max-w-xs">
+            <input type="text" id="search-input" placeholder="Search Books..." oninput="filterBooks()" 
+                   class="p-2 text-sm border border-gray-300 rounded-md w-full text-[#0c6155] bg-white focus:outline-none">
+            <button id="search-clear" class="absolute right-6 text-gray-500 hover:text-[#e74c3c]">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <button id="search-toggle" class="text-xl">
+            <i class="fas fa-search"></i>
+        </button>
+    </header>
+
+    <!-- Settings Container (Left-aligned on small screens, centered on larger screens) -->
+    <div class="bg-white border-b mt-14 overflow-x-auto whitespace-nowrap scrollbar-thin scrollbar-thumb-[#0c6155] scrollbar-track-[#f4f6f8]">
+        <div class="flex md:justify-center text-sm font-medium text-gray-600">
+            <a href="index.html" class="inline-flex flex-none px-4 py-3 text-center border-b-2 border-[#0c6155] text-[#0c6155] font-semibold min-w-[100px]">
+                <i class="fas fa-book-quran"></i>
+                <span class="ml-2">Quran</span>
+            </a>
+            <a href="kalima.html" class="inline-flex flex-none px-4 py-3 text-center hover:border-b-2 hover:border-[#0c6155] hover:text-[#0c6155] min-w-[100px]">
+                <i class="fas fa-hand-point-right"></i>
+                <span class="ml-2">Kalima</span>
+            </a>
+            <a href="tasbih.html" class="inline-flex flex-none px-4 py-3 text-center hover:border-b-2 hover:border-[#0c6155] hover:text-[#0c6155] min-w-[100px]">
+                <i class="fas fa-praying-hands"></i>
+                <span class="ml-2">Tasbih</span>
+            </a>
+            <a href="99-names.html" class="inline-flex flex-none px-4 py-3 text-center hover:border-b-2 hover:border-[#0c6155] hover:text-[#0c6155] min-w-[100px]">
+                <i class="fas fa-mosque"></i>
+                <span class="ml-2">99 Names</span>
+            </a>
+            <a href="prayer.html" class="inline-flex flex-none px-4 py-3 text-center hover:border-b-2 hover:border-[#0c6155] hover:text-[#0c6155] min-w-[100px]">
+                <i class="fas fa-pray"></i>
+                <span class="ml-2">Prayer</span>
+            </a>
+        </div>
     </div>
 
-    <!-- Hadith Link -->
-    <div class="settings-item">
-        <a href="index.html">
-            <i class="fas fa-home"></i> <!-- Home -->
-        </a>
-        <div class="tooltip">Home</div>
-    </div>
-<!-- Kalima Link -->
-<div class="settings-item">
-    <a href="kalima.html">
-        <i class="fas fa-hand-point-right"></i> <!-- Kalima -->
-    </a>
-    <div class="tooltip">Kalima</div>
-</div>
-
-    <!-- Tasbih Link -->
-    <div class="settings-item">
-        <a href="tasbih.html">
-            <i class="fas fa-praying-hands"></i> <!-- Tasbih -->
-        </a>
-        <div class="tooltip">Tasbih</div>
-    </div>
-
-    <!-- 99 Names Link -->
-    <div class="settings-item">
-        <a href="99-names.html">
-            <i class="fas fa-mosque"></i> <!-- 99 Names -->
-        </a>
-        <div class="tooltip">99 Names</div>
-    </div>
-
-    <!-- Prayer Link -->
-    <div class="settings-item">
-        <a href="prayer.html">
-            <i class="fas fa-pray"></i> <!-- Prayer -->
-        </a>
-        <div class="tooltip">Prayer</div>
-    </div>
-
-    <!-- PWA Install Button -->
-    <div class="settings-item install-pwa" onclick="installPWA()">
-        <i class="fas fa-download"></i> <!-- Install PWA -->
-        <div class="tooltip">Install PWA</div>
-    </div>
-</div>
-
-    
-    <div class="book-list" id="bookList"></div>
+    <!-- Book List -->
+    <div id="book-list" class="p-4 max-w-7xl mx-auto"></div>
 
     <script>
         const books = [
@@ -300,70 +119,101 @@
             }
         ];
 
-        // Dynamically generate book list
-        const bookList = document.getElementById('bookList');
-        books.forEach((book, index) => {
-            const bookElement = document.createElement('div');
-            bookElement.classList.add('book-item');
-            
-            // Wrapping the entire book item in a clickable link
-            bookElement.innerHTML = `
-                <a href="books.html?book=${book.route.base}">
-                    <div class="numbering">${index + 1}</div>
-                    <h3>${book.english.title}</h3>
-                    <p><strong>Author:</strong> ${book.english.author}</p>
-                </a>
-            `;
-            
-            bookList.appendChild(bookElement);
-        });
+        let filteredBooks = books;
 
-        // Toggle Dark/Light Mode
-        function toggleTheme() {
-            const isDark = document.body.classList.toggle('dark-mode');
-            localStorage.setItem('darkMode', isDark);
-        }
+        // Render book list
+        function renderBooks(bookList) {
+            const bookListElement = document.getElementById('book-list');
+            bookListElement.innerHTML = '';
 
-        // Set theme based on user preference
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('darkMode');
-            if (savedTheme === 'true') {
-                document.body.classList.add('dark-mode');
-            }
-        });
+            bookList.forEach((book, index) => {
+                const bookElement = document.createElement('div');
+                bookElement.classList.add('flex', 'items-center', 'justify-between', 'py-3', 'px-4', 'bg-[#fefcf9]', 'rounded-lg', 'shadow-sm', 'mb-3', 'cursor-pointer', 'hover:bg-gray-50', 'transition', 'duration-200');
+                bookElement.onclick = () => window.location.href = `books.html?book=${book.route.base}`;
 
-        // Function to handle PWA installation
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-        });
+                bookElement.innerHTML = `
+                    <div class="flex items-start gap-4">
+                        <div class="w-8 h-8 flex items-center justify-center rounded-full border-2 border-[#0c6155] text-sm font-bold mt-1">${index + 1}</div>
+                        <div>
+                            <div class="text-[#b2513a] font-semibold text-base">${book.english.title}</div>
+                            <div class="text-sm text-gray-600">${book.english.author}</div>
+                        </div>
+                    </div>
+                    <div class="text-right text-base text-[#0c6155] font-semibold font-arabic">${book.arabic.title}</div>
+                `;
 
-        function installPWA() {
-            if (deferredPrompt) {
-                deferredPrompt.prompt();
-                deferredPrompt.userChoice.then((choiceResult) => {
-                    if (choiceResult.outcome === 'accepted') {
-                        console.log('User accepted the A2HS prompt');
-                    } else {
-                        console.log('User dismissed the A2HS prompt');
-                    }
-                });
-                deferredPrompt = null;
-            }
-        }
-
-        // Register Service Worker for PWA functionality
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then((registration) => {
-                        console.log('Service Worker registered with scope:', registration.scope);
-                    })
-                    .catch((error) => {
-                        console.log('Service Worker registration failed:', error);
-                    });
+                bookListElement.appendChild(bookElement);
             });
         }
+
+        // Filter books based on search input
+        function filterBooks() {
+            const searchTerm = document.getElementById("search-input").value.toLowerCase();
+            filteredBooks = books.filter(book => 
+                book.english.title.toLowerCase().includes(searchTerm) || 
+                book.arabic.title.toLowerCase().includes(searchTerm) ||
+                book.english.author.toLowerCase().includes(searchTerm)
+            );
+            renderBooks(filteredBooks);
+        }
+
+        // Initialize book list
+        window.addEventListener('DOMContentLoaded', () => {
+            renderBooks(books);
+
+            // Search bar toggle
+            const searchToggle = document.getElementById('search-toggle');
+            const searchBar = document.getElementById('search-bar');
+            const searchInput = document.getElementById('search-input');
+            const searchClear = document.getElementById('search-clear');
+            const headerTitle = document.getElementById('header-title');
+
+            searchToggle.addEventListener('click', () => {
+                searchBar.classList.toggle('hidden');
+                headerTitle.classList.toggle('hidden');
+                if (!searchBar.classList.contains('hidden')) {
+                    searchInput.focus();
+                    searchToggle.innerHTML = '<i class="fas fa-search"></i>'; // Reset to search icon
+                } else {
+                    searchInput.value = ''; // Clear input when hiding
+                    filterBooks(); // Reset book list
+                }
+            });
+
+            searchClear.addEventListener('click', () => {
+                searchInput.value = '';
+                filterBooks();
+                searchBar.classList.add('hidden');
+                headerTitle.classList.remove('hidden');
+                searchInput.focus();
+            });
+        });
     </script>
+
+    <style>
+        /* Arabic font for book titles */
+        .font-arabic {
+            font-family: 'Amiri', serif;
+        }
+
+        /* Custom scrollbar for settings container */
+        .scrollbar-thin {
+            scrollbar-width: thin;
+        }
+
+        .scrollbar-thumb-[#0c6155]::-webkit-scrollbar-thumb {
+            background-color: #0c6155;
+            border-radius: 10px;
+        }
+
+        .scrollbar-track-[#f4f6f8]::-webkit-scrollbar-track {
+            background-color: #f4f6f8;
+        }
+
+        /* Ensure smooth scrolling for touch devices */
+        .overflow-x-auto {
+            -webkit-overflow-scrolling: touch;
+        }
+    </style>
 </body>
 </html>
