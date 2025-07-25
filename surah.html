@@ -586,7 +586,7 @@
             <i class="fas fa-book-quran"></i>
             <span>Surah</span>
         </a>
-        <a href="wordtoword.html" class="nav-item">
+        <a href="wordtoword.html" class="nav-item" id="word-by-word-link">
             <i class="fas fa-fire"></i>
             <span>Word by Word</span>
         </a>
@@ -703,7 +703,7 @@
         const state = {
             theme: localStorage.getItem('theme') || 'light',
             fontSize: localStorage.getItem('fontSize') || 'medium',
-            translation: localStorage.getItem('translation') || 'en.ahmedraza', // Updated default to en.ahmedraza
+            translation: localStorage.getItem('translation') || 'en.ahmedraza',
             secondaryTranslation: localStorage.getItem('secondaryTranslation') || '',
             reciter: localStorage.getItem('reciter') || 'ar.alafasy',
             autoScrollSpeed: 0 // 0 for off, then 0.5, 1, 1.5, 2, 3
@@ -822,6 +822,8 @@
             document.getElementById('surah-name').textContent = currentSurah.englishName;
             document.getElementById('surah-type').textContent = currentSurah.revelationType;
             document.getElementById('surah-verse-count').textContent = `${currentSurah.numberOfAyahs} Verses`;
+            // Update the Word by Word link with the current surah number
+            document.getElementById('word-by-word-link').href = `wordtoword.html?surah=${currentSurah.number}`;
 
             const newUrl = `?surah=${currentSurah.number}`;
             window.history.pushState({ path: newUrl }, '', newUrl);
