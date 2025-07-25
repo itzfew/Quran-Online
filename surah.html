@@ -13,7 +13,7 @@
             --secondary-color: #f8b400;
             --text-color: #333;
             --text-light: #666;
-            --bg- color: #f9f9f9;
+            --bg-color: #f9f9f9;
             --card-color: #fff;
             --border-color: #e0e0e0;
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -31,7 +31,7 @@
             --text-color: #f0f0f0;
             --text-light: #b0b0b0;
             --bg-color: #121212;
-            --card-color: #1962e1e;
+            --card-color: #1e1e1e;
             --border-color: #333;
             --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
@@ -65,9 +65,7 @@
             justify-content: space-between;
             padding: 0 20px;
             box-shadow: var(--shadow);
-            z
-
-index: 1000;
+            z-index: 1000;
             transition: var(--transition);
         }
 
@@ -559,7 +557,6 @@ index: 1000;
 
     <!-- Main Content -->
     <main class="surah-container">
-        <div class="surah-list"></div>
         <div class="surah-header">
             <div class="surah-nav">
                 <button class="nav-btn" id="prev-surah" onclick="navigateSurah(-1)" disabled>
@@ -916,7 +913,7 @@ index: 1000;
                     alert('Error playing audio');
                 });
             } catch (error) {
-            console.error('Error fetching audio:', error);
+                console.error('Error fetching audio:', error);
                 alert(`Error playing verse ${verseNumber} of Surah ${surahNumber}`);
             }
         }
@@ -1047,7 +1044,7 @@ index: 1000;
 
         function toggleAutoScroll() {
             const speeds = [0, 0.5, 1, 1.5, 2, 3];
-            const speedLabels = ['Auto Scroll', '0.5x', '1x', '1.5x', '2x', '3x'];
+            const speedLabels = ['Auto Scroll', '3x', '2x', '1.5x', '1x', '0.5x'];
             let currentIndex = speeds.indexOf(state.autoScrollSpeed);
             
             // Move to next speed or wrap around to 0 (off)
