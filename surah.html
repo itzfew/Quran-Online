@@ -982,7 +982,8 @@
             }
         }
 function openTafsir(surah, verse) {
-    window.location.href = `verse?surah=${surah}&verse=${verse}`;
+    const nextVerse = verse + 1;
+    window.location.href = `verse?surah=${surah}&verse=${nextVerse}`;
 }
         function showAbout() {
             alert('This is version 2.5 by Willingstaar');
