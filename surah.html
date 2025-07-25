@@ -638,17 +638,17 @@
                 </div>
                 <p style="font-size: 0.8rem; color: var(--text-light);">Select up to two translations to display with Arabic text</p>
                 <div class="select-wrapper">
-                    <select id="secondary-translation-select">
-                        <option value="">None</option>
-                        <option value="en.ahmedraza">English (Ahmed Raza Khan)</option>
-                        <option value="zh.jian">Chinese (Simplified)</option>
-                        <option value="es.asad">Spanish (Asad)</option>
-                        <option value="ru.kuliev">Russian (Kuliev)</option>
-                        <option value="bn.bengali">Bengali</option>
-                        <option value="ur.qadri">Urdu (Tahir ul Qadri)</option>
-                        <option value="hi.hindi">Hindi</option>
-                        <option value="fr.hamidullah">French (Hamidullah)</option>
-                    </select>
+    <select id="translation-select">
+        <option value="en.ahmedraza" selected>English (Ahmed Raza Khan)</option>
+        <option value="zh.jian">Chinese (Simplified)</option>
+        <option value="es.asad">Spanish (Asad)</option>
+        <option value="ru.kuliev">Russian (Kuliev)</option>
+        <option value="bn.bengali">Bengali</option>
+        <option value="ur.qadri">Urdu (Tahir ul Qadri)</option>
+        <option value="hi.hindi">Hindi</option>
+        <option value="fr.hamidullah">French (Hamidullah)</option>
+    </select>
+
                 </div>
             </div>
 
@@ -700,14 +700,14 @@
         };
 
         // App state
-        const state = {
-            theme: localStorage.getItem('theme') || 'light',
-            fontSize: localStorage.getItem('fontSize') || 'medium',
-            translation: localStorage.getItem('translation') || 'en.sahih',
-            secondaryTranslation: localStorage.getItem('secondaryTranslation') || '',
-            reciter: localStorage.getItem('reciter') || 'ar.alafasy',
-            autoScrollSpeed: 0 // 0 for off, then 0.5, 1, 1.5, 2, 3
-        };
+const state = {
+    theme: localStorage.getItem('theme') || 'light',
+    fontSize: localStorage.getItem('fontSize') || 'medium',
+    translation: localStorage.getItem('translation') || 'en.ahmedraza', // Changed from 'en.sahih' to 'en.ahmedraza'
+    secondaryTranslation: localStorage.getItem('secondaryTranslation') || '',
+    reciter: localStorage.getItem('reciter') || 'ar.alafasy',
+    autoScrollSpeed: 0 // 0 for off, then 0.5, 1, 1.5, 2, 3
+};
 
         // Audio player
         let audioPlayer = new Audio();
