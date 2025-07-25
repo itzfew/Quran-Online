@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quran Kareem</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Roboto:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #2ca4ab;
@@ -43,7 +43,7 @@
         }
 
         body {
-            font-family: 'Roboto', 'Amiri', sans-serif;
+            font-family: 'Roboto', 'Amiri', 'Noto Serif SC', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             transition: var(--transition);
@@ -52,7 +52,6 @@
             padding-bottom: var(--footer-height);
         }
 
-        /* Header Styles */
         .app-header {
             position: fixed;
             top: 0;
@@ -101,7 +100,6 @@
             background-color: rgba(255, 255, 255, 0.2);
         }
 
-        /* Main Content */
         .surah-container {
             max-width: 800px;
             margin: 0 auto;
@@ -164,7 +162,6 @@
             transform: scale(1.05);
         }
 
-        /* Verses Styles */
         .verse-card {
             background-color: var(--card-color);
             border-radius: var(--radius);
@@ -246,11 +243,6 @@
             color: #333;
         }
 
-        .bookmark-btn {
-            background-color: var(--border-color);
-            color: var(--text-color);
-        }
-
         .play-btn {
             background-color: var(--primary-color);
             color: white;
@@ -260,7 +252,6 @@
             transform: translateY(-2px);
         }
 
-        /* Footer Navigation */
         .app-footer {
             position: fixed;
             bottom: 0;
@@ -303,7 +294,6 @@
             color: var(--primary-color);
         }
 
-        /* Settings Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -449,7 +439,24 @@
             background-color: var(--primary-dark);
         }
 
-        /* Responsive Adjustments */
+        .menu-item {
+            display: block;
+            padding: 10px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .menu-item:hover {
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+        }
+
+        .menu-item i {
+            margin-right: 10px;
+        }
+
         @media (max-width: 768px) {
             :root {
                 --header-height: 56px;
@@ -486,7 +493,6 @@
             }
         }
 
-        /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -504,7 +510,6 @@
             animation-delay: 0.1s;
         }
 
-        /* Loading State */
         .loading {
             display: flex;
             justify-content: center;
@@ -562,7 +567,6 @@
         </div>
 
         <div id="verses-container">
-            <!-- Verses will be loaded here -->
             <div class="loading">
                 <div class="spinner"></div>
             </div>
@@ -578,10 +582,6 @@
         <a href="wordtoword.html" class="nav-item">
             <i class="fas fa-fire"></i>
             <span>Word by Word</span>
-        </a>
-        <a href="bookmarks.html" class="nav-item">
-            <i class="fas fa-bookmark"></i>
-            <span>Bookmarks</span>
         </a>
         <a href="search.html" class="nav-item">
             <i class="fas fa-search"></i>
@@ -624,6 +624,10 @@
                 <div class="select-wrapper">
                     <select id="translation-select">
                         <option value="en.sahih">English (Sahih International)</option>
+                        <option value="zh.jian">Chinese (Simplified)</option>
+                        <option value="es.asad">Spanish (Asad)</option>
+                        <option value="ru.kuliev">Russian (Kuliev)</option>
+                        <option value="bn.bengali">Bengali</option>
                         <option value="ur.junagarhi">Urdu (Junagarhi)</option>
                         <option value="hi.hindi">Hindi</option>
                         <option value="fr.hamidullah">French (Hamidullah)</option>
@@ -634,6 +638,10 @@
                     <select id="secondary-translation-select">
                         <option value="">None</option>
                         <option value="en.sahih">English (Sahih International)</option>
+                        <option value="zh.jian">Chinese (Simplified)</option>
+                        <option value="es.asad">Spanish (Asad)</option>
+                        <option value="ru.kuliev">Russian (Kuliev)</option>
+                        <option value="bn.bengali">Bengali</option>
                         <option value="ur.junagarhi">Urdu (Junagarhi)</option>
                         <option value="hi.hindi">Hindi</option>
                         <option value="fr.hamidullah">French (Hamidullah)</option>
@@ -666,22 +674,13 @@
             </div>
 
             <div class="menu-section">
-                <a href="#" class="menu-item">
+                <a href="index.html" class="menu-item">
                     <i class="fas fa-home"></i> Home
                 </a>
-                <a href="#" class="menu-item">
+                <a href="index.html" class="menu-item">
                     <i class="fas fa-list"></i> Surah List
                 </a>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-bookmark"></i> Bookmarked Verses
-                </a>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-history"></i> Reading History
-                </a>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-pray"></i> Supplications
-                </a>
-                <a href="#" class="menu-item">
+                <a href="#" class="menu-item" onclick="showAbout()">
                     <i class="fas fa-info-circle"></i> About
                 </a>
             </div>
@@ -708,9 +707,13 @@
         // Translations data
         const translations = {
             'en.sahih': { name: 'English (Sahih)', direction: 'ltr', className: 'translation-text' },
-            'ur.junagarhi': { name: 'Urdu (Junagarhi)', direction: 'rtl', className: 'urdu-text' },
-            'hi.hindi': { name: 'Hindi', direction: 'ltr', className: 'hindi-text' },
-            'fr.hamidullah': { name: 'French', direction: 'ltr', className: 'french-text' }
+            'zh.jian': { name: 'Chinese (Simplified)', direction: 'ltr', className: 'translation-text' },
+            'es.asad': { name: 'Spanish (Asad)', direction: 'ltr', className: 'translation-text' },
+            'ru.kuliev': { name: 'Russian (Kuliev)', direction: 'ltr', className: 'translation-text' },
+            'bn.bengali': { name: 'Bengali', direction: 'ltr', className: 'translation-text' },
+            'ur.junagarhi': { name: 'Urdu (Junagarhi)', direction: 'rtl', className: 'translation-text' },
+            'hi.hindi': { name: 'Hindi', direction: 'ltr', className: 'translation-text' },
+            'fr.hamidullah': { name: 'French', direction: 'ltr', className: 'translation-text' }
         };
 
         // Reciters data
@@ -727,8 +730,7 @@
             fontSize: localStorage.getItem('fontSize') || 'medium',
             translation: localStorage.getItem('translation') || 'en.sahih',
             secondaryTranslation: localStorage.getItem('secondaryTranslation') || '',
-            reciter: localStorage.getItem('reciter') || 'ar.alafasy',
-            bookmarks: JSON.parse(localStorage.getItem('bookmarks')) || []
+            reciter: localStorage.getItem('reciter') || 'ar.alafasy'
         };
 
         // Audio player
@@ -744,7 +746,6 @@
         });
 
         function setupEventListeners() {
-            // Verse selection
             document.addEventListener('click', (e) => {
                 if (e.target.closest('.verse-card')) {
                     const verseCard = e.target.closest('.verse-card');
@@ -753,7 +754,6 @@
                 }
             });
 
-            // Keyboard navigation
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowLeft') {
                     navigateSurah(-1);
@@ -762,7 +762,6 @@
                 }
             });
 
-            // Update theme on system preference change
             window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
                 if (state.theme === 'auto') {
                     document.body.classList.toggle('dark-mode', e.matches);
@@ -784,7 +783,6 @@
             `;
 
             try {
-                // Fetch surah metadata
                 const surahResponse = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}`);
                 const surahData = await surahResponse.json();
                 if (surahData.code !== 200) throw new Error('Failed to fetch surah data');
@@ -800,12 +798,10 @@
 
                 updateSurahInfo();
 
-                // Fetch Arabic text
                 const arabicResponse = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/ar`);
                 const arabicData = await arabicResponse.json();
                 if (arabicData.code !== 200) throw new Error('Failed to fetch Arabic text');
 
-                // Fetch primary translation
                 let translationData = { data: { ayahs: [] } };
                 if (state.translation) {
                     const translationResponse = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${state.translation}`);
@@ -813,7 +809,6 @@
                     if (translationData.code !== 200) throw new Error('Failed to fetch primary translation');
                 }
 
-                // Fetch secondary translation if selected
                 let secondaryTranslationData = { data: { ayahs: [] } };
                 if (state.secondaryTranslation) {
                     const secondaryResponse = await fetch(`https://api.alquran.cloud/v1/surah/${surahNumber}/${state.secondaryTranslation}`);
@@ -821,7 +816,6 @@
                     if (secondaryTranslationData.code !== 200) throw new Error('Failed to fetch secondary translation');
                 }
 
-                // Combine verses
                 const verses = arabicData.data.ayahs.map((verse, index) => ({
                     number: verse.numberInSurah,
                     text: verse.text,
@@ -891,9 +885,6 @@
                         <button class="action-btn play-btn" onclick="playVerse(${currentSurah.number}, ${verse.number})">
                             <i class="fas fa-play"></i> Play
                         </button>
-                        <button class="action-btn bookmark-btn" onclick="toggleBookmark(${currentSurah.number}, ${verse.number})">
-                            <i class="fas fa-bookmark"></i> Bookmark
-                        </button>
                         <button class="action-btn share-btn" onclick="shareVerse(${currentSurah.number}, ${verse.number})">
                             <i class="fas fa-share"></i> Share
                         </button>
@@ -946,26 +937,6 @@
             }
         }
 
-        function toggleBookmark(surahNumber, verseNumber) {
-            const bookmarkId = `${surahNumber}:${verseNumber}`;
-            const index = state.bookmarks.findIndex(b => b.id === bookmarkId);
-
-            if (index >= 0) {
-                state.bookmarks.splice(index, 1);
-                alert('Verse removed from bookmarks');
-            } else {
-                state.bookmarks.push({
-                    id: bookmarkId,
-                    surah: surahNumber,
-                    verse: verseNumber,
-                    date: new Date().toISOString()
-                });
-                alert('Verse added to bookmarks');
-            }
-
-            localStorage.setItem('bookmarks', JSON.stringify(state.bookmarks));
-        }
-
         function shareVerse(surahNumber, verseNumber) {
             const verseText = document.querySelector(`.verse-card[data-verse-id="${verseNumber}"] .arabic-text`).textContent;
             const translationText = document.querySelector(`.verse-card[data-verse-id="${verseNumber}"] .translation-text`)?.textContent || '';
@@ -980,6 +951,11 @@
             } else {
                 prompt('Copy this text to share the verse:', shareData.text);
             }
+        }
+
+        function showAbout() {
+            alert('This is version 2.5 by Willingstaar');
+            closeMenu();
         }
 
         function openSettings() {
@@ -1037,7 +1013,6 @@
             let currentIndex = sizes.indexOf(state.fontSize);
 
             if (change === 0) {
-                // No change
             } else if (change > 0 && currentIndex < sizes.length - 1) {
                 currentIndex++;
             } else if (change < 0 && currentIndex > 0) {
