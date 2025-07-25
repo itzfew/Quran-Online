@@ -101,8 +101,8 @@
                 const surahLink = document.createElement('div');
                 surahLink.classList.add('flex', 'items-center', 'justify-between', 'py-3', 'px-4', 'bg-[#fefcf9]', 'rounded-lg', 'shadow-sm', 'mb-3', 'cursor-pointer', 'hover:bg-gray-50', 'transition', 'duration-200');
                 
-                // Set the redirect link to surah?surah= index
-                surahLink.onclick = () => window.location.href = `surah?surah=${surah.index}`;
+                // Set the redirect link to surah?surah= index without leading zeros
+                surahLink.onclick = () => window.location.href = `surah?surah=${parseInt(surah.index)}`;
 
                 surahLink.innerHTML = `
                     <div class="flex items-start gap-4">
