@@ -242,33 +242,35 @@
             background-color: var(--secondary-color);
             color: #333;
         }
-.tafsir-btn {
-    background-color: #4CAF50; /* A calming green */
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    font-size: 14px;
-    font-weight: 500;
-    border-radius: 8px;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: background-color 0.3s ease, box-shadow 0.2s ease;
-}
 
-.tafsir-btn i {
-    font-size: 16px;
-}
+        .tafsir-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s ease, box-shadow 0.2s ease;
+        }
 
-.tafsir-btn:hover {
-    background-color: #45a049;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
+        .tafsir-btn i {
+            font-size: 16px;
+        }
 
-.tafsir-btn:active {
-    transform: scale(0.98);
-} 
+        .tafsir-btn:hover {
+            background-color: #45a049;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .tafsir-btn:active {
+            transform: scale(0.98);
+        }
+
         .play-btn {
             background-color: var(--primary-color);
             color: white;
@@ -609,14 +611,10 @@
             <i class="fas fa-fire"></i>
             <span>Word by Word</span>
         </a>
-        <a href="search.html" class="nav-item">
-            <i class="fas fa-search"></i>
-            <span>Search</span>
-        </a>
-        <a href="more.html" class="nav-item">
-            <i class="fas fa-ellipsis-h"></i>
-            <span>More</span>
-        </a>
+        <button class="nav-item" onclick="toggleAutoScroll()">
+            <i class="fas fa-scroll"></i>
+            <span id="scroll-speed">Auto Scroll</span>
+        </button>
     </footer>
 
     <!-- Settings Modal -->
@@ -756,11 +754,13 @@
             fontSize: localStorage.getItem('fontSize') || 'medium',
             translation: localStorage.getItem('translation') || 'en.sahih',
             secondaryTranslation: localStorage.getItem('secondaryTranslation') || '',
-            reciter: localStorage.getItem('reciter') || 'ar.alafasy'
+            reciter: localStorage.getItem('reciter') || 'ar.alafasy',
+            autoScrollSpeed: 0 // 0 for off, then 0.5, 1, 1.5, 2, 3
         };
 
         // Audio player
         let audioPlayer = new Audio();
+        let scrollInterval = null;
 
         // Initialize the app
         document.addEventListener('DOMContentLoaded', () => {
@@ -915,8 +915,8 @@
                             <i class="fas fa-share"></i> Share
                         </button>
                         <button class="action-btn tafsir-btn" onclick="openTafsir(${currentSurah.number}, ${verse.number})">
-    <i class="fas fa-book"></i> Tafsir
-</button>
+                            <i class="fas fa-book"></i> Tafsir
+                        </button>
                     </div>
                 `;
 
@@ -933,6 +933,7 @@
         function navigateSurah(direction) {
             const newSurahNumber = currentSurah.number + direction;
             if (newSurahNumber >= 1 && newSurahNumber <= 114) {
+                stopAutoScroll();
                 loadSurah(newSurahNumber);
             }
         }
@@ -981,9 +982,11 @@
                 prompt('Copy this text to share the verse:', shareData.text);
             }
         }
-function openTafsir(surah, verse) {
-    window.location.href = `verse?surah=${surah}&verse=${verse}`;
-}
+
+        function openTafsir(surah, verse) {
+            window.location.href = `verse?surah=${surah}&verse=${verse}`;
+        }
+
         function showAbout() {
             alert('This is version 2.5 by Willingstaar');
             closeMenu();
@@ -1095,6 +1098,47 @@ function openTafsir(surah, verse) {
             loadSurah(currentSurah.number);
             closeSettings();
             alert('Settings saved successfully');
+        }
+
+        function toggleAutoScroll() {
+            const speeds = [0, 0.5, 1, 1.5, 2, 3];
+            const speedLabels = ['Auto Scroll', '0.5x', '1x', '1.5x', '2x', '3x'];
+            let currentIndex = speeds.indexOf(state.autoScrollSpeed);
+            
+            // Move to next speed or wrap around to 0 (off)
+            currentIndex = (currentIndex + 1) % speeds.length;
+            state.autoScrollSpeed = speeds[currentIndex];
+            
+            // Update button label
+            document.getElementById('scroll-speed').textContent = speedLabels[currentIndex];
+            
+            // Stop any existing scroll
+            stopAutoScroll();
+            
+            // Start scrolling if speed is not 0
+            if (state.autoScrollSpeed > 0) {
+                const scrollSpeed = 100 / state.autoScrollSpeed; // Pixels per second
+                scrollInterval = setInterval(() => {
+                    window.scrollBy({
+                        top: scrollSpeed / 60, // Divide by 60 for smooth 60fps scrolling
+                        behavior: 'smooth'
+                    });
+                    
+                    // Stop scrolling when reaching the bottom
+                    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                        stopAutoScroll();
+                        document.getElementById('scroll-speed').textContent = 'Auto Scroll';
+                        state.autoScrollSpeed = 0;
+                    }
+                }, 1000 / 60); // Run at 60fps
+            }
+        }
+
+        function stopAutoScroll() {
+            if (scrollInterval) {
+                clearInterval(scrollInterval);
+                scrollInterval = null;
+            }
         }
     </script>
 </body>
