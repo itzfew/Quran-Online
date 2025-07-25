@@ -62,31 +62,74 @@
         </div>
     </div>
 
+    <!-- Tab Navigation -->
+    <div class="bg-white border-b overflow-x-auto whitespace-nowrap scrollbar-thin scrollbar-thumb-[#0c6155] scrollbar-track-[#f4f6f8]">
+        <div class="flex md:justify-center text-sm font-medium text-gray-600">
+            <button id="tab-al-quran" class="tab-button inline-flex flex-none px-4 py-3 text-center border-b-2 border-[#0c6155] text-[#0c6155] font-semibold min-w-[100px]">
+                <i class="fas fa-book-reader"></i>
+                <span class="ml-2">Al-Quran</span>
+            </button>
+            <button id="tab-translation" class="tab-button inline-flex flex-none px-4 py-3 text-center hover:border-b-2 hover:border-[#0c6155] hover:text-[#0c6155] min-w-[100px]">
+                <i class="fas fa-book"></i>
+                <span class="ml-2">Translation</span>
+            </button>
+            <button id="tab-word-to-word" class="tab-button inline-flex flex-none px-4 py-3 text-center hover:border-b-2 hover:border-[#0c6155] hover:text-[#0c6155] min-w-[100px]">
+                <i class="fas fa-language"></i>
+                <span class="ml-2">Word to Word</span>
+            </button>
+        </div>
+    </div>
+
     <!-- Surah List -->
-    <div id="surah-list" class="p-4 max-w-7xl mx-auto"></div>
+    <div id="surah-list" class="p-4 max-w-7xl mx-auto animate-fade-in"></div>
 
     <script>
         let surahData = [];
+        let activeTab = 'al-quran';
 
         // Fetch Surah data
         fetch('https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah.json')
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 surahData = data;
                 renderSurahs(surahData);
             })
             .catch(error => {
-                console.error("Error loading Surah data:", error);
+                console.error("Error loading Surah data:", error.message);
+                const listElement = document.getElementById("surah-list");
+                listElement.innerHTML = `
+                    <div class="text-center text-red-500 p-4">
+                        <p>Failed to load Surah data. Please check your internet connection or try again later.</p>
+                    </div>
+                `;
             });
 
         function renderSurahs(surahList) {
             const listElement = document.getElementById("surah-list");
+            listElement.classList.remove('animate-fade-in'); // Remove animation class
+            void listElement.offsetWidth; // Trigger reflow to restart animation
             listElement.innerHTML = '';
+            listElement.classList.add('animate-fade-in'); // Re-add animation class
 
             surahList.forEach(surah => {
                 const surahLink = document.createElement('div');
                 surahLink.classList.add('flex', 'items-center', 'justify-between', 'py-3', 'px-4', 'bg-[#fefcf9]', 'rounded-lg', 'shadow-sm', 'mb-3', 'cursor-pointer', 'hover:bg-gray-50', 'transition', 'duration-200');
-                surahLink.onclick = () => showSurahOptions(parseInt(surah.index));
+                
+                // Set the redirect link based on the active tab
+                let redirectUrl;
+                if (activeTab === 'al-quran') {
+                    redirectUrl = `read?index=${surah.index}/1`;
+                } else if (activeTab === 'translation') {
+                    redirectUrl = `surah?index=${surah.index}`;
+                } else if (activeTab === 'word-to-word') {
+                    redirectUrl = `wordtoword?index=${surah.index}#1`;
+                }
+                surahLink.onclick = () => window.location.href = redirectUrl;
 
                 surahLink.innerHTML = `
                     <div class="flex items-start gap-4">
@@ -101,52 +144,6 @@
 
                 listElement.appendChild(surahLink);
             });
-        }
-
-        function showSurahOptions(surahIndex) {
-            const surah = surahData.find(s => parseInt(s.index) === surahIndex);
-            const surahName = surah ? surah.title : 'Unknown Surah';
-
-            const modal = document.createElement('div');
-            modal.classList.add('modal', 'fixed', 'top-1/2', 'left-1/2', 'transform', '-translate-x-1/2', '-translate-y-1/2', 'bg-white', 'rounded-lg', 'shadow-xl', 'w-11/12', 'max-w-md', 'z-[1001]', 'p-6', 'text-center');
-
-            modal.innerHTML = `
-                <button class="absolute top-3 right-3 text-[#e74c3c] text-lg hover:text-[#c0392b] transition duration-200" onclick="closeModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-                <h2 class="text-xl font-semibold mb-4 text-[#333] capitalize">${surahName}</h2>
-                <div class="space-y-4">
-                    <div class="flex gap-3 justify-center">
-                        <button onclick="window.location.href='surah?index=${surahIndex}'" class="flex items-center gap-2 px-4 py-2 border border-[#333] text-[#333] rounded-md hover:bg-gray-100 hover:border-[#000] text-sm uppercase transition duration-200">
-                            <i class="fas fa-book"></i> Read Surah
-                        </button>
-                        <button onclick="window.location.href='read?index=${surahIndex}/1'" class="flex items-center gap-2 px-4 py-2 border border-[#333] text-[#333] rounded-md hover:bg-gray-100 hover:border-[#000] text-sm uppercase transition duration-200">
-                            <i class="fas fa-book-reader"></i> Read Quran
-                        </button>
-                    </div>
-                    <button onclick="openWordToWord(${surahIndex})" class="flex items-center gap-2 px-4 py-2 border border-[#333] text-[#333] rounded-md hover:bg-gray-100 hover:border-[#000] text-sm uppercase w-full justify-center transition duration-200">
-                        <i class="fas fa-language"></i> Read Word to Word
-                    </button>
-                </div>
-            `;
-
-            document.body.appendChild(modal);
-
-            const overlay = document.createElement('div');
-            overlay.classList.add('overlay', 'fixed', 'top-0', 'left-0', 'w-full', 'h-full', 'bg-black/40', 'z-[1000]');
-            overlay.onclick = closeModal;
-            document.body.appendChild(overlay);
-        }
-
-        function openWordToWord(surahIndex) {
-            window.location.href = `wordtoword?index=${surahIndex}#1`;
-        }
-
-        function closeModal() {
-            const modal = document.querySelector('.modal');
-            const overlay = document.querySelector('.overlay');
-            if (modal) modal.remove();
-            if (overlay) overlay.remove();
         }
 
         function filterSurahs() {
@@ -172,10 +169,10 @@
                 headerTitle.classList.toggle('hidden');
                 if (!searchBar.classList.contains('hidden')) {
                     searchInput.focus();
-                    searchToggle.innerHTML = '<i class="fas fa-search"></i>'; // Reset to search icon
+                    searchToggle.innerHTML = '<i class="fas fa-search"></i>';
                 } else {
-                    searchInput.value = ''; // Clear input when hiding
-                    filterSurahs(); // Reset Surah list
+                    searchInput.value = '';
+                    filterSurahs();
                 }
             });
 
@@ -185,6 +182,26 @@
                 searchBar.classList.add('hidden');
                 headerTitle.classList.remove('hidden');
                 searchInput.focus();
+            });
+
+            // Tab navigation
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active state from all tabs
+                    tabButtons.forEach(btn => {
+                        btn.classList.remove('border-b-2', 'border-[#0c6155]', 'text-[#0c6155]', 'font-semibold');
+                        btn.classList.add('hover:border-b-2', 'hover:border-[#0c6155]', 'hover:text-[#0c6155]');
+                    });
+
+                    // Add active state to clicked tab
+                    button.classList.add('border-b-2', 'border-[#0c6155]', 'text-[#0c6155]', 'font-semibold');
+                    button.classList.remove('hover:border-b-2', 'hover:border-[#0c6155]', 'hover:text-[#0c6155]');
+
+                    // Update active tab and re-render Surahs
+                    activeTab = button.id.replace('tab-', '');
+                    renderSurahs(surahData);
+                });
             });
         });
     </script>
@@ -212,6 +229,16 @@
         /* Ensure smooth scrolling for touch devices */
         .overflow-x-auto {
             -webkit-overflow-scrolling: touch;
+        }
+
+        /* Fade-in animation for Surah list */
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
     </style>
 </body>
