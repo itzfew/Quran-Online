@@ -242,7 +242,33 @@
             background-color: var(--secondary-color);
             color: #333;
         }
+.tafsir-btn {
+    background-color: #4CAF50; /* A calming green */
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+}
 
+.tafsir-btn i {
+    font-size: 16px;
+}
+
+.tafsir-btn:hover {
+    background-color: #45a049;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.tafsir-btn:active {
+    transform: scale(0.98);
+} 
         .play-btn {
             background-color: var(--primary-color);
             color: white;
