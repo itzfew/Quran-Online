@@ -62,30 +62,11 @@
         </div>
     </div>
 
-    <!-- Tab Navigation -->
-    <div class="bg-white border-b overflow-x-auto whitespace-nowrap scrollbar-thin scrollbar-thumb-[#0c6155] scrollbar-track-[#f4f6f8]">
-        <div class="flex md:justify-center text-sm font-medium text-gray-600">
-            <button id="tab-al-quran" class="tab-button inline-flex flex-none px-4 py-3 text-center border-b-2 border-[#0c6155] text-[#0c6155] font-semibold min-w-[100px]">
-                <i class="fas fa-book-reader"></i>
-                <span class="ml-2">Al-Quran</span>
-            </button>
-            <button id="tab-translation" class="tab-button inline-flex flex-none px-4 py-3 text-center hover:border-b-2 hover:border-[#0c6155] hover:text-[#0c6155] min-w-[100px]">
-                <i class="fas fa-book"></i>
-                <span class="ml-2">Translation</span>
-            </button>
-            <button id="tab-word-to-word" class="tab-button inline-flex flex-none px-4 py-3 text-center hover:border-b-2 hover:border-[#0c6155] hover:text-[#0c6155] min-w-[100px]">
-                <i class="fas fa-language"></i>
-                <span class="ml-2">Word to Word</span>
-            </button>
-        </div>
-    </div>
-
     <!-- Surah List -->
     <div id="surah-list" class="p-4 max-w-7xl mx-auto animate-fade-in"></div>
 
     <script>
         let surahData = [];
-        let activeTab = 'al-quran';
 
         // Fetch Surah data
         fetch('https://raw.githubusercontent.com/itzfew/Quranv2/main/source/surah.json')
@@ -120,16 +101,8 @@
                 const surahLink = document.createElement('div');
                 surahLink.classList.add('flex', 'items-center', 'justify-between', 'py-3', 'px-4', 'bg-[#fefcf9]', 'rounded-lg', 'shadow-sm', 'mb-3', 'cursor-pointer', 'hover:bg-gray-50', 'transition', 'duration-200');
                 
-                // Set the redirect link based on the active tab
-                let redirectUrl;
-                if (activeTab === 'al-quran') {
-                    redirectUrl = `read?index=${surah.index}/1`;
-                } else if (activeTab === 'translation') {
-                    redirectUrl = `surah?index=${surah.index}`;
-                } else if (activeTab === 'word-to-word') {
-                    redirectUrl = `wordtoword?index=${surah.index}#1`;
-                }
-                surahLink.onclick = () => window.location.href = redirectUrl;
+                // Set the redirect link to surah?surah= index
+                surahLink.onclick = () => window.location.href = `surah?surah=${surah.index}`;
 
                 surahLink.innerHTML = `
                     <div class="flex items-start gap-4">
@@ -182,26 +155,6 @@
                 searchBar.classList.add('hidden');
                 headerTitle.classList.remove('hidden');
                 searchInput.focus();
-            });
-
-            // Tab navigation
-            const tabButtons = document.querySelectorAll('.tab-button');
-            tabButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    // Remove active state from all tabs
-                    tabButtons.forEach(btn => {
-                        btn.classList.remove('border-b-2', 'border-[#0c6155]', 'text-[#0c6155]', 'font-semibold');
-                        btn.classList.add('hover:border-b-2', 'hover:border-[#0c6155]', 'hover:text-[#0c6155]');
-                    });
-
-                    // Add active state to clicked tab
-                    button.classList.add('border-b-2', 'border-[#0c6155]', 'text-[#0c6155]', 'font-semibold');
-                    button.classList.remove('hover:border-b-2', 'hover:border-[#0c6155]', 'hover:text-[#0c6155]');
-
-                    // Update active tab and re-render Surahs
-                    activeTab = button.id.replace('tab-', '');
-                    renderSurahs(surahData);
-                });
             });
         });
     </script>
